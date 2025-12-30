@@ -214,12 +214,15 @@ export default function Destination() {
               {destination.description}
             </p>
             
-            <h3 className="text-xl font-semibold mb-3">Görülecek Yerler</h3>
-            <div className="flex flex-wrap gap-2">
+            <h3 className="text-xl font-semibold mb-4">Görülecek Yerler</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {destination.highlights.map((highlight, index) => (
-                <Badge key={index} variant="secondary" className="text-sm py-1 px-3">
-                  {highlight}
-                </Badge>
+                <Card key={index} className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <h4 className="font-semibold text-foreground mb-1">{highlight.name}</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{highlight.description}</p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </section>
