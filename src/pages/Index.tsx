@@ -32,6 +32,7 @@ const airportLookup: Record<string, Airport> = {
 const Index = () => {
   const { flights, isLoading, error, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { formatPrice } = useSettings();
   const searchFormRef = useRef<SearchFormRef>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const didAutoScrollRef = useRef(false);
@@ -108,6 +109,16 @@ const Index = () => {
     return result;
   }, [flights, filters, sortBy]);
 
+  // Calculate price range from filtered flights
+  const priceRange = useMemo(() => {
+    if (filteredAndSortedFlights.length === 0) return null;
+    const prices = filteredAndSortedFlights.map(f => f.price);
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices),
+    };
+  }, [filteredAndSortedFlights]);
+
   const getRank = (flight: Flight, index: number): 'cheapest' | 'fastest' | 'best' | null => {
     if (flights.length < 3) return null;
     const cheapest = [...flights].sort((a, b) => a.price - b.price)[0];
@@ -144,11 +155,18 @@ const Index = () => {
       {/* Sticky Results Banner */}
       {flights.length > 0 && !isLoading && (
         <div className="sticky top-[41px] z-30 bg-primary text-primary-foreground py-2 px-4 text-center text-sm font-medium shadow-md animate-in slide-in-from-top duration-300">
-          <span className="inline-flex items-center gap-2">
-            <Plane className="h-4 w-4" />
-            {filteredAndSortedFlights.length} uçuş bulundu
+          <span className="inline-flex items-center gap-2 flex-wrap justify-center">
+            <span className="inline-flex items-center gap-2">
+              <Plane className="h-4 w-4" />
+              {filteredAndSortedFlights.length} uçuş bulundu
+            </span>
+            {priceRange && (
+              <span className="text-primary-foreground/90 bg-primary-foreground/10 px-2 py-0.5 rounded-full text-xs">
+                {formatPrice(priceRange.min)} - {formatPrice(priceRange.max)}
+              </span>
+            )}
             {filteredAndSortedFlights.length !== flights.length && (
-              <span className="text-primary-foreground/70">
+              <span className="text-primary-foreground/70 text-xs">
                 ({flights.length} toplam)
               </span>
             )}
