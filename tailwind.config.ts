@@ -56,11 +56,11 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         flight: {
-          purple: "hsl(var(--flight-purple))",
-          orange: "hsl(var(--flight-orange))",
+          green: "hsl(var(--flight-green))",
+          navy: "hsl(var(--flight-navy))",
           blue: "hsl(var(--flight-blue))",
-          pink: "hsl(var(--flight-pink))",
           teal: "hsl(var(--flight-teal))",
+          emerald: "hsl(var(--flight-emerald))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

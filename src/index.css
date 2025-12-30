@@ -4,115 +4,117 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-/* Hafta Sonu Uçuş Arama - Renkli ve Eğlenceli Tema */
+/* Hafta Sonu Uçuş Arama - Yeşil & Lacivert Tema */
 
 @layer base {
   :root {
-    --background: 250 100% 98%;
-    --foreground: 250 30% 15%;
+    --background: 210 30% 98%;
+    --foreground: 220 40% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 250 30% 15%;
+    --card-foreground: 220 40% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 250 30% 15%;
+    --popover-foreground: 220 40% 13%;
 
-    --primary: 270 80% 60%;
+    --primary: 160 70% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 100% 60%;
+    --secondary: 220 60% 25%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 250 30% 95%;
-    --muted-foreground: 250 20% 50%;
+    --muted: 210 25% 94%;
+    --muted-foreground: 220 20% 45%;
 
-    --accent: 180 70% 50%;
+    --accent: 175 65% 45%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 150 80% 45%;
+    --success: 150 70% 42%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 250 30% 90%;
-    --input: 250 30% 92%;
-    --ring: 270 80% 60%;
+    --border: 210 25% 88%;
+    --input: 210 25% 90%;
+    --ring: 160 70% 40%;
 
     --radius: 1rem;
 
     /* Custom flight colors */
-    --flight-purple: 270 80% 60%;
-    --flight-orange: 30 100% 60%;
-    --flight-blue: 210 100% 60%;
-    --flight-pink: 330 80% 65%;
-    --flight-teal: 180 70% 50%;
+    --flight-green: 160 70% 40%;
+    --flight-navy: 220 60% 25%;
+    --flight-blue: 200 80% 50%;
+    --flight-teal: 175 65% 45%;
+    --flight-emerald: 155 75% 38%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(270, 80%, 60%) 0%, hsl(330, 80%, 65%) 50%, hsl(30, 100%, 60%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(250, 100%, 99%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(270, 80%, 55%) 0%, hsl(210, 100%, 60%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(160, 70%, 40%) 0%, hsl(175, 65%, 45%) 50%, hsl(200, 80%, 50%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 30%, 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(160, 70%, 35%) 0%, hsl(220, 60%, 30%) 100%);
+    --gradient-navy: linear-gradient(135deg, hsl(220, 60%, 25%) 0%, hsl(220, 50%, 35%) 100%);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 270 80% 60%;
+    --sidebar-foreground: 220 40% 13%;
+    --sidebar-primary: 160 70% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 250 30% 95%;
-    --sidebar-accent-foreground: 250 30% 15%;
-    --sidebar-border: 250 30% 90%;
-    --sidebar-ring: 270 80% 60%;
+    --sidebar-accent: 210 25% 94%;
+    --sidebar-accent-foreground: 220 40% 13%;
+    --sidebar-border: 210 25% 88%;
+    --sidebar-ring: 160 70% 40%;
   }
 
   .dark {
-    --background: 250 30% 8%;
-    --foreground: 250 20% 95%;
+    --background: 220 40% 8%;
+    --foreground: 210 25% 95%;
 
-    --card: 250 30% 12%;
-    --card-foreground: 250 20% 95%;
+    --card: 220 35% 12%;
+    --card-foreground: 210 25% 95%;
 
-    --popover: 250 30% 12%;
-    --popover-foreground: 250 20% 95%;
+    --popover: 220 35% 12%;
+    --popover-foreground: 210 25% 95%;
 
-    --primary: 270 80% 65%;
+    --primary: 160 65% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 100% 55%;
+    --secondary: 220 50% 35%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 250 30% 18%;
-    --muted-foreground: 250 20% 60%;
+    --muted: 220 30% 18%;
+    --muted-foreground: 210 20% 55%;
 
-    --accent: 180 70% 55%;
+    --accent: 175 60% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 150 80% 50%;
+    --success: 150 65% 48%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 50%;
+    --destructive: 0 65% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 250 30% 20%;
-    --input: 250 30% 20%;
-    --ring: 270 80% 65%;
+    --border: 220 30% 22%;
+    --input: 220 30% 22%;
+    --ring: 160 65% 45%;
 
-    --flight-purple: 270 80% 65%;
-    --flight-orange: 30 100% 55%;
-    --flight-blue: 210 100% 65%;
-    --flight-pink: 330 80% 70%;
-    --flight-teal: 180 70% 55%;
+    --flight-green: 160 65% 45%;
+    --flight-navy: 220 50% 35%;
+    --flight-blue: 200 75% 55%;
+    --flight-teal: 175 60% 50%;
+    --flight-emerald: 155 70% 42%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(270, 80%, 50%) 0%, hsl(330, 80%, 55%) 50%, hsl(30, 100%, 50%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(250, 30%, 12%) 0%, hsl(250, 30%, 15%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(270, 80%, 45%) 0%, hsl(210, 100%, 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(160, 65%, 42%) 0%, hsl(175, 60%, 48%) 50%, hsl(200, 75%, 52%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220, 35%, 12%) 0%, hsl(220, 35%, 15%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(160, 65%, 38%) 0%, hsl(220, 50%, 35%) 100%);
+    --gradient-navy: linear-gradient(135deg, hsl(220, 50%, 30%) 0%, hsl(220, 45%, 40%) 100%);
 
-    --sidebar-background: 250 30% 10%;
-    --sidebar-foreground: 250 20% 95%;
-    --sidebar-primary: 270 80% 65%;
+    --sidebar-background: 220 35% 10%;
+    --sidebar-foreground: 210 25% 95%;
+    --sidebar-primary: 160 65% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 250 30% 18%;
-    --sidebar-accent-foreground: 250 20% 95%;
-    --sidebar-border: 250 30% 20%;
-    --sidebar-ring: 270 80% 65%;
+    --sidebar-accent: 220 30% 18%;
+    --sidebar-accent-foreground: 210 25% 95%;
+    --sidebar-border: 220 30% 22%;
+    --sidebar-ring: 160 65% 45%;
   }
 }
 
@@ -138,6 +140,10 @@
 
   .gradient-hero {
     background: var(--gradient-hero);
+  }
+
+  .gradient-navy {
+    background: var(--gradient-navy);
   }
 
   .gradient-card {
