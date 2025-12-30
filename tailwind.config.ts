@@ -62,6 +62,12 @@ export default {
           teal: "hsl(var(--flight-teal))",
           emerald: "hsl(var(--flight-emerald))",
         },
+        section: {
+          header: "hsl(var(--section-header))",
+          search: "hsl(var(--section-search))",
+          routes: "hsl(var(--section-routes))",
+          results: "hsl(var(--section-results))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
