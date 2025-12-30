@@ -57,6 +57,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         children: passengers.children,
         infants: passengers.infants,
         tripClass: cabinClass,
+        visaFilter: visaOption,
       });
     };
 
