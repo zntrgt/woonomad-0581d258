@@ -88,207 +88,146 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const totalPassengers = passengers.adults + passengers.children + passengers.infants;
 
     return (
-      <div className="space-y-4">
-        <div className="flex flex-col gap-5">
-          {/* Trip Type Toggle */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex rounded-lg bg-muted p-0.5">
-              <button
-                onClick={() => setIsOneWay(false)}
-                className={cn(
-                  "px-3 py-1 rounded-md text-sm font-medium transition-colors",
-                  !isOneWay 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                Gidiş-Dönüş
-              </button>
-              <button
-                onClick={() => setIsOneWay(true)}
-                className={cn(
-                  "px-3 py-1 rounded-md text-sm font-medium transition-colors",
-                  isOneWay 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                Tek Yön
-              </button>
-            </div>
-            {isAnywhereSearch && (
-              <span className="px-2.5 py-1 rounded-lg text-xs bg-accent/10 text-accent font-medium">
-                🌍 Her Yere Arama
-              </span>
-            )}
-          </div>
-
-          {/* Origin & Destination */}
-          <div className="flex flex-col md:flex-row gap-3 items-end">
+      <div className="space-y-5">
+        {/* Main Search Box */}
+        <div className="flex flex-col md:flex-row gap-3 items-end">
+          <div className="flex-1">
             <AirportInput
               label="Nereden"
-              placeholder="Şehir, ülke, bölge veya kıta ara..."
+              placeholder="Şehir veya havalimanı"
               value={origin}
               onChange={setOrigin}
               icon="origin"
             />
+          </div>
+          
+          <button
+            onClick={handleSwap}
+            disabled={isAnywhereSearch}
+            className="p-2.5 rounded-full border border-border hover:bg-muted transition-colors disabled:opacity-40 mb-1"
+          >
+            <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+          </button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSwap}
-              disabled={isAnywhereSearch}
-              className={cn(
-                "h-11 w-11 rounded-lg shrink-0",
-                "bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground",
-                "transition-colors",
-                "disabled:opacity-50 disabled:cursor-not-allowed"
-              )}
-            >
-              <ArrowRightLeft className="h-4 w-4" />
-            </Button>
-
+          <div className="flex-1">
             <AirportInput
               label="Nereye"
-              placeholder="Şehir, ülke, bölge veya kıta ara..."
+              placeholder="Şehir veya havalimanı"
               value={destination}
               onChange={setDestination}
               icon="destination"
               showAnywhereOption={true}
             />
           </div>
+        </div>
 
-          {/* Date Picker */}
-          <FlightDatePicker
-            departDate={departDate}
-            returnDate={returnDate}
-            onDepartDateChange={setDepartDate}
-            onReturnDateChange={setReturnDate}
-            isFlexible={isFlexible}
-            onFlexibleChange={setIsFlexible}
-            isOneWay={isOneWay}
-          />
+        {/* Date Selection */}
+        <FlightDatePicker
+          departDate={departDate}
+          returnDate={returnDate}
+          onDepartDateChange={setDepartDate}
+          onReturnDateChange={setReturnDate}
+          isFlexible={isFlexible}
+          onFlexibleChange={setIsFlexible}
+          isOneWay={isOneWay}
+        />
 
-          {/* Cabin Class & Visa Options */}
-          <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Kabin Sınıfı</label>
-              <CabinClassSelector value={cabinClass} onChange={setCabinClass} />
+        {/* Options Row */}
+        <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+          {/* Trip Type */}
+          <div className="flex items-center gap-1 bg-muted rounded-full p-0.5">
+            {['Gidiş-Dönüş', 'Tek Yön'].map((label, i) => (
+              <button
+                key={label}
+                onClick={() => setIsOneWay(i === 1)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-sm transition-colors",
+                  (i === 0 ? !isOneWay : isOneWay)
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          
+          {/* Passengers */}
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Users className="h-4 w-4" />
+            <span>{passengers.adults + passengers.children} yolcu</span>
+          </button>
+          
+          {isAnywhereSearch && (
+            <span className="px-2.5 py-1 rounded-full text-xs bg-primary/10 text-primary font-medium">
+              🌍 Her Yer
+            </span>
+          )}
+        </div>
+
+        {/* Expanded Options */}
+        {showAdvanced && (
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border">
+            {/* Passengers */}
+            <div className="flex items-center gap-4">
+              {[
+                { key: 'adults', label: 'Yetişkin', min: 1 },
+                { key: 'children', label: 'Çocuk', min: 0 },
+                { key: 'infants', label: 'Bebek', min: 0 },
+              ].map(({ key, label, min }) => (
+                <div key={key} className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">{label}</span>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setPassengers(p => ({ ...p, [key]: Math.max(min, (p as any)[key] - 1) }))}
+                      className="w-7 h-7 rounded-full border border-border text-sm hover:bg-muted"
+                    >
+                      -
+                    </button>
+                    <span className="w-6 text-center text-sm">{(passengers as any)[key]}</span>
+                    <button
+                      onClick={() => setPassengers(p => ({ ...p, [key]: Math.min(9, (p as any)[key] + 1) }))}
+                      className="w-7 h-7 rounded-full border border-border text-sm hover:bg-muted"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
             
-            <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline"
-            >
-              {showAdvanced ? 'Daha az seçenek' : 'Daha fazla seçenek'}
-            </button>
+            <div className="h-5 w-px bg-border" />
+            
+            <CabinClassSelector value={cabinClass} onChange={setCabinClass} />
+            
+            <div className="h-5 w-px bg-border" />
+            
+            <VisaSelector value={visaOption} onChange={setVisaOption} />
           </div>
+        )}
 
-          {/* Advanced Options */}
-          {showAdvanced && (
-            <div className="flex flex-col gap-3 pt-3 border-t border-border">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Vize Durumu (Opsiyonel)</label>
-                <VisaSelector value={visaOption} onChange={setVisaOption} />
-                <p className="text-xs text-muted-foreground">
-                  * Vize gereklilikleri ülkeye ve pasaport türüne göre değişebilir
-                </p>
+        {/* Search Button */}
+        <div className="flex justify-center pt-2">
+          <Button
+            onClick={handleSearch}
+            disabled={!origin || (!isAnywhereSearch && !destination) || !departDate || isLoading}
+            className="h-11 px-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Plane className="h-4 w-4 animate-bounce" />
+                <span>Aranıyor...</span>
               </div>
-            </div>
-          )}
-
-          {/* Passengers */}
-          <div className="flex flex-col md:flex-row gap-3 items-end justify-between">
-            <div className="flex-1">
-              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                Yolcular
-              </label>
-              <div className="flex items-center gap-3 bg-muted rounded-lg p-3">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                
-                <div className="flex items-center gap-3 flex-wrap">
-                  {/* Adults */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">Yetişkin</span>
-                    <div className="flex items-center gap-0.5">
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, adults: Math.max(1, p.adults - 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-6 text-center text-sm font-medium">{passengers.adults}</span>
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, adults: Math.min(9, p.adults + 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Children */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">Çocuk</span>
-                    <div className="flex items-center gap-0.5">
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, children: Math.max(0, p.children - 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-6 text-center text-sm font-medium">{passengers.children}</span>
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, children: Math.min(9, p.children + 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Infants */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">Bebek</span>
-                    <div className="flex items-center gap-0.5">
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, infants: Math.max(0, p.infants - 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        -
-                      </button>
-                      <span className="w-6 text-center text-sm font-medium">{passengers.infants}</span>
-                      <button
-                        onClick={() => setPassengers(p => ({ ...p, infants: Math.min(passengers.adults, p.infants + 1) }))}
-                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Search className="h-4 w-4" />
+                <span>{isAnywhereSearch ? 'Her Yeri Ara' : 'Uçuş Ara'}</span>
               </div>
-            </div>
-
-            {/* Search Button */}
-            <Button
-              onClick={handleSearch}
-              disabled={!origin || (!isAnywhereSearch && !destination) || !departDate || isLoading}
-              className="h-11 px-6 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-            >
-              {isLoading ? (
-                <div className="flex items-center gap-1.5">
-                  <Plane className="h-4 w-4 animate-bounce" />
-                  <span>Aranıyor...</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5">
-                  <Search className="h-4 w-4" />
-                  <span>{isAnywhereSearch ? 'Her Yeri Ara' : 'Uçuş Ara'}</span>
-                </div>
-              )}
-            </Button>
-          </div>
+            )}
+          </Button>
         </div>
       </div>
     );

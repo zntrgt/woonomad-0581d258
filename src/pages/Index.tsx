@@ -102,83 +102,62 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header Section */}
-      <header className="bg-section-header py-10 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="p-2.5 rounded-xl bg-primary">
-              <Plane className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-white">
-              Hafta Sonu Kaçamağı
-            </h1>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Hero Section - Google style centered */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+        {/* Logo & Title */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Plane className="h-10 w-10 text-primary" />
           </div>
-          <p className="text-white/70 text-base">
-            En uygun hafta sonu uçuşlarını bul
-          </p>
+          <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground">
+            Hafta Sonu Kaçamağı
+          </h1>
         </div>
-      </header>
 
-      {/* Search Section */}
-      <section className="bg-section-search py-8 px-4 border-b border-border">
-        <div className="max-w-4xl mx-auto">
+        {/* Search Form - centered like Google */}
+        <div className="w-full max-w-2xl">
           <SearchForm
             ref={searchFormRef}
             onSearch={handleSearch}
             isLoading={isLoading}
           />
         </div>
-      </section>
 
-      {/* Popular Routes Section */}
-      <section className="bg-section-routes py-6 px-4 border-b border-border">
-        <div className="max-w-4xl mx-auto">
+        {/* Popular Routes - subtle below search */}
+        <div className="mt-8 w-full max-w-2xl">
           <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
         </div>
-      </section>
+      </div>
 
-      {/* Results Section */}
+      {/* Results Section - only appears after search */}
       {(flights.length > 0 || isLoading || error) && (
-        <section className="bg-section-results py-8 px-4">
-          <div className="max-w-4xl mx-auto">
+        <div className="bg-muted border-t border-border">
+          <div className="max-w-3xl mx-auto px-4 py-6">
             {error && (
-              <div className="bg-destructive/10 text-destructive p-4 rounded-xl mb-6 text-center text-sm">
+              <div className="bg-destructive/10 text-destructive p-3 rounded-lg mb-4 text-center text-sm">
                 {error}
               </div>
             )}
 
             {flights.length > 0 && (
               <>
-                <FlightFilters
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  availableAirlines={availableAirlines}
-                  maxPrice={maxPrice}
-                  sortBy={sortBy}
-                  onSortChange={setSortBy}
-                />
-
-                <div className="mt-4 mb-5 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <span className="text-sm text-muted-foreground">
                     {filteredAndSortedFlights.length} uçuş bulundu
                   </span>
-                  {lastSearchParams && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="px-3 py-1 rounded-lg bg-card text-foreground border border-border">
-                        📅 {formatDisplayDate(lastSearchParams.departDate)}
-                        {lastSearchParams.returnDate && ` - ${formatDisplayDate(lastSearchParams.returnDate)}`}
-                      </span>
-                      {lastSearchParams.flexibleDates && (
-                        <span className="px-2 py-1 rounded-lg text-xs bg-primary/10 text-primary">
-                          ±1 gün
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  
+                  <FlightFilters
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    availableAirlines={availableAirlines}
+                    maxPrice={maxPrice}
+                    sortBy={sortBy}
+                    onSortChange={setSortBy}
+                  />
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {filteredAndSortedFlights.map((flight, index) => (
                     <FlightCard
                       key={`${flight.flight_number}-${flight.departure_at}`}
@@ -191,7 +170,7 @@ const Index = () => {
                 </div>
 
                 {filteredAndSortedFlights.length === 0 && (
-                  <div className="text-center py-10 text-muted-foreground">
+                  <div className="text-center py-8 text-muted-foreground text-sm">
                     Filtrelere uygun uçuş bulunamadı
                   </div>
                 )}
@@ -199,13 +178,13 @@ const Index = () => {
             )}
 
             {isLoading && (
-              <div className="text-center py-12">
-                <Plane className="h-10 w-10 mx-auto text-primary animate-bounce mb-3" />
+              <div className="text-center py-10">
+                <Plane className="h-8 w-8 mx-auto text-primary animate-bounce mb-2" />
                 <p className="text-muted-foreground text-sm">Uçuşlar aranıyor...</p>
               </div>
             )}
           </div>
-        </section>
+        </div>
       )}
     </div>
   );
