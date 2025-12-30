@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 export interface SearchFormRef {
   setAirports: (origin: Airport, destination: Airport) => void;
+  triggerSearch: () => void;
 }
 
 interface SearchFormProps {
@@ -56,6 +57,9 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
       setAirports: (newOrigin: Airport, newDestination: Airport) => {
         setOrigin(newOrigin);
         setDestination(newDestination);
+      },
+      triggerSearch: () => {
+        handleSearch();
       }
     }));
 

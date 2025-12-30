@@ -52,6 +52,10 @@ const Index = () => {
     
     if (origin && destination && searchFormRef.current) {
       searchFormRef.current.setAirports(origin, destination);
+      // Trigger search after a brief delay to allow state update
+      setTimeout(() => {
+        searchFormRef.current?.triggerSearch();
+      }, 100);
     }
   };
 
@@ -104,19 +108,19 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero Section - Google style centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-3 md:px-4 py-6 md:py-8">
         {/* Logo & Title */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 md:mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Plane className="h-10 w-10 text-primary" />
+            <Plane className="h-8 w-8 md:h-10 md:w-10 text-primary" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground">
+          <h1 className="text-xl md:text-3xl font-display font-semibold text-foreground">
             Hafta Sonu Kaçamağı
           </h1>
         </div>
 
         {/* Search Form - centered like Google */}
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl px-1">
           <SearchForm
             ref={searchFormRef}
             onSearch={handleSearch}
@@ -125,7 +129,7 @@ const Index = () => {
         </div>
 
         {/* Popular Routes - subtle below search */}
-        <div className="mt-8 w-full max-w-2xl">
+        <div className="mt-6 md:mt-8 w-full max-w-2xl">
           <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
         </div>
       </div>

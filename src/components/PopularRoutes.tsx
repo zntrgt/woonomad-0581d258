@@ -44,33 +44,33 @@ function DestinationCardItem({
   return (
     <button
       onClick={onClick}
-      className="group relative overflow-hidden rounded-xl aspect-[4/3] bg-muted transition-transform hover:scale-[1.02]"
+      className="group relative overflow-hidden rounded-xl aspect-[4/3] bg-muted transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
     >
       {imageUrl && !imageError ? (
         <img
           src={imageUrl}
           alt={destination.city}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
           onError={() => setImageError(true)}
         />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-          <span className="text-4xl">{destination.emoji}</span>
+          <span className="text-3xl md:text-4xl">{destination.emoji}</span>
         </div>
       )}
       
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       
       {/* City name */}
-      <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
-        <div className="text-white font-medium text-sm">{destination.city}</div>
-        <div className="text-white/70 text-xs">{destination.country}</div>
+      <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 text-left">
+        <div className="text-white font-medium text-xs md:text-sm">{destination.city}</div>
+        <div className="text-white/70 text-[10px] md:text-xs">{destination.country}</div>
       </div>
       
       {/* Category badge */}
-      <div className="absolute top-2 right-2">
-        <span className={`text-xs px-2 py-0.5 rounded-full ${
+      <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2">
+        <span className={`text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full ${
           destination.category === 'domestic' 
             ? 'bg-primary text-primary-foreground' 
             : destination.category === 'visa-free'
@@ -88,8 +88,8 @@ function DestinationCardItem({
 export function PopularRoutes({ onRouteSelect }: PopularRoutesProps) {
   return (
     <div className="w-full">
-      <h3 className="text-sm text-muted-foreground text-center mb-4">Popüler Destinasyonlar</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <h3 className="text-xs md:text-sm text-muted-foreground text-center mb-3 md:mb-4">Popüler Destinasyonlar</h3>
+      <div className="grid grid-cols-3 gap-2 md:gap-3">
         {destinations.map((dest) => (
           <DestinationCardItem
             key={dest.code}
