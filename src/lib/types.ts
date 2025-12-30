@@ -56,6 +56,7 @@ export interface SearchParams {
   infants: number;
   tripClass: CabinClass;
   visaFilter?: VisaOption;
+  flexibleDates?: boolean;
 }
 
 // Special "Anywhere" destination

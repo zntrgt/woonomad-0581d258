@@ -1,16 +1,15 @@
 import { useState, useMemo, useRef } from 'react';
 import { Plane } from 'lucide-react';
-import { WeekendSelector } from '@/components/WeekendSelector';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
-import { useWeekendDates } from '@/hooks/useWeekendDates';
 import { useFavorites } from '@/hooks/useFavorites';
 import { SearchParams, Flight, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { parseISO } from 'date-fns';
+import { parseISO, format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 
 type SortOption = 'price' | 'duration' | 'departure' | 'best';
 
@@ -29,17 +28,6 @@ const airportLookup: Record<string, Airport> = {
 };
 
 const Index = () => {
-  const { 
-    currentWeekend, 
-    tripDuration, 
-    setTripDuration,
-    goToNextWeek,
-    goToPrevWeek,
-    canGoPrev,
-    canGoNext,
-    formatDate, 
-    formatDateForApi 
-  } = useWeekendDates();
   const { flights, isLoading, error, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
   const searchFormRef = useRef<SearchFormRef>(null);
@@ -51,8 +39,10 @@ const Index = () => {
     airlines: [],
     departureTimeRange: [0, 24],
   });
+  const [lastSearchParams, setLastSearchParams] = useState<SearchParams | null>(null);
 
   const handleSearch = (params: SearchParams) => {
+    setLastSearchParams(params);
     searchFlights(params);
   };
 
@@ -106,9 +96,10 @@ const Index = () => {
     return null;
   };
 
-  // Calculate return date based on trip duration
-  const departDate = formatDateForApi(currentWeekend.saturday);
-  const returnDate = tripDuration === '1-1' ? undefined : formatDateForApi(currentWeekend.sunday);
+  // Format date for display
+  const formatDisplayDate = (dateStr: string) => {
+    return format(parseISO(dateStr), 'd MMMM', { locale: tr });
+  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -134,31 +125,7 @@ const Index = () => {
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
             En uygun hafta sonu uçuşlarını bul, hemen rezervasyon yap!
           </p>
-          <div className="mt-4 flex justify-center">
-            <span className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium",
-              "bg-accent/10 text-accent border border-accent/20"
-            )}>
-              📅 Önümüzdeki Hafta Sonu İçin Planla
-            </span>
-          </div>
         </header>
-
-        {/* Weekend Selector */}
-        <div className="mb-8">
-          <WeekendSelector
-            startDate={currentWeekend.saturday}
-            endDate={currentWeekend.sunday}
-            label={currentWeekend.label}
-            tripDuration={tripDuration}
-            onTripDurationChange={setTripDuration}
-            onPrev={goToPrevWeek}
-            onNext={goToNextWeek}
-            canGoPrev={canGoPrev}
-            canGoNext={canGoNext}
-            formatDate={formatDate}
-          />
-        </div>
 
         {/* Popular Routes */}
         <div className="max-w-4xl mx-auto mb-8">
@@ -169,8 +136,6 @@ const Index = () => {
         <div className="max-w-4xl mx-auto mb-10">
           <SearchForm
             ref={searchFormRef}
-            departDate={departDate}
-            returnDate={returnDate}
             onSearch={handleSearch}
             isLoading={isLoading}
           />
@@ -200,12 +165,19 @@ const Index = () => {
                   <div className="text-sm text-muted-foreground">
                     {filteredAndSortedFlights.length} uçuş bulundu
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-medium">
-                      📅 {formatDate(currentWeekend.saturday)}
-                      {tripDuration !== '1-1' && ` - ${formatDate(currentWeekend.sunday)}`}
-                    </span>
-                  </div>
+                  {lastSearchParams && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-medium">
+                        📅 {formatDisplayDate(lastSearchParams.departDate)}
+                        {lastSearchParams.returnDate && ` - ${formatDisplayDate(lastSearchParams.returnDate)}`}
+                      </span>
+                      {lastSearchParams.flexibleDates && (
+                        <span className="px-2 py-1 rounded-full text-xs bg-accent/10 text-accent">
+                          ±1 gün
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">

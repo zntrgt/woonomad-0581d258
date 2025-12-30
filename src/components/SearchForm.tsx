@@ -1,9 +1,11 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Search, Users, ArrowRightLeft, Plane } from 'lucide-react';
+import { format, addDays, startOfWeek, startOfToday, isBefore } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { AirportInput } from './AirportInput';
 import { CabinClassSelector } from './CabinClassSelector';
 import { VisaSelector } from './VisaSelector';
+import { FlightDatePicker } from './FlightDatePicker';
 import { Airport, SearchParams, CabinClass, VisaOption } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -12,14 +14,28 @@ export interface SearchFormRef {
 }
 
 interface SearchFormProps {
-  departDate: string;
-  returnDate?: string;
   onSearch: (params: SearchParams) => void;
   isLoading?: boolean;
 }
 
+// Helper to get the next weekend
+function getNextWeekend() {
+  const today = startOfToday();
+  const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 });
+  let saturday = addDays(currentWeekStart, 5);
+  let sunday = addDays(currentWeekStart, 6);
+  
+  // If this weekend has passed, get next week's weekend
+  if (isBefore(sunday, today)) {
+    saturday = addDays(saturday, 7);
+    sunday = addDays(sunday, 7);
+  }
+  
+  return { saturday, sunday };
+}
+
 export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
-  ({ departDate, returnDate, onSearch, isLoading }, ref) => {
+  ({ onSearch, isLoading }, ref) => {
     const [origin, setOrigin] = useState<Airport | null>(null);
     const [destination, setDestination] = useState<Airport | null>(null);
     const [passengers, setPassengers] = useState({ adults: 1, children: 0, infants: 0 });
@@ -27,7 +43,13 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const [visaOption, setVisaOption] = useState<VisaOption>('all');
     const [showAdvanced, setShowAdvanced] = useState(false);
     
-    const isRoundTrip = !!returnDate;
+    // Date state - default to next weekend
+    const nextWeekend = getNextWeekend();
+    const [departDate, setDepartDate] = useState<Date | undefined>(nextWeekend.saturday);
+    const [returnDate, setReturnDate] = useState<Date | undefined>(nextWeekend.sunday);
+    const [isFlexible, setIsFlexible] = useState(false);
+    const [isOneWay, setIsOneWay] = useState(false);
+    
     const isAnywhereSearch = destination?.code === '';
 
     useImperativeHandle(ref, () => ({
@@ -38,7 +60,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     }));
 
     const handleSwap = () => {
-      if (isAnywhereSearch) return; // Can't swap with "Anywhere"
+      if (isAnywhereSearch) return;
       const temp = origin;
       setOrigin(destination);
       setDestination(temp);
@@ -47,17 +69,19 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const handleSearch = () => {
       if (!origin) return;
       if (!isAnywhereSearch && !destination) return;
+      if (!departDate) return;
 
       onSearch({
         origin: origin.code,
         destination: destination?.code || '',
-        departDate,
-        returnDate: returnDate,
+        departDate: format(departDate, 'yyyy-MM-dd'),
+        returnDate: !isOneWay && returnDate ? format(returnDate, 'yyyy-MM-dd') : undefined,
         adults: passengers.adults,
         children: passengers.children,
         infants: passengers.infants,
         tripClass: cabinClass,
         visaFilter: visaOption,
+        flexibleDates: isFlexible,
       });
     };
 
@@ -70,14 +94,32 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         "animate-fade-in"
       )}>
         <div className="flex flex-col gap-6">
-          {/* Trip Type & Class Info */}
+          {/* Trip Type Toggle */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className={cn(
-              "px-3 py-1 rounded-full text-sm",
-              "bg-primary/10 text-primary font-medium"
-            )}>
-              {isRoundTrip ? 'Gidiş-Dönüş' : 'Tek Yön (Günübirlik)'}
-            </span>
+            <div className="flex rounded-full bg-muted/50 p-1">
+              <button
+                onClick={() => setIsOneWay(false)}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
+                  !isOneWay 
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Gidiş-Dönüş
+              </button>
+              <button
+                onClick={() => setIsOneWay(true)}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
+                  isOneWay 
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Tek Yön
+              </button>
+            </div>
             {isAnywhereSearch && (
               <span className={cn(
                 "px-3 py-1 rounded-full text-sm",
@@ -122,6 +164,17 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               showAnywhereOption={true}
             />
           </div>
+
+          {/* Date Picker */}
+          <FlightDatePicker
+            departDate={departDate}
+            returnDate={returnDate}
+            onDepartDateChange={setDepartDate}
+            onReturnDateChange={setReturnDate}
+            isFlexible={isFlexible}
+            onFlexibleChange={setIsFlexible}
+            isOneWay={isOneWay}
+          />
 
           {/* Cabin Class & Visa Options */}
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
@@ -229,7 +282,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             {/* Search Button */}
             <Button
               onClick={handleSearch}
-              disabled={!origin || (!isAnywhereSearch && !destination) || isLoading}
+              disabled={!origin || (!isAnywhereSearch && !destination) || !departDate || isLoading}
               size="lg"
               className={cn(
                 "h-14 px-8 rounded-2xl text-lg font-semibold",

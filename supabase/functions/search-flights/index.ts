@@ -15,6 +15,7 @@ interface FlightSearchParams {
   infants?: number;
   tripClass?: string;
   visaFilter?: 'all' | 'visa-free' | 'visa-required';
+  flexibleDates?: boolean;
 }
 
 // Visa-free countries for Turkish passport holders (IATA codes)
@@ -105,7 +106,24 @@ serve(async (req) => {
     const params: FlightSearchParams = await req.json();
     console.log('Search params:', params);
 
-    const { origin, destination, departDate, returnDate, adults = 1, children = 0, infants = 0, tripClass = 'Y', visaFilter = 'all' } = params;
+    const { origin, destination, departDate, returnDate, adults = 1, children = 0, infants = 0, tripClass = 'Y', visaFilter = 'all', flexibleDates = false } = params;
+
+    // Calculate date range for flexible search
+    const getDatesRange = (baseDate: string): string[] => {
+      if (!flexibleDates) return [baseDate];
+      const date = new Date(baseDate);
+      const prevDay = new Date(date);
+      prevDay.setDate(date.getDate() - 1);
+      const nextDay = new Date(date);
+      nextDay.setDate(date.getDate() + 1);
+      return [
+        prevDay.toISOString().split('T')[0],
+        baseDate,
+        nextDay.toISOString().split('T')[0]
+      ];
+    };
+
+    const departDates = getDatesRange(departDate);
 
     if (!origin || !departDate) {
       throw new Error('Missing required parameters: origin, departDate');
