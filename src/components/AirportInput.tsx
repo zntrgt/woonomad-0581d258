@@ -137,29 +137,74 @@ export function AirportInput({
           "absolute z-50 w-full mt-2 py-2 bg-card rounded-2xl shadow-card border border-border/50 max-h-80 overflow-y-auto",
           "animate-scale-in"
         )}>
+          {/* Search results first */}
+          {airports.length > 0 && (
+            <>
+              <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Arama Sonuçları
+              </div>
+              {airports.map((airport) => (
+                <button
+                  key={airport.code}
+                  onClick={() => handleSelectAirport(airport)}
+                  className={cn(
+                    "w-full px-4 py-3 text-left",
+                    "hover:bg-primary/5 transition-colors",
+                    "flex items-center gap-3"
+                  )}
+                >
+                  <div className={cn(
+                    "p-2 rounded-full",
+                    icon === 'origin' ? 'bg-primary/10 text-primary' : 'bg-secondary/20 text-secondary'
+                  )}>
+                    <Plane className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-foreground">
+                      {airport.city}
+                      <span className="ml-2 text-primary font-bold">{airport.code}</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {airport.name}, {airport.country}
+                      {airport.region && ` • ${airport.region}`}
+                    </div>
+                  </div>
+                </button>
+              ))}
+              {(showAnywhere || matchingRegions.length > 0) && <div className="border-t border-border/30 my-2" />}
+            </>
+          )}
+
           {/* Anywhere option */}
           {showAnywhere && (
-            <button
-              onClick={() => handleSelectAirport(ANYWHERE_DESTINATION)}
-              className={cn(
-                "w-full px-4 py-3 text-left",
-                "hover:bg-accent/10 transition-colors",
-                "flex items-center gap-3 border-b border-border/30"
+            <>
+              {airports.length === 0 && (
+                <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Popüler Seçenekler
+                </div>
               )}
-            >
-              <div className="p-2 rounded-full bg-accent/20 text-accent">
-                <Globe className="h-4 w-4" />
-              </div>
-              <div className="flex-1">
-                <div className="font-semibold text-foreground flex items-center gap-2">
-                  Her Yere
-                  <span className="text-lg">🌍</span>
+              <button
+                onClick={() => handleSelectAirport(ANYWHERE_DESTINATION)}
+                className={cn(
+                  "w-full px-4 py-3 text-left",
+                  "hover:bg-accent/10 transition-colors",
+                  "flex items-center gap-3"
+                )}
+              >
+                <div className="p-2 rounded-full bg-accent/20 text-accent">
+                  <Globe className="h-4 w-4" />
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  Tüm destinasyonlarda en uygun fiyatları gör
+                <div className="flex-1">
+                  <div className="font-semibold text-foreground flex items-center gap-2">
+                    Her Yere
+                    <span className="text-lg">🌍</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Tüm destinasyonlarda en uygun fiyatları gör
+                  </div>
                 </div>
-              </div>
-            </button>
+              </button>
+            </>
           )}
 
           {/* Region options */}
@@ -189,37 +234,8 @@ export function AirportInput({
                   </div>
                 </button>
               ))}
-              {airports.length > 0 && <div className="border-t border-border/30 my-1" />}
             </>
           )}
-          {airports.map((airport) => (
-            <button
-              key={airport.code}
-              onClick={() => handleSelectAirport(airport)}
-              className={cn(
-                "w-full px-4 py-3 text-left",
-                "hover:bg-primary/5 transition-colors",
-                "flex items-center gap-3"
-              )}
-            >
-              <div className={cn(
-                "p-2 rounded-full",
-                icon === 'origin' ? 'bg-primary/10 text-primary' : 'bg-secondary/20 text-secondary'
-              )}>
-                <Plane className="h-4 w-4" />
-              </div>
-              <div className="flex-1">
-                <div className="font-medium text-foreground">
-                  {airport.city}
-                  <span className="ml-2 text-primary font-bold">{airport.code}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {airport.name}, {airport.country}
-                  {airport.region && ` • ${airport.region}`}
-                </div>
-              </div>
-            </button>
-          ))}
         </div>
       )}
     </div>
