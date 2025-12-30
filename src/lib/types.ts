@@ -67,3 +67,11 @@ export const ANYWHERE_DESTINATION: Airport = {
   country: 'Dünya',
   continent: 'Her Yer'
 };
+
+// Continental/Regional destinations
+export const REGION_DESTINATIONS: Airport[] = [
+  { code: 'EU', name: 'Tüm Avrupa', city: 'Avrupa', country: 'Avrupa', continent: 'Avrupa' },
+  { code: 'AS', name: 'Tüm Asya', city: 'Asya', country: 'Asya', continent: 'Asya' },
+  { code: 'AM', name: 'Tüm Amerika', city: 'Amerika', country: 'Amerika', continent: 'Amerika' },
+  { code: 'AF', name: 'Tüm Afrika', city: 'Afrika', country: 'Afrika', continent: 'Afrika' },
+];
