@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Flight, SearchParams } from '@/lib/types';
+import { parseISO, format } from 'date-fns';
 
 interface FlightSearchResult {
   flights: Flight[];
@@ -36,11 +37,27 @@ export function useFlightSearch(): FlightSearchResult {
         throw new Error(data.error || 'Uçuş araması başarısız oldu');
       }
 
-      // API already filters by date, just use the results directly
-      const flightResults = data.data || [];
-      console.log('Flight results count:', flightResults.length);
+      const allFlights = data.data || [];
+      console.log('Total flights from API:', allFlights.length);
+
+      // Filter flights by the selected departure date
+      const selectedDepartDate = params.departDate; // Format: YYYY-MM-DD
       
-      setFlights(flightResults);
+      const filteredFlights = allFlights.filter((flight: Flight) => {
+        // Get just the date part from departure_at (e.g., "2026-01-03T10:00:00" -> "2026-01-03")
+        const flightDepartDate = flight.departure_at.split('T')[0];
+        
+        // Check if flight departs on the selected date
+        const matchesDepartDate = flightDepartDate === selectedDepartDate;
+        
+        console.log(`Flight ${flight.flight_number}: depart=${flightDepartDate}, selected=${selectedDepartDate}, matches=${matchesDepartDate}`);
+        
+        return matchesDepartDate;
+      });
+
+      console.log('Filtered flights count:', filteredFlights.length);
+      
+      setFlights(filteredFlights);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Bir hata oluştu';
       setError(errorMessage);
