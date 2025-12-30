@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Plane, MapPin, Loader2 } from 'lucide-react';
+import { Plane, MapPin, Loader2, Globe } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useAirportSearch } from '@/hooks/useAirportSearch';
-import { Airport } from '@/lib/types';
+import { Airport, ANYWHERE_DESTINATION } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface AirportInputProps {
@@ -11,6 +11,7 @@ interface AirportInputProps {
   value: Airport | null;
   onChange: (airport: Airport | null) => void;
   icon?: 'origin' | 'destination';
+  showAnywhereOption?: boolean;
 }
 
 export function AirportInput({
@@ -19,6 +20,7 @@ export function AirportInput({
   value,
   onChange,
   icon = 'origin',
+  showAnywhereOption = false,
 }: AirportInputProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -45,20 +47,39 @@ export function AirportInput({
     if (newQuery.length >= 2) {
       searchAirports(newQuery);
       setIsOpen(true);
+    } else if (showAnywhereOption && newQuery.length === 0) {
+      clearAirports();
+      setIsOpen(true);
     } else {
       clearAirports();
       setIsOpen(false);
     }
   };
 
+  const handleFocus = () => {
+    if (airports.length > 0) {
+      setIsOpen(true);
+    } else if (showAnywhereOption) {
+      setIsOpen(true);
+    }
+  };
+
   const handleSelectAirport = (airport: Airport) => {
     onChange(airport);
-    setQuery(`${airport.city} (${airport.code})`);
+    if (airport.code === '') {
+      setQuery('Her Yere');
+    } else {
+      setQuery(`${airport.city} (${airport.code})`);
+    }
     setIsOpen(false);
     clearAirports();
   };
 
-  const displayValue = value ? `${value.city} (${value.code})` : query;
+  const displayValue = value 
+    ? (value.code === '' ? 'Her Yere 🌍' : `${value.city} (${value.code})`)
+    : query;
+
+  const showAnywhere = showAnywhereOption && (query.length === 0 || query.toLowerCase().includes('her'));
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
@@ -80,7 +101,7 @@ export function AirportInput({
           ref={inputRef}
           value={displayValue}
           onChange={handleInputChange}
-          onFocus={() => airports.length > 0 && setIsOpen(true)}
+          onFocus={handleFocus}
           placeholder={placeholder}
           className={cn(
             "h-14 pl-14 pr-10 text-lg rounded-2xl",
@@ -97,11 +118,36 @@ export function AirportInput({
       </div>
 
       {/* Dropdown */}
-      {isOpen && airports.length > 0 && (
+      {isOpen && (showAnywhere || airports.length > 0) && (
         <div className={cn(
           "absolute z-50 w-full mt-2 py-2 bg-card rounded-2xl shadow-card border border-border/50",
           "animate-scale-in"
         )}>
+          {/* Anywhere option */}
+          {showAnywhere && (
+            <button
+              onClick={() => handleSelectAirport(ANYWHERE_DESTINATION)}
+              className={cn(
+                "w-full px-4 py-3 text-left",
+                "hover:bg-accent/10 transition-colors",
+                "flex items-center gap-3 border-b border-border/30"
+              )}
+            >
+              <div className="p-2 rounded-full bg-accent/20 text-accent">
+                <Globe className="h-4 w-4" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-foreground flex items-center gap-2">
+                  Her Yere
+                  <span className="text-lg">🌍</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Tüm destinasyonlarda en uygun fiyatları gör
+                </div>
+              </div>
+            </button>
+          )}
+
           {airports.map((airport) => (
             <button
               key={airport.code}
@@ -125,6 +171,7 @@ export function AirportInput({
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {airport.name}, {airport.country}
+                  {airport.region && ` • ${airport.region}`}
                 </div>
               </div>
             </button>
