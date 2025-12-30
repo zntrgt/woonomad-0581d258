@@ -81,14 +81,53 @@ function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' |
   return 'unknown';
 }
 
-// Popular destinations for "anywhere" search - expanded list
+// Popular destinations for "anywhere" search - comprehensive list from visa categories
 const POPULAR_DESTINATIONS = [
-  // Visa-free popular destinations
-  'ATH', 'TBS', 'GYD', 'BEG', 'PRN', 'SKP', 'SJJ', 'TGD', 'AMM', 'BEY',
-  'DXB', 'DOH', 'BKK', 'SIN', 'KUL', 'CMN', 'TUN', 'ALA',
-  // Visa-required popular destinations  
-  'BCN', 'FCO', 'CDG', 'AMS', 'LHR', 'FRA', 'MUC', 'VIE', 'PRG', 'BUD',
-  'MAD', 'LIS', 'MXP', 'ZRH', 'BRU', 'CPH', 'ARN', 'WAW', 'OTP'
+  // === VISA-FREE DESTINATIONS ===
+  // Europe (visa-free)
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Albania, Kosovo, North Macedonia, Bosnia, Montenegro, Serbia
+  // Asia
+  'ICN', 'GMP', 'NRT', 'HND', 'KIX', // South Korea, Japan
+  'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', // Singapore, Malaysia, Thailand, Indonesia
+  'MNL', 'HKG', 'TPE', // Philippines, Hong Kong, Taiwan
+  'KTM', // Nepal
+  // Middle East
+  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', // Qatar, UAE, Bahrain, Oman, Kuwait
+  'AMM', 'BEY', // Jordan, Lebanon
+  // Africa
+  'TUN', 'CMN', 'RAK', // Tunisia, Morocco
+  'CPT', 'JNB', // South Africa
+  'NBO', 'DAR', 'ZNZ', // Kenya, Tanzania
+  // Americas
+  'GRU', 'GIG', 'BSB', // Brazil
+  'EZE', 'SCL', 'BOG', 'LIM', 'UIO', // Argentina, Chile, Colombia, Peru, Ecuador
+  'PTY', 'SJO', // Panama, Costa Rica
+  // Caribbean
+  'NAS', 'MBJ', 'SDQ', 'HAV', // Bahamas, Jamaica, Dominican Republic, Cuba
+  // Central Asia
+  'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Kazakhstan, Uzbekistan, Kyrgyzstan, Azerbaijan, Georgia
+  // Other
+  'ECN', // Northern Cyprus
+  
+  // === VISA-REQUIRED DESTINATIONS ===
+  // Schengen / EU
+  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL', // France, UK, Germany
+  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', // Netherlands, Belgium, Austria, Switzerland
+  'FCO', 'MXP', 'VCE', 'NAP', // Italy
+  'MAD', 'BCN', 'PMI', 'AGP', // Spain
+  'LIS', 'OPO', 'ATH', 'SKG', // Portugal, Greece
+  'PRG', 'WAW', 'BUD', 'OTP', 'SOF', // Czech, Poland, Hungary, Romania, Bulgaria
+  'CPH', 'ARN', 'OSL', 'HEL', // Denmark, Sweden, Norway, Finland
+  'DUB', 'RIX', 'VNO', 'TLL', // Ireland, Latvia, Lithuania, Estonia
+  // North America
+  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', // USA
+  'YYZ', 'YVR', 'YUL', // Canada
+  // Australia/Oceania
+  'SYD', 'MEL', 'AKL', // Australia, New Zealand
+  // Other
+  'PEK', 'PVG', 'HGH', 'CAN', // China
+  'DEL', 'BOM', 'BLR', // India
+  'SVO', 'LED', // Russia
 ];
 
 serve(async (req) => {
