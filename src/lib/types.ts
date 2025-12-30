@@ -8,6 +8,8 @@ export interface Airport {
 }
 
 export type TripDuration = '1-1' | '2-2' | '3-3';
+export type CabinClass = 'Y' | 'C'; // Y = Economy, C = Business
+export type VisaOption = 'all' | 'visa-free' | 'visa-required';
 
 export interface PopularRoute {
   origin: string;
@@ -51,5 +53,14 @@ export interface SearchParams {
   adults: number;
   children: number;
   infants: number;
-  tripClass: string;
+  tripClass: CabinClass;
 }
+
+// Special "Anywhere" destination
+export const ANYWHERE_DESTINATION: Airport = {
+  code: '',
+  name: 'Her Yere',
+  city: 'Her Yere',
+  country: 'Dünya',
+  continent: 'Her Yer'
+};

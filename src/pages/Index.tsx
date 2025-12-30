@@ -134,6 +134,14 @@ const Index = () => {
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
             En uygun hafta sonu uçuşlarını bul, hemen rezervasyon yap!
           </p>
+          <div className="mt-4 flex justify-center">
+            <span className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium",
+              "bg-accent/10 text-accent border border-accent/20"
+            )}>
+              📅 Önümüzdeki Hafta Sonu İçin Planla
+            </span>
+          </div>
         </header>
 
         {/* Weekend Selector */}
