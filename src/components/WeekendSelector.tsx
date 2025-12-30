@@ -1,41 +1,45 @@
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useWeekendDates } from '@/hooks/useWeekendDates';
+import { TripDurationSelector } from '@/components/TripDurationSelector';
+import { TripDuration } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface WeekendSelectorProps {
-  onDateChange?: (saturday: Date, sunday: Date) => void;
+  startDate: Date;
+  endDate: Date;
+  label: string;
+  tripDuration: TripDuration;
+  onTripDurationChange: (duration: TripDuration) => void;
+  onPrev: () => void;
+  onNext: () => void;
+  canGoPrev: boolean;
+  canGoNext: boolean;
+  formatDate: (date: Date) => string;
 }
 
-export function WeekendSelector({ onDateChange }: WeekendSelectorProps) {
-  const {
-    currentWeekend,
-    goToNextWeek,
-    goToPrevWeek,
-    canGoPrev,
-    canGoNext,
-    formatDate,
-  } = useWeekendDates();
-
-  const handlePrev = () => {
-    goToPrevWeek();
-    const prev = currentWeekend;
-    onDateChange?.(prev.saturday, prev.sunday);
-  };
-
-  const handleNext = () => {
-    goToNextWeek();
-    const next = currentWeekend;
-    onDateChange?.(next.saturday, next.sunday);
-  };
+export function WeekendSelector({
+  startDate,
+  endDate,
+  label,
+  tripDuration,
+  onTripDurationChange,
+  onPrev,
+  onNext,
+  canGoPrev,
+  canGoNext,
+  formatDate,
+}: WeekendSelectorProps) {
+  const isSameDay = startDate.getTime() === endDate.getTime();
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <TripDurationSelector value={tripDuration} onChange={onTripDurationChange} />
+      
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
           size="icon"
-          onClick={handlePrev}
+          onClick={onPrev}
           disabled={!canGoPrev}
           className={cn(
             "h-12 w-12 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 shadow-soft transition-all duration-300",
@@ -54,11 +58,11 @@ export function WeekendSelector({ onDateChange }: WeekendSelectorProps) {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Calendar className="h-5 w-5" />
               <span className="text-sm font-medium opacity-90">
-                {currentWeekend.label}
+                {label}
               </span>
             </div>
             <div className="text-2xl md:text-3xl font-display font-bold">
-              {formatDate(currentWeekend.saturday)} - {formatDate(currentWeekend.sunday)}
+              {isSameDay ? formatDate(startDate) : `${formatDate(startDate)} - ${formatDate(endDate)}`}
             </div>
           </div>
           
@@ -70,7 +74,7 @@ export function WeekendSelector({ onDateChange }: WeekendSelectorProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={handleNext}
+          onClick={onNext}
           disabled={!canGoNext}
           className={cn(
             "h-12 w-12 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 shadow-soft transition-all duration-300",
@@ -83,7 +87,7 @@ export function WeekendSelector({ onDateChange }: WeekendSelectorProps) {
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Hafta sonlarında gidiş-dönüş uçuşları ara
+        {tripDuration === '1-1' ? 'Günübirlik uçuşlar' : 'Gidiş-dönüş uçuşları ara'}
       </p>
     </div>
   );

@@ -5,50 +5,90 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Popular Turkish airports and major international destinations
+// Popular Turkish airports and major international destinations with regions
 const airports = [
-  // Turkey
-  { code: 'IST', name: 'İstanbul Havalimanı', city: 'İstanbul', country: 'Türkiye' },
-  { code: 'SAW', name: 'Sabiha Gökçen', city: 'İstanbul', country: 'Türkiye' },
-  { code: 'ESB', name: 'Esenboğa Havalimanı', city: 'Ankara', country: 'Türkiye' },
-  { code: 'ADB', name: 'Adnan Menderes', city: 'İzmir', country: 'Türkiye' },
-  { code: 'AYT', name: 'Antalya Havalimanı', city: 'Antalya', country: 'Türkiye' },
-  { code: 'DLM', name: 'Dalaman Havalimanı', city: 'Muğla', country: 'Türkiye' },
-  { code: 'BJV', name: 'Milas-Bodrum', city: 'Bodrum', country: 'Türkiye' },
-  { code: 'TZX', name: 'Trabzon Havalimanı', city: 'Trabzon', country: 'Türkiye' },
-  { code: 'GZT', name: 'Gaziantep Havalimanı', city: 'Gaziantep', country: 'Türkiye' },
-  { code: 'VAN', name: 'Van Ferit Melen', city: 'Van', country: 'Türkiye' },
-  { code: 'DIY', name: 'Diyarbakır Havalimanı', city: 'Diyarbakır', country: 'Türkiye' },
-  { code: 'ECN', name: 'Ercan Havalimanı', city: 'Lefkoşa', country: 'Kuzey Kıbrıs' },
+  // Turkey - Marmara
+  { code: 'IST', name: 'İstanbul Havalimanı', city: 'İstanbul', country: 'Türkiye', region: 'Marmara', continent: 'Avrupa' },
+  { code: 'SAW', name: 'Sabiha Gökçen', city: 'İstanbul', country: 'Türkiye', region: 'Marmara', continent: 'Avrupa' },
+  // Turkey - İç Anadolu
+  { code: 'ESB', name: 'Esenboğa Havalimanı', city: 'Ankara', country: 'Türkiye', region: 'İç Anadolu', continent: 'Avrupa' },
+  // Turkey - Ege
+  { code: 'ADB', name: 'Adnan Menderes', city: 'İzmir', country: 'Türkiye', region: 'Ege', continent: 'Avrupa' },
+  { code: 'DLM', name: 'Dalaman Havalimanı', city: 'Muğla', country: 'Türkiye', region: 'Ege', continent: 'Avrupa' },
+  { code: 'BJV', name: 'Milas-Bodrum', city: 'Bodrum', country: 'Türkiye', region: 'Ege', continent: 'Avrupa' },
+  // Turkey - Akdeniz
+  { code: 'AYT', name: 'Antalya Havalimanı', city: 'Antalya', country: 'Türkiye', region: 'Akdeniz', continent: 'Avrupa' },
+  // Turkey - Karadeniz
+  { code: 'TZX', name: 'Trabzon Havalimanı', city: 'Trabzon', country: 'Türkiye', region: 'Karadeniz', continent: 'Avrupa' },
+  // Turkey - Güneydoğu
+  { code: 'GZT', name: 'Gaziantep Havalimanı', city: 'Gaziantep', country: 'Türkiye', region: 'Güneydoğu Anadolu', continent: 'Avrupa' },
+  { code: 'DIY', name: 'Diyarbakır Havalimanı', city: 'Diyarbakır', country: 'Türkiye', region: 'Güneydoğu Anadolu', continent: 'Avrupa' },
+  // Turkey - Doğu
+  { code: 'VAN', name: 'Van Ferit Melen', city: 'Van', country: 'Türkiye', region: 'Doğu Anadolu', continent: 'Avrupa' },
+  // Cyprus
+  { code: 'ECN', name: 'Ercan Havalimanı', city: 'Lefkoşa', country: 'Kuzey Kıbrıs', region: 'Kıbrıs', continent: 'Avrupa' },
   
-  // Europe
-  { code: 'LHR', name: 'Heathrow', city: 'Londra', country: 'İngiltere' },
-  { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'Fransa' },
-  { code: 'FCO', name: 'Fiumicino', city: 'Roma', country: 'İtalya' },
-  { code: 'BCN', name: 'El Prat', city: 'Barselona', country: 'İspanya' },
-  { code: 'MAD', name: 'Barajas', city: 'Madrid', country: 'İspanya' },
-  { code: 'AMS', name: 'Schiphol', city: 'Amsterdam', country: 'Hollanda' },
-  { code: 'FRA', name: 'Frankfurt', city: 'Frankfurt', country: 'Almanya' },
-  { code: 'MUC', name: 'Münih', city: 'Münih', country: 'Almanya' },
-  { code: 'ZRH', name: 'Zürih', city: 'Zürih', country: 'İsviçre' },
-  { code: 'VIE', name: 'Viyana', city: 'Viyana', country: 'Avusturya' },
-  { code: 'PRG', name: 'Vaclav Havel', city: 'Prag', country: 'Çekya' },
-  { code: 'ATH', name: 'Eleftherios Venizelos', city: 'Atina', country: 'Yunanistan' },
+  // Europe - Western
+  { code: 'LHR', name: 'Heathrow', city: 'Londra', country: 'İngiltere', region: 'Batı Avrupa', continent: 'Avrupa' },
+  { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'Fransa', region: 'Batı Avrupa', continent: 'Avrupa' },
+  { code: 'AMS', name: 'Schiphol', city: 'Amsterdam', country: 'Hollanda', region: 'Batı Avrupa', continent: 'Avrupa' },
+  { code: 'BRU', name: 'Brüksel', city: 'Brüksel', country: 'Belçika', region: 'Batı Avrupa', continent: 'Avrupa' },
+  
+  // Europe - Southern
+  { code: 'FCO', name: 'Fiumicino', city: 'Roma', country: 'İtalya', region: 'Güney Avrupa', continent: 'Avrupa' },
+  { code: 'MXP', name: 'Malpensa', city: 'Milano', country: 'İtalya', region: 'Güney Avrupa', continent: 'Avrupa' },
+  { code: 'BCN', name: 'El Prat', city: 'Barselona', country: 'İspanya', region: 'Güney Avrupa', continent: 'Avrupa' },
+  { code: 'MAD', name: 'Barajas', city: 'Madrid', country: 'İspanya', region: 'Güney Avrupa', continent: 'Avrupa' },
+  { code: 'LIS', name: 'Lisbon Portela', city: 'Lizbon', country: 'Portekiz', region: 'Güney Avrupa', continent: 'Avrupa' },
+  { code: 'ATH', name: 'Eleftherios Venizelos', city: 'Atina', country: 'Yunanistan', region: 'Güney Avrupa', continent: 'Avrupa' },
+  
+  // Europe - Central
+  { code: 'FRA', name: 'Frankfurt', city: 'Frankfurt', country: 'Almanya', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'MUC', name: 'Münih', city: 'Münih', country: 'Almanya', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'BER', name: 'Berlin Brandenburg', city: 'Berlin', country: 'Almanya', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'ZRH', name: 'Zürih', city: 'Zürih', country: 'İsviçre', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'VIE', name: 'Viyana', city: 'Viyana', country: 'Avusturya', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'PRG', name: 'Vaclav Havel', city: 'Prag', country: 'Çekya', region: 'Orta Avrupa', continent: 'Avrupa' },
+  { code: 'BUD', name: 'Budapeşte', city: 'Budapeşte', country: 'Macaristan', region: 'Orta Avrupa', continent: 'Avrupa' },
+  
+  // Europe - Eastern
+  { code: 'WAW', name: 'Varşova Chopin', city: 'Varşova', country: 'Polonya', region: 'Doğu Avrupa', continent: 'Avrupa' },
+  { code: 'OTP', name: 'Bükreş Otopeni', city: 'Bükreş', country: 'Romanya', region: 'Doğu Avrupa', continent: 'Avrupa' },
+  { code: 'SOF', name: 'Sofya', city: 'Sofya', country: 'Bulgaristan', region: 'Doğu Avrupa', continent: 'Avrupa' },
+  
+  // Europe - Nordic
+  { code: 'CPH', name: 'Kopenhag', city: 'Kopenhag', country: 'Danimarka', region: 'Kuzey Avrupa', continent: 'Avrupa' },
+  { code: 'ARN', name: 'Stockholm Arlanda', city: 'Stockholm', country: 'İsveç', region: 'Kuzey Avrupa', continent: 'Avrupa' },
+  { code: 'HEL', name: 'Helsinki-Vantaa', city: 'Helsinki', country: 'Finlandiya', region: 'Kuzey Avrupa', continent: 'Avrupa' },
   
   // Middle East
-  { code: 'DXB', name: 'Dubai', city: 'Dubai', country: 'BAE' },
-  { code: 'DOH', name: 'Hamad', city: 'Doha', country: 'Katar' },
-  { code: 'TLV', name: 'Ben Gurion', city: 'Tel Aviv', country: 'İsrail' },
+  { code: 'DXB', name: 'Dubai', city: 'Dubai', country: 'BAE', region: 'Körfez', continent: 'Asya' },
+  { code: 'AUH', name: 'Abu Dabi', city: 'Abu Dabi', country: 'BAE', region: 'Körfez', continent: 'Asya' },
+  { code: 'DOH', name: 'Hamad', city: 'Doha', country: 'Katar', region: 'Körfez', continent: 'Asya' },
+  { code: 'TLV', name: 'Ben Gurion', city: 'Tel Aviv', country: 'İsrail', region: 'Orta Doğu', continent: 'Asya' },
+  { code: 'AMM', name: 'Queen Alia', city: 'Amman', country: 'Ürdün', region: 'Orta Doğu', continent: 'Asya' },
   
   // Americas
-  { code: 'JFK', name: 'John F. Kennedy', city: 'New York', country: 'ABD' },
-  { code: 'LAX', name: 'Los Angeles', city: 'Los Angeles', country: 'ABD' },
-  { code: 'MIA', name: 'Miami', city: 'Miami', country: 'ABD' },
+  { code: 'JFK', name: 'John F. Kennedy', city: 'New York', country: 'ABD', region: 'Kuzey Amerika', continent: 'Amerika' },
+  { code: 'LAX', name: 'Los Angeles', city: 'Los Angeles', country: 'ABD', region: 'Kuzey Amerika', continent: 'Amerika' },
+  { code: 'MIA', name: 'Miami', city: 'Miami', country: 'ABD', region: 'Kuzey Amerika', continent: 'Amerika' },
+  { code: 'ORD', name: "O'Hare", city: 'Chicago', country: 'ABD', region: 'Kuzey Amerika', continent: 'Amerika' },
+  { code: 'YYZ', name: 'Toronto Pearson', city: 'Toronto', country: 'Kanada', region: 'Kuzey Amerika', continent: 'Amerika' },
+  { code: 'GRU', name: 'Guarulhos', city: 'São Paulo', country: 'Brezilya', region: 'Güney Amerika', continent: 'Amerika' },
   
   // Asia
-  { code: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', country: 'Tayland' },
-  { code: 'SIN', name: 'Changi', city: 'Singapur', country: 'Singapur' },
-  { code: 'HKG', name: 'Hong Kong', city: 'Hong Kong', country: 'Çin' },
+  { code: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', country: 'Tayland', region: 'Güneydoğu Asya', continent: 'Asya' },
+  { code: 'SIN', name: 'Changi', city: 'Singapur', country: 'Singapur', region: 'Güneydoğu Asya', continent: 'Asya' },
+  { code: 'KUL', name: 'Kuala Lumpur', city: 'Kuala Lumpur', country: 'Malezya', region: 'Güneydoğu Asya', continent: 'Asya' },
+  { code: 'HKG', name: 'Hong Kong', city: 'Hong Kong', country: 'Çin', region: 'Doğu Asya', continent: 'Asya' },
+  { code: 'NRT', name: 'Narita', city: 'Tokyo', country: 'Japonya', region: 'Doğu Asya', continent: 'Asya' },
+  { code: 'ICN', name: 'Incheon', city: 'Seul', country: 'Güney Kore', region: 'Doğu Asya', continent: 'Asya' },
+  { code: 'DEL', name: 'Indira Gandhi', city: 'Delhi', country: 'Hindistan', region: 'Güney Asya', continent: 'Asya' },
+  
+  // Africa
+  { code: 'CAI', name: 'Kahire', city: 'Kahire', country: 'Mısır', region: 'Kuzey Afrika', continent: 'Afrika' },
+  { code: 'CMN', name: 'Muhammed V', city: 'Kazablanka', country: 'Fas', region: 'Kuzey Afrika', continent: 'Afrika' },
+  { code: 'JNB', name: 'O.R. Tambo', city: 'Johannesburg', country: 'Güney Afrika', region: 'Güney Afrika', continent: 'Afrika' },
 ];
 
 serve(async (req) => {
@@ -82,13 +122,15 @@ serve(async (req) => {
         airport.code.toLowerCase().includes(query) ||
         airport.name.toLowerCase().includes(query) ||
         airport.city.toLowerCase().includes(query) ||
-        airport.country.toLowerCase().includes(query)
+        airport.country.toLowerCase().includes(query) ||
+        airport.region.toLowerCase().includes(query) ||
+        airport.continent.toLowerCase().includes(query)
       );
     }
 
     return new Response(JSON.stringify({ 
       success: true, 
-      data: filteredAirports.slice(0, 10) 
+      data: filteredAirports.slice(0, 15) 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

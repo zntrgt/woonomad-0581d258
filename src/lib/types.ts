@@ -3,6 +3,18 @@ export interface Airport {
   name: string;
   city: string;
   country: string;
+  region?: string;
+  continent?: string;
+}
+
+export type TripDuration = '1-1' | '2-2' | '3-3';
+
+export interface PopularRoute {
+  origin: string;
+  originCity: string;
+  destination: string;
+  destinationCity: string;
+  emoji: string;
 }
 
 export interface Flight {
