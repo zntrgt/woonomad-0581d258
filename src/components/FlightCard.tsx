@@ -81,8 +81,18 @@ export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: Fligh
   };
 
   const handleBooking = () => {
-    const link = flight.affiliateLink || `https://www.aviasales.com/search/${flight.origin}${format(departureTime, 'ddMM')}${flight.destination}1`;
-    window.open(link, '_blank');
+    // Use the flight's link field directly if available, otherwise use affiliateLink
+    if (flight.link) {
+      window.open(`https://www.aviasales.com${flight.link}`, '_blank');
+    } else if (flight.affiliateLink) {
+      window.open(flight.affiliateLink, '_blank');
+    } else {
+      // Fallback: construct URL with proper format (DDMM)
+      const departDateStr = format(departureTime, 'ddMM');
+      const returnDateStr = flight.return_at ? format(parseISO(flight.return_at), 'ddMM') : '';
+      const url = `https://www.aviasales.com/search/${flight.origin}${departDateStr}${flight.destination}${returnDateStr}1`;
+      window.open(url, '_blank');
+    }
   };
 
   return (
