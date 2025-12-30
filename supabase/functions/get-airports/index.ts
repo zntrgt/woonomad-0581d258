@@ -91,6 +91,24 @@ const airports = [
   { code: 'JNB', name: 'O.R. Tambo', city: 'Johannesburg', country: 'Güney Afrika', region: 'Güney Afrika', continent: 'Afrika' },
 ];
 
+// Normalize Turkish characters for search
+function normalizeTurkish(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/ı/g, 'i')
+    .replace(/İ/g, 'i')
+    .replace(/ş/g, 's')
+    .replace(/Ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/Ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/Ü/g, 'u')
+    .replace(/ö/g, 'o')
+    .replace(/Ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/Ç/g, 'c');
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -103,29 +121,36 @@ serve(async (req) => {
     if (req.method === 'POST') {
       try {
         const body = await req.json();
-        query = (body?.query || '').toLowerCase();
+        query = normalizeTurkish(body?.query || '');
       } catch {
         query = '';
       }
     } else {
       // Fallback to URL params (GET request)
       const url = new URL(req.url);
-      query = url.searchParams.get('query')?.toLowerCase() || '';
+      query = normalizeTurkish(url.searchParams.get('query') || '');
     }
 
-    console.log('Airport search query:', query);
+    console.log('Airport search query (normalized):', query);
 
     let filteredAirports = airports;
     
     if (query.length >= 2) {
-      filteredAirports = airports.filter(airport => 
-        airport.code.toLowerCase().includes(query) ||
-        airport.name.toLowerCase().includes(query) ||
-        airport.city.toLowerCase().includes(query) ||
-        airport.country.toLowerCase().includes(query) ||
-        airport.region.toLowerCase().includes(query) ||
-        airport.continent.toLowerCase().includes(query)
-      );
+      filteredAirports = airports.filter(airport => {
+        const normalizedCode = normalizeTurkish(airport.code);
+        const normalizedName = normalizeTurkish(airport.name);
+        const normalizedCity = normalizeTurkish(airport.city);
+        const normalizedCountry = normalizeTurkish(airport.country);
+        const normalizedRegion = normalizeTurkish(airport.region);
+        const normalizedContinent = normalizeTurkish(airport.continent);
+        
+        return normalizedCode.includes(query) ||
+          normalizedName.includes(query) ||
+          normalizedCity.includes(query) ||
+          normalizedCountry.includes(query) ||
+          normalizedRegion.includes(query) ||
+          normalizedContinent.includes(query);
+      });
     }
 
     return new Response(JSON.stringify({ 
