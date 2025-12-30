@@ -1,22 +1,48 @@
-import { useState, useMemo } from 'react';
-import { Plane, Cloud, Heart } from 'lucide-react';
+import { useState, useMemo, useRef } from 'react';
+import { Plane } from 'lucide-react';
 import { WeekendSelector } from '@/components/WeekendSelector';
-import { SearchForm } from '@/components/SearchForm';
+import { SearchForm, SearchFormRef } from '@/components/SearchForm';
+import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useWeekendDates } from '@/hooks/useWeekendDates';
 import { useFavorites } from '@/hooks/useFavorites';
-import { SearchParams, Flight } from '@/lib/types';
+import { SearchParams, Flight, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 
 type SortOption = 'price' | 'duration' | 'departure' | 'best';
 
+// Airport lookup for popular routes
+const airportLookup: Record<string, Airport> = {
+  'IST': { code: 'IST', name: 'İstanbul Havalimanı', city: 'İstanbul', country: 'Türkiye' },
+  'SAW': { code: 'SAW', name: 'Sabiha Gökçen', city: 'İstanbul', country: 'Türkiye' },
+  'ESB': { code: 'ESB', name: 'Esenboğa Havalimanı', city: 'Ankara', country: 'Türkiye' },
+  'AYT': { code: 'AYT', name: 'Antalya Havalimanı', city: 'Antalya', country: 'Türkiye' },
+  'ADB': { code: 'ADB', name: 'Adnan Menderes', city: 'İzmir', country: 'Türkiye' },
+  'BCN': { code: 'BCN', name: 'El Prat', city: 'Barselona', country: 'İspanya' },
+  'ATH': { code: 'ATH', name: 'Eleftherios Venizelos', city: 'Atina', country: 'Yunanistan' },
+  'CDG': { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'Fransa' },
+  'FCO': { code: 'FCO', name: 'Fiumicino', city: 'Roma', country: 'İtalya' },
+  'DXB': { code: 'DXB', name: 'Dubai', city: 'Dubai', country: 'BAE' },
+};
+
 const Index = () => {
-  const { currentWeekend, formatDateForApi } = useWeekendDates();
+  const { 
+    currentWeekend, 
+    tripDuration, 
+    setTripDuration,
+    goToNextWeek,
+    goToPrevWeek,
+    canGoPrev,
+    canGoNext,
+    formatDate, 
+    formatDateForApi 
+  } = useWeekendDates();
   const { flights, isLoading, error, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const searchFormRef = useRef<SearchFormRef>(null);
   
   const [sortBy, setSortBy] = useState<SortOption>('best');
   const [filters, setFilters] = useState<FilterOptions>({
@@ -28,6 +54,15 @@ const Index = () => {
 
   const handleSearch = (params: SearchParams) => {
     searchFlights(params);
+  };
+
+  const handlePopularRouteSelect = (originCode: string, destinationCode: string) => {
+    const origin = airportLookup[originCode];
+    const destination = airportLookup[destinationCode];
+    
+    if (origin && destination && searchFormRef.current) {
+      searchFormRef.current.setAirports(origin, destination);
+    }
   };
 
   const availableAirlines = useMemo(() => {
@@ -71,6 +106,10 @@ const Index = () => {
     return null;
   };
 
+  // Calculate return date based on trip duration
+  const departDate = formatDateForApi(currentWeekend.saturday);
+  const returnDate = tripDuration === '1-1' ? undefined : formatDateForApi(currentWeekend.sunday);
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Decorative Background */}
@@ -99,14 +138,31 @@ const Index = () => {
 
         {/* Weekend Selector */}
         <div className="mb-8">
-          <WeekendSelector />
+          <WeekendSelector
+            startDate={currentWeekend.saturday}
+            endDate={currentWeekend.sunday}
+            label={currentWeekend.label}
+            tripDuration={tripDuration}
+            onTripDurationChange={setTripDuration}
+            onPrev={goToPrevWeek}
+            onNext={goToNextWeek}
+            canGoPrev={canGoPrev}
+            canGoNext={canGoNext}
+            formatDate={formatDate}
+          />
+        </div>
+
+        {/* Popular Routes */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
         </div>
 
         {/* Search Form */}
         <div className="max-w-4xl mx-auto mb-10">
           <SearchForm
-            departDate={formatDateForApi(currentWeekend.saturday)}
-            returnDate={formatDateForApi(currentWeekend.sunday)}
+            ref={searchFormRef}
+            departDate={departDate}
+            returnDate={returnDate}
             onSearch={handleSearch}
             isLoading={isLoading}
           />
