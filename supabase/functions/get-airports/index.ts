@@ -57,8 +57,21 @@ serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const query = url.searchParams.get('query')?.toLowerCase() || '';
+    let query = '';
+    
+    // Try to get query from body (POST request)
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        query = (body?.query || '').toLowerCase();
+      } catch {
+        query = '';
+      }
+    } else {
+      // Fallback to URL params (GET request)
+      const url = new URL(req.url);
+      query = url.searchParams.get('query')?.toLowerCase() || '';
+    }
 
     console.log('Airport search query:', query);
 
