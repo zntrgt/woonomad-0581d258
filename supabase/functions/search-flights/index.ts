@@ -81,11 +81,14 @@ function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' |
   return 'unknown';
 }
 
-// Popular destinations for "anywhere" search
+// Popular destinations for "anywhere" search - expanded list
 const POPULAR_DESTINATIONS = [
-  'BCN', 'ATH', 'FCO', 'CDG', 'AMS', 'LHR', 'DXB', 'DOH',
-  'BKK', 'SIN', 'KUL', 'TBS', 'GYD', 'ALA', 'BEG', 'PRN',
-  'SKP', 'SJJ', 'TGD', 'AMM', 'BEY', 'CMN', 'TUN'
+  // Visa-free popular destinations
+  'ATH', 'TBS', 'GYD', 'BEG', 'PRN', 'SKP', 'SJJ', 'TGD', 'AMM', 'BEY',
+  'DXB', 'DOH', 'BKK', 'SIN', 'KUL', 'CMN', 'TUN', 'ALA',
+  // Visa-required popular destinations  
+  'BCN', 'FCO', 'CDG', 'AMS', 'LHR', 'FRA', 'MUC', 'VIE', 'PRG', 'BUD',
+  'MAD', 'LIS', 'MXP', 'ZRH', 'BRU', 'CPH', 'ARN', 'WAW', 'OTP'
 ];
 
 serve(async (req) => {
@@ -131,6 +134,13 @@ serve(async (req) => {
       throw new Error('Missing required parameters: origin, departDate');
     }
 
+    // Helper function to extract date only from ISO string
+    const dateOnly = (iso?: string): string | null => {
+      if (!iso || typeof iso !== 'string') return null;
+      const parts = iso.split('T');
+      return parts[0] || null;
+    };
+
     // Handle "anywhere" search (empty destination)
     const isAnywhereSearch = !destination || destination === '';
     let allFlights: any[] = [];
@@ -146,54 +156,79 @@ serve(async (req) => {
         destinationsToSearch = POPULAR_DESTINATIONS.filter(d => getVisaStatus(d) === 'visa-required');
       }
 
-      console.log('Searching destinations:', destinationsToSearch.length);
+      console.log('Searching destinations:', destinationsToSearch);
 
-      // Search for flights to multiple destinations (and dates) in parallel
-      const destinations = destinationsToSearch.slice(0, 10);
-      const searchPromises = destinations.flatMap((dest) =>
-        searchPairs.map(async (pair) => {
-          try {
-            const searchParams = new URLSearchParams({
-              token: apiToken,
-              origin,
-              destination: dest,
-              departure_at: pair.depart,
-              ...(pair.return ? { return_at: pair.return } : {}),
-              currency: 'TRY',
-              sorting: 'price',
-              limit: '5',
-            });
+      // Helper to call API with fallback to month cache
+      const callApiWithFallback = async (dest: string, pair: { depart: string; return?: string }) => {
+        const oneWay = !pair.return;
 
-            const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
-            const response = await fetch(apiUrl, {
-              method: 'GET',
-              headers: { 'Accept': 'application/json' },
-            });
+        const callApi = async (departure_at: string, return_at?: string) => {
+          const searchParams = new URLSearchParams({
+            token: apiToken,
+            origin,
+            destination: dest,
+            departure_at,
+            ...(return_at ? { return_at } : {}),
+            one_way: oneWay ? 'true' : 'false',
+            currency: 'TRY',
+            sorting: 'price',
+            limit: '10',
+          });
 
-            if (!response.ok) return [];
-            const data = await response.json();
-            return data.data || [];
-          } catch (e) {
-            console.error(`Error searching for ${dest} (${pair.depart}):`, e);
-            return [];
-          }
-        })
+          const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
+          const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
+
+          if (!response.ok) return [];
+          const data = await response.json();
+          return data?.data || [];
+        };
+
+        try {
+          // 1) Try exact day (YYYY-MM-DD)
+          const exact = await callApi(pair.depart, pair.return);
+          if (exact.length > 0) return exact;
+
+          // 2) Fallback: month cache (YYYY-MM) then filter back to the exact day.
+          const monthDepart = pair.depart.slice(0, 7);
+          const monthReturn = pair.return ? pair.return.slice(0, 7) : undefined;
+
+          const monthData = await callApi(monthDepart, monthReturn);
+
+          const filtered = monthData.filter((f: any) => {
+            const dep = dateOnly(f.departure_at);
+            if (dep !== pair.depart) return false;
+
+            if (pair.return) {
+              const ret = dateOnly(f.return_at);
+              return ret === pair.return;
+            }
+
+            return true;
+          });
+
+          return filtered;
+        } catch (e) {
+          console.error(`Error searching for ${dest} (${pair.depart}):`, e);
+          return [];
+        }
+      };
+
+      // Search ALL destinations in parallel
+      const searchPromises = destinationsToSearch.flatMap((dest) =>
+        searchPairs.map((pair) => callApiWithFallback(dest, pair))
       );
 
       const results = await Promise.all(searchPromises);
       allFlights = results.flat();
       
-      // NOTE: Sorting/limiting is done after strict date filtering below
+      console.log('Anywhere search raw results:', allFlights.length);
 
     } else {
       // Single destination search
       const searchPromises = searchPairs.map(async (pair) => {
-        const dateOnly = (iso?: string): string | null => {
-          if (!iso || typeof iso !== 'string') return null;
-          const parts = iso.split('T');
-          return parts[0] || null;
-        };
-
         const oneWay = !pair.return;
 
         const callApi = async (departure_at: string, return_at?: string) => {
@@ -272,12 +307,6 @@ serve(async (req) => {
 
     // Strictly filter results by the selected date(s).
     // The upstream API may return nearby dates even when you send a single date; we only keep exact matches.
-    const dateOnly = (iso?: string): string | null => {
-      if (!iso || typeof iso !== 'string') return null;
-      const parts = iso.split('T');
-      return parts[0] || null;
-    };
-
     const dateFilteredFlights = allFlights.filter((flight: any) => {
       const dep = dateOnly(flight.departure_at);
       if (!dep || !allowedDepartDates.has(dep)) return false;
