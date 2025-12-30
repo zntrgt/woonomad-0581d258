@@ -102,50 +102,48 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 text-6xl opacity-10 animate-float">✈️</div>
-        <div className="absolute top-40 right-20 text-4xl opacity-10 animate-float-delayed">☁️</div>
-        <div className="absolute bottom-40 left-1/4 text-5xl opacity-10 animate-float">🌴</div>
-        <div className="absolute top-1/3 right-1/3 text-3xl opacity-10 animate-float-delayed">🌍</div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Header */}
-        <header className="text-center mb-10">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-2xl gradient-primary shadow-glow">
-              <Plane className="h-8 w-8 text-primary-foreground" />
+    <div className="min-h-screen bg-background">
+      {/* Header Section */}
+      <header className="bg-section-header py-10 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="p-2.5 rounded-xl bg-primary">
+              <Plane className="h-6 w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient">
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-white">
               Hafta Sonu Kaçamağı
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            En uygun hafta sonu uçuşlarını bul, hemen rezervasyon yap!
+          <p className="text-white/70 text-base">
+            En uygun hafta sonu uçuşlarını bul
           </p>
-        </header>
-
-        {/* Popular Routes */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
         </div>
+      </header>
 
-        {/* Search Form */}
-        <div className="max-w-4xl mx-auto mb-10">
+      {/* Search Section */}
+      <section className="bg-section-search py-8 px-4 border-b border-border">
+        <div className="max-w-4xl mx-auto">
           <SearchForm
             ref={searchFormRef}
             onSearch={handleSearch}
             isLoading={isLoading}
           />
         </div>
+      </section>
 
-        {/* Results */}
-        {(flights.length > 0 || isLoading || error) && (
+      {/* Popular Routes Section */}
+      <section className="bg-section-routes py-6 px-4 border-b border-border">
+        <div className="max-w-4xl mx-auto">
+          <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
+        </div>
+      </section>
+
+      {/* Results Section */}
+      {(flights.length > 0 || isLoading || error) && (
+        <section className="bg-section-results py-8 px-4">
           <div className="max-w-4xl mx-auto">
             {error && (
-              <div className="bg-destructive/10 text-destructive p-4 rounded-2xl mb-6 text-center">
+              <div className="bg-destructive/10 text-destructive p-4 rounded-xl mb-6 text-center text-sm">
                 {error}
               </div>
             )}
@@ -161,18 +159,18 @@ const Index = () => {
                   onSortChange={setSortBy}
                 />
 
-                <div className="mt-4 mb-4 flex flex-wrap items-center justify-between gap-2">
-                  <div className="text-sm text-muted-foreground">
+                <div className="mt-4 mb-5 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm text-muted-foreground">
                     {filteredAndSortedFlights.length} uçuş bulundu
-                  </div>
+                  </span>
                   {lastSearchParams && (
                     <div className="flex items-center gap-2 text-sm">
-                      <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-medium">
+                      <span className="px-3 py-1 rounded-lg bg-card text-foreground border border-border">
                         📅 {formatDisplayDate(lastSearchParams.departDate)}
                         {lastSearchParams.returnDate && ` - ${formatDisplayDate(lastSearchParams.returnDate)}`}
                       </span>
                       {lastSearchParams.flexibleDates && (
-                        <span className="px-2 py-1 rounded-full text-xs bg-accent/10 text-accent">
+                        <span className="px-2 py-1 rounded-lg text-xs bg-primary/10 text-primary">
                           ±1 gün
                         </span>
                       )}
@@ -180,7 +178,7 @@ const Index = () => {
                   )}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {filteredAndSortedFlights.map((flight, index) => (
                     <FlightCard
                       key={`${flight.flight_number}-${flight.departure_at}`}
@@ -193,7 +191,7 @@ const Index = () => {
                 </div>
 
                 {filteredAndSortedFlights.length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground">
+                  <div className="text-center py-10 text-muted-foreground">
                     Filtrelere uygun uçuş bulunamadı
                   </div>
                 )}
@@ -201,14 +199,14 @@ const Index = () => {
             )}
 
             {isLoading && (
-              <div className="text-center py-16">
-                <Plane className="h-12 w-12 mx-auto text-primary animate-bounce mb-4" />
-                <p className="text-muted-foreground">Uçuşlar aranıyor...</p>
+              <div className="text-center py-12">
+                <Plane className="h-10 w-10 mx-auto text-primary animate-bounce mb-3" />
+                <p className="text-muted-foreground text-sm">Uçuşlar aranıyor...</p>
               </div>
             )}
           </div>
-        )}
-      </div>
+        </section>
+      )}
     </div>
   );
 };

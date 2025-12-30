@@ -88,19 +88,15 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const totalPassengers = passengers.adults + passengers.children + passengers.infants;
 
     return (
-      <div className={cn(
-        "bg-card/80 backdrop-blur-lg rounded-3xl p-6 md:p-8",
-        "border border-border/50 shadow-card",
-        "animate-fade-in"
-      )}>
-        <div className="flex flex-col gap-6">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-5">
           {/* Trip Type Toggle */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex rounded-full bg-muted/50 p-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-lg bg-muted p-0.5">
               <button
                 onClick={() => setIsOneWay(false)}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
+                  "px-3 py-1 rounded-md text-sm font-medium transition-colors",
                   !isOneWay 
                     ? "bg-primary text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
@@ -111,7 +107,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               <button
                 onClick={() => setIsOneWay(true)}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-sm font-medium transition-all",
+                  "px-3 py-1 rounded-md text-sm font-medium transition-colors",
                   isOneWay 
                     ? "bg-primary text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground"
@@ -121,17 +117,14 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               </button>
             </div>
             {isAnywhereSearch && (
-              <span className={cn(
-                "px-3 py-1 rounded-full text-sm",
-                "bg-accent/10 text-accent font-medium"
-              )}>
+              <span className="px-2.5 py-1 rounded-lg text-xs bg-accent/10 text-accent font-medium">
                 🌍 Her Yere Arama
               </span>
             )}
           </div>
 
           {/* Origin & Destination */}
-          <div className="flex flex-col md:flex-row gap-4 items-end">
+          <div className="flex flex-col md:flex-row gap-3 items-end">
             <AirportInput
               label="Nereden"
               placeholder="Şehir, ülke, bölge veya kıta ara..."
@@ -146,13 +139,13 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               onClick={handleSwap}
               disabled={isAnywhereSearch}
               className={cn(
-                "h-14 w-14 rounded-full shrink-0",
-                "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground",
-                "transition-all duration-300 hover:rotate-180",
+                "h-11 w-11 rounded-lg shrink-0",
+                "bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground",
+                "transition-colors",
                 "disabled:opacity-50 disabled:cursor-not-allowed"
               )}
             >
-              <ArrowRightLeft className="h-5 w-5" />
+              <ArrowRightLeft className="h-4 w-4" />
             </Button>
 
             <AirportInput
@@ -177,15 +170,15 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           />
 
           {/* Cabin Class & Visa Options */}
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-foreground/80">Kabin Sınıfı</label>
+          <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Kabin Sınıfı</label>
               <CabinClassSelector value={cabinClass} onChange={setCabinClass} />
             </div>
             
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors underline"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline"
             >
               {showAdvanced ? 'Daha az seçenek' : 'Daha fazla seçenek'}
             </button>
@@ -193,9 +186,9 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
 
           {/* Advanced Options */}
           {showAdvanced && (
-            <div className="flex flex-col gap-4 pt-4 border-t border-border/30 animate-fade-in">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-foreground/80">Vize Durumu (Opsiyonel)</label>
+            <div className="flex flex-col gap-3 pt-3 border-t border-border">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-medium text-muted-foreground">Vize Durumu (Opsiyonel)</label>
                 <VisaSelector value={visaOption} onChange={setVisaOption} />
                 <p className="text-xs text-muted-foreground">
                   * Vize gereklilikleri ülkeye ve pasaport türüne göre değişebilir
@@ -205,31 +198,29 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           )}
 
           {/* Passengers */}
-          <div className="flex flex-col md:flex-row gap-4 items-end justify-between">
+          <div className="flex flex-col md:flex-row gap-3 items-end justify-between">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-foreground/80 mb-2">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Yolcular
               </label>
-              <div className="flex items-center gap-4 bg-muted/50 rounded-2xl p-4">
-                <div className="p-2 rounded-full bg-primary/10 text-primary">
-                  <Users className="h-4 w-4" />
-                </div>
+              <div className="flex items-center gap-3 bg-muted rounded-lg p-3">
+                <Users className="h-4 w-4 text-muted-foreground" />
                 
-                <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-3 flex-wrap">
                   {/* Adults */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Yetişkin</span>
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">Yetişkin</span>
+                    <div className="flex items-center gap-0.5">
                       <button
                         onClick={() => setPassengers(p => ({ ...p, adults: Math.max(1, p.adults - 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         -
                       </button>
-                      <span className="w-8 text-center font-medium">{passengers.adults}</span>
+                      <span className="w-6 text-center text-sm font-medium">{passengers.adults}</span>
                       <button
                         onClick={() => setPassengers(p => ({ ...p, adults: Math.min(9, p.adults + 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         +
                       </button>
@@ -237,19 +228,19 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
                   </div>
 
                   {/* Children */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Çocuk</span>
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">Çocuk</span>
+                    <div className="flex items-center gap-0.5">
                       <button
                         onClick={() => setPassengers(p => ({ ...p, children: Math.max(0, p.children - 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         -
                       </button>
-                      <span className="w-8 text-center font-medium">{passengers.children}</span>
+                      <span className="w-6 text-center text-sm font-medium">{passengers.children}</span>
                       <button
                         onClick={() => setPassengers(p => ({ ...p, children: Math.min(9, p.children + 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         +
                       </button>
@@ -257,19 +248,19 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
                   </div>
 
                   {/* Infants */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Bebek</span>
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">Bebek</span>
+                    <div className="flex items-center gap-0.5">
                       <button
                         onClick={() => setPassengers(p => ({ ...p, infants: Math.max(0, p.infants - 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         -
                       </button>
-                      <span className="w-8 text-center font-medium">{passengers.infants}</span>
+                      <span className="w-6 text-center text-sm font-medium">{passengers.infants}</span>
                       <button
                         onClick={() => setPassengers(p => ({ ...p, infants: Math.min(passengers.adults, p.infants + 1) }))}
-                        className="w-8 h-8 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                        className="w-7 h-7 rounded-md bg-card border border-border text-foreground hover:bg-background transition-colors text-sm"
                       >
                         +
                       </button>
@@ -283,23 +274,16 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             <Button
               onClick={handleSearch}
               disabled={!origin || (!isAnywhereSearch && !destination) || !departDate || isLoading}
-              size="lg"
-              className={cn(
-                "h-14 px-8 rounded-2xl text-lg font-semibold",
-                "gradient-primary text-primary-foreground",
-                "shadow-glow hover:shadow-card-hover",
-                "transition-all duration-300 hover:scale-105",
-                "disabled:opacity-50 disabled:hover:scale-100"
-              )}
+              className="h-11 px-6 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <Plane className="h-5 w-5 animate-bounce" />
+                <div className="flex items-center gap-1.5">
+                  <Plane className="h-4 w-4 animate-bounce" />
                   <span>Aranıyor...</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Search className="h-5 w-5" />
+                <div className="flex items-center gap-1.5">
+                  <Search className="h-4 w-4" />
                   <span>{isAnywhereSearch ? 'Her Yeri Ara' : 'Uçuş Ara'}</span>
                 </div>
               )}

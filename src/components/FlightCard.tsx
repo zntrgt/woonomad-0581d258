@@ -89,57 +89,50 @@ export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: Fligh
 
   return (
     <div className={cn(
-      "group relative bg-card rounded-2xl overflow-hidden",
-      "border border-border/50 shadow-soft",
-      "hover:shadow-card-hover hover:border-primary/30",
-      "transition-all duration-300 animate-fade-in"
+      "bg-card rounded-xl overflow-hidden",
+      "border border-border",
+      "hover:border-primary/40 transition-colors duration-200"
     )}>
-      {/* City Image Banner */}
+      {/* City Image Banner - simplified */}
       {cityImageUrl && !imageError && (
-        <div className="relative h-32 w-full overflow-hidden">
+        <div className="relative h-28 w-full overflow-hidden">
           <img 
             src={cityImageUrl}
             alt={destCity}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
           
           {/* Destination overlay on image */}
-          <div className="absolute bottom-3 left-4 flex items-center gap-2">
-            <span className="text-3xl">{destFlag}</span>
+          <div className="absolute bottom-2 left-3 flex items-center gap-2">
+            <span className="text-2xl">{destFlag}</span>
             <div>
-              <div className="text-lg font-bold text-foreground drop-shadow-lg">{destCity}</div>
-              <div className="text-sm text-muted-foreground">{destCountry}</div>
+              <div className="text-base font-semibold text-foreground">{destCity}</div>
+              <div className="text-xs text-muted-foreground">{destCountry}</div>
             </div>
           </div>
           
-          {/* Rank Badge on image */}
-          {rank && (
-            <div className="absolute top-3 right-3">
-              {getRankBadge()}
-            </div>
-          )}
-          
-          {/* Visa Badge on image */}
-          <div className="absolute top-3 left-3">
+          {/* Badges */}
+          <div className="absolute top-2 right-2 flex gap-1.5">
             {getVisaBadge(flight.visaStatus)}
+            {rank && getRankBadge()}
           </div>
         </div>
       )}
       
       {/* Fallback header without image */}
       {(!cityImageUrl || imageError) && (
-        <div className="relative px-5 pt-4 pb-2 border-b border-border/30">
+        <div className="px-4 pt-3 pb-2 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{destFlag}</span>
+              <span className="text-xl">{destFlag}</span>
               <div>
-                <div className="font-bold text-foreground">{destCity}</div>
-                <div className="text-sm text-muted-foreground">{destCountry}</div>
+                <div className="font-semibold text-foreground text-sm">{destCity}</div>
+                <div className="text-xs text-muted-foreground">{destCountry}</div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {getVisaBadge(flight.visaStatus)}
               {rank && getRankBadge()}
             </div>
@@ -147,8 +140,8 @@ export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: Fligh
         </div>
       )}
 
-      <div className="p-5 md:p-6">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center">
+      <div className="p-4">
+        <div className="flex flex-col md:flex-row gap-3 md:items-center">
           {/* Airline Info */}
           <div className="flex items-center gap-3 md:w-44">
             <div className="text-2xl">{airlineName.split(' ')[0]}</div>
