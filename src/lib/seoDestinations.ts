@@ -1,0 +1,283 @@
+import { destinationData, DestinationInfo, getCountryFlag } from './destinations';
+
+export interface SEODestination {
+  slug: string;
+  airportCode: string;
+  city: string;
+  country: string;
+  countryCode: string;
+  flag: string;
+  visaRequired: boolean;
+  continent: 'europe' | 'asia' | 'americas' | 'africa' | 'oceania';
+  description: string;
+  highlights: string[];
+  bestTimeToVisit: string;
+  averageFlightDuration: string;
+  imageUrl: string;
+  keywords: string[];
+}
+
+// Create URL-friendly slug from city name
+function createSlug(city: string): string {
+  return city
+    .toLowerCase()
+    .replace(/\s*\(.*?\)\s*/g, '') // Remove parentheses content
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/ı/g, 'i')
+    .replace(/İ/g, 'i')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// Visa-free destinations for Turkish passport
+const VISA_FREE_CODES = [
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Balkans
+  'ICN', 'GMP', 'NRT', 'HND', 'KIX', // Korea, Japan
+  'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', 'MNL', 'HKG', 'TPE', 'KTM', // SE Asia
+  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY', // Middle East
+  'TUN', 'CMN', 'RAK', 'CPT', 'JNB', 'NBO', 'DAR', 'ZNZ', // Africa
+  'GRU', 'GIG', 'BSB', 'EZE', 'SCL', 'BOG', 'LIM', 'UIO', 'PTY', 'SJO', // S. America
+  'NAS', 'MBJ', 'SDQ', 'HAV', // Caribbean
+  'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Central Asia
+  'ECN', // N. Cyprus
+];
+
+// Continent mapping
+const CONTINENT_MAP: Record<string, SEODestination['continent']> = {
+  'AL': 'europe', 'XK': 'europe', 'MK': 'europe', 'BA': 'europe', 'ME': 'europe', 'RS': 'europe',
+  'FR': 'europe', 'GB': 'europe', 'DE': 'europe', 'NL': 'europe', 'BE': 'europe', 'AT': 'europe',
+  'CH': 'europe', 'IT': 'europe', 'ES': 'europe', 'PT': 'europe', 'GR': 'europe', 'CZ': 'europe',
+  'PL': 'europe', 'HU': 'europe', 'RO': 'europe', 'BG': 'europe', 'DK': 'europe', 'SE': 'europe',
+  'NO': 'europe', 'FI': 'europe', 'IE': 'europe', 'LV': 'europe', 'LT': 'europe', 'EE': 'europe',
+  'RU': 'europe',
+  'KR': 'asia', 'JP': 'asia', 'SG': 'asia', 'MY': 'asia', 'TH': 'asia', 'ID': 'asia', 'PH': 'asia',
+  'HK': 'asia', 'TW': 'asia', 'NP': 'asia', 'QA': 'asia', 'AE': 'asia', 'BH': 'asia', 'OM': 'asia',
+  'KW': 'asia', 'JO': 'asia', 'LB': 'asia', 'KZ': 'asia', 'UZ': 'asia', 'KG': 'asia', 'AZ': 'asia',
+  'GE': 'asia', 'CN': 'asia', 'IN': 'asia', 'CY': 'asia', 'TR': 'asia',
+  'TN': 'africa', 'MA': 'africa', 'ZA': 'africa', 'KE': 'africa', 'TZ': 'africa',
+  'BR': 'americas', 'AR': 'americas', 'CL': 'americas', 'CO': 'americas', 'PE': 'americas',
+  'EC': 'americas', 'PA': 'americas', 'CR': 'americas', 'BS': 'americas', 'JM': 'americas',
+  'DO': 'americas', 'CU': 'americas', 'US': 'americas', 'CA': 'americas',
+  'AU': 'oceania', 'NZ': 'oceania',
+};
+
+// City descriptions
+const CITY_DESCRIPTIONS: Record<string, { description: string; highlights: string[]; bestTime: string; duration: string }> = {
+  'Atina': {
+    description: 'Antik Yunan medeniyetinin kalbi Atina, tarihi zenginlikleri, muhteşem Akropolisi ve canlı gece hayatıyla unutulmaz bir tatil deneyimi sunuyor.',
+    highlights: ['Akropolis ve Parthenon', 'Plaka Mahallesi', 'Monastiraki Meydanı', 'Ulusal Arkeoloji Müzesi'],
+    bestTime: 'Nisan-Haziran, Eylül-Ekim',
+    duration: '1 saat 20 dk',
+  },
+  'Paris': {
+    description: 'Aşkın ve sanatın başkenti Paris, Eyfel Kulesi, Louvre Müzesi ve romantik sokakalarıyla dünyanın en çok ziyaret edilen şehirlerinden.',
+    highlights: ['Eyfel Kulesi', 'Louvre Müzesi', 'Champs-Élysées', 'Montmartre', 'Seine Nehri'],
+    bestTime: 'Nisan-Haziran, Eylül-Kasım',
+    duration: '3 saat 30 dk',
+  },
+  'Roma': {
+    description: 'Antik Roma İmparatorluğunun kalbi, Kolezyum, Vatikan ve eşsiz İtalyan mutfağıyla tarih ve lezzet tutkunlarının vazgeçilmez durağı.',
+    highlights: ['Kolezyum', 'Vatikan Müzeleri', 'Trevi Çeşmesi', 'Pantheon', 'İspanyol Merdivenleri'],
+    bestTime: 'Nisan-Haziran, Eylül-Ekim',
+    duration: '2 saat 15 dk',
+  },
+  'Barselona': {
+    description: 'Gaudi\'nin mimari şaheserleri, muhteşem plajları ve canlı kültürüyle Akdeniz\'in incisi Barselona, her mevsim tatilcileri bekliyor.',
+    highlights: ['Sagrada Familia', 'Park Güell', 'La Rambla', 'Barceloneta Plajı', 'Camp Nou'],
+    bestTime: 'Mayıs-Haziran, Eylül-Ekim',
+    duration: '3 saat',
+  },
+  'Amsterdam': {
+    description: 'Kanalları, bisiklet kültürü, müzeleri ve özgür atmosferiyle Amsterdam, Avrupa\'nın en renkli başkentlerinden biri.',
+    highlights: ['Anne Frank Evi', 'Van Gogh Müzesi', 'Rijksmuseum', 'Vondelpark', 'Kanal Turu'],
+    bestTime: 'Nisan-Eylül',
+    duration: '3 saat 15 dk',
+  },
+  'Londra': {
+    description: 'Kraliyet sarayları, dünyaca ünlü müzeleri ve kozmopolit yapısıyla Londra, kültür ve tarih tutkunları için eşsiz bir deneyim.',
+    highlights: ['Big Ben', 'Tower Bridge', 'British Museum', 'Buckingham Sarayı', 'Westminster Abbey'],
+    bestTime: 'Mayıs-Eylül',
+    duration: '4 saat',
+  },
+  'Dubai': {
+    description: 'Modern mimarisi, lüks alışveriş merkezleri ve çöl safarileriyle Dubai, Doğu ile Batının buluştuğu göz kamaştırıcı bir metropol.',
+    highlights: ['Burj Khalifa', 'Dubai Mall', 'Palm Jumeirah', 'Çöl Safari', 'Gold Souk'],
+    bestTime: 'Kasım-Mart',
+    duration: '4 saat 30 dk',
+  },
+  'Prag': {
+    description: 'Ortaçağ mimarisi, tarihi köprüleri ve masalsı atmosferiyle Prag, Avrupa\'nın en romantik şehirlerinden biri.',
+    highlights: ['Charles Köprüsü', 'Eski Kent Meydanı', 'Prag Kalesi', 'Astronomik Saat', 'Yahudi Mahallesi'],
+    bestTime: 'Nisan-Mayıs, Eylül-Ekim',
+    duration: '2 saat 30 dk',
+  },
+  'Budapeşte': {
+    description: 'Tuna Nehri\'nin iki yakasında kurulu Budapeşte, termal kaplıcaları, muhteşem mimarisi ve canlı gece hayatıyla büyülüyor.',
+    highlights: ['Parlamento Binası', 'Balıkçı Kalesi', 'Széchenyi Kaplıcası', 'Zincir Köprü', 'Buda Kalesi'],
+    bestTime: 'Nisan-Haziran, Eylül-Ekim',
+    duration: '2 saat',
+  },
+  'Viyana': {
+    description: 'Habsburg İmparatorluğunun başkenti Viyana, klasik müziği, imparatorluk sarayları ve kahve kültürüyle Avrupa\'nın kültür merkezi.',
+    highlights: ['Schönbrunn Sarayı', 'St. Stephen Katedrali', 'Belvedere Müzesi', 'Opera Binası', 'Naschmarkt'],
+    bestTime: 'Nisan-Haziran, Eylül-Ekim',
+    duration: '2 saat 15 dk',
+  },
+  'Tiflis': {
+    description: 'Kafkasların gizli cenneti Tiflis, tarihi mahalleleri, leziz mutfağı ve misafirperver insanlarıyla keşfedilmeyi bekliyor.',
+    highlights: ['Eski Şehir', 'Narikala Kalesi', 'Kükürt Hamamları', 'Rustaveli Caddesi', 'Şarap Mahzenleri'],
+    bestTime: 'Mayıs-Haziran, Eylül-Ekim',
+    duration: '2 saat',
+  },
+  'Bakü': {
+    description: 'Modern gökdelenleri ve tarihi surlarıyla Bakü, Doğu ile Batının sentezini sunan dinamik bir Kafkas başkenti.',
+    highlights: ['Flame Towers', 'İçeri Şeher', 'Haydar Aliyev Merkezi', 'Deniz Kenarı Bulvarı', 'Kız Kulesi'],
+    bestTime: 'Nisan-Haziran, Eylül-Ekim',
+    duration: '2 saat 30 dk',
+  },
+  'Belgrad': {
+    description: 'Balkanların kalbi Belgrad, canlı gece hayatı, tarihi kaleleri ve nehir manzarasıyla genç gezginlerin favorisi.',
+    highlights: ['Kalemegdan Kalesi', 'Skadarlija', 'Nehir Barları', 'Sv. Sava Kilisesi', 'Ada Ciganlija'],
+    bestTime: 'Mayıs-Eylül',
+    duration: '1 saat 30 dk',
+  },
+  'Tokyo': {
+    description: 'Geleneksel tapınakları ile ultra-modern teknolojinin iç içe geçtiği Tokyo, benzersiz bir kültürel deneyim sunuyor.',
+    highlights: ['Senso-ji Tapınağı', 'Shibuya Kavşağı', 'Tokyo Kulesi', 'Harajuku', 'Tsukiji Balık Pazarı'],
+    bestTime: 'Mart-Mayıs, Ekim-Kasım',
+    duration: '11 saat',
+  },
+  'Singapur': {
+    description: 'Temizliği, düzeni ve çok kültürlü yapısıyla Singapur, Güneydoğu Asya\'nın parlayan yıldızı.',
+    highlights: ['Marina Bay Sands', 'Gardens by the Bay', 'Sentosa Adası', 'Chinatown', 'Little India'],
+    bestTime: 'Şubat-Nisan',
+    duration: '10 saat 30 dk',
+  },
+  'Bali': {
+    description: 'Pirinç terasları, tapınakları ve muhteşem plajlarıyla Bali, huzur ve macera arayanların cennet adası.',
+    highlights: ['Ubud Pirinç Terasları', 'Tanah Lot Tapınağı', 'Kuta Plajı', 'Maymun Ormanı', 'Uluwatu'],
+    bestTime: 'Nisan-Ekim',
+    duration: '12 saat',
+  },
+  'Bangkok': {
+    description: 'Altın tapınakları, sokak lezzetleri ve canlı gece hayatıyla Bangkok, Güneydoğu Asya\'nın nabzını tutuyor.',
+    highlights: ['Grand Palace', 'Wat Arun', 'Chatuchak Pazarı', 'Khao San Road', 'Chao Phraya Nehri'],
+    bestTime: 'Kasım-Şubat',
+    duration: '9 saat',
+  },
+};
+
+// Default descriptions for cities without specific content
+const DEFAULT_DESCRIPTION = {
+  description: 'Keşfedilmeyi bekleyen harika bir destinasyon. Hafta sonu kaçamağı için ideal.',
+  highlights: ['Şehir Merkezi', 'Yerel Mutfak', 'Tarihi Yerler', 'Alışveriş'],
+  bestTime: 'İlkbahar ve Sonbahar',
+  duration: '2-4 saat',
+};
+
+// City images for SEO pages
+const CITY_IMAGES: Record<string, string> = {
+  'Atina': 'https://images.unsplash.com/photo-1555993539-1732b0258235?w=1200&h=630&fit=crop',
+  'Paris': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=630&fit=crop',
+  'Roma': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=630&fit=crop',
+  'Barselona': 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=1200&h=630&fit=crop',
+  'Amsterdam': 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1200&h=630&fit=crop',
+  'Londra': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&h=630&fit=crop',
+  'Dubai': 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&h=630&fit=crop',
+  'Prag': 'https://images.unsplash.com/photo-1541849546-216549ae216d?w=1200&h=630&fit=crop',
+  'Budapeşte': 'https://images.unsplash.com/photo-1551867633-194f125bddfa?w=1200&h=630&fit=crop',
+  'Viyana': 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1200&h=630&fit=crop',
+  'Berlin': 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=1200&h=630&fit=crop',
+  'Tiflis': 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1200&h=630&fit=crop',
+  'Bakü': 'https://images.unsplash.com/photo-1603554593710-89285534dc90?w=1200&h=630&fit=crop',
+  'Belgrad': 'https://images.unsplash.com/photo-1555990793-da11153b2473?w=1200&h=630&fit=crop',
+  'Tokyo': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&h=630&fit=crop',
+  'Singapur': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&h=630&fit=crop',
+  'Bali': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&h=630&fit=crop',
+  'Bangkok': 'https://images.unsplash.com/photo-1508009603885-50cf7c579c4e?w=1200&h=630&fit=crop',
+  'Lizbon': 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1200&h=630&fit=crop',
+  'Milano': 'https://images.unsplash.com/photo-1520440229-6469a149ac59?w=1200&h=630&fit=crop',
+  'Madrid': 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=1200&h=630&fit=crop',
+  'Selanik': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=630&fit=crop',
+};
+
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&h=630&fit=crop';
+
+// Generate SEO destinations from destination data
+export function generateSEODestinations(): SEODestination[] {
+  const destinations: SEODestination[] = [];
+  const seenSlugs = new Set<string>();
+
+  for (const [code, info] of Object.entries(destinationData)) {
+    // Skip Turkish airports
+    if (info.countryCode === 'TR') continue;
+
+    const cleanCity = info.city.split('(')[0].trim();
+    const slug = createSlug(cleanCity);
+
+    // Skip duplicates (e.g., multiple airports for same city)
+    if (seenSlugs.has(slug)) continue;
+    seenSlugs.add(slug);
+
+    const cityInfo = CITY_DESCRIPTIONS[cleanCity] || DEFAULT_DESCRIPTION;
+
+    destinations.push({
+      slug,
+      airportCode: code,
+      city: cleanCity,
+      country: info.country,
+      countryCode: info.countryCode,
+      flag: getCountryFlag(info.countryCode),
+      visaRequired: !VISA_FREE_CODES.includes(code),
+      continent: CONTINENT_MAP[info.countryCode] || 'europe',
+      description: cityInfo.description,
+      highlights: cityInfo.highlights,
+      bestTimeToVisit: cityInfo.bestTime,
+      averageFlightDuration: cityInfo.duration,
+      imageUrl: CITY_IMAGES[cleanCity] || DEFAULT_IMAGE,
+      keywords: generateKeywords(cleanCity, info.country),
+    });
+  }
+
+  return destinations.sort((a, b) => a.city.localeCompare(b.city, 'tr'));
+}
+
+function generateKeywords(city: string, country: string): string[] {
+  return [
+    `${city} uçak bileti`,
+    `${city} ucuz bilet`,
+    `${city} hafta sonu`,
+    `İstanbul ${city} uçuş`,
+    `${city} gidiş dönüş`,
+    `${city} ${country} bilet`,
+    `${city} tatil`,
+    `${city} tur`,
+  ];
+}
+
+// Get destination by slug
+export function getDestinationBySlug(slug: string): SEODestination | undefined {
+  const destinations = generateSEODestinations();
+  return destinations.find(d => d.slug === slug);
+}
+
+// Get all destination slugs for static generation
+export function getAllDestinationSlugs(): string[] {
+  return generateSEODestinations().map(d => d.slug);
+}
+
+// Get popular destinations for homepage
+export function getPopularDestinations(limit = 12): SEODestination[] {
+  const popular = ['paris', 'roma', 'barselona', 'amsterdam', 'londra', 'atina', 'prag', 'budapeşte', 'viyana', 'dubai', 'tiflis', 'baku'];
+  const destinations = generateSEODestinations();
+  
+  return popular
+    .map(slug => destinations.find(d => d.slug === slug || d.slug === createSlug(slug)))
+    .filter((d): d is SEODestination => d !== undefined)
+    .slice(0, limit);
+}

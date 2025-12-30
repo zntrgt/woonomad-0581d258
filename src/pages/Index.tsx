@@ -116,7 +116,12 @@ const Index = () => {
             <Plane className="h-5 w-5 text-primary" />
             <span className="font-semibold text-sm text-foreground hidden sm:inline">Hafta Sonu Kaçamağı</span>
           </div>
-          <SettingsDropdown />
+          <div className="flex items-center gap-2">
+            <a href="/destinasyonlar" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
+              Tüm Destinasyonlar
+            </a>
+            <SettingsDropdown />
+          </div>
         </div>
       </header>
 
