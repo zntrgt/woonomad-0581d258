@@ -130,6 +130,45 @@ const POPULAR_DESTINATIONS = [
   'SVO', 'LED', // Russia
 ];
 
+// Continent-based destination mappings
+const CONTINENT_DESTINATIONS: Record<string, string[]> = {
+  'EU': [ // Europe
+    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Balkans
+    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL', // Western Europe
+    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', 
+    'FCO', 'MXP', 'VCE', 'NAP', 
+    'MAD', 'BCN', 'PMI', 'AGP', 
+    'LIS', 'OPO', 'ATH', 'SKG', 
+    'PRG', 'WAW', 'BUD', 'OTP', 'SOF', 
+    'CPH', 'ARN', 'OSL', 'HEL', 
+    'DUB', 'RIX', 'VNO', 'TLL',
+  ],
+  'AS': [ // Asia
+    'ICN', 'GMP', 'NRT', 'HND', 'KIX', // East Asia
+    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', // Southeast Asia
+    'MNL', 'HKG', 'TPE', 
+    'KTM', 
+    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', // Middle East (Gulf)
+    'AMM', 'BEY', 'TLV', // Middle East
+    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Central Asia / Caucasus
+    'PEK', 'PVG', 'HGH', 'CAN', // China
+    'DEL', 'BOM', 'BLR', // India
+  ],
+  'AM': [ // Americas
+    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', // USA
+    'YYZ', 'YVR', 'YUL', // Canada
+    'GRU', 'GIG', 'BSB', // Brazil
+    'EZE', 'SCL', 'BOG', 'LIM', 'UIO', // South America
+    'PTY', 'SJO', // Central America
+    'NAS', 'MBJ', 'SDQ', 'HAV', // Caribbean
+  ],
+  'AF': [ // Africa
+    'TUN', 'CMN', 'RAK', 'CAI', // North Africa
+    'CPT', 'JNB', // South Africa
+    'NBO', 'DAR', 'ZNZ', // East Africa
+  ],
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -180,19 +219,25 @@ serve(async (req) => {
       return parts[0] || null;
     };
 
-    // Handle "anywhere" search (empty destination)
+    // Handle "anywhere" search (empty destination) or continental search (EU, AS, AM, AF)
     const isAnywhereSearch = !destination || destination === '';
+    const isContinentSearch = ['EU', 'AS', 'AM', 'AF'].includes(destination);
     let allFlights: any[] = [];
 
-    if (isAnywhereSearch) {
-      console.log('Performing anywhere search with visa filter:', visaFilter);
+    if (isAnywhereSearch || isContinentSearch) {
+      console.log('Performing', isContinentSearch ? `continent (${destination})` : 'anywhere', 'search with visa filter:', visaFilter);
+      
+      // Get base destinations list - continent-specific or all
+      let baseDestinations = isContinentSearch 
+        ? CONTINENT_DESTINATIONS[destination] || POPULAR_DESTINATIONS
+        : POPULAR_DESTINATIONS;
       
       // Filter destinations based on visa preference
-      let destinationsToSearch = POPULAR_DESTINATIONS;
+      let destinationsToSearch = baseDestinations;
       if (visaFilter === 'visa-free') {
-        destinationsToSearch = POPULAR_DESTINATIONS.filter(d => getVisaStatus(d) === 'visa-free');
+        destinationsToSearch = baseDestinations.filter(d => getVisaStatus(d) === 'visa-free');
       } else if (visaFilter === 'visa-required') {
-        destinationsToSearch = POPULAR_DESTINATIONS.filter(d => getVisaStatus(d) === 'visa-required');
+        destinationsToSearch = baseDestinations.filter(d => getVisaStatus(d) === 'visa-required');
       }
 
       console.log('Searching destinations:', destinationsToSearch);
@@ -395,8 +440,8 @@ serve(async (req) => {
       (a, b) => (a?.price ?? Number.POSITIVE_INFINITY) - (b?.price ?? Number.POSITIVE_INFINITY)
     );
 
-    // Limit results for anywhere search to keep the UI fast
-    const finalFlights = isAnywhereSearch ? sortedFlights.slice(0, 30) : sortedFlights;
+    // Limit results for anywhere/continent search to keep the UI fast
+    const finalFlights = (isAnywhereSearch || isContinentSearch) ? sortedFlights.slice(0, 30) : sortedFlights;
 
     // Transform the response to include affiliate links and visa info
     const flights = finalFlights.map((flight: any) => {
@@ -416,7 +461,7 @@ serve(async (req) => {
       success: true, 
       data: flights,
       currency: 'TRY',
-      isAnywhereSearch,
+      isAnywhereSearch: isAnywhereSearch || isContinentSearch,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

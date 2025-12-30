@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { Plane, MapPin, Loader2, Globe } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { Plane, MapPin, Loader2, Globe, Map } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useAirportSearch } from '@/hooks/useAirportSearch';
-import { Airport, ANYWHERE_DESTINATION } from '@/lib/types';
+import { Airport, ANYWHERE_DESTINATION, REGION_DESTINATIONS } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface AirportInputProps {
@@ -76,10 +76,24 @@ export function AirportInput({
   };
 
   const displayValue = value 
-    ? (value.code === '' ? 'Her Yere 🌍' : `${value.city} (${value.code})`)
+    ? (value.code === '' ? 'Her Yere 🌍' : 
+       REGION_DESTINATIONS.some(r => r.code === value.code) ? `${value.city} 🗺️` :
+       `${value.city} (${value.code})`)
     : query;
 
   const showAnywhere = showAnywhereOption && (query.length === 0 || query.toLowerCase().includes('her'));
+  
+  // Filter region destinations based on query
+  const matchingRegions = useMemo(() => {
+    if (!showAnywhereOption) return [];
+    const q = query.toLowerCase();
+    if (q.length === 0) return REGION_DESTINATIONS;
+    return REGION_DESTINATIONS.filter(r => 
+      r.city.toLowerCase().includes(q) ||
+      r.continent?.toLowerCase().includes(q) ||
+      r.name.toLowerCase().includes(q)
+    );
+  }, [query, showAnywhereOption]);
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
@@ -118,9 +132,9 @@ export function AirportInput({
       </div>
 
       {/* Dropdown */}
-      {isOpen && (showAnywhere || airports.length > 0) && (
+      {isOpen && (showAnywhere || matchingRegions.length > 0 || airports.length > 0) && (
         <div className={cn(
-          "absolute z-50 w-full mt-2 py-2 bg-card rounded-2xl shadow-card border border-border/50",
+          "absolute z-50 w-full mt-2 py-2 bg-card rounded-2xl shadow-card border border-border/50 max-h-80 overflow-y-auto",
           "animate-scale-in"
         )}>
           {/* Anywhere option */}
@@ -148,6 +162,36 @@ export function AirportInput({
             </button>
           )}
 
+          {/* Region options */}
+          {matchingRegions.length > 0 && (
+            <>
+              {matchingRegions.map((region) => (
+                <button
+                  key={region.code}
+                  onClick={() => handleSelectAirport(region)}
+                  className={cn(
+                    "w-full px-4 py-3 text-left",
+                    "hover:bg-accent/10 transition-colors",
+                    "flex items-center gap-3"
+                  )}
+                >
+                  <div className="p-2 rounded-full bg-secondary/20 text-secondary">
+                    <Map className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-foreground flex items-center gap-2">
+                      {region.name}
+                      <span className="text-lg">🗺️</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {region.continent} kıtasındaki tüm destinasyonlar
+                    </div>
+                  </div>
+                </button>
+              ))}
+              {airports.length > 0 && <div className="border-t border-border/30 my-1" />}
+            </>
+          )}
           {airports.map((airport) => (
             <button
               key={airport.code}
