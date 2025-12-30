@@ -65,7 +65,7 @@ export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: Fligh
       case 'fastest':
         return <Badge className="bg-flight-blue text-primary-foreground">En Hızlı</Badge>;
       case 'best':
-        return <Badge className="bg-flight-purple text-primary-foreground">Önerilen</Badge>;
+        return <Badge className="bg-flight-navy text-primary-foreground">Önerilen</Badge>;
       default:
         return null;
     }

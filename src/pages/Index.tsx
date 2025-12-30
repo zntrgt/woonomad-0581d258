@@ -196,8 +196,16 @@ const Index = () => {
                   onSortChange={setSortBy}
                 />
 
-                <div className="mt-4 mb-2 text-sm text-muted-foreground">
-                  {filteredAndSortedFlights.length} uçuş bulundu
+                <div className="mt-4 mb-4 flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-sm text-muted-foreground">
+                    {filteredAndSortedFlights.length} uçuş bulundu
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-medium">
+                      📅 {formatDate(currentWeekend.saturday)}
+                      {tripDuration !== '1-1' && ` - ${formatDate(currentWeekend.sunday)}`}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
