@@ -4,8 +4,10 @@ import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
+import { SettingsDropdown } from '@/components/SettingsDropdown';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useSettings } from '@/contexts/SettingsContext';
 import { SearchParams, Flight, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { parseISO, format } from 'date-fns';
@@ -107,6 +109,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Top Header with Settings */}
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
+        <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Plane className="h-5 w-5 text-primary" />
+            <span className="font-semibold text-sm text-foreground hidden sm:inline">Hafta Sonu Kaçamağı</span>
+          </div>
+          <SettingsDropdown />
+        </div>
+      </header>
+
       {/* Hero Section - Google style centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-3 md:px-4 py-6 md:py-8">
         {/* Logo & Title */}
