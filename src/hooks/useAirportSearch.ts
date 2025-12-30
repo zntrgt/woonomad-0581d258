@@ -16,22 +16,17 @@ export function useAirportSearch() {
 
     try {
       const { data, error } = await supabase.functions.invoke('get-airports', {
-        body: null,
-        headers: {},
+        body: { query },
       });
-
-      // Call with query param through URL doesn't work with invoke, so filter locally
-      // Get all airports and filter
-      const { data: allData } = await supabase.functions.invoke('get-airports');
       
-      if (allData?.success && allData.data) {
-        const filtered = allData.data.filter((airport: Airport) =>
-          airport.code.toLowerCase().includes(query.toLowerCase()) ||
-          airport.name.toLowerCase().includes(query.toLowerCase()) ||
-          airport.city.toLowerCase().includes(query.toLowerCase()) ||
-          airport.country.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 10);
-        setAirports(filtered);
+      if (error) {
+        console.error('Airport search error:', error);
+        setAirports([]);
+        return;
+      }
+      
+      if (data?.success && data.data) {
+        setAirports(data.data);
       }
     } catch (err) {
       console.error('Airport search error:', err);
