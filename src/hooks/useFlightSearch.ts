@@ -10,6 +10,16 @@ interface FlightSearchResult {
   searchFlights: (params: SearchParams) => Promise<void>;
 }
 
+function isoToLocalDate(iso: string): string | null {
+  try {
+    const d = parseISO(iso);
+    if (Number.isNaN(d.getTime())) return null;
+    return format(d, 'yyyy-MM-dd');
+  } catch {
+    return null;
+  }
+}
+
 export function useFlightSearch(): FlightSearchResult {
   const [flights, setFlights] = useState<Flight[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,43 +31,38 @@ export function useFlightSearch(): FlightSearchResult {
     setFlights([]);
 
     try {
-      console.log('Searching flights with params:', params);
-      
       const { data, error: fnError } = await supabase.functions.invoke('search-flights', {
         body: params,
       });
-
-      console.log('Search response:', data);
 
       if (fnError) {
         throw new Error(fnError.message);
       }
 
-      if (!data.success) {
-        throw new Error(data.error || 'Uçuş araması başarısız oldu');
+      if (!data?.success) {
+        throw new Error(data?.error || 'Uçuş araması başarısız oldu');
       }
 
-      const allFlights = data.data || [];
-      console.log('Total flights from API:', allFlights.length);
+      const allFlights: Flight[] = data.data || [];
 
-      // Filter flights by the selected departure date
-      const selectedDepartDate = params.departDate; // Format: YYYY-MM-DD
-      
-      const filteredFlights = allFlights.filter((flight: Flight) => {
-        // Get just the date part from departure_at (e.g., "2026-01-03T10:00:00" -> "2026-01-03")
-        const flightDepartDate = flight.departure_at.split('T')[0];
-        
-        // Check if flight departs on the selected date
-        const matchesDepartDate = flightDepartDate === selectedDepartDate;
-        
-        console.log(`Flight ${flight.flight_number}: depart=${flightDepartDate}, selected=${selectedDepartDate}, matches=${matchesDepartDate}`);
-        
-        return matchesDepartDate;
+      // Strictly filter by the selected weekend dates (but timezone-safe).
+      const filteredFlights = allFlights.filter((flight) => {
+        const depart = isoToLocalDate(flight.departure_at);
+        if (!depart || depart !== params.departDate) return false;
+
+        if (params.returnDate) {
+          if (!flight.return_at) return false;
+          const ret = isoToLocalDate(flight.return_at);
+          return !!ret && ret === params.returnDate;
+        }
+
+        return true;
       });
 
-      console.log('Filtered flights count:', filteredFlights.length);
-      
       setFlights(filteredFlights);
+      if (filteredFlights.length === 0) {
+        setError('Seçilen hafta sonu için uçuş bulunamadı.');
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Bir hata oluştu';
       setError(errorMessage);
