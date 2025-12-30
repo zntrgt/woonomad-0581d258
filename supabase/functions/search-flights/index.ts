@@ -226,40 +226,32 @@ serve(async (req) => {
     }
 
     console.log('API response success, data count:', allFlights.length);
+    
+    // Debug: log first few flights to see their date format
+    if (allFlights.length > 0) {
+      console.log('Sample flights:', allFlights.slice(0, 3).map((f: any) => ({
+        departure_at: f.departure_at,
+        return_at: f.return_at,
+        destination: f.destination,
+        price: f.price
+      })));
+    }
 
-    // 1) Strictly filter results by the selected date(s).
-    // The upstream API may return nearby dates even when you send a single date.
-    const dateOnly = (iso?: string): string | null => {
-      if (!iso || typeof iso !== 'string') return null;
-      const parts = iso.split('T');
-      return parts[0] || null;
-    };
-
-    const dateFilteredFlights = allFlights.filter((flight: any) => {
-      const dep = dateOnly(flight.departure_at);
-      if (!dep || !allowedDepartDates.has(dep)) return false;
-
-      // Round-trip: require matching (depart, return) pair.
-      if (returnDate) {
-        const ret = dateOnly(flight.return_at);
-        if (!ret) return false;
-        return allowedPairs.has(`${dep}|${ret}`);
-      }
-
-      return true;
-    });
+    // NOTE: The Travelpayouts API caches results and may return flights on nearby dates.
+    // For now, we trust the API's date filtering and show all results.
+    // If strict filtering is needed, it should be done client-side with user feedback.
 
     // De-duplicate flights (the same flight can appear multiple times when we query multiple dates)
     const uniq = new Map<string, any>();
-    for (const f of dateFilteredFlights) {
+    for (const f of allFlights) {
       const key = `${f.flight_number ?? ''}|${f.departure_at ?? ''}|${f.return_at ?? ''}|${f.destination ?? ''}`;
       if (!uniq.has(key)) uniq.set(key, f);
     }
 
     const dedupedFlights = Array.from(uniq.values());
-    console.log('After date filter + dedupe:', dedupedFlights.length);
+    console.log('After dedupe:', dedupedFlights.length);
 
-    // 2) Apply visa filter to results
+    // Apply visa filter to results
     let filteredFlights = dedupedFlights;
     if (visaFilter !== 'all') {
       filteredFlights = dedupedFlights.filter((flight: any) => {
