@@ -200,16 +200,36 @@ export function getDestinationInfo(airportCode: string): DestinationInfo | null 
   return destinationData[airportCode] || null;
 }
 
-// Get city image URL (using Unsplash source for free city images)
-export function getCityImageUrl(cityName: string, size: 'small' | 'medium' | 'large' = 'medium'): string {
-  const dimensions = {
-    small: '200x150',
-    medium: '400x300',
-    large: '800x600'
-  };
-  
-  // Clean city name for URL (remove parentheses content)
-  const cleanCity = cityName.split('(')[0].trim().toLowerCase().replace(/\s+/g, '-');
-  
-  return `https://source.unsplash.com/${dimensions[size]}/?${encodeURIComponent(cleanCity)},city,travel`;
+// City image URLs - using Unsplash with specific search terms
+const cityImages: Record<string, string> = {
+  'Antalya': 'https://images.unsplash.com/photo-1593238739364-18cfde5f84f3?w=400&h=300&fit=crop',
+  'İzmir': 'https://images.unsplash.com/photo-1590076082569-2b406e7ae1be?w=400&h=300&fit=crop',
+  'Bodrum': 'https://images.unsplash.com/photo-1600240644455-3edc55c375fe?w=400&h=300&fit=crop',
+  'Atina': 'https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=300&fit=crop',
+  'Tiflis': 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=400&h=300&fit=crop',
+  'Üsküp': 'https://images.unsplash.com/photo-1601312502076-a61e51c4c5a4?w=400&h=300&fit=crop',
+  'Paris': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop',
+  'Roma': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop',
+  'Barselona': 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop',
+  'Dubai': 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop',
+  'İstanbul': 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop',
+  'Londra': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop',
+  'Amsterdam': 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=400&h=300&fit=crop',
+  'Berlin': 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop',
+  'Prag': 'https://images.unsplash.com/photo-1541849546-216549ae216d?w=400&h=300&fit=crop',
+  'Viyana': 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=400&h=300&fit=crop',
+  'Budapeşte': 'https://images.unsplash.com/photo-1551867633-194f125bddfa?w=400&h=300&fit=crop',
+  'Lizbon': 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=400&h=300&fit=crop',
+  'Tokyo': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop',
+  'Seul': 'https://images.unsplash.com/photo-1538485399081-7191377e8241?w=400&h=300&fit=crop',
+  'Singapur': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop',
+  'Bangkok': 'https://images.unsplash.com/photo-1508009603885-50cf7c579c4e?w=400&h=300&fit=crop',
+  'Bali': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&h=300&fit=crop',
+};
+
+// Get city image URL
+export function getCityImageUrl(cityName: string, size: 'small' | 'medium' | 'large' = 'medium'): string | null {
+  // Clean city name
+  const cleanCity = cityName.split('(')[0].trim();
+  return cityImages[cleanCity] || null;
 }
