@@ -108,22 +108,24 @@ serve(async (req) => {
 
     const { origin, destination, departDate, returnDate, adults = 1, children = 0, infants = 0, tripClass = 'Y', visaFilter = 'all', flexibleDates = false } = params;
 
-    // Calculate date range for flexible search
-    const getDatesRange = (baseDate: string): string[] => {
-      if (!flexibleDates) return [baseDate];
-      const date = new Date(baseDate);
-      const prevDay = new Date(date);
-      prevDay.setDate(date.getDate() - 1);
-      const nextDay = new Date(date);
-      nextDay.setDate(date.getDate() + 1);
-      return [
-        prevDay.toISOString().split('T')[0],
-        baseDate,
-        nextDay.toISOString().split('T')[0]
-      ];
+    // Flexible dates: when enabled, we search the selected date plus +/- 1 day.
+    // Important: for round-trip searches we shift BOTH depart and return by the same amount.
+    const shifts = flexibleDates ? [-1, 0, 1] : [0];
+
+    const addDaysToYmd = (ymd: string, days: number): string => {
+      // Use UTC midnight to avoid timezone drift
+      const d = new Date(`${ymd}T00:00:00Z`);
+      d.setUTCDate(d.getUTCDate() + days);
+      return d.toISOString().slice(0, 10);
     };
 
-    const departDates = getDatesRange(departDate);
+    const searchPairs = shifts.map((shift) => ({
+      depart: addDaysToYmd(departDate, shift),
+      return: returnDate ? addDaysToYmd(returnDate, shift) : undefined,
+    }));
+
+    const allowedDepartDates = new Set(searchPairs.map((p) => p.depart));
+    const allowedPairs = new Set(searchPairs.map((p) => `${p.depart}|${p.return ?? ''}`));
 
     if (!origin || !departDate) {
       throw new Error('Missing required parameters: origin, departDate');
@@ -146,36 +148,37 @@ serve(async (req) => {
 
       console.log('Searching destinations:', destinationsToSearch.length);
 
-      // Search for flights to multiple destinations in parallel
-      const searchPromises = destinationsToSearch.slice(0, 10).map(async (dest) => {
-        try {
-          const searchParams = new URLSearchParams({
-            token: apiToken,
-            origin,
-            destination: dest,
-            depart_date: departDate,
-            ...(returnDate && { return_date: returnDate }),
-            currency: 'TRY',
-            sorting: 'price',
-            limit: '5',
-          });
+      // Search for flights to multiple destinations (and dates) in parallel
+      const destinations = destinationsToSearch.slice(0, 10);
+      const searchPromises = destinations.flatMap((dest) =>
+        searchPairs.map(async (pair) => {
+          try {
+            const searchParams = new URLSearchParams({
+              token: apiToken,
+              origin,
+              destination: dest,
+              depart_date: pair.depart,
+              ...(pair.return ? { return_date: pair.return } : {}),
+              currency: 'TRY',
+              sorting: 'price',
+              limit: '5',
+            });
 
-          const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
-          const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' },
-          });
+            const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
+            const response = await fetch(apiUrl, {
+              method: 'GET',
+              headers: { 'Accept': 'application/json' },
+            });
 
-          if (response.ok) {
+            if (!response.ok) return [];
             const data = await response.json();
             return data.data || [];
+          } catch (e) {
+            console.error(`Error searching for ${dest} (${pair.depart}):`, e);
+            return [];
           }
-          return [];
-        } catch (e) {
-          console.error(`Error searching for ${dest}:`, e);
-          return [];
-        }
-      });
+        })
+      );
 
       const results = await Promise.all(searchPromises);
       allFlights = results.flat();
@@ -188,59 +191,98 @@ serve(async (req) => {
       
     } else {
       // Single destination search
-      const searchParams = new URLSearchParams({
-        token: apiToken,
-        origin,
-        destination,
-        depart_date: departDate,
-        ...(returnDate && { return_date: returnDate }),
-        currency: 'TRY',
-        sorting: 'price',
-        limit: '30',
+      const searchPromises = searchPairs.map(async (pair) => {
+        const searchParams = new URLSearchParams({
+          token: apiToken,
+          origin,
+          destination,
+          depart_date: pair.depart,
+          ...(pair.return ? { return_date: pair.return } : {}),
+          currency: 'TRY',
+          sorting: 'price',
+          limit: '30',
+        });
+
+        const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
+        console.log('Calling Travelpayouts API:', apiUrl.replace(apiToken, '***'));
+
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Travelpayouts API error:', response.status, errorText);
+          return [];
+        }
+
+        const data = await response.json();
+        return data.data || [];
       });
 
-      const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
-      console.log('Calling Travelpayouts API:', apiUrl.replace(apiToken, '***'));
-
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Travelpayouts API error:', response.status, errorText);
-        throw new Error(`API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      allFlights = data.data || [];
+      const results = await Promise.all(searchPromises);
+      allFlights = results.flat();
     }
 
     console.log('API response success, data count:', allFlights.length);
 
-    // Apply visa filter to results
-    let filteredFlights = allFlights;
+    // 1) Strictly filter results by the selected date(s).
+    // The upstream API may return nearby dates even when you send a single date.
+    const dateOnly = (iso?: string): string | null => {
+      if (!iso || typeof iso !== 'string') return null;
+      const parts = iso.split('T');
+      return parts[0] || null;
+    };
+
+    const dateFilteredFlights = allFlights.filter((flight: any) => {
+      const dep = dateOnly(flight.departure_at);
+      if (!dep || !allowedDepartDates.has(dep)) return false;
+
+      // Round-trip: require matching (depart, return) pair.
+      if (returnDate) {
+        const ret = dateOnly(flight.return_at);
+        if (!ret) return false;
+        return allowedPairs.has(`${dep}|${ret}`);
+      }
+
+      return true;
+    });
+
+    // De-duplicate flights (the same flight can appear multiple times when we query multiple dates)
+    const uniq = new Map<string, any>();
+    for (const f of dateFilteredFlights) {
+      const key = `${f.flight_number ?? ''}|${f.departure_at ?? ''}|${f.return_at ?? ''}|${f.destination ?? ''}`;
+      if (!uniq.has(key)) uniq.set(key, f);
+    }
+
+    const dedupedFlights = Array.from(uniq.values());
+    console.log('After date filter + dedupe:', dedupedFlights.length);
+
+    // 2) Apply visa filter to results
+    let filteredFlights = dedupedFlights;
     if (visaFilter !== 'all') {
-      filteredFlights = allFlights.filter((flight: any) => {
+      filteredFlights = dedupedFlights.filter((flight: any) => {
         const status = getVisaStatus(flight.destination);
-        if (visaFilter === 'visa-free') {
-          return status === 'visa-free';
-        } else if (visaFilter === 'visa-required') {
-          return status === 'visa-required';
-        }
+        if (visaFilter === 'visa-free') return status === 'visa-free';
+        if (visaFilter === 'visa-required') return status === 'visa-required';
         return true;
       });
     }
 
     // Transform the response to include affiliate links and visa info
-    const flights = filteredFlights.map((flight: any) => ({
-      ...flight,
-      visaStatus: getVisaStatus(flight.destination),
-      affiliateLink: partnerId 
-        ? `https://www.aviasales.com/search/${origin}${departDate.replace(/-/g, '')}${flight.destination}${returnDate ? returnDate.replace(/-/g, '') : ''}1?marker=${partnerId}`
-        : null,
-    }));
+    const flights = filteredFlights.map((flight: any) => {
+      const depYmd = (flight.departure_at ? String(flight.departure_at).split('T')[0] : departDate) || departDate;
+      const retYmd = flight.return_at ? String(flight.return_at).split('T')[0] : undefined;
+
+      return {
+        ...flight,
+        visaStatus: getVisaStatus(flight.destination),
+        affiliateLink: partnerId
+          ? `https://www.aviasales.com/search/${origin}${depYmd.replace(/-/g, '')}${flight.destination}${retYmd ? retYmd.replace(/-/g, '') : ''}1?marker=${partnerId}`
+          : null,
+      };
+    });
 
     return new Response(JSON.stringify({ 
       success: true, 
