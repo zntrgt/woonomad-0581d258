@@ -1,4 +1,4 @@
-import { Heart, Clock, Plane, ArrowRight, ExternalLink } from 'lucide-react';
+import { Heart, Clock, Plane, ArrowRight, ExternalLink, FileCheck, FileX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Flight } from '@/lib/types';
@@ -24,6 +24,27 @@ const airlineLogos: Record<string, string> = {
   'AF': '🇫🇷 Air France',
   'EK': '🇦🇪 Emirates',
   'QR': '🇶🇦 Qatar Airways',
+};
+
+const getVisaBadge = (visaStatus?: string) => {
+  switch (visaStatus) {
+    case 'visa-free':
+      return (
+        <Badge variant="outline" className="bg-success/10 text-success border-success/30 gap-1">
+          <FileCheck className="h-3 w-3" />
+          Vizesiz
+        </Badge>
+      );
+    case 'visa-required':
+      return (
+        <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30 gap-1">
+          <FileX className="h-3 w-3" />
+          Vize Gerekli
+        </Badge>
+      );
+    default:
+      return null;
+  }
 };
 
 export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: FlightCardProps) {
@@ -75,7 +96,10 @@ export function FlightCard({ flight, isFavorite, onToggleFavorite, rank }: Fligh
           <div className="text-2xl">{airlineName.split(' ')[0]}</div>
           <div>
             <div className="font-medium text-foreground">{airlineName.split(' ').slice(1).join(' ')}</div>
-            <div className="text-sm text-muted-foreground">{flight.flight_number}</div>
+            <div className="text-sm text-muted-foreground flex items-center gap-2">
+              {flight.flight_number}
+              {getVisaBadge(flight.visaStatus)}
+            </div>
           </div>
         </div>
 

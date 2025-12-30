@@ -36,6 +36,7 @@ export interface Flight {
   duration_back?: number;
   link: string;
   affiliateLink?: string | null;
+  visaStatus?: 'visa-free' | 'visa-required' | 'unknown';
 }
 
 export interface WeekendDate {
@@ -54,6 +55,7 @@ export interface SearchParams {
   children: number;
   infants: number;
   tripClass: CabinClass;
+  visaFilter?: VisaOption;
 }
 
 // Special "Anywhere" destination
