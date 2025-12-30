@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Plane } from 'lucide-react';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
@@ -33,7 +33,9 @@ const Index = () => {
   const { flights, isLoading, error, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
   const searchFormRef = useRef<SearchFormRef>(null);
-  
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const didAutoScrollRef = useRef(false);
+
   const [sortBy, setSortBy] = useState<SortOption>('best');
   const [filters, setFilters] = useState<FilterOptions>({
     priceRange: [0, 100000],
@@ -43,15 +45,29 @@ const Index = () => {
   });
   const [lastSearchParams, setLastSearchParams] = useState<SearchParams | null>(null);
 
+  const hasResultsSection = flights.length > 0 || isLoading || !!error;
+
   const handleSearch = (params: SearchParams) => {
+    didAutoScrollRef.current = false;
     setLastSearchParams(params);
     searchFlights(params);
   };
 
+  useEffect(() => {
+    if (!hasResultsSection) return;
+    if (didAutoScrollRef.current) return;
+
+    // Ensure results become visible right after search (no manual scroll)
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      didAutoScrollRef.current = true;
+    });
+  }, [hasResultsSection]);
+
   const handlePopularRouteSelect = (originCode: string, destinationCode: string) => {
     const origin = airportLookup[originCode];
     const destination = airportLookup[destinationCode];
-    
+
     if (origin && destination && searchFormRef.current) {
       searchFormRef.current.setAirports(origin, destination);
       // Trigger search after a brief delay to allow state update
@@ -125,89 +141,98 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section - Google style centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-3 md:px-4 py-6 md:py-8">
-        {/* Logo & Title */}
-        <div className="text-center mb-6 md:mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Plane className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+      <main className="flex-1">
+        {/* Hero + Results */}
+        <section
+          className={cn(
+            "flex flex-col items-center px-3 md:px-4 py-6 md:py-8",
+            hasResultsSection ? "justify-start" : "flex-1 justify-center"
+          )}
+        >
+          {/* Logo & Title */}
+          <div className={cn("text-center", hasResultsSection ? "mb-5 md:mb-6" : "mb-6 md:mb-8")}>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Plane className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+            </div>
+            <h1 className="text-xl md:text-3xl font-display font-semibold text-foreground">
+              Hafta Sonu Kaçamağı
+            </h1>
           </div>
-          <h1 className="text-xl md:text-3xl font-display font-semibold text-foreground">
-            Hafta Sonu Kaçamağı
-          </h1>
-        </div>
 
-        {/* Search Form - centered like Google */}
-        <div className="w-full max-w-2xl px-1">
-          <SearchForm
-            ref={searchFormRef}
-            onSearch={handleSearch}
-            isLoading={isLoading}
-          />
-        </div>
-
-        {/* Popular Routes - subtle below search */}
-        <div className="mt-6 md:mt-8 w-full max-w-2xl">
-          <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
-        </div>
-      </div>
-
-      {/* Results Section - only appears after search */}
-      {(flights.length > 0 || isLoading || error) && (
-        <div className="bg-muted border-t border-border">
-          <div className="max-w-3xl mx-auto px-4 py-6">
-            {error && (
-              <div className="bg-destructive/10 text-destructive p-3 rounded-lg mb-4 text-center text-sm">
-                {error}
-              </div>
-            )}
-
-            {flights.length > 0 && (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <span className="text-sm text-muted-foreground">
-                    {filteredAndSortedFlights.length} uçuş bulundu
-                  </span>
-                  
-                  <FlightFilters
-                    filters={filters}
-                    onFiltersChange={setFilters}
-                    availableAirlines={availableAirlines}
-                    maxPrice={maxPrice}
-                    sortBy={sortBy}
-                    onSortChange={setSortBy}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  {filteredAndSortedFlights.map((flight, index) => (
-                    <FlightCard
-                      key={`${flight.flight_number}-${flight.departure_at}`}
-                      flight={flight}
-                      isFavorite={isFavorite(flight)}
-                      onToggleFavorite={() => toggleFavorite(flight)}
-                      rank={getRank(flight, index)}
-                    />
-                  ))}
-                </div>
-
-                {filteredAndSortedFlights.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground text-sm">
-                    Filtrelere uygun uçuş bulunamadı
-                  </div>
-                )}
-              </>
-            )}
-
-            {isLoading && (
-              <div className="text-center py-10">
-                <Plane className="h-8 w-8 mx-auto text-primary animate-bounce mb-2" />
-                <p className="text-muted-foreground text-sm">Uçuşlar aranıyor...</p>
-              </div>
-            )}
+          {/* Search Form */}
+          <div className="w-full max-w-2xl px-1">
+            <SearchForm
+              ref={searchFormRef}
+              onSearch={handleSearch}
+              isLoading={isLoading}
+            />
           </div>
-        </div>
-      )}
+
+          {/* Results Section - appears right under the search */}
+          {hasResultsSection && (
+            <div ref={resultsRef} className="w-full max-w-3xl mt-6 md:mt-8">
+              <div className="bg-muted border border-border/50 rounded-2xl">
+                <div className="px-4 py-6">
+                  {error && (
+                    <div className="bg-destructive/10 text-destructive p-3 rounded-lg mb-4 text-center text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  {flights.length > 0 && (
+                    <>
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <span className="text-sm text-muted-foreground">
+                          {filteredAndSortedFlights.length} uçuş bulundu
+                        </span>
+
+                        <FlightFilters
+                          filters={filters}
+                          onFiltersChange={setFilters}
+                          availableAirlines={availableAirlines}
+                          maxPrice={maxPrice}
+                          sortBy={sortBy}
+                          onSortChange={setSortBy}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        {filteredAndSortedFlights.map((flight, index) => (
+                          <FlightCard
+                            key={`${flight.flight_number}-${flight.departure_at}`}
+                            flight={flight}
+                            isFavorite={isFavorite(flight)}
+                            onToggleFavorite={() => toggleFavorite(flight)}
+                            rank={getRank(flight, index)}
+                          />
+                        ))}
+                      </div>
+
+                      {filteredAndSortedFlights.length === 0 && (
+                        <div className="text-center py-8 text-muted-foreground text-sm">
+                          Filtrelere uygun uçuş bulunamadı
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {isLoading && (
+                    <div className="text-center py-10">
+                      <Plane className="h-8 w-8 mx-auto text-primary animate-bounce mb-2" />
+                      <p className="text-muted-foreground text-sm">Uçuşlar aranıyor...</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Popular Routes - below results */}
+          <div className={cn("w-full max-w-2xl", hasResultsSection ? "mt-10" : "mt-6 md:mt-8")}>
+            <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
