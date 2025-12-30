@@ -141,6 +141,21 @@ const Index = () => {
         </div>
       </header>
 
+      {/* Sticky Results Banner */}
+      {flights.length > 0 && !isLoading && (
+        <div className="sticky top-[41px] z-30 bg-primary text-primary-foreground py-2 px-4 text-center text-sm font-medium shadow-md animate-in slide-in-from-top duration-300">
+          <span className="inline-flex items-center gap-2">
+            <Plane className="h-4 w-4" />
+            {filteredAndSortedFlights.length} uçuş bulundu
+            {filteredAndSortedFlights.length !== flights.length && (
+              <span className="text-primary-foreground/70">
+                ({flights.length} toplam)
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+
       <main className="flex-1">
         {/* Hero + Results */}
         <section
