@@ -183,12 +183,8 @@ serve(async (req) => {
       const results = await Promise.all(searchPromises);
       allFlights = results.flat();
       
-      // Sort by price
-      allFlights.sort((a, b) => a.price - b.price);
-      
-      // Limit results
-      allFlights = allFlights.slice(0, 30);
-      
+      // NOTE: Sorting/limiting is done after strict date filtering below
+
     } else {
       // Single destination search
       const searchPromises = searchPairs.map(async (pair) => {
@@ -237,19 +233,46 @@ serve(async (req) => {
       })));
     }
 
-    // NOTE: The Travelpayouts API caches results and may return flights on nearby dates.
-    // For now, we trust the API's date filtering and show all results.
-    // If strict filtering is needed, it should be done client-side with user feedback.
+    // Strictly filter results by the selected date(s).
+    // The upstream API may return nearby dates even when you send a single date; we only keep exact matches.
+    const dateOnly = (iso?: string): string | null => {
+      if (!iso || typeof iso !== 'string') return null;
+      const parts = iso.split('T');
+      return parts[0] || null;
+    };
+
+    const dateFilteredFlights = allFlights.filter((flight: any) => {
+      const dep = dateOnly(flight.departure_at);
+      if (!dep || !allowedDepartDates.has(dep)) return false;
+
+      // Round-trip: require matching (depart, return) pair.
+      if (returnDate) {
+        const ret = dateOnly(flight.return_at);
+        if (!ret) return false;
+        return allowedPairs.has(`${dep}|${ret}`);
+      }
+
+      return true;
+    });
+
+    if (dateFilteredFlights.length === 0 && allFlights.length > 0) {
+      console.log(
+        'Warning: upstream returned flights, but none match the requested date(s). Sample dates:',
+        allFlights.slice(0, 10).map((f: any) => dateOnly(f?.departure_at)).filter(Boolean)
+      );
+    }
+
+    console.log('After date filter:', dateFilteredFlights.length);
 
     // De-duplicate flights (the same flight can appear multiple times when we query multiple dates)
     const uniq = new Map<string, any>();
-    for (const f of allFlights) {
+    for (const f of dateFilteredFlights) {
       const key = `${f.flight_number ?? ''}|${f.departure_at ?? ''}|${f.return_at ?? ''}|${f.destination ?? ''}`;
       if (!uniq.has(key)) uniq.set(key, f);
     }
 
     const dedupedFlights = Array.from(uniq.values());
-    console.log('After dedupe:', dedupedFlights.length);
+    console.log('After date filter + dedupe:', dedupedFlights.length);
 
     // Apply visa filter to results
     let filteredFlights = dedupedFlights;
@@ -262,8 +285,16 @@ serve(async (req) => {
       });
     }
 
+    // Sort by price (lowest first)
+    const sortedFlights = [...filteredFlights].sort(
+      (a, b) => (a?.price ?? Number.POSITIVE_INFINITY) - (b?.price ?? Number.POSITIVE_INFINITY)
+    );
+
+    // Limit results for anywhere search to keep the UI fast
+    const finalFlights = isAnywhereSearch ? sortedFlights.slice(0, 30) : sortedFlights;
+
     // Transform the response to include affiliate links and visa info
-    const flights = filteredFlights.map((flight: any) => {
+    const flights = finalFlights.map((flight: any) => {
       const depYmd = (flight.departure_at ? String(flight.departure_at).split('T')[0] : departDate) || departDate;
       const retYmd = flight.return_at ? String(flight.return_at).split('T')[0] : undefined;
 
