@@ -188,33 +188,70 @@ serve(async (req) => {
     } else {
       // Single destination search
       const searchPromises = searchPairs.map(async (pair) => {
-        const searchParams = new URLSearchParams({
-          token: apiToken,
-          origin,
-          destination,
-          departure_at: pair.depart,
-          ...(pair.return ? { return_at: pair.return } : {}),
-          currency: 'TRY',
-          sorting: 'price',
-          limit: '30',
+        const dateOnly = (iso?: string): string | null => {
+          if (!iso || typeof iso !== 'string') return null;
+          const parts = iso.split('T');
+          return parts[0] || null;
+        };
+
+        const oneWay = !pair.return;
+
+        const callApi = async (departure_at: string, return_at?: string) => {
+          const searchParams = new URLSearchParams({
+            token: apiToken,
+            origin,
+            destination,
+            departure_at,
+            ...(return_at ? { return_at } : {}),
+            one_way: oneWay ? 'true' : 'false',
+            currency: 'TRY',
+            sorting: 'price',
+            limit: '30',
+          });
+
+          const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
+          console.log('Calling Travelpayouts API:', apiUrl.replace(apiToken, '***'));
+
+          const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Travelpayouts API error:', response.status, errorText);
+            return [];
+          }
+
+          const data = await response.json();
+          return data?.data || [];
+        };
+
+        // 1) Try exact day (YYYY-MM-DD)
+        const exact = await callApi(pair.depart, pair.return);
+        if (exact.length > 0) return exact;
+
+        // 2) Fallback: month cache (YYYY-MM) then filter back to the exact day.
+        // This API is cache-based; exact day can be empty even when flights exist on the Aviasales website.
+        const monthDepart = pair.depart.slice(0, 7);
+        const monthReturn = pair.return ? pair.return.slice(0, 7) : undefined;
+        console.log('Exact date empty, trying month cache:', { monthDepart, monthReturn });
+
+        const monthData = await callApi(monthDepart, monthReturn);
+
+        const filtered = monthData.filter((f: any) => {
+          const dep = dateOnly(f.departure_at);
+          if (dep !== pair.depart) return false;
+
+          if (pair.return) {
+            const ret = dateOnly(f.return_at);
+            return ret === pair.return;
+          }
+
+          return true;
         });
 
-        const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
-        console.log('Calling Travelpayouts API:', apiUrl.replace(apiToken, '***'));
-
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Travelpayouts API error:', response.status, errorText);
-          return [];
-        }
-
-        const data = await response.json();
-        return data.data || [];
+        return filtered;
       });
 
       const results = await Promise.all(searchPromises);
