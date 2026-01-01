@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Plane, Search, Globe, Shield, Clock, CreditCard } from 'lucide-react';
+import { Plane, Search, Globe, Shield, Clock, CreditCard, Sparkles, MapPin, TrendingUp, Star } from 'lucide-react';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
@@ -246,14 +246,14 @@ const Index = () => {
 
         {/* Sticky Results Banner */}
         {flights.length > 0 && !isLoading && (
-          <div className="sticky top-[41px] z-30 bg-primary text-primary-foreground py-2 px-4 text-center text-sm font-medium shadow-md animate-in slide-in-from-top duration-300">
-            <span className="inline-flex items-center gap-2 flex-wrap justify-center">
+          <div className="sticky top-[41px] z-30 gradient-primary text-primary-foreground py-3 px-4 text-center text-sm font-medium shadow-lg animate-fade-in">
+            <span className="inline-flex items-center gap-3 flex-wrap justify-center">
               <span className="inline-flex items-center gap-2">
-                <Plane className="h-4 w-4" aria-hidden="true" />
-                {filteredAndSortedFlights.length} uçuş bulundu
+                <Plane className="h-4 w-4 animate-bounce-gentle" aria-hidden="true" />
+                <span className="font-semibold">{filteredAndSortedFlights.length} uçuş bulundu</span>
               </span>
               {priceRange && (
-                <span className="text-primary-foreground/90 bg-primary-foreground/10 px-2 py-0.5 rounded-full text-xs">
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
                   {formatPrice(priceRange.min)} - {formatPrice(priceRange.max)}
                 </span>
               )}
@@ -267,91 +267,149 @@ const Index = () => {
         )}
 
         <main className="flex-1">
-          {/* Hero + Results */}
+          {/* Hero Section */}
           <section
             className={cn(
-              "flex flex-col items-center px-3 md:px-4 py-6 md:py-8",
-              hasResultsSection ? "justify-start" : "flex-1 justify-center"
+              "relative flex flex-col items-center px-4 md:px-6",
+              hasResultsSection ? "py-8 md:py-12" : "py-12 md:py-20"
             )}
             aria-labelledby="hero-title"
           >
-            {/* Logo & Title */}
-            <div className={cn("text-center", hasResultsSection ? "mb-5 md:mb-6" : "mb-6 md:mb-8")}>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Globe className="h-8 w-8 md:h-10 md:w-10 text-primary" aria-hidden="true" />
+            {/* Background decoration */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float" />
+              <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-travel-coral/5 rounded-full blur-3xl animate-float-delayed" />
+            </div>
+
+            {/* Hero Content */}
+            <div className={cn(
+              "relative text-center max-w-3xl mx-auto",
+              hasResultsSection ? "mb-6 md:mb-8" : "mb-8 md:mb-12"
+            )}>
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6 animate-fade-in">
+                <Sparkles className="h-4 w-4" />
+                <span>Türkiye'nin En Kapsamlı Uçuş Karşılaştırma Platformu</span>
               </div>
-              <h1 id="hero-title" className="text-xl md:text-3xl font-display font-semibold text-foreground">
-                En Ucuz Uçak Bileti
+              
+              <h1 
+                id="hero-title" 
+                className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 animate-fade-in-up"
+                style={{ animationDelay: '0.1s' }}
+              >
+                En Ucuz <span className="text-gradient">Uçak Bileti</span>
               </h1>
-              <p className="text-sm md:text-base text-muted-foreground mt-2">
-                Tüm havayollarını karşılaştırın, en uygun fiyatı bulun
+              
+              <p 
+                className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
+                style={{ animationDelay: '0.2s' }}
+              >
+                Tüm havayollarını tek seferde karşılaştırın, en uygun fiyatı bulun. 
+                Hızlı, güvenli ve komisyonsuz.
               </p>
             </div>
 
-            {/* Search Form */}
-            <div className="w-full max-w-2xl px-1">
-              <SearchForm
-                ref={searchFormRef}
-                onSearch={handleSearch}
-                isLoading={isLoading}
-              />
+            {/* Floating Search Form */}
+            <div 
+              className="relative w-full max-w-3xl animate-fade-in-up"
+              style={{ animationDelay: '0.3s' }}
+            >
+              <div className="search-bar-float p-6 md:p-8">
+                <SearchForm
+                  ref={searchFormRef}
+                  onSearch={handleSearch}
+                  isLoading={isLoading}
+                />
+              </div>
             </div>
+
+            {/* Trust Badges */}
+            {!hasResultsSection && (
+              <div 
+                className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-muted-foreground animate-fade-in"
+                style={{ animationDelay: '0.4s' }}
+              >
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-success" />
+                  <span>Güvenli Ödeme</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span>En İyi Fiyat Garantisi</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-travel-gold" />
+                  <span>500+ Havayolu</span>
+                </div>
+              </div>
+            )}
 
             {/* Results Section */}
             {hasResultsSection && (
-              <div ref={resultsRef} className="w-full max-w-3xl mt-6 md:mt-8">
-                <div className="bg-muted border border-border/50 rounded-2xl">
-                  <div className="px-4 py-6">
-                    {error && (
-                      <div className="bg-destructive/10 text-destructive p-3 rounded-lg mb-4 text-center text-sm">
-                        {error}
-                      </div>
-                    )}
+              <div ref={resultsRef} className="w-full max-w-4xl mt-8 md:mt-12 animate-fade-in-up">
+                <div className="card-modern p-6 md:p-8">
+                  {error && (
+                    <div className="bg-destructive/10 text-destructive p-4 rounded-xl mb-6 text-center text-sm font-medium border border-destructive/20">
+                      {error}
+                    </div>
+                  )}
 
-                    {flights.length > 0 && (
-                      <>
-                        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                          <span className="text-sm text-muted-foreground">
+                  {flights.length > 0 && (
+                    <>
+                      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-border/50">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-5 w-5 text-primary" />
+                          <span className="font-semibold text-foreground">
                             {filteredAndSortedFlights.length} uçuş bulundu
                           </span>
-
-                          <FlightFilters
-                            filters={filters}
-                            onFiltersChange={setFilters}
-                            availableAirlines={availableAirlines}
-                            maxPrice={maxPrice}
-                            sortBy={sortBy}
-                            onSortChange={setSortBy}
-                          />
                         </div>
 
-                        <div className="space-y-2">
-                          {filteredAndSortedFlights.map((flight, index) => (
+                        <FlightFilters
+                          filters={filters}
+                          onFiltersChange={setFilters}
+                          availableAirlines={availableAirlines}
+                          maxPrice={maxPrice}
+                          sortBy={sortBy}
+                          onSortChange={setSortBy}
+                        />
+                      </div>
+
+                      <div className="space-y-4">
+                        {filteredAndSortedFlights.map((flight, index) => (
+                          <div 
+                            key={`${flight.flight_number}-${flight.departure_at}`}
+                            className="animate-fade-in-up"
+                            style={{ animationDelay: `${index * 0.05}s` }}
+                          >
                             <FlightCard
-                              key={`${flight.flight_number}-${flight.departure_at}`}
                               flight={flight}
                               isFavorite={isFavorite(flight)}
                               onToggleFavorite={() => toggleFavorite(flight)}
                               rank={getRank(flight, index)}
                             />
-                          ))}
-                        </div>
-
-                        {filteredAndSortedFlights.length === 0 && (
-                          <div className="text-center py-8 text-muted-foreground text-sm">
-                            Filtrelere uygun uçuş bulunamadı
                           </div>
-                        )}
-                      </>
-                    )}
-
-                    {isLoading && (
-                      <div className="text-center py-10">
-                        <Plane className="h-8 w-8 mx-auto text-primary animate-bounce mb-2" aria-hidden="true" />
-                        <p className="text-muted-foreground text-sm">Uçuşlar aranıyor...</p>
+                        ))}
                       </div>
-                    )}
-                  </div>
+
+                      {filteredAndSortedFlights.length === 0 && (
+                        <div className="text-center py-12 text-muted-foreground">
+                          <Search className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                          <p className="font-medium">Filtrelere uygun uçuş bulunamadı</p>
+                          <p className="text-sm mt-1">Farklı filtreler deneyebilirsiniz</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {isLoading && (
+                    <div className="text-center py-16">
+                      <div className="relative inline-block">
+                        <Plane className="h-12 w-12 text-primary animate-bounce-gentle" aria-hidden="true" />
+                        <div className="absolute inset-0 rounded-full animate-pulse-ring border-2 border-primary" />
+                      </div>
+                      <p className="text-muted-foreground mt-4 font-medium">Uçuşlar aranıyor...</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">Lütfen bekleyin</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* In-Article Ad after results */}
@@ -360,124 +418,198 @@ const Index = () => {
             )}
 
             {/* Popular Routes */}
-            <div className={cn("w-full max-w-2xl", hasResultsSection ? "mt-10" : "mt-6 md:mt-8")}>
+            <div className={cn("w-full max-w-3xl", hasResultsSection ? "mt-12" : "mt-10 md:mt-16")}>
               <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
             </div>
           </section>
 
-          {/* SEO Content Section */}
-          <section className="max-w-4xl mx-auto px-4 py-12" aria-labelledby="seo-features">
-            <h2 id="seo-features" className="text-2xl font-bold text-center mb-8">
-              Neden WooNomad?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-muted rounded-xl">
-                <Search className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
-                <h3 className="font-semibold mb-2">Kapsamlı Arama</h3>
-                <p className="text-sm text-muted-foreground">
-                  Tüm havayollarının uçak biletlerini tek seferde karşılaştırın. 
-                  En ucuz bilet fiyatlarını anında görün.
+          {/* Features Section */}
+          <section className="py-16 md:py-24 section-routes" aria-labelledby="seo-features">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="text-center mb-12">
+                <h2 id="seo-features" className="text-2xl md:text-4xl font-display font-bold text-foreground mb-4">
+                  Neden WooNomad?
+                </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Seyahat planlamanızı kolaylaştıran güçlü özellikler
                 </p>
               </div>
-              <div className="text-center p-6 bg-muted rounded-xl">
-                <Shield className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
-                <h3 className="font-semibold mb-2">Güvenli Rezervasyon</h3>
-                <p className="text-sm text-muted-foreground">
-                  Doğrudan havayolu sitelerine yönlendirme ile güvenli online bilet alımı. 
-                  Aracı komisyon yok.
-                </p>
-              </div>
-              <div className="text-center p-6 bg-muted rounded-xl">
-                <Clock className="h-10 w-10 text-primary mx-auto mb-4" aria-hidden="true" />
-                <h3 className="font-semibold mb-2">Hızlı Sonuçlar</h3>
-                <p className="text-sm text-muted-foreground">
-                  Saniyeler içinde yüzlerce uçuş seçeneği. Esnek tarih ve filtre 
-                  seçenekleriyle arama yapın.
-                </p>
+              
+              <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+                {[
+                  {
+                    icon: Search,
+                    title: 'Kapsamlı Arama',
+                    description: 'Tüm havayollarının uçak biletlerini tek seferde karşılaştırın. En ucuz bilet fiyatlarını anında görün.',
+                    color: 'bg-primary/10 text-primary'
+                  },
+                  {
+                    icon: Shield,
+                    title: 'Güvenli Rezervasyon',
+                    description: 'Doğrudan havayolu sitelerine yönlendirme ile güvenli online bilet alımı. Aracı komisyon yok.',
+                    color: 'bg-success/10 text-success'
+                  },
+                  {
+                    icon: Clock,
+                    title: 'Hızlı Sonuçlar',
+                    description: 'Saniyeler içinde yüzlerce uçuş seçeneği. Esnek tarih ve filtre seçenekleriyle arama yapın.',
+                    color: 'bg-travel-coral/10 text-travel-coral'
+                  }
+                ].map((feature, index) => (
+                  <div 
+                    key={feature.title}
+                    className="card-modern p-8 text-center group hover:border-primary/30"
+                  >
+                    <div className={cn(
+                      "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-transform group-hover:scale-110",
+                      feature.color
+                    )}>
+                      <feature.icon className="h-8 w-8" aria-hidden="true" />
+                    </div>
+                    <h3 className="font-display font-semibold text-lg mb-3 text-foreground">{feature.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
 
           {/* Banner Ad */}
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="max-w-4xl mx-auto px-4 py-8">
             <AdBanner />
           </div>
 
           {/* LLM-Friendly Content */}
-          <section className="max-w-4xl mx-auto px-4 py-12 seo-content" aria-labelledby="seo-info">
-            <h2 id="seo-info" className="text-2xl font-bold mb-6">
-              Ucuz Uçak Bileti Nasıl Bulunur?
-            </h2>
-            <div className="prose prose-lg max-w-none text-muted-foreground">
-              <p className="leading-relaxed mb-4">
-                <strong>En ucuz uçak bileti</strong> bulmak için doğru zamanda, doğru stratejiyle arama yapmak 
-                önemlidir. WooNomad ile tüm havayollarının biletlerini karşılaştırarak en uygun fiyatları 
-                bulabilirsiniz.
-              </p>
-              
-              <h3 className="text-xl font-semibold text-foreground mt-6 mb-3">
-                Ucuz Bilet İçin İpuçları
-              </h3>
-              <ul className="space-y-2 mb-6">
-                <li>• <strong>Erken rezervasyon yapın:</strong> Seyahatinizden 6-8 hafta önce bilet almak genellikle %20-30 tasarruf sağlar.</li>
-                <li>• <strong>Hafta içi uçuşları tercih edin:</strong> Salı ve Çarşamba günleri genellikle en ucuz günlerdir.</li>
-                <li>• <strong>Esnek tarih araması kullanın:</strong> Bir gün öncesi veya sonrası önemli fiyat farkları yaratabilir.</li>
-                <li>• <strong>Düşük sezonu değerlendirin:</strong> Ocak-Şubat ve Kasım aylarında uçak bileti fiyatları düşer.</li>
-                <li>• <strong>Fiyat karşılaştırması yapın:</strong> WooNomad ile tüm havayollarını tek seferde karşılaştırın.</li>
-              </ul>
+          <section className="max-w-4xl mx-auto px-4 py-12 md:py-16 seo-content" aria-labelledby="seo-info">
+            <div className="card-modern p-8 md:p-12">
+              <h2 id="seo-info" className="text-2xl md:text-3xl font-display font-bold mb-8 text-foreground">
+                Ucuz Uçak Bileti Nasıl Bulunur?
+              </h2>
+              <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
+                <p className="leading-relaxed text-base md:text-lg">
+                  En uygun uçak bileti fiyatlarını bulmak için doğru zamanı ve stratejileri bilmek önemlidir. 
+                  WooNomad olarak, yolcuların en avantajlı fiyatları yakalamasına yardımcı oluyoruz.
+                </p>
 
-              <h3 className="text-xl font-semibold text-foreground mt-6 mb-3">
-                WooNomad ile Uçak Bileti Arama
-              </h3>
-              <p className="leading-relaxed">
-                WooNomad, Türkiye'den dünyaya tüm uçuşları karşılaştırmanızı sağlayan bir uçak bileti arama 
-                motorudur. İstanbul, Ankara, İzmir ve diğer şehirlerden Avrupa, Asya, Amerika ve tüm dünyaya 
-                uçuş arayabilirsiniz. Gidiş-dönüş bilet, tek yön bilet veya çoklu şehir seçenekleriyle 
-                ihtiyacınıza uygun uçuşları bulun.
-              </p>
+                <div className="grid md:grid-cols-2 gap-8 my-10">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-display font-semibold text-foreground flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-primary" />
+                      </div>
+                      En Uygun Alım Zamanı
+                    </h3>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-1">•</span>
+                        <span>Yurt içi uçuşlar için 2-4 hafta önceden</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-1">•</span>
+                        <span>Yurt dışı uçuşlar için 6-8 hafta önceden</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-1">•</span>
+                        <span>Salı ve Çarşamba günleri genelde daha ucuz</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-1">•</span>
+                        <span>Gece yarısı fiyat düşüşleri takip edin</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-display font-semibold text-foreground flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-success" />
+                      </div>
+                      Tasarruf İpuçları
+                    </h3>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-start gap-2">
+                        <span className="text-success mt-1">•</span>
+                        <span>Esnek tarih araması yapın</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-success mt-1">•</span>
+                        <span>Aktarmalı uçuşları değerlendirin</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-success mt-1">•</span>
+                        <span>Alternatif havalimanlarını kontrol edin</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-success mt-1">•</span>
+                        <span>Son dakika fırsatlarını kaçırmayın</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-muted/50 rounded-2xl p-6 border border-border/50">
+                  <h3 className="text-lg font-display font-semibold text-foreground mb-3">
+                    WooNomad Avantajları
+                  </h3>
+                  <p className="text-sm leading-relaxed">
+                    WooNomad, yüzlerce havayolunun uçak biletlerini tek bir platformda karşılaştırmanızı sağlar. 
+                    Gerçek zamanlı fiyat takibi, esnek arama filtreleri ve şeffaf fiyatlandırma ile en uygun 
+                    uçak biletini bulmanız artık çok kolay. Komisyon almadan, doğrudan havayollarından 
+                    güvenli bilet alımı yapabilirsiniz.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
 
           {/* FAQ Section */}
-          <section className="max-w-4xl mx-auto px-4 py-12 bg-muted/30" aria-labelledby="faq-section">
-            <h2 id="faq-section" className="text-2xl font-bold mb-6 text-center">
-              Sıkça Sorulan Sorular
+          <section className="max-w-4xl mx-auto px-4 pb-16 md:pb-24">
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-10">
+              Sık Sorulan Sorular
             </h2>
             <div className="space-y-4">
-              <details className="bg-background rounded-lg p-4 border border-border">
-                <summary className="font-semibold cursor-pointer">WooNomad nedir?</summary>
-                <p className="mt-3 text-muted-foreground">
-                  WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı 
-                  sağlayan bir uçak bileti arama motorudur. Doğrudan havayolu sitelerine yönlendirme yapar, 
-                  komisyon almaz.
-                </p>
-              </details>
-              <details className="bg-background rounded-lg p-4 border border-border">
-                <summary className="font-semibold cursor-pointer">En ucuz uçak bileti nasıl bulunur?</summary>
-                <p className="mt-3 text-muted-foreground">
-                  En ucuz uçak bileti için erken rezervasyon yapın (6-8 hafta önce), hafta içi günleri tercih 
-                  edin (Salı-Çarşamba), esnek tarih araması kullanın ve düşük sezon dönemlerini değerlendirin.
-                </p>
-              </details>
-              <details className="bg-background rounded-lg p-4 border border-border">
-                <summary className="font-semibold cursor-pointer">Uçak bileti ne zaman daha ucuz?</summary>
-                <p className="mt-3 text-muted-foreground">
-                  Uçak biletleri genellikle Salı ve Çarşamba günleri, yılın düşük sezonlarında (Ocak-Şubat, 
-                  Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur. Son dakika biletleri ise doluluk durumuna 
-                  göre değişir.
-                </p>
-              </details>
+              {[
+                {
+                  question: 'WooNomad nedir?',
+                  answer: 'WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı sağlayan bir uçak bileti arama motorudur. Komisyon almadan, şeffaf fiyatlarla güvenli rezervasyon yapabilirsiniz.'
+                },
+                {
+                  question: 'En ucuz uçak bileti nasıl bulunur?',
+                  answer: 'En ucuz uçak bileti için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve esnek tarih araması kullanın. WooNomad ile tüm havayollarını tek seferde karşılaştırabilirsiniz.'
+                },
+                {
+                  question: 'Uçak bileti ne zaman daha ucuz?',
+                  answer: 'Uçak biletleri genellikle Salı ve Çarşamba günleri, düşük sezonlarda (Ocak-Şubat, Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur.'
+                }
+              ].map((faq, index) => (
+                <div key={index} className="card-modern p-6">
+                  <h3 className="font-display font-semibold text-foreground mb-2">{faq.question}</h3>
+                  <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                </div>
+              ))}
             </div>
           </section>
         </main>
 
         {/* Footer */}
-        <footer className="bg-muted border-t border-border py-8 mt-auto">
-          <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            <p>© {currentYear} WooNomad. Tüm hakları saklıdır.</p>
-            <p className="mt-2">
-              Ucuz uçak bileti • Uçak bileti fiyatları • Online bilet • Havayolu karşılaştırma
-            </p>
+        <footer className="border-t border-border py-8 bg-muted/30">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Globe className="h-5 w-5 text-primary" />
+                <span className="font-display font-semibold">WooNomad</span>
+              </div>
+              <p className="text-sm text-muted-foreground text-center">
+                © {currentYear} WooNomad. Tüm hakları saklıdır.
+              </p>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <a href="#" className="hover-underline">Gizlilik</a>
+                <a href="#" className="hover-underline">Kullanım Şartları</a>
+                <a href="#" className="hover-underline">İletişim</a>
+              </div>
+            </div>
           </div>
         </footer>
       </div>
