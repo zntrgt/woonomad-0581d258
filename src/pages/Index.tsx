@@ -6,6 +6,7 @@ import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -601,7 +602,7 @@ const Index = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-border py-8 bg-muted/30">
+        <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
@@ -619,6 +620,9 @@ const Index = () => {
             </div>
           </div>
         </footer>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
       </div>
     </>
   );

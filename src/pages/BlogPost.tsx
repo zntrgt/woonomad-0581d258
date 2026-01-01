@@ -1,10 +1,12 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, User, ChevronRight, Plane, Building, MapPin, Share2, ArrowLeft, Tag } from 'lucide-react';
+import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { HotelWidget } from '@/components/HotelWidget';
 import { getPostBySlug, getRelatedPosts, getCategoryInfo, BlogPost as BlogPostType } from '@/lib/blog';
 import { getCityBySlug, CityInfo } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
@@ -64,28 +66,7 @@ function FlightSearchWidget({ cityName, citySlug }: { cityName: string; citySlug
   );
 }
 
-// Widget: Hotels
-function HotelsWidget({ cityName, citySlug }: { cityName: string; citySlug: string }) {
-  return (
-    <div className="card-modern p-5 mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Building className="h-5 w-5 text-primary" />
-        <h3 className="font-display font-semibold">{cityName} Otelleri</h3>
-      </div>
-      
-      <p className="text-sm text-muted-foreground mb-4">
-        En iyi fiyatlarla otel rezervasyonu yapın
-      </p>
-      
-      <Link to={`/sehir/${citySlug}/oteller`}>
-        <Button variant="outline" className="w-full">
-          <Building className="h-4 w-4 mr-2" />
-          Otelleri Gör
-        </Button>
-      </Link>
-    </div>
-  );
-}
+// HotelsWidget is now replaced by HotelWidget component from @/components/HotelWidget
 
 // Related Post Card
 function RelatedPostCard({ post }: { post: BlogPostType }) {
@@ -253,7 +234,7 @@ export default function BlogPost() {
         <Header />
         
         {/* Hero Cover Image */}
-        <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
+        <div className="relative h-[35vh] md:h-[50vh] overflow-hidden">
           <img
             src={post.coverImage}
             alt={post.title}
@@ -262,10 +243,10 @@ export default function BlogPost() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
         
-        <main className="max-w-7xl mx-auto px-4 -mt-32 relative z-10">
-          <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+        <main className="max-w-7xl mx-auto px-4 -mt-24 md:-mt-32 relative z-10 pb-20 md:pb-0">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-6 lg:gap-8">
             {/* Main Content */}
-            <article className="card-modern p-6 md:p-10">
+            <article className="card-modern p-4 md:p-8 lg:p-10">
               <Breadcrumb 
                 items={[
                   { label: 'Ana Sayfa', href: '/' },
@@ -362,15 +343,15 @@ export default function BlogPost() {
             </article>
             
             {/* Sidebar */}
-            <aside className="space-y-6">
+            <aside className="space-y-6 hidden lg:block">
               {/* City Widget */}
               {city && <CityWidget citySlug={city.slug} />}
               
               {/* Flight Search Widget */}
               {city && <FlightSearchWidget cityName={city.name} citySlug={city.slug} />}
               
-              {/* Hotels Widget */}
-              {city && <HotelsWidget cityName={city.name} citySlug={city.slug} />}
+              {/* Hotels Widget - Trip.com Affiliate */}
+              {city && <HotelWidget cityName={city.name} citySlug={city.slug} variant="sidebar" />}
               
               {/* Related Posts */}
               {relatedPosts.length > 0 && (
@@ -384,15 +365,37 @@ export default function BlogPost() {
                 </div>
               )}
             </aside>
+
+            {/* Mobile Widgets - below content */}
+            <aside className="lg:hidden space-y-4 mt-8">
+              {city && <HotelWidget cityName={city.name} citySlug={city.slug} variant="compact" />}
+              {city && (
+                <Link to={`/sehir/${city.slug}/ucak-bileti`} className="block">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Plane className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{city.name} Uçuşları</div>
+                      <div className="text-xs text-muted-foreground">En ucuz fiyatları bul</div>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </Link>
+              )}
+            </aside>
           </div>
         </main>
         
         {/* Footer */}
-        <footer className="border-t border-border py-8 mt-16 bg-muted/30">
+        <footer className="border-t border-border py-8 mt-16 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
           </div>
         </footer>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
       </div>
     </>
   );
