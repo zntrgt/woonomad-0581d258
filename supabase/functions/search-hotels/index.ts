@@ -42,22 +42,73 @@ serve(async (req) => {
     let targetCityId = cityId;
     
     if (!targetCityId && location) {
-      // Use Hotellook location lookup
-      const lookupUrl = `https://engine.hotellook.com/api/v2/lookup.json?query=${encodeURIComponent(location)}&lang=tr&lookFor=city&limit=1&token=${TRAVELPAYOUTS_API_TOKEN}`;
+      // City name to ID mapping for common cities
+      const cityMapping: Record<string, string> = {
+        'berlin': '12153',
+        'paris': '2734',
+        'london': '2114',
+        'rome': '3181',
+        'amsterdam': '523',
+        'barcelona': '2871',
+        'istanbul': '10636',
+        'athens': '1368',
+        'prague': '4318',
+        'vienna': '5765',
+        'dubai': '1943',
+        'tokyo': '4973',
+        'new york': '3558',
+        'los angeles': '2592',
+        'miami': '3093',
+        'antalya': '10637',
+        'izmir': '10638',
+        'bodrum': '10639',
+        'tbilisi': '2765',
+        'skopje': '3445',
+        'frankfurt': '12192',
+        'munich': '12456',
+        'madrid': '3006',
+        'lisbon': '2537',
+        'milan': '3054',
+        'florence': '2023',
+        'venice': '5674',
+        'budapest': '1640',
+        'warsaw': '5902',
+        'stockholm': '4680',
+        'oslo': '3575',
+        'copenhagen': '1809',
+        'helsinki': '2174',
+        'brussels': '1598',
+        'zurich': '6023',
+        'geneva': '2100',
+        'dublin': '1944',
+        'edinburgh': '1977',
+        'singapore': '4251',
+        'bangkok': '1339',
+        'hong kong': '2251',
+        'seoul': '4177',
+        'taipei': '4835',
+        'sydney': '4816',
+        'melbourne': '3036',
+        'toronto': '5068',
+        'vancouver': '5604',
+        'cairo': '1673',
+        'marrakech': '3004',
+        'cape town': '1687',
+      };
       
-      const lookupResponse = await fetch(lookupUrl);
-      const lookupData = await lookupResponse.json();
+      const normalizedLocation = location.toLowerCase().trim();
+      targetCityId = cityMapping[normalizedLocation];
       
-      console.log("City lookup result:", lookupData);
-      
-      if (lookupData.results?.locations?.[0]?.id) {
-        targetCityId = lookupData.results.locations[0].id;
-      } else {
+      if (!targetCityId) {
+        console.log("City not found in mapping, searching:", normalizedLocation);
+        // Return empty with fallback message
         return new Response(
-          JSON.stringify({ error: "City not found", hotels: [] }),
+          JSON.stringify({ error: `City "${location}" not found`, hotels: [] }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+      
+      console.log("Found city ID:", targetCityId, "for location:", location);
     }
 
     if (!targetCityId) {
@@ -67,13 +118,40 @@ serve(async (req) => {
       );
     }
 
-    // Search for hotels using Hotellook cache API
-    const searchUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&limit=${limit}&currency=${currency}&token=${TRAVELPAYOUTS_API_TOKEN}`;
+    // Search for hotels using Hotellook cache API with token
+    const searchUrl = `http://engine.hotellook.com/api/v2/cache.json?location=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&limit=${limit}&currency=${currency}&token=${TRAVELPAYOUTS_API_TOKEN}`;
 
-    console.log("Hotel search URL:", searchUrl);
+    console.log("Hotel search URL:", searchUrl.replace(TRAVELPAYOUTS_API_TOKEN, '***'));
 
     const searchResponse = await fetch(searchUrl);
-    const searchData = await searchResponse.json();
+    const responseText = await searchResponse.text();
+    
+    console.log("Response status:", searchResponse.status);
+    console.log("Response preview:", responseText.slice(0, 300));
+    
+    // If no hotels found or API returns error, return with affiliate link only
+    let searchData: any[] = [];
+    try {
+      searchData = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Failed to parse response as JSON");
+    }
+    
+    if (!Array.isArray(searchData) || searchData.length === 0) {
+      // Return fallback affiliate link
+      return new Response(
+        JSON.stringify({ 
+          hotels: [],
+          cityId: targetCityId,
+          checkIn,
+          checkOut,
+          currency,
+          affiliateLink: `https://search.hotellook.com/hotels?destination=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
 
     console.log("Hotel search response:", JSON.stringify(searchData).slice(0, 500));
 
