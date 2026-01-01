@@ -17,18 +17,25 @@ import { tr } from 'date-fns/locale';
 
 type SortOption = 'price' | 'duration' | 'departure' | 'best';
 
-// Airport lookup for popular routes
+// Airport lookup for popular routes - includes all destinations
 const airportLookup: Record<string, Airport> = {
   'IST': { code: 'IST', name: 'İstanbul Havalimanı', city: 'İstanbul', country: 'Türkiye' },
   'SAW': { code: 'SAW', name: 'Sabiha Gökçen', city: 'İstanbul', country: 'Türkiye' },
   'ESB': { code: 'ESB', name: 'Esenboğa Havalimanı', city: 'Ankara', country: 'Türkiye' },
   'AYT': { code: 'AYT', name: 'Antalya Havalimanı', city: 'Antalya', country: 'Türkiye' },
   'ADB': { code: 'ADB', name: 'Adnan Menderes', city: 'İzmir', country: 'Türkiye' },
+  'BJV': { code: 'BJV', name: 'Milas-Bodrum Havalimanı', city: 'Bodrum', country: 'Türkiye' },
   'BCN': { code: 'BCN', name: 'El Prat', city: 'Barselona', country: 'İspanya' },
   'ATH': { code: 'ATH', name: 'Eleftherios Venizelos', city: 'Atina', country: 'Yunanistan' },
   'CDG': { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'Fransa' },
   'FCO': { code: 'FCO', name: 'Fiumicino', city: 'Roma', country: 'İtalya' },
   'DXB': { code: 'DXB', name: 'Dubai', city: 'Dubai', country: 'BAE' },
+  'TBS': { code: 'TBS', name: 'Tiflis Havalimanı', city: 'Tiflis', country: 'Gürcistan' },
+  'SKP': { code: 'SKP', name: 'Üsküp Havalimanı', city: 'Üsküp', country: 'Kuzey Makedonya' },
+  'LHR': { code: 'LHR', name: 'Heathrow', city: 'Londra', country: 'İngiltere' },
+  'AMS': { code: 'AMS', name: 'Schiphol', city: 'Amsterdam', country: 'Hollanda' },
+  'FRA': { code: 'FRA', name: 'Frankfurt', city: 'Frankfurt', country: 'Almanya' },
+  'BER': { code: 'BER', name: 'Berlin Brandenburg', city: 'Berlin', country: 'Almanya' },
 };
 
 const Index = () => {
