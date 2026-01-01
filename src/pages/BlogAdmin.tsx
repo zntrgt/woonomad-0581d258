@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Header } from "@/components/Header";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -8,24 +9,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Save, Trash2 } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BlogPost {
   id: string;
   slug: string;
   title: string;
-  excerpt: string;
+  excerpt: string | null;
   content: string;
-  category: string;
-  city?: string;
+  category: string | null;
+  city: string | null;
+  image_url: string | null;
   published: boolean;
-  createdAt: Date;
+  created_at: string;
 }
 
 const BlogAdmin = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, loading: authLoading, isAdmin, signOut } = useAuth();
+
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -36,8 +45,40 @@ const BlogAdmin = () => {
     content: "",
     category: "",
     city: "",
+    image_url: "",
     published: false,
   });
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [authLoading, user, navigate]);
+
+  useEffect(() => {
+    if (user && isAdmin) {
+      fetchPosts();
+    }
+  }, [user, isAdmin]);
+
+  const fetchPosts = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      toast({
+        title: "Hata",
+        description: "Blog yazıları yüklenemedi.",
+        variant: "destructive",
+      });
+    } else {
+      setPosts(data || []);
+    }
+    setLoading(false);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -47,13 +88,14 @@ const BlogAdmin = () => {
       content: "",
       category: "",
       city: "",
+      image_url: "",
       published: false,
     });
     setEditingPost(null);
     setIsCreating(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.title || !formData.slug || !formData.content) {
       toast({
         title: "Hata",
@@ -63,37 +105,85 @@ const BlogAdmin = () => {
       return;
     }
 
+    setSaving(true);
+
     if (editingPost) {
-      setPosts(posts.map(p => 
-        p.id === editingPost.id 
-          ? { ...p, ...formData }
-          : p
-      ));
-      toast({
-        title: "Güncellendi",
-        description: "Blog yazısı başarıyla güncellendi.",
-      });
+      const { error } = await supabase
+        .from("blog_posts")
+        .update({
+          title: formData.title,
+          slug: formData.slug,
+          excerpt: formData.excerpt || null,
+          content: formData.content,
+          category: formData.category || null,
+          city: formData.city || null,
+          image_url: formData.image_url || null,
+          published: formData.published,
+        })
+        .eq("id", editingPost.id);
+
+      if (error) {
+        toast({
+          title: "Hata",
+          description: "Yazı güncellenemedi: " + error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Güncellendi",
+          description: "Blog yazısı başarıyla güncellendi.",
+        });
+        fetchPosts();
+        resetForm();
+      }
     } else {
-      const newPost: BlogPost = {
-        id: Date.now().toString(),
-        ...formData,
-        createdAt: new Date(),
-      };
-      setPosts([...posts, newPost]);
-      toast({
-        title: "Oluşturuldu",
-        description: "Blog yazısı başarıyla oluşturuldu.",
+      const { error } = await supabase.from("blog_posts").insert({
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt || null,
+        content: formData.content,
+        category: formData.category || null,
+        city: formData.city || null,
+        image_url: formData.image_url || null,
+        published: formData.published,
+        author_id: user?.id,
       });
+
+      if (error) {
+        toast({
+          title: "Hata",
+          description: "Yazı oluşturulamadı: " + error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Oluşturuldu",
+          description: "Blog yazısı başarıyla oluşturuldu.",
+        });
+        fetchPosts();
+        resetForm();
+      }
     }
-    resetForm();
+
+    setSaving(false);
   };
 
-  const handleDelete = (id: string) => {
-    setPosts(posts.filter(p => p.id !== id));
-    toast({
-      title: "Silindi",
-      description: "Blog yazısı silindi.",
-    });
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Hata",
+        description: "Yazı silinemedi: " + error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Silindi",
+        description: "Blog yazısı silindi.",
+      });
+      fetchPosts();
+    }
   };
 
   const handleEdit = (post: BlogPost) => {
@@ -101,10 +191,11 @@ const BlogAdmin = () => {
     setFormData({
       title: post.title,
       slug: post.slug,
-      excerpt: post.excerpt,
+      excerpt: post.excerpt || "",
       content: post.content,
-      category: post.category,
+      category: post.category || "",
       city: post.city || "",
+      image_url: post.image_url || "",
       published: post.published,
     });
     setIsCreating(true);
@@ -123,6 +214,39 @@ const BlogAdmin = () => {
       .replace(/(^-|-$)/g, "");
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Helmet>
+          <title>Yetkisiz Erişim | Woonomad</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <Header />
+        <main className="container mx-auto px-4 py-12 text-center">
+          <h1 className="text-2xl font-bold mb-4">Yetkisiz Erişim</h1>
+          <p className="text-muted-foreground mb-4">
+            Bu sayfaya erişim yetkiniz bulunmamaktadır.
+          </p>
+          <Button onClick={() => navigate("/")}>Ana Sayfaya Dön</Button>
+        </main>
+        <MobileBottomNav />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -135,12 +259,18 @@ const BlogAdmin = () => {
       <main className="container mx-auto px-4 py-8 mb-20 md:mb-0">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Blog Yönetimi</h1>
-          {!isCreating && (
-            <Button onClick={() => setIsCreating(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Yeni Yazı
+          <div className="flex gap-2">
+            {!isCreating && (
+              <Button onClick={() => setIsCreating(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Yeni Yazı
+              </Button>
+            )}
+            <Button variant="outline" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Çıkış
             </Button>
-          )}
+          </div>
         </div>
 
         {isCreating ? (
@@ -156,10 +286,10 @@ const BlogAdmin = () => {
                     id="title"
                     value={formData.title}
                     onChange={(e) => {
-                      setFormData({ 
-                        ...formData, 
+                      setFormData({
+                        ...formData,
                         title: e.target.value,
-                        slug: formData.slug || generateSlug(e.target.value)
+                        slug: formData.slug || generateSlug(e.target.value),
                       });
                     }}
                     placeholder="Blog yazısı başlığı"
@@ -198,6 +328,16 @@ const BlogAdmin = () => {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="image_url">Görsel URL (opsiyonel)</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="excerpt">Özet</Label>
                 <Textarea
                   id="excerpt"
@@ -229,9 +369,18 @@ const BlogAdmin = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button onClick={handleSave}>
-                  <Save className="w-4 h-4 mr-2" />
-                  Kaydet
+                <Button onClick={handleSave} disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Kaydediliyor...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Kaydet
+                    </>
+                  )}
                 </Button>
                 <Button variant="outline" onClick={resetForm}>
                   İptal
@@ -255,7 +404,7 @@ const BlogAdmin = () => {
                       <div>
                         <h3 className="font-semibold">{post.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                          /{post.slug} • {post.category}
+                          /{post.slug} • {post.category || "Kategori yok"}
                           {post.city && ` • ${post.city}`}
                           {post.published ? " • Yayında" : " • Taslak"}
                         </p>
