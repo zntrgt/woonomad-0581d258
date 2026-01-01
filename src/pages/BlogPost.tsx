@@ -151,54 +151,66 @@ export default function BlogPost() {
     }
   };
 
-  // Parse markdown-like content to HTML (simple version)
+  // Parse markdown-like content to HTML with inline widgets
   const renderContent = (content: string) => {
-    return content
-      .split('\n')
-      .map((line, index) => {
-        // Headers
-        if (line.startsWith('### ')) {
-          return <h3 key={index} className="text-lg font-display font-semibold mt-8 mb-3 text-foreground">{line.slice(4)}</h3>;
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={index} className="text-xl font-display font-bold mt-10 mb-4 text-foreground">{line.slice(3)}</h2>;
-        }
-        if (line.startsWith('# ')) {
-          return <h1 key={index} className="text-2xl font-display font-bold mt-8 mb-4 text-foreground">{line.slice(2)}</h1>;
-        }
-        
-        // List items
-        if (line.startsWith('- ')) {
-          return (
-            <li key={index} className="flex items-start gap-2 mb-2">
-              <span className="text-primary mt-1">•</span>
-              <span dangerouslySetInnerHTML={{ __html: formatInlineText(line.slice(2)) }} />
+    const lines = content.split('\n');
+    const elements: React.ReactNode[] = [];
+    const totalLines = lines.length;
+    const insertWidgetAfterLine = Math.floor(totalLines * 0.4); // Insert widget at ~40% of content
+    let widgetInserted = false;
+
+    lines.forEach((line, index) => {
+      // Headers
+      if (line.startsWith('### ')) {
+        elements.push(<h3 key={index} className="text-lg font-display font-semibold mt-8 mb-3 text-foreground">{line.slice(4)}</h3>);
+      } else if (line.startsWith('## ')) {
+        elements.push(<h2 key={index} className="text-xl font-display font-bold mt-10 mb-4 text-foreground">{line.slice(3)}</h2>);
+      } else if (line.startsWith('# ')) {
+        elements.push(<h1 key={index} className="text-2xl font-display font-bold mt-8 mb-4 text-foreground">{line.slice(2)}</h1>);
+      }
+      // List items
+      else if (line.startsWith('- ')) {
+        elements.push(
+          <li key={index} className="flex items-start gap-2 mb-2">
+            <span className="text-primary mt-1">•</span>
+            <span dangerouslySetInnerHTML={{ __html: formatInlineText(line.slice(2)) }} />
+          </li>
+        );
+      }
+      // Numbered list
+      else if (/^\d+\.\s/.test(line)) {
+        const match = line.match(/^(\d+)\.\s(.*)$/);
+        if (match) {
+          elements.push(
+            <li key={index} className="flex items-start gap-3 mb-2">
+              <span className="font-semibold text-primary min-w-[1.5rem]">{match[1]}.</span>
+              <span dangerouslySetInnerHTML={{ __html: formatInlineText(match[2]) }} />
             </li>
           );
         }
-        
-        // Numbered list
-        if (/^\d+\.\s/.test(line)) {
-          const match = line.match(/^(\d+)\.\s(.*)$/);
-          if (match) {
-            return (
-              <li key={index} className="flex items-start gap-3 mb-2">
-                <span className="font-semibold text-primary min-w-[1.5rem]">{match[1]}.</span>
-                <span dangerouslySetInnerHTML={{ __html: formatInlineText(match[2]) }} />
-              </li>
-            );
-          }
-        }
-        
-        // Regular paragraph
-        if (line.trim()) {
-          return (
-            <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatInlineText(line) }} />
-          );
-        }
-        
-        return null;
-      });
+      }
+      // Regular paragraph
+      else if (line.trim()) {
+        elements.push(
+          <p key={index} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatInlineText(line) }} />
+        );
+      }
+
+      // Insert inline hotel widget after ~40% of content (only if city exists)
+      if (!widgetInserted && index >= insertWidgetAfterLine && city) {
+        elements.push(
+          <HotelWidget 
+            key={`hotel-widget-${index}`} 
+            cityName={city.name} 
+            citySlug={city.slug} 
+            variant="inline" 
+          />
+        );
+        widgetInserted = true;
+      }
+    });
+
+    return elements;
   };
 
   // Format bold text
