@@ -20,6 +20,7 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { TripPlanner } from '@/components/TripPlanner';
 import { getCityBySlug } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
@@ -174,6 +175,13 @@ const City = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* AI Trip Planner */}
+              <TripPlanner 
+                cityName={city.name} 
+                cityNameEn={city.nameEn}
+                country={city.country} 
+              />
 
               {/* Flight Routes */}
               {relatedRoutes.length > 0 && (
