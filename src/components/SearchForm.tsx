@@ -1,5 +1,5 @@
 import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Search, Users, ArrowRightLeft, Plane } from 'lucide-react';
+import { Search, Users, ArrowRightLeft, Plane, Sparkles } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { AirportInput } from './AirportInput';
@@ -92,10 +92,10 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const totalPassengers = passengers.adults + passengers.children + passengers.infants;
 
     return (
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* Main Search Box */}
-        <div className="flex flex-col md:flex-row gap-3 items-end">
-          <div className="flex-1">
+        <div className="flex flex-col md:flex-row gap-4 items-end">
+          <div className="flex-1 group">
             <AirportInput
               label="Nereden"
               placeholder="Şehir veya havalimanı"
@@ -108,12 +108,12 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           <button
             onClick={handleSwap}
             disabled={isAnywhereSearch}
-            className="p-2.5 rounded-full border border-border hover:bg-muted transition-colors disabled:opacity-40 mb-1"
+            className="p-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-primary/30 transition-all duration-200 disabled:opacity-40 mb-1 group btn-interactive"
           >
-            <ArrowRightLeft className="h-4 w-4 text-muted-foreground" />
+            <ArrowRightLeft className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
           </button>
 
-          <div className="flex-1">
+          <div className="flex-1 group">
             <AirportInput
               label="Nereye"
               placeholder="Şehir veya havalimanı"
@@ -139,16 +139,16 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         {/* Options Row */}
         <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
           {/* Trip Type */}
-          <div className="flex items-center gap-1 bg-muted rounded-full p-0.5">
+          <div className="flex items-center gap-1 bg-muted rounded-xl p-1">
             {['Gidiş-Dönüş', 'Tek Yön'].map((label, i) => (
               <button
                 key={label}
                 onClick={() => setIsOneWay(i === 1)}
                 className={cn(
-                  "px-3 py-1 rounded-full text-sm transition-colors",
+                  "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   (i === 0 ? !isOneWay : isOneWay)
                     ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {label}
@@ -159,42 +159,49 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           {/* Passengers */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-200",
+              showAdvanced 
+                ? "bg-primary/10 border-primary/30 text-primary" 
+                : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+            )}
           >
             <Users className="h-4 w-4" />
-            <span>{passengers.adults + passengers.children} yolcu</span>
+            <span className="font-medium">{passengers.adults + passengers.children} yolcu</span>
           </button>
           
           {isAnywhereSearch && (
-            <span className="px-2.5 py-1 rounded-full text-xs bg-primary/10 text-primary font-medium">
-              🌍 Her Yer
+            <span className="px-3 py-2 rounded-xl text-xs bg-primary/10 text-primary font-semibold flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5" />
+              Her Yer Modu
             </span>
           )}
         </div>
 
         {/* Expanded Options */}
         {showAdvanced && (
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border">
+          <div className="flex flex-wrap items-center justify-center gap-6 pt-6 border-t border-border animate-fade-in">
             {/* Passengers */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               {[
-                { key: 'adults', label: 'Yetişkin', min: 1 },
-                { key: 'children', label: 'Çocuk', min: 0 },
-                { key: 'infants', label: 'Bebek', min: 0 },
-              ].map(({ key, label, min }) => (
-                <div key={key} className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">{label}</span>
-                  <div className="flex items-center">
+                { key: 'adults', label: 'Yetişkin', min: 1, desc: '12+ yaş' },
+                { key: 'children', label: 'Çocuk', min: 0, desc: '2-11 yaş' },
+                { key: 'infants', label: 'Bebek', min: 0, desc: '0-2 yaş' },
+              ].map(({ key, label, min, desc }) => (
+                <div key={key} className="flex flex-col items-center gap-2">
+                  <span className="text-sm font-medium text-foreground">{label}</span>
+                  <span className="text-xs text-muted-foreground">{desc}</span>
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() => setPassengers(p => ({ ...p, [key]: Math.max(min, (p as any)[key] - 1) }))}
-                      className="w-7 h-7 rounded-full border border-border text-sm hover:bg-muted"
+                      className="w-8 h-8 rounded-lg border border-border text-sm hover:bg-muted hover:border-primary/30 transition-all btn-interactive"
                     >
                       -
                     </button>
-                    <span className="w-6 text-center text-sm">{(passengers as any)[key]}</span>
+                    <span className="w-8 text-center text-sm font-semibold">{(passengers as any)[key]}</span>
                     <button
                       onClick={() => setPassengers(p => ({ ...p, [key]: Math.min(9, (p as any)[key] + 1) }))}
-                      className="w-7 h-7 rounded-full border border-border text-sm hover:bg-muted"
+                      className="w-8 h-8 rounded-lg border border-border text-sm hover:bg-muted hover:border-primary/30 transition-all btn-interactive"
                     >
                       +
                     </button>
@@ -203,32 +210,33 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               ))}
             </div>
             
-            <div className="h-5 w-px bg-border" />
+            <div className="h-12 w-px bg-border hidden md:block" />
             
             <CabinClassSelector value={cabinClass} onChange={setCabinClass} />
             
-            <div className="h-5 w-px bg-border" />
+            <div className="h-12 w-px bg-border hidden md:block" />
             
             <VisaSelector value={visaOption} onChange={setVisaOption} />
           </div>
         )}
 
         {/* Search Button */}
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-center pt-4">
           <Button
             onClick={handleSearch}
             disabled={!origin || (!isAnywhereSearch && !destination) || !departDate || isLoading}
-            className="h-11 px-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+            size="lg"
+            className="h-14 px-10 rounded-2xl gradient-primary hover:opacity-90 text-primary-foreground font-semibold text-base shadow-lg shadow-primary/25 btn-interactive disabled:opacity-50"
           >
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <Plane className="h-4 w-4 animate-bounce" />
+              <div className="flex items-center gap-3">
+                <Plane className="h-5 w-5 animate-bounce-gentle" />
                 <span>Aranıyor...</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Search className="h-4 w-4" />
-                <span>{isAnywhereSearch ? 'Her Yeri Ara' : 'Uçuş Ara'}</span>
+              <div className="flex items-center gap-3">
+                <Search className="h-5 w-5" />
+                <span>{isAnywhereSearch ? 'Tüm Destinasyonları Ara' : 'Uçuş Ara'}</span>
               </div>
             )}
           </Button>
