@@ -24,6 +24,17 @@ const TRAVELER_LABELS: Record<string, string> = {
   business: 'iş seyahati (verimli ve merkezi rotalar)',
 };
 
+// Currency mapping by country
+const COUNTRY_CURRENCIES: Record<string, string> = {
+  'Türkiye': 'TRY',
+  'ABD': 'USD',
+  'Amerika': 'USD',
+  'İngiltere': 'GBP',
+  'Japonya': 'JPY',
+  'İsviçre': 'CHF',
+  // Default Euro for most European countries
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -72,43 +83,58 @@ serve(async (req) => {
 
     const interestText = interests.map((i: string) => INTEREST_LABELS[i] || i).join(', ');
     const travelerText = TRAVELER_LABELS[travelerType] || travelerType;
+    const currency = COUNTRY_CURRENCIES[country] || 'EUR';
 
-    const systemPrompt = `Sen deneyimli bir seyahat planlayıcısısın. Kullanıcının tercihlerine göre detaylı ve gerçekçi gezi rotaları oluşturuyorsun. Her öneride gerçek mekanlar ve pratik bilgiler veriyorsun.
+    const systemPrompt = `Sen deneyimli bir seyahat planlayıcısısın. Kullanıcının tercihlerine göre detaylı ve gerçekçi gezi rotaları oluşturuyorsun. Her öneride gerçek mekanlar, pratik bilgiler ve MUTLAKA tahmini maliyetler veriyorsun.
 
 Yanıtını SADECE JSON formatında ver, başka hiçbir şey yazma. JSON şu yapıda olmalı:
 {
   "title": "Rota başlığı",
   "summary": "Kısa özet (2-3 cümle)",
+  "totalBudget": 500,
+  "currency": "${currency}",
   "days": [
     {
       "day": 1,
       "theme": "Günün teması",
+      "dailyBudget": 120,
       "activities": [
         {
           "time": "09:00",
           "place": "Mekan adı",
           "description": "Kısa açıklama",
-          "duration": "2 saat"
+          "duration": "2 saat",
+          "estimatedCost": 15
         }
       ]
     }
   ],
   "tips": ["İpucu 1", "İpucu 2", "İpucu 3"]
-}`;
+}
+
+ÖNEMLİ: 
+- estimatedCost her aktivite için tahmini maliyeti ${currency} cinsinden gösterir
+- dailyBudget o günün toplam tahmini bütçesidir
+- totalBudget tüm günlerin toplam tahmini bütçesidir
+- Ücretsiz aktiviteler için estimatedCost: 0 yaz
+- Maliyetler gerçekçi ve güncel olmalı`;
 
     const userPrompt = `${city} (${country}) için ${days} günlük bir gezi planı oluştur.
 
 Gezgin profili: ${travelerText}
 İlgi alanları: ${interestText}
+Para birimi: ${currency}
 
 Önemli kurallar:
 - Her gün için 4-6 aktivite planla
 - Sabah, öğle ve akşam aktiviteleri dengeli olsun
-- ${travelerType === 'family' ? 'Çocuk dostu mekanları öncelikle öner' : ''}
+- ${travelerType === 'family' ? 'Çocuk dostu mekanları öncelikle öner, bütçeyi buna göre ayarla' : ''}
 - ${travelerType === 'couple' ? 'Romantik mekanları ve deneyimleri dahil et' : ''}
-- ${travelerType === 'solo' ? 'Yalnız gezginler için güvenli ve sosyal mekanlar öner' : ''}
+- ${travelerType === 'solo' ? 'Yalnız gezginler için güvenli ve sosyal mekanlar öner, bütçe daha ekonomik olsun' : ''}
+- ${travelerType === 'business' ? 'Merkezi ve verimli rotalar oluştur' : ''}
+- Her aktivite için gerçekçi maliyet tahmini ver (giriş ücreti, yemek, ulaşım dahil)
 - Gerçek ve popüler mekanları öner
-- Yerel ipuçları ekle
+- Yerel ipuçları ekle (bütçe tasarrufu ipuçları da olabilir)
 - Ulaşım süreleri gerçekçi olsun`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -123,7 +149,6 @@ Gezgin profili: ${travelerText}
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.7,
       }),
     });
 
