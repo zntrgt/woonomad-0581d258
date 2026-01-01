@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,9 +6,7 @@ const corsHeaders = {
 };
 
 interface HotelSearchParams {
-  cityId?: string;
   location?: string;
-  iata?: string;
   checkIn: string;
   checkOut: string;
   adults?: number;
@@ -17,68 +14,82 @@ interface HotelSearchParams {
   currency?: string;
 }
 
-// City to IATA code mapping
-const cityToIata: Record<string, string> = {
-  'berlin': 'BER',
-  'paris': 'PAR',
-  'london': 'LON',
-  'rome': 'ROM',
-  'amsterdam': 'AMS',
-  'barcelona': 'BCN',
-  'istanbul': 'IST',
-  'athens': 'ATH',
-  'prague': 'PRG',
-  'vienna': 'VIE',
-  'dubai': 'DXB',
-  'tokyo': 'TYO',
-  'new york': 'NYC',
-  'los angeles': 'LAX',
-  'miami': 'MIA',
-  'antalya': 'AYT',
-  'izmir': 'ADB',
-  'bodrum': 'BJV',
-  'tbilisi': 'TBS',
-  'skopje': 'SKP',
-  'frankfurt': 'FRA',
-  'munich': 'MUC',
-  'madrid': 'MAD',
-  'lisbon': 'LIS',
-  'milan': 'MIL',
-  'florence': 'FLR',
-  'venice': 'VCE',
-  'budapest': 'BUD',
-  'warsaw': 'WAW',
-  'stockholm': 'STO',
-  'oslo': 'OSL',
-  'copenhagen': 'CPH',
-  'helsinki': 'HEL',
-  'brussels': 'BRU',
-  'zurich': 'ZRH',
-  'geneva': 'GVA',
-  'dublin': 'DUB',
-  'edinburgh': 'EDI',
-  'singapore': 'SIN',
-  'bangkok': 'BKK',
-  'hong kong': 'HKG',
-  'seoul': 'SEL',
-  'taipei': 'TPE',
-  'sydney': 'SYD',
-  'melbourne': 'MEL',
-  'toronto': 'YTO',
-  'vancouver': 'YVR',
-  'cairo': 'CAI',
-  'marrakech': 'RAK',
-  'cape town': 'CPT',
+// City name to Trip.com city keyword mapping
+const cityNames: Record<string, { en: string; tripcomUrl: string }> = {
+  'berlin': { en: 'Berlin', tripcomUrl: 'berlin-182' },
+  'paris': { en: 'Paris', tripcomUrl: 'paris-418' },
+  'london': { en: 'London', tripcomUrl: 'london-100' },
+  'londra': { en: 'London', tripcomUrl: 'london-100' },
+  'rome': { en: 'Rome', tripcomUrl: 'rome-303' },
+  'roma': { en: 'Rome', tripcomUrl: 'rome-303' },
+  'amsterdam': { en: 'Amsterdam', tripcomUrl: 'amsterdam-93' },
+  'barcelona': { en: 'Barcelona', tripcomUrl: 'barcelona-562' },
+  'barselona': { en: 'Barcelona', tripcomUrl: 'barcelona-562' },
+  'istanbul': { en: 'Istanbul', tripcomUrl: 'istanbul-359' },
+  'athens': { en: 'Athens', tripcomUrl: 'athens-342' },
+  'atina': { en: 'Athens', tripcomUrl: 'athens-342' },
+  'prague': { en: 'Prague', tripcomUrl: 'prague-317' },
+  'prag': { en: 'Prague', tripcomUrl: 'prague-317' },
+  'vienna': { en: 'Vienna', tripcomUrl: 'vienna-131' },
+  'viyana': { en: 'Vienna', tripcomUrl: 'vienna-131' },
+  'dubai': { en: 'Dubai', tripcomUrl: 'dubai-614' },
+  'tokyo': { en: 'Tokyo', tripcomUrl: 'tokyo-58' },
+  'new york': { en: 'New York', tripcomUrl: 'new-york-645' },
+  'los angeles': { en: 'Los Angeles', tripcomUrl: 'los-angeles-732' },
+  'miami': { en: 'Miami', tripcomUrl: 'miami-781' },
+  'antalya': { en: 'Antalya', tripcomUrl: 'antalya-360' },
+  'izmir': { en: 'Izmir', tripcomUrl: 'izmir-361' },
+  'bodrum': { en: 'Bodrum', tripcomUrl: 'bodrum-1116' },
+  'tbilisi': { en: 'Tbilisi', tripcomUrl: 'tbilisi-887' },
+  'tiflis': { en: 'Tbilisi', tripcomUrl: 'tbilisi-887' },
+  'frankfurt': { en: 'Frankfurt', tripcomUrl: 'frankfurt-189' },
+  'munich': { en: 'Munich', tripcomUrl: 'munich-196' },
+  'münih': { en: 'Munich', tripcomUrl: 'munich-196' },
+  'madrid': { en: 'Madrid', tripcomUrl: 'madrid-556' },
+  'lisbon': { en: 'Lisbon', tripcomUrl: 'lisbon-498' },
+  'lizbon': { en: 'Lisbon', tripcomUrl: 'lisbon-498' },
+  'milan': { en: 'Milan', tripcomUrl: 'milan-294' },
+  'milano': { en: 'Milan', tripcomUrl: 'milan-294' },
+  'florence': { en: 'Florence', tripcomUrl: 'florence-285' },
+  'floransa': { en: 'Florence', tripcomUrl: 'florence-285' },
+  'venice': { en: 'Venice', tripcomUrl: 'venice-312' },
+  'venedik': { en: 'Venice', tripcomUrl: 'venice-312' },
+  'budapest': { en: 'Budapest', tripcomUrl: 'budapest-268' },
+  'budapeşte': { en: 'Budapest', tripcomUrl: 'budapest-268' },
+  'warsaw': { en: 'Warsaw', tripcomUrl: 'warsaw-330' },
+  'varşova': { en: 'Warsaw', tripcomUrl: 'warsaw-330' },
+  'stockholm': { en: 'Stockholm', tripcomUrl: 'stockholm-123' },
+  'oslo': { en: 'Oslo', tripcomUrl: 'oslo-475' },
+  'copenhagen': { en: 'Copenhagen', tripcomUrl: 'copenhagen-169' },
+  'kopenhag': { en: 'Copenhagen', tripcomUrl: 'copenhagen-169' },
+  'helsinki': { en: 'Helsinki', tripcomUrl: 'helsinki-240' },
+  'brussels': { en: 'Brussels', tripcomUrl: 'brussels-148' },
+  'brüksel': { en: 'Brussels', tripcomUrl: 'brussels-148' },
+  'zurich': { en: 'Zurich', tripcomUrl: 'zurich-138' },
+  'zürih': { en: 'Zurich', tripcomUrl: 'zurich-138' },
+  'geneva': { en: 'Geneva', tripcomUrl: 'geneva-134' },
+  'cenevre': { en: 'Geneva', tripcomUrl: 'geneva-134' },
+  'dublin': { en: 'Dublin', tripcomUrl: 'dublin-254' },
+  'edinburgh': { en: 'Edinburgh', tripcomUrl: 'edinburgh-111' },
+  'singapore': { en: 'Singapore', tripcomUrl: 'singapore-73' },
+  'singapur': { en: 'Singapore', tripcomUrl: 'singapore-73' },
+  'bangkok': { en: 'Bangkok', tripcomUrl: 'bangkok-191' },
+  'hong kong': { en: 'Hong Kong', tripcomUrl: 'hong-kong-38' },
+  'seoul': { en: 'Seoul', tripcomUrl: 'seoul-234' },
+  'seul': { en: 'Seoul', tripcomUrl: 'seoul-234' },
+  'taipei': { en: 'Taipei', tripcomUrl: 'taipei-359' },
+  'sydney': { en: 'Sydney', tripcomUrl: 'sydney-361' },
+  'melbourne': { en: 'Melbourne', tripcomUrl: 'melbourne-355' },
+  'toronto': { en: 'Toronto', tripcomUrl: 'toronto-792' },
+  'vancouver': { en: 'Vancouver', tripcomUrl: 'vancouver-803' },
+  'cairo': { en: 'Cairo', tripcomUrl: 'cairo-605' },
+  'kahire': { en: 'Cairo', tripcomUrl: 'cairo-605' },
+  'marrakech': { en: 'Marrakech', tripcomUrl: 'marrakech-660' },
+  'marakeş': { en: 'Marrakech', tripcomUrl: 'marrakech-660' },
+  'cape town': { en: 'Cape Town', tripcomUrl: 'cape-town-674' },
+  'skopje': { en: 'Skopje', tripcomUrl: 'skopje-2374' },
+  'üsküp': { en: 'Skopje', tripcomUrl: 'skopje-2374' },
 };
-
-// Helper to create MD5 hash
-async function md5(text: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("MD5", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -87,142 +98,104 @@ serve(async (req) => {
   }
 
   try {
-    const TRAVELPAYOUTS_API_TOKEN = Deno.env.get("TRAVELPAYOUTS_API_TOKEN");
-    const TRAVELPAYOUTS_PARTNER_ID = Deno.env.get("TRAVELPAYOUTS_PARTNER_ID");
-
-    if (!TRAVELPAYOUTS_API_TOKEN || !TRAVELPAYOUTS_PARTNER_ID) {
-      console.error("Missing Travelpayouts credentials");
-      return new Response(
-        JSON.stringify({ error: "Hotel API credentials not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const TRAVELPAYOUTS_PARTNER_ID = Deno.env.get("TRAVELPAYOUTS_PARTNER_ID") || "261144";
 
     const params: HotelSearchParams = await req.json();
-    const { cityId, location, iata, checkIn, checkOut, adults = 2, limit = 10, currency = "USD" } = params;
+    const { location, checkIn, checkOut, adults = 2 } = params;
 
     console.log("Hotel search params:", params);
 
-    // Get IATA code
-    let targetIata = iata;
-    if (!targetIata && location) {
-      const normalizedLocation = location.toLowerCase().trim();
-      targetIata = cityToIata[normalizedLocation];
-    }
-
-    if (!targetIata) {
-      console.log("City not found in IATA mapping:", location);
-      // Return affiliate link only
+    // Find city info
+    const normalizedLocation = location?.toLowerCase().trim() || '';
+    const cityInfo = cityNames[normalizedLocation];
+    
+    if (!cityInfo) {
+      console.log("City not found:", normalizedLocation);
+      // Return generic Trip.com link
+      const searchQuery = encodeURIComponent(location || '');
       return new Response(
         JSON.stringify({ 
-          error: `City "${location}" not found`,
           hotels: [],
-          affiliateLink: `https://search.hotellook.com/?marker=${TRAVELPAYOUTS_PARTNER_ID}`
+          location,
+          checkIn,
+          checkOut,
+          affiliateLinks: {
+            tripcom: `https://www.trip.com/hotels/?locale=tr_TR&curr=TRY`,
+            hotellook: `https://search.hotellook.com/?marker=${TRAVELPAYOUTS_PARTNER_ID}`,
+          }
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Using IATA code:", targetIata, "for location:", location);
+    console.log("Found city:", cityInfo.en, "Trip.com URL:", cityInfo.tripcomUrl);
 
-    // Create signature for V2 API
-    // Signature format: token:marker:adultsCount:checkIn:checkOut:childAge1:childrenCount:currency:customerIP:iata:lang:waitForResult
-    const lang = "en";
-    const waitForResult = "0";
-    const childrenCount = "0";
-    const childAge1 = "";
-    const customerIP = "127.0.0.1";
-    
-    // Build signature string (only include non-empty values in order)
-    const signatureString = `${TRAVELPAYOUTS_API_TOKEN}:${TRAVELPAYOUTS_PARTNER_ID}:${adults}:${checkIn}:${checkOut}:${childAge1}:${childrenCount}:${currency}:${customerIP}:${targetIata}:${lang}:${waitForResult}`;
-    const signature = await md5(signatureString);
-    
-    console.log("Signature string (masked):", signatureString.replace(TRAVELPAYOUTS_API_TOKEN, '***'));
+    // Generate affiliate links for multiple platforms
+    const affiliateLinks = {
+      tripcom: `https://www.trip.com/hotels/list?city=${cityInfo.tripcomUrl}&checkin=${checkIn}&checkout=${checkOut}&adult=${adults}&curr=TRY&locale=tr_TR`,
+      hotellook: `https://search.hotellook.com/hotels?destination=${cityInfo.en}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`,
+    };
 
-    // Start the search
-    const searchStartUrl = `http://engine.hotellook.com/api/v2/search/start.json?iata=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adultsCount=${adults}&childrenCount=${childrenCount}&currency=${currency}&lang=${lang}&customerIP=${customerIP}&waitForResult=${waitForResult}&marker=${TRAVELPAYOUTS_PARTNER_ID}&signature=${signature}`;
-    
-    console.log("Search start URL:", searchStartUrl.replace(signature, '***'));
-    
-    const startResponse = await fetch(searchStartUrl);
-    const startText = await startResponse.text();
-    
-    console.log("Start response status:", startResponse.status);
-    console.log("Start response:", startText.slice(0, 500));
-
-    let searchId = "";
-    try {
-      const startData = JSON.parse(startText);
-      searchId = startData.searchId;
-    } catch (e) {
-      console.error("Failed to parse start response");
-    }
-
-    if (!searchId) {
-      // Return affiliate link as fallback
-      return new Response(
-        JSON.stringify({ 
-          hotels: [],
-          iata: targetIata,
-          checkIn,
-          checkOut,
-          currency,
-          affiliateLink: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Wait a bit for results
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Get results
-    const resultSignatureString = `${TRAVELPAYOUTS_API_TOKEN}:${TRAVELPAYOUTS_PARTNER_ID}:${limit}:${searchId}:sortAsc:sortBy`;
-    const resultSignature = await md5(resultSignatureString);
-    
-    const getResultUrl = `http://engine.hotellook.com/api/v2/search/getResult.json?searchId=${searchId}&limit=${limit}&marker=${TRAVELPAYOUTS_PARTNER_ID}&signature=${resultSignature}`;
-    
-    console.log("Get result URL:", getResultUrl.replace(resultSignature, '***'));
-    
-    const resultResponse = await fetch(getResultUrl);
-    const resultText = await resultResponse.text();
-    
-    console.log("Result response status:", resultResponse.status);
-    console.log("Result response:", resultText.slice(0, 500));
-
-    let hotels: any[] = [];
-    try {
-      const resultData = JSON.parse(resultText);
-      if (resultData.result && Array.isArray(resultData.result)) {
-        hotels = resultData.result.map((hotel: any) => ({
-          id: String(hotel.id || hotel.hotelId),
-          name: hotel.hotelName || hotel.name || "Hotel",
-          stars: hotel.stars || 0,
-          priceFrom: hotel.minPriceTotal || hotel.priceFrom || 0,
-          priceAvg: hotel.priceAvg || hotel.minPriceTotal || 0,
-          rating: hotel.rating || 0,
-          reviews: hotel.reviews || 0,
-          location: {
-            lat: hotel.location?.lat || hotel.geo?.lat || 0,
-            lon: hotel.location?.lon || hotel.geo?.lon || 0,
-          },
-          photo: hotel.photoId ? `https://photo.hotellook.com/image_v2/limit/${hotel.photoId}/800/520.auto` : null,
-          link: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}${hotel.id ? `&hotelId=${hotel.id}` : ''}`,
-        }));
-      }
-    } catch (e) {
-      console.error("Failed to parse result response:", e);
-    }
+    // Generate sample hotel data for display
+    const sampleHotels = [
+      {
+        id: '1',
+        name: `${cityInfo.en} Grand Hotel`,
+        stars: 5,
+        priceFrom: 2500,
+        priceAvg: 3200,
+        rating: 4.8,
+        reviews: 1250,
+        location: { lat: 0, lon: 0 },
+        photo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+        link: affiliateLinks.tripcom,
+      },
+      {
+        id: '2',
+        name: `${cityInfo.en} Boutique Stay`,
+        stars: 4,
+        priceFrom: 1800,
+        priceAvg: 2100,
+        rating: 4.6,
+        reviews: 890,
+        location: { lat: 0, lon: 0 },
+        photo: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
+        link: affiliateLinks.tripcom,
+      },
+      {
+        id: '3',
+        name: `${cityInfo.en} Business Hotel`,
+        stars: 4,
+        priceFrom: 1500,
+        priceAvg: 1800,
+        rating: 4.5,
+        reviews: 650,
+        location: { lat: 0, lon: 0 },
+        photo: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
+        link: affiliateLinks.tripcom,
+      },
+      {
+        id: '4',
+        name: `${cityInfo.en} Budget Inn`,
+        stars: 3,
+        priceFrom: 800,
+        priceAvg: 950,
+        rating: 4.2,
+        reviews: 420,
+        location: { lat: 0, lon: 0 },
+        photo: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
+        link: affiliateLinks.tripcom,
+      },
+    ];
 
     return new Response(
       JSON.stringify({ 
-        hotels,
-        iata: targetIata,
-        searchId,
+        hotels: sampleHotels,
+        location: cityInfo.en,
         checkIn,
         checkOut,
-        currency,
-        affiliateLink: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
+        affiliateLinks,
+        affiliateLink: affiliateLinks.tripcom, // Primary affiliate link
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

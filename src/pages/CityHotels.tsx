@@ -274,19 +274,23 @@ const CityHotels = () => {
             </div>
           </div>
           
-          {/* Affiliate Link CTA */}
+          {/* Trip.com Affiliate CTA */}
           {affiliateLink && (
-            <div className="card-modern p-6 mb-8 text-center bg-primary/5 border-primary/20">
-              <h3 className="font-display font-semibold text-lg mb-2">
-                {city.name} için Canlı Otel Fiyatlarını Görün
+            <div className="card-modern p-6 mb-8 text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
+                <Hotel className="h-4 w-4" />
+                <span>Trip.com Partner</span>
+              </div>
+              <h3 className="font-display font-semibold text-xl mb-2">
+                {city.name} Otellerinde En İyi Fiyatlar
               </h3>
-              <p className="text-muted-foreground mb-4">
-                En güncel fiyatlar ve müsaitlik için Hotellook'ta arama yapın
+              <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
+                Trip.com üzerinden güncel otel fiyatlarını karşılaştırın ve en uygun rezervasyonu yapın
               </p>
               <a href={affiliateLink} target="_blank" rel="noopener noreferrer">
-                <Button className="gradient-primary hover:opacity-90">
+                <Button size="lg" className="gradient-primary hover:opacity-90">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Tüm Otelleri Gör
+                  Trip.com'da Otelleri Gör
                 </Button>
               </a>
             </div>
