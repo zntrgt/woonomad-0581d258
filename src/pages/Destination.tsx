@@ -64,47 +64,128 @@ export default function Destination() {
     );
   }
 
-  // Generate structured data for SEO
-  const structuredData = {
+  const BASE_URL = 'https://woonomad.co';
+
+  // Generate structured data for SEO - TouristDestination
+  const touristDestinationSchema = {
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
     name: destination.city,
     description: destination.description,
     image: destination.imageUrl,
+    url: `${BASE_URL}/ucak-bileti/${destination.slug}`,
     address: {
       '@type': 'PostalAddress',
       addressCountry: destination.countryCode,
+      addressLocality: destination.city,
     },
-    touristType: 'Weekend travelers',
+    touristType: ['Weekend travelers', 'Budget travelers', 'Adventure seekers'],
+    containsPlace: destination.highlights.map(h => ({
+      '@type': 'TouristAttraction',
+      name: h.name,
+      description: h.description,
+    })),
   };
 
-  const breadcrumbData = {
+  // BreadcrumbList Schema
+  const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://haftasonukacamagi.com' },
-      { '@type': 'ListItem', position: 2, name: 'Destinasyonlar', item: 'https://haftasonukacamagi.com/destinasyonlar' },
-      { '@type': 'ListItem', position: 3, name: destination.city, item: `https://haftasonukacamagi.com/ucak-bileti/${destination.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Destinasyonlar', item: `${BASE_URL}/destinasyonlar` },
+      { '@type': 'ListItem', position: 3, name: destination.city, item: `${BASE_URL}/ucak-bileti/${destination.slug}` },
     ],
+  };
+
+  // FAQPage Schema
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `İstanbul'dan ${destination.city} uçuş süresi ne kadar?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `İstanbul'dan ${destination.city} uçuş süresi ortalama ${destination.averageFlightDuration}'dir.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${destination.city} için vize gerekli mi?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: destination.visaRequired 
+            ? `Evet, Türk vatandaşları için ${destination.city} (${destination.country}) seyahatinde vize gereklidir.`
+            : `Hayır, Türk vatandaşları ${destination.city} (${destination.country}) için vizesiz giriş yapabilir.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${destination.city} seyahati için en iyi zaman ne zaman?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${destination.city} ziyareti için en uygun dönem ${destination.bestTimeToVisit} aylarıdır.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${destination.city} havalimanı kodu nedir?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${destination.city} havalimanı kodu ${destination.airportCode}'dir.`,
+        },
+      },
+    ],
+  };
+
+  // WebPage Schema
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: `${destination.city} Uçak Bileti | En Ucuz ${destination.city} Biletleri`,
+    description: `${destination.city} uçak bileti fiyatları. İstanbul'dan ${destination.city} için hafta sonu kaçamağı fırsatları.`,
+    url: `${BASE_URL}/ucak-bileti/${destination.slug}`,
+    inLanguage: 'tr-TR',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Woonomad',
+      url: BASE_URL,
+    },
+    about: {
+      '@type': 'Place',
+      name: destination.city,
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: destination.countryCode,
+      },
+    },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: destination.imageUrl,
+    },
   };
 
   return (
     <>
       <Helmet>
-        <title>{destination.city} Uçak Bileti | {destination.city} Ucuz Bilet Fiyatları | Hafta Sonu Kaçamağı</title>
+        <title>{destination.city} Uçak Bileti | {destination.city} Ucuz Bilet Fiyatları | Woonomad</title>
         <meta 
           name="description" 
           content={`${destination.city} uçak bileti fiyatları ve en ucuz ${destination.city} biletleri. İstanbul'dan ${destination.city} hafta sonu kaçamağı için bilet ara. ${destination.description}`} 
         />
         <meta name="keywords" content={destination.keywords.join(', ')} />
-        <link rel="canonical" href={`https://haftasonukacamagi.com/ucak-bileti/${destination.slug}`} />
+        <link rel="canonical" href={`${BASE_URL}/ucak-bileti/${destination.slug}`} />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={`${destination.city} Uçak Bileti | En Ucuz ${destination.city} Biletleri`} />
         <meta property="og:description" content={`${destination.city} uçak bileti fiyatları. İstanbul'dan ${destination.city} için hafta sonu kaçamağı fırsatları.`} />
         <meta property="og:image" content={destination.imageUrl} />
-        <meta property="og:url" content={`https://haftasonukacamagi.com/ucak-bileti/${destination.slug}`} />
+        <meta property="og:url" content={`${BASE_URL}/ucak-bileti/${destination.slug}`} />
+        <meta property="og:site_name" content="Woonomad" />
+        <meta property="og:locale" content="tr_TR" />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -112,9 +193,11 @@ export default function Destination() {
         <meta name="twitter:description" content={`${destination.city} için en ucuz uçak biletleri`} />
         <meta name="twitter:image" content={destination.imageUrl} />
         
-        {/* Structured Data */}
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
+        {/* Structured Data - JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(touristDestinationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(webPageSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
