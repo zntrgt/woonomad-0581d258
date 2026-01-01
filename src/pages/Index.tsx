@@ -214,7 +214,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>En Ucuz Uçak Bileti Fiyatları {currentYear} - WooNomad</title>
+        <title>{`En Ucuz Uçak Bileti Fiyatları ${currentYear} - WooNomad`}</title>
         <meta 
           name="description" 
           content={`En ucuz uçak bileti fiyatlarını karşılaştırın. Tüm havayollarının biletlerini tek seferde arayın, en uygun ${currentYear} uçuş fırsatlarını yakalayın. Hızlı ve güvenli rezervasyon.`}

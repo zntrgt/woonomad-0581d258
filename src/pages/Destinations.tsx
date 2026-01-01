@@ -79,7 +79,7 @@ export default function Destinations() {
   return (
     <>
       <Helmet>
-        <title>Tüm Destinasyonlar | Uçak Bileti Fiyatları {currentYear} - WooNomad</title>
+        <title>{`Tüm Destinasyonlar | Uçak Bileti Fiyatları ${currentYear} - WooNomad`}</title>
         <meta 
           name="description" 
           content="Dünyanın dört bir yanına en ucuz uçak bileti fiyatları. Avrupa, Asya, Amerika ve daha fazlası için uçuş fiyatlarını karşılaştırın. Vizesiz ve vizeli destinasyonlar." 

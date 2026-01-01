@@ -66,7 +66,7 @@ export default function FlightRoutes() {
   return (
     <>
       <Helmet>
-        <title>Uçuş Rotaları | Uçak Bileti Fiyatları {currentYear} - WooNomad</title>
+        <title>{`Uçuş Rotaları | Uçak Bileti Fiyatları ${currentYear} - WooNomad`}</title>
         <meta 
           name="description" 
           content="Popüler uçuş rotaları ve uçak bileti fiyatları. İstanbul, Ankara, İzmir çıkışlı ve Avrupa içi uçuşlar için en ucuz biletleri bulun." 
