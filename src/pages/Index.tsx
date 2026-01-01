@@ -5,8 +5,7 @@ import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
-import { SettingsDropdown } from '@/components/SettingsDropdown';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -243,22 +242,7 @@ const Index = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background flex flex-col">
-        {/* Top Header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between">
-            <Logo size="sm" showText={true} className="hidden sm:flex" />
-            <Logo size="sm" showText={false} className="sm:hidden" />
-            <div className="flex items-center gap-2">
-              <a 
-                href="/destinasyonlar" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
-              >
-                Tüm Destinasyonlar
-              </a>
-              <SettingsDropdown />
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* Sticky Results Banner */}
         {flights.length > 0 && !isLoading && (

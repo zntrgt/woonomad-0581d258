@@ -9,7 +9,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { SettingsDropdown } from '@/components/SettingsDropdown';
+import { Header } from '@/components/Header';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
@@ -285,21 +286,15 @@ export default function Destination() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Geri dön">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <Link to="/" className="flex items-center gap-2" aria-label="WooNomad Ana Sayfa">
-                <Plane className="h-5 w-5 text-primary" />
-                <span className="font-semibold text-sm text-foreground hidden sm:inline">WooNomad</span>
-              </Link>
-            </div>
-            <SettingsDropdown />
-          </div>
-        </header>
+        <Header />
+        
+        {/* Breadcrumb */}
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <Breadcrumb items={[
+            { label: 'Destinasyonlar', href: '/destinasyonlar' },
+            { label: `${destination.city} Uçak Bileti` },
+          ]} />
+        </div>
 
         {/* Hero Section */}
         <section className="relative h-64 md:h-80 overflow-hidden">
