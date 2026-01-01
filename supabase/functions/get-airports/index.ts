@@ -5,6 +5,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helpers
+const MAX_QUERY_LENGTH = 100;
+
+function sanitizeString(input: unknown): string {
+  if (typeof input !== 'string') return '';
+  // Remove any potentially dangerous characters, limit length
+  return input.slice(0, MAX_QUERY_LENGTH).replace(/[<>'"\\]/g, '').trim();
+}
+
 // Popular Turkish airports and major international destinations with regions
 const airports = [
   // Turkey - Marmara
@@ -109,6 +118,11 @@ function normalizeTurkish(text: string): string {
     .replace(/Ç/g, 'c');
 }
 
+// Generic error message - don't expose internal details
+function getGenericErrorMessage(): string {
+  return 'Havalimanı araması başarısız oldu. Lütfen tekrar deneyin.';
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -121,21 +135,22 @@ serve(async (req) => {
     if (req.method === 'POST') {
       try {
         const body = await req.json();
-        query = normalizeTurkish(body?.query || '');
+        query = sanitizeString(body?.query);
       } catch {
         query = '';
       }
     } else {
       // Fallback to URL params (GET request)
       const url = new URL(req.url);
-      query = normalizeTurkish(url.searchParams.get('query') || '');
+      query = sanitizeString(url.searchParams.get('query'));
     }
 
-    console.log('Airport search query (normalized):', query);
+    const normalizedQuery = normalizeTurkish(query);
+    console.log('Airport search query (normalized):', normalizedQuery);
 
     let filteredAirports = airports;
     
-    if (query.length >= 2) {
+    if (normalizedQuery.length >= 2) {
       filteredAirports = airports.filter(airport => {
         const normalizedCode = normalizeTurkish(airport.code);
         const normalizedName = normalizeTurkish(airport.name);
@@ -144,12 +159,12 @@ serve(async (req) => {
         const normalizedRegion = normalizeTurkish(airport.region);
         const normalizedContinent = normalizeTurkish(airport.continent);
         
-        return normalizedCode.includes(query) ||
-          normalizedName.includes(query) ||
-          normalizedCity.includes(query) ||
-          normalizedCountry.includes(query) ||
-          normalizedRegion.includes(query) ||
-          normalizedContinent.includes(query);
+        return normalizedCode.includes(normalizedQuery) ||
+          normalizedName.includes(normalizedQuery) ||
+          normalizedCity.includes(normalizedQuery) ||
+          normalizedCountry.includes(normalizedQuery) ||
+          normalizedRegion.includes(normalizedQuery) ||
+          normalizedContinent.includes(normalizedQuery);
       });
     }
 
@@ -161,11 +176,11 @@ serve(async (req) => {
     });
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // Log full error for debugging, return generic message to client
     console.error('Error in get-airports function:', error);
     return new Response(JSON.stringify({ 
       success: false, 
-      error: errorMessage 
+      error: getGenericErrorMessage()
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

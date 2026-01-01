@@ -5,6 +5,46 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Input validation constants
+const MAX_LOCATION_LENGTH = 100;
+const MAX_ADULTS = 20;
+const MIN_ADULTS = 1;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+// Input validation helpers
+function sanitizeString(input: unknown, maxLength: number = 100): string {
+  if (typeof input !== 'string') return '';
+  return input.slice(0, maxLength).replace(/[<>'"\\]/g, '').trim();
+}
+
+function validateDate(dateStr: unknown): string | null {
+  if (typeof dateStr !== 'string') return null;
+  if (!DATE_REGEX.test(dateStr)) return null;
+  
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return null;
+  
+  // Check date is not too far in past or future (2 years)
+  const now = new Date();
+  const twoYearsFromNow = new Date();
+  twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2);
+  
+  if (date < now || date > twoYearsFromNow) return null;
+  
+  return dateStr;
+}
+
+function validateAdults(adults: unknown): number {
+  const num = typeof adults === 'number' ? adults : parseInt(String(adults), 10);
+  if (isNaN(num) || num < MIN_ADULTS || num > MAX_ADULTS) return 2;
+  return num;
+}
+
+// Generic error message - don't expose internal details
+function getGenericErrorMessage(): string {
+  return 'Otel araması başarısız oldu. Lütfen tekrar deneyin.';
+}
+
 interface HotelSearchParams {
   location?: string;
   checkIn: string;
@@ -100,19 +140,46 @@ serve(async (req) => {
   try {
     const TRAVELPAYOUTS_PARTNER_ID = Deno.env.get("TRAVELPAYOUTS_PARTNER_ID") || "261144";
 
-    const params: HotelSearchParams = await req.json();
-    const { location, checkIn, checkOut, adults = 2 } = params;
+    let params: HotelSearchParams;
+    try {
+      params = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Geçersiz istek formatı', hotels: [] }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    console.log("Hotel search params:", params);
+    // Validate and sanitize inputs
+    const location = sanitizeString(params.location, MAX_LOCATION_LENGTH);
+    const checkIn = validateDate(params.checkIn);
+    const checkOut = validateDate(params.checkOut);
+    const adults = validateAdults(params.adults);
+
+    // Validate required fields
+    if (!checkIn || !checkOut) {
+      return new Response(
+        JSON.stringify({ error: 'Geçersiz tarih formatı', hotels: [] }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate checkOut is after checkIn
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      return new Response(
+        JSON.stringify({ error: 'Çıkış tarihi giriş tarihinden sonra olmalıdır', hotels: [] }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Hotel search params (validated):", { location, checkIn, checkOut, adults });
 
     // Find city info
-    const normalizedLocation = location?.toLowerCase().trim() || '';
+    const normalizedLocation = location.toLowerCase().trim();
     const cityInfo = cityNames[normalizedLocation];
     
     if (!cityInfo) {
       console.log("City not found:", normalizedLocation);
-      // Return generic Trip.com link
-      const searchQuery = encodeURIComponent(location || '');
       return new Response(
         JSON.stringify({ 
           hotels: [],
@@ -195,16 +262,16 @@ serve(async (req) => {
         checkIn,
         checkOut,
         affiliateLinks,
-        affiliateLink: affiliateLinks.tripcom, // Primary affiliate link
+        affiliateLink: affiliateLinks.tripcom,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Hotel search failed";
-    console.error("Hotel search error:", errorMessage);
+    // Log full error for debugging, return generic message to client
+    console.error("Hotel search error:", error);
     return new Response(
-      JSON.stringify({ error: errorMessage, hotels: [] }),
+      JSON.stringify({ error: getGenericErrorMessage(), hotels: [] }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
