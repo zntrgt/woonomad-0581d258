@@ -19,7 +19,7 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getCityBySlug, getAllCities } from '@/lib/cities';
+import { getCityBySlug } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
 
@@ -44,8 +44,8 @@ const City = () => {
 
   // Get related flight routes
   const relatedRoutes = allFlightRoutes.filter(route => 
-    city.airportCodes.includes(route.origin) || 
-    city.airportCodes.includes(route.destination)
+    city.airportCodes.includes(route.originCode) || 
+    city.airportCodes.includes(route.destinationCode)
   ).slice(0, 6);
 
   const breadcrumbItems = [
@@ -197,7 +197,7 @@ const City = () => {
                           className="flex items-center justify-between p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group"
                         >
                           <span className="font-medium">
-                            {route.origin} → {route.destination}
+                            {route.originCode} → {route.destinationCode}
                           </span>
                           <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                         </Link>

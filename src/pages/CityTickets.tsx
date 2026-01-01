@@ -31,8 +31,8 @@ const CityTickets = () => {
 
   // Get routes to this city from Istanbul
   const istanbulRoutes = allFlightRoutes.filter(route => 
-    (route.origin === 'IST' || route.origin === 'SAW') && 
-    city.airportCodes.includes(route.destination)
+    (route.originCode === 'IST' || route.originCode === 'SAW') && 
+    city.airportCodes.includes(route.destinationCode)
   );
 
   const breadcrumbItems = [
@@ -47,8 +47,8 @@ const CityTickets = () => {
 
   // Get price info for main route
   const mainRoute = istanbulRoutes[0];
-  const priceRange = mainRoute ? getEstimatedPriceRange(mainRoute.origin, mainRoute.destination) : null;
-  const airlines = mainRoute ? getAirlinesForRoute(mainRoute.origin, mainRoute.destination) : [];
+  const priceRange = mainRoute ? getEstimatedPriceRange(mainRoute.originCode, mainRoute.destinationCode) : null;
+  const airlines = mainRoute ? getAirlinesForRoute(mainRoute.originCode, mainRoute.destinationCode) : [];
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -142,10 +142,9 @@ const CityTickets = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {istanbulRoutes.length > 0 ? (
               istanbulRoutes.map((route) => {
-                const routeKey = `${route.origin}-${route.destination}`;
-                const duration = FLIGHT_DURATIONS[routeKey];
-                const routeAirlines = getAirlinesForRoute(route.origin, route.destination);
-                const routePrice = getEstimatedPriceRange(route.origin, route.destination);
+                const duration = FLIGHT_DURATIONS[route.originCode]?.[route.destinationCode];
+                const routeAirlines = getAirlinesForRoute(route.originCode, route.destinationCode);
+                const routePrice = getEstimatedPriceRange(route.originCode, route.destinationCode);
 
                 return (
                   <Link key={route.slug} to={`/ucus/${route.slug}`}>
@@ -157,15 +156,15 @@ const CityTickets = () => {
                               <Plane className="w-6 h-6 text-primary" />
                             </div>
                             <div>
-                              <p className="font-bold text-lg">{route.origin}</p>
+                              <p className="font-bold text-lg">{route.originCode}</p>
                               <p className="text-sm text-muted-foreground">
-                                {route.origin === 'IST' ? 'İstanbul' : 'Sabiha Gökçen'}
+                                {route.originCode === 'IST' ? 'İstanbul' : 'Sabiha Gökçen'}
                               </p>
                             </div>
                           </div>
                           <ArrowRight className="w-5 h-5 text-muted-foreground" />
                           <div className="text-right">
-                            <p className="font-bold text-lg text-primary">{route.destination}</p>
+                            <p className="font-bold text-lg text-primary">{route.destinationCode}</p>
                             <p className="text-sm text-muted-foreground">{city.name}</p>
                           </div>
                         </div>
@@ -173,7 +172,7 @@ const CityTickets = () => {
                         {duration && (
                           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                             <Clock className="w-4 h-4" />
-                            Uçuş Süresi: {duration}
+                            Uçuş Süresi: {Math.floor(duration / 60)}s {duration % 60}dk
                           </div>
                         )}
 
