@@ -139,7 +139,7 @@ function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
-  const { hotels, isLoading, error, searchHotels } = useHotelSearch();
+  const { hotels, isLoading, error, affiliateLink, searchHotels } = useHotelSearch();
   const [hasSearched, setHasSearched] = useState(false);
   
   // Default dates
@@ -273,6 +273,24 @@ const CityHotels = () => {
               )}
             </div>
           </div>
+          
+          {/* Affiliate Link CTA */}
+          {affiliateLink && (
+            <div className="card-modern p-6 mb-8 text-center bg-primary/5 border-primary/20">
+              <h3 className="font-display font-semibold text-lg mb-2">
+                {city.name} için Canlı Otel Fiyatlarını Görün
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                En güncel fiyatlar ve müsaitlik için Hotellook'ta arama yapın
+              </p>
+              <a href={affiliateLink} target="_blank" rel="noopener noreferrer">
+                <Button className="gradient-primary hover:opacity-90">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Tüm Otelleri Gör
+                </Button>
+              </a>
+            </div>
+          )}
           
           {/* Hotel Grid */}
           {isLoading ? (
