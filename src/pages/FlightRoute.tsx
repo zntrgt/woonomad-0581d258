@@ -8,8 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Header } from '@/components/Header';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { SettingsDropdown } from '@/components/SettingsDropdown';
 import { Logo } from '@/components/Logo';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
@@ -175,15 +174,18 @@ export default function FlightRoute() {
 
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <Header showBack={true} />
-
-        {/* Breadcrumb */}
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Breadcrumb items={[
-            { label: 'Uçuşlar', href: '/ucuslar' },
-            { label: `${route.originCity} - ${route.destinationCity}` },
-          ]} />
-        </div>
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
+          <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Geri dön">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Logo size="sm" showText={true} className="hidden sm:flex" />
+              <Logo size="sm" showText={false} className="sm:hidden" />
+            </div>
+            <SettingsDropdown />
+          </div>
+        </header>
 
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-primary/10 to-background py-10 px-4">

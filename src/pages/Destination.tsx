@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
   Plane, MapPin, Clock, Calendar, CheckCircle, XCircle, 
@@ -9,16 +9,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Header } from '@/components/Header';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { SettingsDropdown } from '@/components/SettingsDropdown';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
-import { PopularFlightRoutes } from '@/components/PopularFlightRoutes';
-import { DynamicFlightInfo } from '@/components/DynamicFlightInfo';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
 import { getDestinationBySlug, getPopularDestinations, SEODestination } from '@/lib/seoDestinations';
-import { getFlightDurationBetween } from '@/lib/flightRoutes';
 import { SearchParams, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import {
@@ -280,7 +276,20 @@ export default function Destination() {
 
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <Header showBack={true} />
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
+          <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Geri dön">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Link to="/" className="flex items-center gap-2" aria-label="WooNomad Ana Sayfa">
+                <Plane className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-sm text-foreground hidden sm:inline">WooNomad</span>
+              </Link>
+            </div>
+            <SettingsDropdown />
+          </div>
+        </header>
 
         {/* Hero Section */}
         <section className="relative h-64 md:h-80 overflow-hidden">
@@ -314,16 +323,8 @@ export default function Destination() {
           </div>
         </section>
 
-        {/* Breadcrumb */}
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Breadcrumb items={[
-            { label: 'Destinasyonlar', href: '/destinasyonlar' },
-            { label: `${destination.city} Uçak Bileti` },
-          ]} />
-        </div>
-
         {/* Main Content */}
-        <main className="max-w-6xl mx-auto px-4 py-4">
+        <main className="max-w-6xl mx-auto px-4 py-8">
           {/* Quick Info Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <Card>
@@ -723,13 +724,6 @@ export default function Destination() {
               </p>
             </div>
           </section>
-
-          {/* Popular Flight Routes - Internal Linking */}
-          <PopularFlightRoutes 
-            cityCode={destination.airportCode} 
-            cityName={destination.city} 
-            maxRoutes={6}
-          />
 
           {/* Popular Destinations */}
           <section className="mt-12" aria-labelledby="popular-destinations">
