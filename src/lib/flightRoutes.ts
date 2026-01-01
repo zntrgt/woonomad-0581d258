@@ -14,6 +14,97 @@ export interface FlightRoute {
   distance: string;
   description: string;
   tips: string[];
+  airlines: string[];
+  priceRange: { min: number; max: number };
+}
+
+// Airlines that operate on major routes
+const ROUTE_AIRLINES: Record<string, string[]> = {
+  // Turkish Airlines operates most routes from Turkey
+  'IST': ['Türk Hava Yolları', 'Pegasus', 'AnadoluJet'],
+  'SAW': ['Pegasus', 'AnadoluJet', 'SunExpress'],
+  'ESB': ['Türk Hava Yolları', 'Pegasus', 'AnadoluJet'],
+  'ADB': ['Türk Hava Yolları', 'Pegasus', 'SunExpress'],
+  'AYT': ['Türk Hava Yolları', 'Pegasus', 'SunExpress', 'Corendon'],
+};
+
+// International airlines by destination
+const DESTINATION_AIRLINES: Record<string, string[]> = {
+  'CDG': ['Air France', 'Transavia'],
+  'LHR': ['British Airways', 'easyJet'],
+  'FCO': ['ITA Airways', 'Ryanair'],
+  'BCN': ['Vueling', 'Iberia'],
+  'AMS': ['KLM', 'Transavia'],
+  'BER': ['Lufthansa', 'Eurowings'],
+  'MUC': ['Lufthansa'],
+  'FRA': ['Lufthansa'],
+  'VIE': ['Austrian Airlines'],
+  'PRG': ['Czech Airlines', 'Smartwings'],
+  'BUD': ['Wizz Air', 'Ryanair'],
+  'ATH': ['Aegean Airlines', 'Olympic Air'],
+  'MAD': ['Iberia', 'Vueling'],
+  'LIS': ['TAP Portugal'],
+  'DXB': ['Emirates', 'flydubai'],
+  'DOH': ['Qatar Airways'],
+  'AMM': ['Royal Jordanian'],
+  'BEY': ['Middle East Airlines'],
+  'TBS': ['Georgian Airways'],
+  'GYD': ['AZAL'],
+  'BEG': ['Air Serbia'],
+  'SIN': ['Singapore Airlines', 'Scoot'],
+  'BKK': ['Thai Airways'],
+  'KUL': ['Malaysia Airlines', 'AirAsia'],
+  'HKG': ['Cathay Pacific'],
+  'NRT': ['ANA', 'Japan Airlines'],
+  'ICN': ['Korean Air', 'Asiana'],
+  'JFK': ['Delta', 'United', 'American Airlines'],
+};
+
+// Estimated price ranges based on route distance (in TRY)
+function getEstimatedPriceRange(originCode: string, destCode: string, durationMinutes: number): { min: number; max: number } {
+  // Base price calculation based on flight duration
+  const basePrice = Math.round(durationMinutes * 15);
+  
+  // Premium routes (long haul, major hubs)
+  const premiumDestinations = ['JFK', 'LAX', 'SYD', 'NRT', 'SIN', 'HKG'];
+  const isPremium = premiumDestinations.includes(destCode) || premiumDestinations.includes(originCode);
+  
+  // Budget routes (short haul, low-cost carrier dominated)
+  const budgetDestinations = ['ATH', 'SKP', 'TIR', 'PRN', 'BEG', 'SJJ', 'TGD', 'TBS', 'GYD'];
+  const isBudget = budgetDestinations.includes(destCode);
+  
+  let minPrice = basePrice;
+  let maxPrice = basePrice * 3;
+  
+  if (isPremium) {
+    minPrice = Math.max(8000, basePrice * 1.5);
+    maxPrice = basePrice * 4;
+  } else if (isBudget) {
+    minPrice = Math.max(800, basePrice * 0.5);
+    maxPrice = basePrice * 2;
+  }
+  
+  // Round to nice numbers
+  minPrice = Math.round(minPrice / 100) * 100;
+  maxPrice = Math.round(maxPrice / 100) * 100;
+  
+  return { min: Math.max(800, minPrice), max: Math.max(2000, maxPrice) };
+}
+
+// Get airlines for a route
+function getRouteAirlines(originCode: string, destCode: string): string[] {
+  const originAirlines = ROUTE_AIRLINES[originCode] || [];
+  const destAirlines = DESTINATION_AIRLINES[destCode] || [];
+  
+  // Combine and deduplicate
+  const allAirlines = [...new Set([...originAirlines, ...destAirlines])];
+  
+  // If no specific airlines, return generic ones
+  if (allAirlines.length === 0) {
+    return ['Türk Hava Yolları', 'Pegasus'];
+  }
+  
+  return allAirlines.slice(0, 5); // Max 5 airlines
 }
 
 // Create URL-friendly slug
@@ -261,6 +352,8 @@ export function generateFlightRoutes(): FlightRoute[] {
     seenSlugs.add(slug);
 
     const duration = getFlightDuration(originCode, destCode);
+    const durationMinutes = FLIGHT_DURATIONS[originCode]?.[destCode] || 
+                            FLIGHT_DURATIONS[destCode]?.[originCode] || 180;
 
     routes.push({
       slug,
@@ -276,6 +369,8 @@ export function generateFlightRoutes(): FlightRoute[] {
       distance: getFlightDistance(originCode, destCode),
       description: generateRouteDescription(originCity, destCity, duration),
       tips: generateRouteTips(originCity, destCity),
+      airlines: getRouteAirlines(originCode, destCode),
+      priceRange: getEstimatedPriceRange(originCode, destCode, durationMinutes),
     });
   }
 

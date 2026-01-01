@@ -3,18 +3,19 @@ import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
   Plane, MapPin, Clock, Calendar, ArrowRight, ArrowLeft,
-  Building2, CreditCard, Info, CheckCircle
+  Building2, CreditCard, Info, CheckCircle, Users, TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { SettingsDropdown } from '@/components/SettingsDropdown';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useSettings } from '@/contexts/SettingsContext';
 import { getRouteBySlug, generateFlightRoutes, FlightRoute as FlightRouteType } from '@/lib/flightRoutes';
 import { SearchParams, Airport } from '@/lib/types';
 import {
@@ -31,6 +32,7 @@ export default function FlightRoute() {
   const route = slug ? getRouteBySlug(slug) : undefined;
   const { flights, isLoading, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { formatPrice } = useSettings();
 
   // Auto-populate search form
   useEffect(() => {
@@ -173,19 +175,15 @@ export default function FlightRoute() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Geri dön">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <Logo size="sm" showText={true} className="hidden sm:flex" />
-              <Logo size="sm" showText={false} className="sm:hidden" />
-            </div>
-            <SettingsDropdown />
-          </div>
-        </header>
+        <Header />
+        
+        {/* Breadcrumb */}
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <Breadcrumb items={[
+            { label: 'Uçuş Rotaları', href: '/ucuslar' },
+            { label: `${route.originCity} - ${route.destinationCity}` },
+          ]} />
+        </div>
 
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-primary/10 to-background py-10 px-4">
@@ -245,23 +243,43 @@ export default function FlightRoute() {
             </Card>
             <Card>
               <CardContent className="p-4 flex items-center gap-3">
-                <Building2 className="h-8 w-8 text-primary flex-shrink-0" />
+                <TrendingUp className="h-8 w-8 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Kalkış</div>
-                  <div className="font-semibold">{route.originCode}</div>
+                  <div className="text-sm text-muted-foreground">Fiyat Aralığı</div>
+                  <div className="font-semibold text-sm">
+                    {formatPrice(route.priceRange.min)} - {formatPrice(route.priceRange.max)}
+                  </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 flex items-center gap-3">
-                <Building2 className="h-8 w-8 text-primary flex-shrink-0" />
+                <Users className="h-8 w-8 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Varış</div>
-                  <div className="font-semibold">{route.destinationCode}</div>
+                  <div className="text-sm text-muted-foreground">Havayolları</div>
+                  <div className="font-semibold text-sm">{route.airlines.length}+ Havayolu</div>
                 </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Airlines Section */}
+          <section className="mb-8 bg-muted/50 rounded-xl p-6">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <Plane className="h-5 w-5 text-primary" />
+              Bu Rotada Uçan Havayolları
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {route.airlines.map((airline) => (
+                <Badge key={airline} variant="secondary" className="text-sm py-1 px-3">
+                  {airline}
+                </Badge>
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground mt-3">
+              * Tahmini fiyat aralığı: <strong>{formatPrice(route.priceRange.min)}</strong> - <strong>{formatPrice(route.priceRange.max)}</strong> (tek yön, ekonomi sınıfı)
+            </p>
+          </section>
 
           {/* Search Form */}
           <section className="mb-8 bg-card rounded-xl border border-border p-6">

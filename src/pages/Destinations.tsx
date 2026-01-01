@@ -5,8 +5,8 @@ import { Search, CheckCircle, XCircle, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { SettingsDropdown } from '@/components/SettingsDropdown';
-import { Logo } from '@/components/Logo';
+import { Header } from '@/components/Header';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { generateSEODestinations, SEODestination } from '@/lib/seoDestinations';
 import { cn } from '@/lib/utils';
@@ -96,14 +96,12 @@ export default function Destinations() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-            <Logo size="sm" showText={true} className="hidden sm:flex" />
-            <Logo size="sm" showText={false} className="sm:hidden" />
-            <SettingsDropdown />
-          </div>
-        </header>
+        <Header />
+        
+        {/* Breadcrumb */}
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <Breadcrumb items={[{ label: 'Destinasyonlar' }]} />
+        </div>
 
         {/* Hero */}
         <section className="bg-gradient-to-b from-primary/10 to-background py-12 px-4">
