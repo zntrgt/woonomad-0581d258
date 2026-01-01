@@ -213,7 +213,7 @@ const CityHotels = () => {
   return (
     <>
       <Helmet>
-        <title>{city.name} Otelleri - En İyi Fiyatlarla Otel Rezervasyonu {currentYear} | WooNomad</title>
+        <title>{`${city.name} Otelleri - En İyi Fiyatlarla Otel Rezervasyonu ${currentYear} | WooNomad`}</title>
         <meta 
           name="description" 
           content={`${city.name} otel fiyatları ve online rezervasyon. ${city.country}'da en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın.`}
