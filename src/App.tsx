@@ -2,12 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import Index from "./pages/Index";
-import Destination from "./pages/Destination";
-import Destinations from "./pages/Destinations";
 import FlightRoute from "./pages/FlightRoute";
 import FlightRoutes from "./pages/FlightRoutes";
 import City from "./pages/City";
@@ -31,8 +29,10 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/ucak-bileti/:slug" element={<Destination />} />
-              <Route path="/destinasyonlar" element={<Destinations />} />
+              {/* Redirects from old routes */}
+              <Route path="/ucak-bileti/:slug" element={<Navigate to="/sehir/:slug" replace />} />
+              <Route path="/destinasyonlar" element={<Navigate to="/sehirler" replace />} />
+              {/* Flight Routes */}
               <Route path="/ucus/:slug" element={<FlightRoute />} />
               <Route path="/ucuslar" element={<FlightRoutes />} />
               {/* City Hub Pages */}
