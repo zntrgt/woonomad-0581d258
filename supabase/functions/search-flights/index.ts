@@ -5,6 +5,63 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation constants
+const AIRPORT_CODE_REGEX = /^[A-Z]{3}$/;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const MAX_PASSENGERS = 9;
+const MIN_PASSENGERS = 0;
+const VALID_TRIP_CLASSES = ['Y', 'C', 'F'];
+const VALID_VISA_FILTERS = ['all', 'visa-free', 'visa-required'];
+const VALID_CONTINENTS = ['EU', 'AS', 'AM', 'AF'];
+
+// Input validation helpers
+function validateAirportCode(code: unknown): string | null {
+  if (typeof code !== 'string') return null;
+  const upper = code.toUpperCase().trim();
+  if (upper === '' || AIRPORT_CODE_REGEX.test(upper)) return upper;
+  // Allow continent codes
+  if (VALID_CONTINENTS.includes(upper)) return upper;
+  return null;
+}
+
+function validateDate(dateStr: unknown): string | null {
+  if (typeof dateStr !== 'string') return null;
+  if (!DATE_REGEX.test(dateStr)) return null;
+  
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return null;
+  
+  // Check date is not too far in future (2 years)
+  const twoYearsFromNow = new Date();
+  twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2);
+  
+  if (date > twoYearsFromNow) return null;
+  
+  return dateStr;
+}
+
+function validatePassengerCount(count: unknown, defaultVal: number = 1): number {
+  const num = typeof count === 'number' ? count : parseInt(String(count), 10);
+  if (isNaN(num) || num < MIN_PASSENGERS || num > MAX_PASSENGERS) return defaultVal;
+  return num;
+}
+
+function validateTripClass(tripClass: unknown): string {
+  if (typeof tripClass !== 'string') return 'Y';
+  const upper = tripClass.toUpperCase();
+  return VALID_TRIP_CLASSES.includes(upper) ? upper : 'Y';
+}
+
+function validateVisaFilter(filter: unknown): 'all' | 'visa-free' | 'visa-required' {
+  if (typeof filter !== 'string') return 'all';
+  return VALID_VISA_FILTERS.includes(filter) ? filter as 'all' | 'visa-free' | 'visa-required' : 'all';
+}
+
+// Generic error message - don't expose internal details
+function getGenericErrorMessage(): string {
+  return 'Uçuş araması başarısız oldu. Lütfen tekrar deneyin.';
+}
+
 interface FlightSearchParams {
   origin: string;
   destination: string;
@@ -20,57 +77,42 @@ interface FlightSearchParams {
 
 // Visa-free countries for Turkish passport holders (IATA codes)
 const VISA_FREE_DESTINATIONS: Record<string, string[]> = {
-  // Completely visa-free or visa on arrival
   'visa-free': [
-    // Europe
-    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Albania, Kosovo, North Macedonia, Bosnia, Montenegro, Serbia
-    // Asia
-    'ICN', 'GMP', 'NRT', 'HND', 'KIX', // South Korea, Japan
-    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', // Singapore, Malaysia, Thailand, Indonesia
-    'MNL', 'HKG', 'TPE', // Philippines, Hong Kong, Taiwan
-    'KTM', // Nepal
-    // Middle East
-    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', // Qatar, UAE, Bahrain, Oman, Kuwait
-    'AMM', 'BEY', // Jordan, Lebanon
-    // Africa
-    'TUN', 'CMN', 'RAK', // Tunisia, Morocco
-    'CPT', 'JNB', // South Africa
-    'NBO', 'DAR', 'ZNZ', // Kenya, Tanzania
-    // Americas
-    'GRU', 'GIG', 'BSB', // Brazil
-    'EZE', 'SCL', 'BOG', 'LIM', 'UIO', // Argentina, Chile, Colombia, Peru, Ecuador
-    'PTY', 'SJO', // Panama, Costa Rica
-    // Caribbean
-    'NAS', 'MBJ', 'SDQ', 'HAV', // Bahamas, Jamaica, Dominican Republic, Cuba
-    // Central Asia
-    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Kazakhstan, Uzbekistan, Kyrgyzstan, Azerbaijan, Georgia
-    // Other
-    'ECN', // Northern Cyprus
+    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
+    'ICN', 'GMP', 'NRT', 'HND', 'KIX',
+    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
+    'MNL', 'HKG', 'TPE',
+    'KTM',
+    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
+    'AMM', 'BEY',
+    'TUN', 'CMN', 'RAK',
+    'CPT', 'JNB',
+    'NBO', 'DAR', 'ZNZ',
+    'GRU', 'GIG', 'BSB',
+    'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
+    'PTY', 'SJO',
+    'NAS', 'MBJ', 'SDQ', 'HAV',
+    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
+    'ECN',
   ],
-  // Schengen + visa required countries
   'visa-required': [
-    // Schengen / EU
-    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL', // France, UK, Germany
-    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', // Netherlands, Belgium, Austria, Switzerland
-    'FCO', 'MXP', 'VCE', 'NAP', // Italy
-    'MAD', 'BCN', 'PMI', 'AGP', // Spain
-    'LIS', 'OPO', 'ATH', 'SKG', // Portugal, Greece
-    'PRG', 'WAW', 'BUD', 'OTP', 'SOF', // Czech, Poland, Hungary, Romania, Bulgaria
-    'CPH', 'ARN', 'OSL', 'HEL', // Denmark, Sweden, Norway, Finland
-    'DUB', 'RIX', 'VNO', 'TLL', // Ireland, Latvia, Lithuania, Estonia
-    // North America
-    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', // USA
-    'YYZ', 'YVR', 'YUL', // Canada
-    // Australia/Oceania
-    'SYD', 'MEL', 'AKL', // Australia, New Zealand
-    // Other
-    'PEK', 'PVG', 'HGH', 'CAN', // China
-    'DEL', 'BOM', 'BLR', // India
-    'SVO', 'LED', // Russia
+    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
+    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
+    'FCO', 'MXP', 'VCE', 'NAP',
+    'MAD', 'BCN', 'PMI', 'AGP',
+    'LIS', 'OPO', 'ATH', 'SKG',
+    'PRG', 'WAW', 'BUD', 'OTP', 'SOF',
+    'CPH', 'ARN', 'OSL', 'HEL',
+    'DUB', 'RIX', 'VNO', 'TLL',
+    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
+    'YYZ', 'YVR', 'YUL',
+    'SYD', 'MEL', 'AKL',
+    'PEK', 'PVG', 'HGH', 'CAN',
+    'DEL', 'BOM', 'BLR',
+    'SVO', 'LED',
   ]
 };
 
-// Map destination airport codes to visa status
 function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' | 'unknown' {
   if (VISA_FREE_DESTINATIONS['visa-free'].includes(destinationCode)) {
     return 'visa-free';
@@ -81,60 +123,41 @@ function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' |
   return 'unknown';
 }
 
-// Popular destinations for "anywhere" search - comprehensive list from visa categories
 const POPULAR_DESTINATIONS = [
-  // === VISA-FREE DESTINATIONS ===
-  // Europe (visa-free)
-  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Albania, Kosovo, North Macedonia, Bosnia, Montenegro, Serbia
-  // Asia
-  'ICN', 'GMP', 'NRT', 'HND', 'KIX', // South Korea, Japan
-  'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', // Singapore, Malaysia, Thailand, Indonesia
-  'MNL', 'HKG', 'TPE', // Philippines, Hong Kong, Taiwan
-  'KTM', // Nepal
-  // Middle East
-  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', // Qatar, UAE, Bahrain, Oman, Kuwait
-  'AMM', 'BEY', // Jordan, Lebanon
-  // Africa
-  'TUN', 'CMN', 'RAK', // Tunisia, Morocco
-  'CPT', 'JNB', // South Africa
-  'NBO', 'DAR', 'ZNZ', // Kenya, Tanzania
-  // Americas
-  'GRU', 'GIG', 'BSB', // Brazil
-  'EZE', 'SCL', 'BOG', 'LIM', 'UIO', // Argentina, Chile, Colombia, Peru, Ecuador
-  'PTY', 'SJO', // Panama, Costa Rica
-  // Caribbean
-  'NAS', 'MBJ', 'SDQ', 'HAV', // Bahamas, Jamaica, Dominican Republic, Cuba
-  // Central Asia
-  'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Kazakhstan, Uzbekistan, Kyrgyzstan, Azerbaijan, Georgia
-  // Other
-  'ECN', // Northern Cyprus
-  
-  // === VISA-REQUIRED DESTINATIONS ===
-  // Schengen / EU
-  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL', // France, UK, Germany
-  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', // Netherlands, Belgium, Austria, Switzerland
-  'FCO', 'MXP', 'VCE', 'NAP', // Italy
-  'MAD', 'BCN', 'PMI', 'AGP', // Spain
-  'LIS', 'OPO', 'ATH', 'SKG', // Portugal, Greece
-  'PRG', 'WAW', 'BUD', 'OTP', 'SOF', // Czech, Poland, Hungary, Romania, Bulgaria
-  'CPH', 'ARN', 'OSL', 'HEL', // Denmark, Sweden, Norway, Finland
-  'DUB', 'RIX', 'VNO', 'TLL', // Ireland, Latvia, Lithuania, Estonia
-  // North America
-  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', // USA
-  'YYZ', 'YVR', 'YUL', // Canada
-  // Australia/Oceania
-  'SYD', 'MEL', 'AKL', // Australia, New Zealand
-  // Other
-  'PEK', 'PVG', 'HGH', 'CAN', // China
-  'DEL', 'BOM', 'BLR', // India
-  'SVO', 'LED', // Russia
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
+  'ICN', 'GMP', 'NRT', 'HND', 'KIX',
+  'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
+  'MNL', 'HKG', 'TPE', 'KTM',
+  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
+  'AMM', 'BEY',
+  'TUN', 'CMN', 'RAK', 'CPT', 'JNB',
+  'NBO', 'DAR', 'ZNZ',
+  'GRU', 'GIG', 'BSB',
+  'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
+  'PTY', 'SJO',
+  'NAS', 'MBJ', 'SDQ', 'HAV',
+  'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
+  'ECN',
+  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
+  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
+  'FCO', 'MXP', 'VCE', 'NAP',
+  'MAD', 'BCN', 'PMI', 'AGP',
+  'LIS', 'OPO', 'ATH', 'SKG',
+  'PRG', 'WAW', 'BUD', 'OTP', 'SOF',
+  'CPH', 'ARN', 'OSL', 'HEL',
+  'DUB', 'RIX', 'VNO', 'TLL',
+  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
+  'YYZ', 'YVR', 'YUL',
+  'SYD', 'MEL', 'AKL',
+  'PEK', 'PVG', 'HGH', 'CAN',
+  'DEL', 'BOM', 'BLR',
+  'SVO', 'LED',
 ];
 
-// Continent-based destination mappings
 const CONTINENT_DESTINATIONS: Record<string, string[]> = {
-  'EU': [ // Europe
-    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', // Balkans
-    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL', // Western Europe
+  'EU': [
+    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
+    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
     'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', 
     'FCO', 'MXP', 'VCE', 'NAP', 
     'MAD', 'BCN', 'PMI', 'AGP', 
@@ -143,34 +166,32 @@ const CONTINENT_DESTINATIONS: Record<string, string[]> = {
     'CPH', 'ARN', 'OSL', 'HEL', 
     'DUB', 'RIX', 'VNO', 'TLL',
   ],
-  'AS': [ // Asia
-    'ICN', 'GMP', 'NRT', 'HND', 'KIX', // East Asia
-    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS', // Southeast Asia
-    'MNL', 'HKG', 'TPE', 
-    'KTM', 
-    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', // Middle East (Gulf)
-    'AMM', 'BEY', 'TLV', // Middle East
-    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', // Central Asia / Caucasus
-    'PEK', 'PVG', 'HGH', 'CAN', // China
-    'DEL', 'BOM', 'BLR', // India
+  'AS': [
+    'ICN', 'GMP', 'NRT', 'HND', 'KIX',
+    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
+    'MNL', 'HKG', 'TPE', 'KTM', 
+    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
+    'AMM', 'BEY', 'TLV',
+    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
+    'PEK', 'PVG', 'HGH', 'CAN',
+    'DEL', 'BOM', 'BLR',
   ],
-  'AM': [ // Americas
-    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', // USA
-    'YYZ', 'YVR', 'YUL', // Canada
-    'GRU', 'GIG', 'BSB', // Brazil
-    'EZE', 'SCL', 'BOG', 'LIM', 'UIO', // South America
-    'PTY', 'SJO', // Central America
-    'NAS', 'MBJ', 'SDQ', 'HAV', // Caribbean
+  'AM': [
+    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
+    'YYZ', 'YVR', 'YUL',
+    'GRU', 'GIG', 'BSB',
+    'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
+    'PTY', 'SJO',
+    'NAS', 'MBJ', 'SDQ', 'HAV',
   ],
-  'AF': [ // Africa
-    'TUN', 'CMN', 'RAK', 'CAI', // North Africa
-    'CPT', 'JNB', // South Africa
-    'NBO', 'DAR', 'ZNZ', // East Africa
+  'AF': [
+    'TUN', 'CMN', 'RAK', 'CAI',
+    'CPT', 'JNB',
+    'NBO', 'DAR', 'ZNZ',
   ],
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -181,20 +202,77 @@ serve(async (req) => {
 
     if (!apiToken) {
       console.error('TRAVELPAYOUTS_API_TOKEN is not set');
-      throw new Error('API configuration error');
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: getGenericErrorMessage()
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    const params: FlightSearchParams = await req.json();
-    console.log('Search params:', params);
+    let params: FlightSearchParams;
+    try {
+      params = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Geçersiz istek formatı'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    const { origin, destination, departDate, returnDate, adults = 1, children = 0, infants = 0, tripClass = 'Y', visaFilter = 'all', flexibleDates = false } = params;
+    // Validate inputs
+    const origin = validateAirportCode(params.origin);
+    const destination = validateAirportCode(params.destination) || '';
+    const departDate = validateDate(params.departDate);
+    const returnDate = params.returnDate ? validateDate(params.returnDate) : undefined;
+    const adults = validatePassengerCount(params.adults, 1);
+    const children = validatePassengerCount(params.children, 0);
+    const infants = validatePassengerCount(params.infants, 0);
+    const tripClass = validateTripClass(params.tripClass);
+    const visaFilter = validateVisaFilter(params.visaFilter);
+    const flexibleDates = params.flexibleDates === true;
 
-    // Flexible dates: when enabled, we search the selected date plus +/- 1 day.
-    // Important: for round-trip searches we shift BOTH depart and return by the same amount.
+    // Validate required fields
+    if (!origin) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Geçersiz kalkış havalimanı kodu'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!departDate) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Geçersiz tarih formatı'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Validate returnDate is after departDate if provided
+    if (returnDate && new Date(returnDate) <= new Date(departDate)) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Dönüş tarihi gidiş tarihinden sonra olmalıdır'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Search params (validated):', { origin, destination, departDate, returnDate, adults, children, infants, tripClass, visaFilter, flexibleDates });
+
     const shifts = flexibleDates ? [-1, 0, 1] : [0];
 
     const addDaysToYmd = (ymd: string, days: number): string => {
-      // Use UTC midnight to avoid timezone drift
       const d = new Date(`${ymd}T00:00:00Z`);
       d.setUTCDate(d.getUTCDate() + days);
       return d.toISOString().slice(0, 10);
@@ -208,31 +286,23 @@ serve(async (req) => {
     const allowedDepartDates = new Set(searchPairs.map((p) => p.depart));
     const allowedPairs = new Set(searchPairs.map((p) => `${p.depart}|${p.return ?? ''}`));
 
-    if (!origin || !departDate) {
-      throw new Error('Missing required parameters: origin, departDate');
-    }
-
-    // Helper function to extract date only from ISO string
     const dateOnly = (iso?: string): string | null => {
       if (!iso || typeof iso !== 'string') return null;
       const parts = iso.split('T');
       return parts[0] || null;
     };
 
-    // Handle "anywhere" search (empty destination) or continental search (EU, AS, AM, AF)
     const isAnywhereSearch = !destination || destination === '';
-    const isContinentSearch = ['EU', 'AS', 'AM', 'AF'].includes(destination);
+    const isContinentSearch = VALID_CONTINENTS.includes(destination);
     let allFlights: any[] = [];
 
     if (isAnywhereSearch || isContinentSearch) {
       console.log('Performing', isContinentSearch ? `continent (${destination})` : 'anywhere', 'search with visa filter:', visaFilter);
       
-      // Get base destinations list - continent-specific or all
       let baseDestinations = isContinentSearch 
         ? CONTINENT_DESTINATIONS[destination] || POPULAR_DESTINATIONS
         : POPULAR_DESTINATIONS;
       
-      // Filter destinations based on visa preference
       let destinationsToSearch = baseDestinations;
       if (visaFilter === 'visa-free') {
         destinationsToSearch = baseDestinations.filter(d => getVisaStatus(d) === 'visa-free');
@@ -240,9 +310,8 @@ serve(async (req) => {
         destinationsToSearch = baseDestinations.filter(d => getVisaStatus(d) === 'visa-required');
       }
 
-      console.log('Searching destinations:', destinationsToSearch);
+      console.log('Searching destinations:', destinationsToSearch.length);
 
-      // Helper to call API with fallback to month cache
       const callApiWithFallback = async (dest: string, pair: { depart: string; return?: string }) => {
         const oneWay = !pair.return;
 
@@ -271,11 +340,9 @@ serve(async (req) => {
         };
 
         try {
-          // 1) Try exact day (YYYY-MM-DD)
           const exact = await callApi(pair.depart, pair.return);
           if (exact.length > 0) return exact;
 
-          // 2) Fallback: month cache (YYYY-MM) then filter back to the exact day.
           const monthDepart = pair.depart.slice(0, 7);
           const monthReturn = pair.return ? pair.return.slice(0, 7) : undefined;
 
@@ -300,7 +367,6 @@ serve(async (req) => {
         }
       };
 
-      // Search ALL destinations in parallel
       const searchPromises = destinationsToSearch.flatMap((dest) =>
         searchPairs.map((pair) => callApiWithFallback(dest, pair))
       );
@@ -311,7 +377,6 @@ serve(async (req) => {
       console.log('Anywhere search raw results:', allFlights.length);
 
     } else {
-      // Single destination search
       const searchPromises = searchPairs.map(async (pair) => {
         const oneWay = !pair.return;
 
@@ -329,7 +394,7 @@ serve(async (req) => {
           });
 
           const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
-          console.log('Calling Travelpayouts API:', apiUrl.replace(apiToken, '***'));
+          console.log('Calling API for:', { origin, destination, departure_at });
 
           const response = await fetch(apiUrl, {
             method: 'GET',
@@ -337,8 +402,7 @@ serve(async (req) => {
           });
 
           if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Travelpayouts API error:', response.status, errorText);
+            console.error('API error:', response.status);
             return [];
           }
 
@@ -346,12 +410,9 @@ serve(async (req) => {
           return data?.data || [];
         };
 
-        // 1) Try exact day (YYYY-MM-DD)
         const exact = await callApi(pair.depart, pair.return);
         if (exact.length > 0) return exact;
 
-        // 2) Fallback: month cache (YYYY-MM) then filter back to the exact day.
-        // This API is cache-based; exact day can be empty even when flights exist on the Aviasales website.
         const monthDepart = pair.depart.slice(0, 7);
         const monthReturn = pair.return ? pair.return.slice(0, 7) : undefined;
         console.log('Exact date empty, trying month cache:', { monthDepart, monthReturn });
@@ -378,24 +439,11 @@ serve(async (req) => {
     }
 
     console.log('API response success, data count:', allFlights.length);
-    
-    // Debug: log first few flights to see their date format
-    if (allFlights.length > 0) {
-      console.log('Sample flights:', allFlights.slice(0, 3).map((f: any) => ({
-        departure_at: f.departure_at,
-        return_at: f.return_at,
-        destination: f.destination,
-        price: f.price
-      })));
-    }
 
-    // Strictly filter results by the selected date(s).
-    // The upstream API may return nearby dates even when you send a single date; we only keep exact matches.
     const dateFilteredFlights = allFlights.filter((flight: any) => {
       const dep = dateOnly(flight.departure_at);
       if (!dep || !allowedDepartDates.has(dep)) return false;
 
-      // Round-trip: require matching (depart, return) pair.
       if (returnDate) {
         const ret = dateOnly(flight.return_at);
         if (!ret) return false;
@@ -405,16 +453,8 @@ serve(async (req) => {
       return true;
     });
 
-    if (dateFilteredFlights.length === 0 && allFlights.length > 0) {
-      console.log(
-        'Warning: upstream returned flights, but none match the requested date(s). Sample dates:',
-        allFlights.slice(0, 10).map((f: any) => dateOnly(f?.departure_at)).filter(Boolean)
-      );
-    }
-
     console.log('After date filter:', dateFilteredFlights.length);
 
-    // De-duplicate flights (the same flight can appear multiple times when we query multiple dates)
     const uniq = new Map<string, any>();
     for (const f of dateFilteredFlights) {
       const key = `${f.flight_number ?? ''}|${f.departure_at ?? ''}|${f.return_at ?? ''}|${f.destination ?? ''}`;
@@ -424,7 +464,6 @@ serve(async (req) => {
     const dedupedFlights = Array.from(uniq.values());
     console.log('After date filter + dedupe:', dedupedFlights.length);
 
-    // Apply visa filter to results
     let filteredFlights = dedupedFlights;
     if (visaFilter !== 'all') {
       filteredFlights = dedupedFlights.filter((flight: any) => {
@@ -435,15 +474,12 @@ serve(async (req) => {
       });
     }
 
-    // Sort by price (lowest first)
     const sortedFlights = [...filteredFlights].sort(
       (a, b) => (a?.price ?? Number.POSITIVE_INFINITY) - (b?.price ?? Number.POSITIVE_INFINITY)
     );
 
-    // Limit results for anywhere/continent search to keep the UI fast
     const finalFlights = (isAnywhereSearch || isContinentSearch) ? sortedFlights.slice(0, 30) : sortedFlights;
 
-    // Transform the response to include affiliate links and visa info
     const flights = finalFlights.map((flight: any) => {
       const depYmd = (flight.departure_at ? String(flight.departure_at).split('T')[0] : departDate) || departDate;
       const retYmd = flight.return_at ? String(flight.return_at).split('T')[0] : undefined;
@@ -467,11 +503,11 @@ serve(async (req) => {
     });
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // Log full error for debugging, return generic message to client
     console.error('Error in search-flights function:', error);
     return new Response(JSON.stringify({ 
       success: false, 
-      error: errorMessage 
+      error: getGenericErrorMessage()
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
