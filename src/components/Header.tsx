@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Plane, MapPin, Menu, Building2 } from 'lucide-react';
+import { Home, Plane, MapPin, Menu, Building2, BookOpen } from 'lucide-react';
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
 import { Button } from './ui/button';
@@ -20,6 +20,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Ana Sayfa', href: '/', icon: <Home className="h-4 w-4" /> },
   { label: 'Şehirler', href: '/sehirler', icon: <Building2 className="h-4 w-4" /> },
+  { label: 'Blog', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
   { label: 'Destinasyonlar', href: '/destinasyonlar', icon: <MapPin className="h-4 w-4" /> },
   { label: 'Uçuş Rotaları', href: '/ucuslar', icon: <Plane className="h-4 w-4" /> },
 ];

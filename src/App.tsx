@@ -15,6 +15,8 @@ import Cities from "./pages/Cities";
 import CityFlights from "./pages/CityFlights";
 import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,9 @@ const App = () => (
               <Route path="/sehir/:slug/oteller" element={<CityHotels />} />
               <Route path="/sehir/:slug/ucak-bileti" element={<CityTickets />} />
               <Route path="/sehirler" element={<Cities />} />
+              {/* Blog Routes */}
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
