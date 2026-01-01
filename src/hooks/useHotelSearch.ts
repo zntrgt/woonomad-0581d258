@@ -20,16 +20,19 @@ export interface Hotel {
 
 export interface HotelSearchResult {
   hotels: Hotel[];
-  cityId: string;
+  cityId?: string;
+  iata?: string;
   checkIn: string;
   checkOut: string;
   currency: string;
+  affiliateLink?: string;
 }
 
 export function useHotelSearch() {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [affiliateLink, setAffiliateLink] = useState<string | null>(null);
   const { toast } = useToast();
 
   const searchHotels = async (params: {
@@ -42,6 +45,7 @@ export function useHotelSearch() {
     setIsLoading(true);
     setError(null);
     setHotels([]);
+    setAffiliateLink(null);
 
     try {
       const { data, error: fnError } = await supabase.functions.invoke('search-hotels', {
@@ -52,7 +56,11 @@ export function useHotelSearch() {
         throw new Error(fnError.message);
       }
 
-      if (data?.error) {
+      if (data?.affiliateLink) {
+        setAffiliateLink(data.affiliateLink);
+      }
+
+      if (data?.error && !data?.hotels?.length) {
         setError(data.error);
         setHotels([]);
       } else {
@@ -78,6 +86,7 @@ export function useHotelSearch() {
     hotels,
     isLoading,
     error,
+    affiliateLink,
     searchHotels,
   };
 }

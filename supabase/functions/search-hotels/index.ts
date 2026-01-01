@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,11 +9,75 @@ const corsHeaders = {
 interface HotelSearchParams {
   cityId?: string;
   location?: string;
+  iata?: string;
   checkIn: string;
   checkOut: string;
   adults?: number;
   limit?: number;
   currency?: string;
+}
+
+// City to IATA code mapping
+const cityToIata: Record<string, string> = {
+  'berlin': 'BER',
+  'paris': 'PAR',
+  'london': 'LON',
+  'rome': 'ROM',
+  'amsterdam': 'AMS',
+  'barcelona': 'BCN',
+  'istanbul': 'IST',
+  'athens': 'ATH',
+  'prague': 'PRG',
+  'vienna': 'VIE',
+  'dubai': 'DXB',
+  'tokyo': 'TYO',
+  'new york': 'NYC',
+  'los angeles': 'LAX',
+  'miami': 'MIA',
+  'antalya': 'AYT',
+  'izmir': 'ADB',
+  'bodrum': 'BJV',
+  'tbilisi': 'TBS',
+  'skopje': 'SKP',
+  'frankfurt': 'FRA',
+  'munich': 'MUC',
+  'madrid': 'MAD',
+  'lisbon': 'LIS',
+  'milan': 'MIL',
+  'florence': 'FLR',
+  'venice': 'VCE',
+  'budapest': 'BUD',
+  'warsaw': 'WAW',
+  'stockholm': 'STO',
+  'oslo': 'OSL',
+  'copenhagen': 'CPH',
+  'helsinki': 'HEL',
+  'brussels': 'BRU',
+  'zurich': 'ZRH',
+  'geneva': 'GVA',
+  'dublin': 'DUB',
+  'edinburgh': 'EDI',
+  'singapore': 'SIN',
+  'bangkok': 'BKK',
+  'hong kong': 'HKG',
+  'seoul': 'SEL',
+  'taipei': 'TPE',
+  'sydney': 'SYD',
+  'melbourne': 'MEL',
+  'toronto': 'YTO',
+  'vancouver': 'YVR',
+  'cairo': 'CAI',
+  'marrakech': 'RAK',
+  'cape town': 'CPT',
+};
+
+// Helper to create MD5 hash
+async function md5(text: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("MD5", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 serve(async (req) => {
@@ -34,151 +99,130 @@ serve(async (req) => {
     }
 
     const params: HotelSearchParams = await req.json();
-    const { cityId, location, checkIn, checkOut, adults = 2, limit = 10, currency = "TRY" } = params;
+    const { cityId, location, iata, checkIn, checkOut, adults = 2, limit = 10, currency = "USD" } = params;
 
     console.log("Hotel search params:", params);
 
-    // First, get city ID if location is provided instead of cityId
-    let targetCityId = cityId;
-    
-    if (!targetCityId && location) {
-      // City name to ID mapping for common cities
-      const cityMapping: Record<string, string> = {
-        'berlin': '12153',
-        'paris': '2734',
-        'london': '2114',
-        'rome': '3181',
-        'amsterdam': '523',
-        'barcelona': '2871',
-        'istanbul': '10636',
-        'athens': '1368',
-        'prague': '4318',
-        'vienna': '5765',
-        'dubai': '1943',
-        'tokyo': '4973',
-        'new york': '3558',
-        'los angeles': '2592',
-        'miami': '3093',
-        'antalya': '10637',
-        'izmir': '10638',
-        'bodrum': '10639',
-        'tbilisi': '2765',
-        'skopje': '3445',
-        'frankfurt': '12192',
-        'munich': '12456',
-        'madrid': '3006',
-        'lisbon': '2537',
-        'milan': '3054',
-        'florence': '2023',
-        'venice': '5674',
-        'budapest': '1640',
-        'warsaw': '5902',
-        'stockholm': '4680',
-        'oslo': '3575',
-        'copenhagen': '1809',
-        'helsinki': '2174',
-        'brussels': '1598',
-        'zurich': '6023',
-        'geneva': '2100',
-        'dublin': '1944',
-        'edinburgh': '1977',
-        'singapore': '4251',
-        'bangkok': '1339',
-        'hong kong': '2251',
-        'seoul': '4177',
-        'taipei': '4835',
-        'sydney': '4816',
-        'melbourne': '3036',
-        'toronto': '5068',
-        'vancouver': '5604',
-        'cairo': '1673',
-        'marrakech': '3004',
-        'cape town': '1687',
-      };
-      
+    // Get IATA code
+    let targetIata = iata;
+    if (!targetIata && location) {
       const normalizedLocation = location.toLowerCase().trim();
-      targetCityId = cityMapping[normalizedLocation];
-      
-      if (!targetCityId) {
-        console.log("City not found in mapping, searching:", normalizedLocation);
-        // Return empty with fallback message
-        return new Response(
-          JSON.stringify({ error: `City "${location}" not found`, hotels: [] }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      console.log("Found city ID:", targetCityId, "for location:", location);
+      targetIata = cityToIata[normalizedLocation];
     }
 
-    if (!targetCityId) {
+    if (!targetIata) {
+      console.log("City not found in IATA mapping:", location);
+      // Return affiliate link only
       return new Response(
-        JSON.stringify({ error: "City ID or location required", hotels: [] }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ 
+          error: `City "${location}" not found`,
+          hotels: [],
+          affiliateLink: `https://search.hotellook.com/?marker=${TRAVELPAYOUTS_PARTNER_ID}`
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Search for hotels using Hotellook cache API with token
-    const searchUrl = `http://engine.hotellook.com/api/v2/cache.json?location=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&limit=${limit}&currency=${currency}&token=${TRAVELPAYOUTS_API_TOKEN}`;
+    console.log("Using IATA code:", targetIata, "for location:", location);
 
-    console.log("Hotel search URL:", searchUrl.replace(TRAVELPAYOUTS_API_TOKEN, '***'));
+    // Create signature for V2 API
+    // Signature format: token:marker:adultsCount:checkIn:checkOut:childAge1:childrenCount:currency:customerIP:iata:lang:waitForResult
+    const lang = "en";
+    const waitForResult = "0";
+    const childrenCount = "0";
+    const childAge1 = "";
+    const customerIP = "127.0.0.1";
+    
+    // Build signature string (only include non-empty values in order)
+    const signatureString = `${TRAVELPAYOUTS_API_TOKEN}:${TRAVELPAYOUTS_PARTNER_ID}:${adults}:${checkIn}:${checkOut}:${childAge1}:${childrenCount}:${currency}:${customerIP}:${targetIata}:${lang}:${waitForResult}`;
+    const signature = await md5(signatureString);
+    
+    console.log("Signature string (masked):", signatureString.replace(TRAVELPAYOUTS_API_TOKEN, '***'));
 
-    const searchResponse = await fetch(searchUrl);
-    const responseText = await searchResponse.text();
+    // Start the search
+    const searchStartUrl = `http://engine.hotellook.com/api/v2/search/start.json?iata=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adultsCount=${adults}&childrenCount=${childrenCount}&currency=${currency}&lang=${lang}&customerIP=${customerIP}&waitForResult=${waitForResult}&marker=${TRAVELPAYOUTS_PARTNER_ID}&signature=${signature}`;
     
-    console.log("Response status:", searchResponse.status);
-    console.log("Response preview:", responseText.slice(0, 300));
+    console.log("Search start URL:", searchStartUrl.replace(signature, '***'));
     
-    // If no hotels found or API returns error, return with affiliate link only
-    let searchData: any[] = [];
+    const startResponse = await fetch(searchStartUrl);
+    const startText = await startResponse.text();
+    
+    console.log("Start response status:", startResponse.status);
+    console.log("Start response:", startText.slice(0, 500));
+
+    let searchId = "";
     try {
-      searchData = JSON.parse(responseText);
+      const startData = JSON.parse(startText);
+      searchId = startData.searchId;
     } catch (e) {
-      console.error("Failed to parse response as JSON");
+      console.error("Failed to parse start response");
     }
-    
-    if (!Array.isArray(searchData) || searchData.length === 0) {
-      // Return fallback affiliate link
+
+    if (!searchId) {
+      // Return affiliate link as fallback
       return new Response(
         JSON.stringify({ 
           hotels: [],
-          cityId: targetCityId,
+          iata: targetIata,
           checkIn,
           checkOut,
           currency,
-          affiliateLink: `https://search.hotellook.com/hotels?destination=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
+          affiliateLink: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Wait a bit for results
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Get results
+    const resultSignatureString = `${TRAVELPAYOUTS_API_TOKEN}:${TRAVELPAYOUTS_PARTNER_ID}:${limit}:${searchId}:sortAsc:sortBy`;
+    const resultSignature = await md5(resultSignatureString);
     
+    const getResultUrl = `http://engine.hotellook.com/api/v2/search/getResult.json?searchId=${searchId}&limit=${limit}&marker=${TRAVELPAYOUTS_PARTNER_ID}&signature=${resultSignature}`;
+    
+    console.log("Get result URL:", getResultUrl.replace(resultSignature, '***'));
+    
+    const resultResponse = await fetch(getResultUrl);
+    const resultText = await resultResponse.text();
+    
+    console.log("Result response status:", resultResponse.status);
+    console.log("Result response:", resultText.slice(0, 500));
 
-    console.log("Hotel search response:", JSON.stringify(searchData).slice(0, 500));
-
-    // Transform the results
-    const hotels = Array.isArray(searchData) ? searchData.map((hotel: any) => ({
-      id: hotel.hotelId || hotel.hotel_id,
-      name: hotel.hotelName || hotel.hotel_name || "Unknown Hotel",
-      stars: hotel.stars || 0,
-      priceFrom: hotel.priceFrom || hotel.price_from || 0,
-      priceAvg: hotel.priceAvg || hotel.price_avg || 0,
-      rating: hotel.rating || 0,
-      reviews: hotel.reviews || 0,
-      location: {
-        lat: hotel.location?.lat || hotel.lat,
-        lon: hotel.location?.lon || hotel.lon,
-      },
-      photo: hotel.photoId ? `https://photo.hotellook.com/image_v2/limit/${hotel.photoId}/800/520.auto` : null,
-      link: `https://search.hotellook.com/hotels?destination=${targetCityId}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}&hotelId=${hotel.hotelId || hotel.hotel_id}`,
-    })) : [];
+    let hotels: any[] = [];
+    try {
+      const resultData = JSON.parse(resultText);
+      if (resultData.result && Array.isArray(resultData.result)) {
+        hotels = resultData.result.map((hotel: any) => ({
+          id: String(hotel.id || hotel.hotelId),
+          name: hotel.hotelName || hotel.name || "Hotel",
+          stars: hotel.stars || 0,
+          priceFrom: hotel.minPriceTotal || hotel.priceFrom || 0,
+          priceAvg: hotel.priceAvg || hotel.minPriceTotal || 0,
+          rating: hotel.rating || 0,
+          reviews: hotel.reviews || 0,
+          location: {
+            lat: hotel.location?.lat || hotel.geo?.lat || 0,
+            lon: hotel.location?.lon || hotel.geo?.lon || 0,
+          },
+          photo: hotel.photoId ? `https://photo.hotellook.com/image_v2/limit/${hotel.photoId}/800/520.auto` : null,
+          link: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}${hotel.id ? `&hotelId=${hotel.id}` : ''}`,
+        }));
+      }
+    } catch (e) {
+      console.error("Failed to parse result response:", e);
+    }
 
     return new Response(
       JSON.stringify({ 
         hotels,
-        cityId: targetCityId,
+        iata: targetIata,
+        searchId,
         checkIn,
         checkOut,
-        currency
+        currency,
+        affiliateLink: `https://search.hotellook.com/hotels?destination=${targetIata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
