@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
@@ -467,7 +468,7 @@ export default function FlightRoute() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-muted border-t border-border py-8">
+        <footer className="bg-muted border-t border-border py-8 mb-20 md:mb-0">
           <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
             <p>© {currentYear} WooNomad. Tüm hakları saklıdır.</p>
             <p className="mt-2">
@@ -475,6 +476,8 @@ export default function FlightRoute() {
             </p>
           </div>
         </footer>
+
+        <MobileBottomNav />
       </div>
     </>
   );

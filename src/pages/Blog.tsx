@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -178,7 +179,7 @@ export default function Blog() {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="max-w-7xl mx-auto px-4 py-8">
+        <main className="max-w-7xl mx-auto px-4 py-6 md:py-8 pb-24 md:pb-8">
           <Breadcrumb 
             items={[
               { label: 'Ana Sayfa', href: '/' },
@@ -187,60 +188,61 @@ export default function Blog() {
           />
           
           {/* Hero Section */}
-          <section className="text-center mb-12 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Sparkles className="h-4 w-4" />
+          <section className="text-center mb-8 md:mb-12 animate-fade-in">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6">
+              <Sparkles className="h-3 w-3 md:h-4 md:w-4" />
               <span>Seyahat İlhamı</span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+            <h1 className="text-2xl md:text-5xl font-display font-bold text-foreground mb-3 md:mb-4">
               Seyahat <span className="text-gradient">Blogu</span>
             </h1>
             
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Festival rehberleri, kültür yazıları, dijital göçebe ipuçları ve daha fazlası. 
-              Dünyayı keşfetmeye ilham veren hikayeler.
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+              Festival rehberleri, kültür yazıları, dijital göçebe ipuçları ve daha fazlası.
             </p>
           </section>
           
           {/* Filters */}
-          <section className="mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="card-modern p-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Search */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Blog yazılarında ara..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                
-                {/* Category Filter */}
-                <div className="flex flex-wrap gap-2">
-                  {blogCategories.map(category => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={cn(
-                        "px-4 py-2 rounded-xl text-sm font-medium transition-all",
-                        selectedCategory === category.id
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      )}
-                    >
-                      {category.emoji} {category.name}
-                    </button>
-                  ))}
+          <section className="mb-6 md:mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="card-modern p-4 md:p-6">
+              {/* Search - Always visible */}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Blog yazılarında ara..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 md:pl-10 text-sm"
+                />
+              </div>
+              
+              {/* Category Filter - Horizontal scroll on mobile */}
+              <div className="flex gap-4 items-start md:items-center flex-col md:flex-row">
+                <div className="w-full md:w-auto overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+                  <div className="flex gap-2 pb-2 md:pb-0 min-w-max md:flex-wrap">
+                    {blogCategories.map(category => (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={cn(
+                          "px-3 py-1.5 md:px-4 md:py-2 rounded-full md:rounded-xl text-xs md:text-sm font-medium transition-all whitespace-nowrap",
+                          selectedCategory === category.id
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        )}
+                      >
+                        {category.emoji} {category.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 
                 {/* City Filter */}
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="px-4 py-2 rounded-xl border border-border bg-background text-sm font-medium"
+                  className="w-full md:w-auto px-3 py-2 rounded-xl border border-border bg-background text-xs md:text-sm font-medium"
                 >
                   <option value="all">Tüm Şehirler</option>
                   {cities.map(city => (
@@ -252,8 +254,8 @@ export default function Blog() {
           </section>
           
           {/* Results Count */}
-          <div className="flex items-center gap-2 mb-6 text-sm text-muted-foreground">
-            <Filter className="h-4 w-4" />
+          <div className="flex items-center gap-2 mb-4 md:mb-6 text-xs md:text-sm text-muted-foreground">
+            <Filter className="h-3 w-3 md:h-4 md:w-4" />
             <span>{filteredPosts.length} yazı bulundu</span>
           </div>
           
@@ -294,11 +296,14 @@ export default function Blog() {
         </main>
         
         {/* Footer */}
-        <footer className="border-t border-border py-8 mt-16 bg-muted/30">
+        <footer className="border-t border-border py-8 mt-16 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
           </div>
         </footer>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
       </div>
     </>
   );
