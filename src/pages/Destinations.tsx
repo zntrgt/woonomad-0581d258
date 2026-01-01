@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Search, CheckCircle, XCircle, MapPin } from 'lucide-react';
@@ -198,10 +198,9 @@ export default function Destinations() {
         {/* Destinations Grid */}
         <main className="max-w-6xl mx-auto px-4 pb-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredDestinations.map((dest, index) => (
-              <>
+          {filteredDestinations.map((dest, index) => (
+              <React.Fragment key={dest.slug}>
                 <Link
-                  key={dest.slug}
                   to={`/ucak-bileti/${dest.slug}`}
                   className="group bg-card rounded-xl border border-border overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all"
                   aria-label={`${dest.city} uçak bileti - ${dest.country}`}
@@ -241,11 +240,11 @@ export default function Destinations() {
                 </Link>
                 {/* Insert ad after every 12 items */}
                 {(index + 1) % 12 === 0 && index !== filteredDestinations.length - 1 && (
-                  <div key={`ad-${index}`} className="col-span-full">
+                  <div className="col-span-full">
                     <AdInArticle />
                   </div>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </div>
 
