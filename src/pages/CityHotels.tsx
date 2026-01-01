@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, MapPin, Wifi, Coffee, Car, Dumbbell, Search, Calendar, Users, ExternalLink, Loader2 } from 'lucide-react';
+import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2 } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
@@ -355,11 +355,13 @@ const CityHotels = () => {
         </main>
         
         {/* Footer */}
-        <footer className="border-t border-border py-8 mt-16 bg-muted/30">
+        <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
             © {currentYear} WooNomad. Tüm hakları saklıdır.
           </div>
         </footer>
+
+        <MobileBottomNav />
       </div>
     </>
   );
