@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -132,6 +133,15 @@ const Cities = () => {
           </Card>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
+          © {currentYear} WooNomad. Tüm hakları saklıdır.
+        </div>
+      </footer>
+
+      <MobileBottomNav />
     </div>
   );
 };
