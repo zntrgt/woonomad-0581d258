@@ -1,10 +1,10 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
   Plane, MapPin, Clock, Calendar, CheckCircle, XCircle, 
   ChevronRight, ArrowLeft, Star, Globe, Info, AlertCircle,
-  Building2, CreditCard, Luggage
+  Building2, CreditCard, Luggage, ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,7 @@ import { FlightCard } from '@/components/FlightCard';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
 import { getDestinationBySlug, getPopularDestinations, SEODestination } from '@/lib/seoDestinations';
+import { generateFlightRoutes, FlightRoute } from '@/lib/flightRoutes';
 import { SearchParams, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import {
@@ -32,6 +33,15 @@ export default function Destination() {
   const { flights, isLoading, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
   const popularDestinations = getPopularDestinations(6);
+  
+  // Get related routes to this destination
+  const relatedRoutes = useMemo(() => {
+    if (!destination) return [];
+    const allRoutes = generateFlightRoutes();
+    return allRoutes.filter(
+      r => r.destinationCode === destination.airportCode || r.originCode === destination.airportCode
+    ).slice(0, 8);
+  }, [destination]);
 
   // Auto-search on page load
   useEffect(() => {
@@ -110,17 +120,17 @@ export default function Destination() {
     ],
   };
 
-  // Enhanced FAQPage Schema
+  // Enhanced FAQPage Schema - genel sorular (rotaya özel değil)
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
       {
         '@type': 'Question',
-        name: `İstanbul'dan ${destination.city} uçuş süresi ne kadar?`,
+        name: `${destination.city}'e nasıl uçak bileti alabilirim?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `İstanbul'dan ${destination.city} uçuş süresi ortalama ${destination.averageFlightDuration}'dir. Direkt uçuşlar genellikle daha kısa sürerken, aktarmalı seferler 2-4 saat daha uzun sürebilir.`,
+          text: `${destination.city} uçak bileti için WooNomad ile tüm havayollarının fiyatlarını karşılaştırabilirsiniz. İstanbul, Ankara, İzmir gibi şehirlerden ${destination.city}'e uçuş seçenekleri mevcuttur. Detaylı uçuş süresi ve fiyat bilgisi için ilgili rota sayfalarını inceleyebilirsiniz.`,
         },
       },
       {
@@ -329,10 +339,14 @@ export default function Destination() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <Card>
               <CardContent className="p-4 flex items-center gap-3">
-                <Clock className="h-8 w-8 text-primary" aria-hidden="true" />
+                {destination.visaRequired ? (
+                  <XCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
+                ) : (
+                  <CheckCircle className="h-8 w-8 text-primary" aria-hidden="true" />
+                )}
                 <div>
-                  <div className="text-sm text-muted-foreground">Uçuş Süresi</div>
-                  <div className="font-semibold">{destination.averageFlightDuration}</div>
+                  <div className="text-sm text-muted-foreground">Vize Durumu</div>
+                  <div className="font-semibold">{destination.visaRequired ? 'Vize Gerekli' : 'Vizesiz'}</div>
                 </div>
               </CardContent>
             </Card>
@@ -364,6 +378,41 @@ export default function Destination() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Popular Routes to this Destination */}
+          {relatedRoutes.length > 0 && (
+            <section className="mb-8" aria-labelledby="routes-section">
+              <h2 id="routes-section" className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Plane className="h-5 w-5 text-primary" aria-hidden="true" />
+                {destination.city} Uçuş Rotaları
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                {relatedRoutes.map((route) => (
+                  <Link
+                    key={route.slug}
+                    to={`/ucus/${route.slug}`}
+                    className="group bg-card rounded-lg border border-border p-4 hover:border-primary/50 hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span>{route.originFlag}</span>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                      <span>{route.destinationFlag}</span>
+                    </div>
+                    <div className="font-medium text-sm group-hover:text-primary transition-colors">
+                      {route.originCity} - {route.destinationCity}
+                    </div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                      <Clock className="h-3 w-3" />
+                      {route.estimatedDuration}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground mt-3">
+                Uçuş süresi ve mesafe bilgileri için yukarıdaki rota sayfalarını ziyaret edin.
+              </p>
+            </section>
+          )}
 
           {/* Search Form */}
           <section className="mb-8 bg-card rounded-xl border border-border p-6" aria-labelledby="search-section">
@@ -713,14 +762,15 @@ export default function Destination() {
             {/* Özet Paragraf - LLM için */}
             <div className="mt-8 p-4 bg-background rounded-lg">
               <p className="text-muted-foreground leading-relaxed">
-                <strong>{destination.city} uçak bileti</strong> arayanlar için özet: İstanbul'dan {destination.city}'e 
-                ({destination.country}) ortalama {destination.averageFlightDuration} süren uçuşlar mevcuttur. 
+                <strong>{destination.city} uçak bileti</strong> arayanlar için özet: {destination.city} ({destination.country}), 
+                {getContinentName(destination.continent)} kıtasında yer almaktadır. 
                 {destination.visaRequired 
                   ? ` Türk vatandaşları için vize gereklidir.` 
                   : ` Türk vatandaşları vizesiz giriş yapabilir.`
                 } {destination.city} havalimanı kodu {destination.airportCode}'dir. 
                 En uygun seyahat zamanı {destination.bestTimeToVisit} dönemleridir. 
                 En ucuz {destination.city} bileti için erken rezervasyon ve hafta içi uçuşlar önerilir.
+                Uçuş süresi ve mesafe bilgileri için yukarıdaki uçuş rotası sayfalarını inceleyebilirsiniz.
               </p>
             </div>
           </section>
