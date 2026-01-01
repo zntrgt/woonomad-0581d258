@@ -1294,7 +1294,7 @@ const CITY_DESCRIPTIONS: Record<string, { description: string; highlights: Highl
 
 // Default descriptions for cities without specific content
 const DEFAULT_DESCRIPTION = {
-  description: 'Keşfedilmeyi bekleyen harika bir destinasyon. Hafta sonu kaçamağı için ideal.',
+  description: 'Keşfedilmeyi bekleyen harika bir destinasyon. Tatil ve seyahat için ideal.',
   highlights: [
     { name: 'Şehir Merkezi', description: 'Tarihi ve modern yapıların buluştuğu merkez bölge.' },
     { name: 'Yerel Mutfak', description: 'Bölgeye özgü lezzetler ve geleneksel yemekler.' },
