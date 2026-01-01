@@ -2,31 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 
-/* WooNomad - Uçak Bileti Arama - Yeşil & Lacivert Tema */
+/* WooNomad - Modern Seyahat Platformu - Airbnb/Booking/Skyscanner Tarzı */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 15% 20%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 20%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 217 91% 60%;
+    /* Modern mavi-yeşil vurgu rengi */
+    --primary: 174 72% 40%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 20%;
+    --secondary-foreground: 220 15% 25%;
 
     --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 46%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 217 91% 60%;
+    --accent: 174 72% 40%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 71% 45%;
@@ -35,61 +36,78 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: 174 72% 40%;
+
+    --radius: 0.75rem;
 
     /* Section backgrounds */
     --section-header: 0 0% 100%;
     --section-search: 0 0% 100%;
-    --section-routes: 0 0% 100%;
+    --section-routes: 220 14% 98%;
     --section-results: 220 14% 98%;
 
-    /* Custom flight colors */
-    --flight-green: 142 71% 45%;
-    --flight-navy: 220 60% 30%;
-    --flight-blue: 217 91% 60%;
-    --flight-teal: 173 80% 40%;
-    --flight-emerald: 160 84% 39%;
+    /* Custom travel colors */
+    --travel-teal: 174 72% 40%;
+    --travel-coral: 16 85% 60%;
+    --travel-navy: 220 60% 25%;
+    --travel-gold: 38 92% 50%;
+    --travel-sage: 145 30% 50%;
 
-    /* Gradients - simplified */
-    --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 55%) 100%);
+    /* Badge colors */
+    --badge-popular: 174 72% 40%;
+    --badge-deal: 16 85% 60%;
+    --badge-new: 262 83% 58%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(174, 72%, 40%) 0%, hsl(174, 72%, 35%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(220, 60%, 25%) 0%, hsl(220, 50%, 35%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(220, 14%, 99%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 80%, 50%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(220, 60%, 30%) 0%, hsl(220, 50%, 40%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(16, 85%, 60%) 0%, hsl(38, 92%, 50%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.08);
+    --shadow-card-hover: 0 12px 28px -8px rgb(0 0 0 / 0.15);
+    --shadow-float: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 20%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-foreground: 220 15% 15%;
+    --sidebar-primary: 174 72% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 15% 20%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 174 72% 40%;
   }
 
   .dark {
-    --background: 220 15% 10%;
-    --foreground: 220 10% 90%;
+    --background: 220 15% 8%;
+    --foreground: 220 10% 92%;
 
-    --card: 220 15% 13%;
-    --card-foreground: 220 10% 90%;
+    --card: 220 15% 11%;
+    --card-foreground: 220 10% 92%;
 
-    --popover: 220 15% 13%;
-    --popover-foreground: 220 10% 90%;
+    --popover: 220 15% 11%;
+    --popover-foreground: 220 10% 92%;
 
-    --primary: 217 91% 60%;
+    --primary: 174 72% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 20%;
-    --secondary-foreground: 220 10% 90%;
+    --secondary: 220 14% 18%;
+    --secondary-foreground: 220 10% 92%;
 
-    --muted: 220 14% 18%;
+    --muted: 220 14% 16%;
     --muted-foreground: 220 10% 55%;
 
-    --accent: 217 91% 60%;
+    --accent: 174 72% 45%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 71% 45%;
@@ -98,35 +116,45 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 20%;
-    --input: 220 14% 20%;
-    --ring: 217 91% 60%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 174 72% 45%;
 
     /* Section backgrounds - dark */
-    --section-header: 220 15% 10%;
-    --section-search: 220 15% 10%;
+    --section-header: 220 15% 8%;
+    --section-search: 220 15% 8%;
     --section-routes: 220 15% 10%;
-    --section-results: 220 15% 12%;
+    --section-results: 220 15% 10%;
 
-    --flight-green: 142 71% 45%;
-    --flight-navy: 220 50% 40%;
-    --flight-blue: 217 91% 60%;
-    --flight-teal: 173 80% 40%;
-    --flight-emerald: 160 84% 39%;
+    --travel-teal: 174 72% 45%;
+    --travel-coral: 16 85% 60%;
+    --travel-navy: 220 50% 40%;
+    --travel-gold: 38 92% 50%;
+    --travel-sage: 145 30% 50%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 55%) 0%, hsl(217, 80%, 50%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(220, 15%, 13%) 0%, hsl(220, 15%, 15%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(217, 91%, 55%) 0%, hsl(217, 80%, 50%) 100%);
-    --gradient-navy: linear-gradient(135deg, hsl(220, 50%, 35%) 0%, hsl(220, 45%, 42%) 100%);
+    --badge-popular: 174 72% 45%;
+    --badge-deal: 16 85% 60%;
+    --badge-new: 262 83% 58%;
 
-    --sidebar-background: 220 15% 10%;
-    --sidebar-foreground: 220 10% 90%;
-    --sidebar-primary: 217 91% 60%;
+    --gradient-primary: linear-gradient(135deg, hsl(174, 72%, 45%) 0%, hsl(174, 72%, 40%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(220, 50%, 30%) 0%, hsl(220, 45%, 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220, 15%, 11%) 0%, hsl(220, 15%, 13%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(16, 85%, 55%) 0%, hsl(38, 92%, 45%) 100%);
+
+    --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.3);
+    --shadow-card-hover: 0 12px 28px -8px rgb(0 0 0 / 0.4);
+
+    --sidebar-background: 220 15% 8%;
+    --sidebar-foreground: 220 10% 92%;
+    --sidebar-primary: 174 72% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 18%;
-    --sidebar-accent-foreground: 220 10% 90%;
-    --sidebar-border: 220 14% 20%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 220 14% 16%;
+    --sidebar-accent-foreground: 220 10% 92%;
+    --sidebar-border: 220 14% 18%;
+    --sidebar-ring: 174 72% 45%;
   }
 }
 
@@ -135,13 +163,97 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+}
+
+@layer components {
+  /* Modern Card Styles */
+  .card-modern {
+    @apply bg-card rounded-2xl border border-border/50 transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-modern:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Image hover effect */
+  .card-image-hover {
+    @apply overflow-hidden rounded-xl;
+  }
+
+  .card-image-hover img {
+    @apply transition-transform duration-500 ease-out;
+  }
+
+  .card-image-hover:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Floating Search Bar */
+  .search-bar-float {
+    @apply bg-card rounded-2xl border border-border/50;
+    box-shadow: var(--shadow-float);
+  }
+
+  /* Badge Styles */
+  .badge-popular {
+    @apply bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+
+  .badge-deal {
+    background: hsl(var(--travel-coral));
+    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+
+  .badge-new {
+    background: hsl(var(--badge-new));
+    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+
+  /* Button micro-interactions */
+  .btn-interactive {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .btn-interactive:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-interactive:active {
+    transform: translateY(0);
+  }
+
+  /* Star Rating */
+  .star-rating {
+    @apply flex items-center gap-0.5;
+  }
+
+  .star-rating svg {
+    @apply w-4 h-4 text-amber-400 fill-current;
+  }
+
+  /* Mobile Bottom Navigation */
+  .mobile-nav-sticky {
+    @apply fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50;
+    box-shadow: 0 -4px 20px -4px rgb(0 0 0 / 0.1);
   }
 }
 
@@ -154,12 +266,12 @@
     background: var(--gradient-hero);
   }
 
-  .gradient-navy {
-    background: var(--gradient-navy);
-  }
-
   .gradient-card {
     background: var(--gradient-card);
+  }
+
+  .gradient-sunset {
+    background: var(--gradient-sunset);
   }
 
   .text-gradient {
@@ -186,6 +298,7 @@
     background: hsl(var(--section-results));
   }
 
+  /* Animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -198,6 +311,39 @@
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* Hover underline effect */
+  .hover-underline {
+    position: relative;
+  }
+
+  .hover-underline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: hsl(var(--primary));
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+  }
+
+  .hover-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-card/80 backdrop-blur-md;
+  }
+
+  /* Focus ring */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
 }
 
 @keyframes float {
@@ -207,4 +353,31 @@
   50% {
     transform: translateY(-20px);
   }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted/50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
 }
