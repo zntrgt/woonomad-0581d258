@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Plane, ArrowRight, Clock, Calendar, Filter } from 'lucide-react';
+import { Plane, ArrowRight, Clock } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
@@ -31,16 +31,16 @@ const CityFlights = () => {
 
   // Get all routes related to this city
   const cityRoutes = allFlightRoutes.filter(route => 
-    city.airportCodes.includes(route.origin) || 
-    city.airportCodes.includes(route.destination)
+    city.airportCodes.includes(route.originCode) || 
+    city.airportCodes.includes(route.destinationCode)
   );
 
   // Separate incoming and outgoing routes
   const incomingRoutes = cityRoutes.filter(route => 
-    city.airportCodes.includes(route.destination)
+    city.airportCodes.includes(route.destinationCode)
   );
   const outgoingRoutes = cityRoutes.filter(route => 
-    city.airportCodes.includes(route.origin)
+    city.airportCodes.includes(route.originCode)
   );
 
   const breadcrumbItems = [
@@ -123,10 +123,9 @@ const CityFlights = () => {
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {incomingRoutes.map((route) => {
-                const routeKey = `${route.origin}-${route.destination}`;
-                const duration = FLIGHT_DURATIONS[routeKey];
-                const airlines = getAirlinesForRoute(route.origin, route.destination);
-                const priceRange = getEstimatedPriceRange(route.origin, route.destination);
+                const duration = FLIGHT_DURATIONS[route.originCode]?.[route.destinationCode];
+                const airlines = getAirlinesForRoute(route.originCode, route.destinationCode);
+                const priceRange = getEstimatedPriceRange(route.originCode, route.destinationCode);
                 
                 return (
                   <Link key={route.slug} to={`/ucus/${route.slug}`}>
@@ -134,14 +133,14 @@ const CityFlights = () => {
                       <CardContent className="p-5">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-lg">{route.origin}</span>
+                            <span className="font-bold text-lg">{route.originCode}</span>
                             <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-bold text-lg text-primary">{route.destination}</span>
+                            <span className="font-bold text-lg text-primary">{route.destinationCode}</span>
                           </div>
                           {duration && (
                             <Badge variant="secondary" className="text-xs">
                               <Clock className="w-3 h-3 mr-1" />
-                              {duration}
+                              {Math.floor(duration / 60)}s {duration % 60}dk
                             </Badge>
                           )}
                         </div>
@@ -177,10 +176,9 @@ const CityFlights = () => {
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {outgoingRoutes.map((route) => {
-                const routeKey = `${route.origin}-${route.destination}`;
-                const duration = FLIGHT_DURATIONS[routeKey];
-                const airlines = getAirlinesForRoute(route.origin, route.destination);
-                const priceRange = getEstimatedPriceRange(route.origin, route.destination);
+                const duration = FLIGHT_DURATIONS[route.originCode]?.[route.destinationCode];
+                const airlines = getAirlinesForRoute(route.originCode, route.destinationCode);
+                const priceRange = getEstimatedPriceRange(route.originCode, route.destinationCode);
                 
                 return (
                   <Link key={route.slug} to={`/ucus/${route.slug}`}>
@@ -188,14 +186,14 @@ const CityFlights = () => {
                       <CardContent className="p-5">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-lg text-primary">{route.origin}</span>
+                            <span className="font-bold text-lg text-primary">{route.originCode}</span>
                             <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-bold text-lg">{route.destination}</span>
+                            <span className="font-bold text-lg">{route.destinationCode}</span>
                           </div>
                           {duration && (
                             <Badge variant="secondary" className="text-xs">
                               <Clock className="w-3 h-3 mr-1" />
-                              {duration}
+                              {Math.floor(duration / 60)}s {duration % 60}dk
                             </Badge>
                           )}
                         </div>

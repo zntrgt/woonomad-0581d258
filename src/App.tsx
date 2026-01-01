@@ -10,6 +10,11 @@ import Destination from "./pages/Destination";
 import Destinations from "./pages/Destinations";
 import FlightRoute from "./pages/FlightRoute";
 import FlightRoutes from "./pages/FlightRoutes";
+import City from "./pages/City";
+import Cities from "./pages/Cities";
+import CityFlights from "./pages/CityFlights";
+import CityHotels from "./pages/CityHotels";
+import CityTickets from "./pages/CityTickets";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +33,12 @@ const App = () => (
               <Route path="/destinasyonlar" element={<Destinations />} />
               <Route path="/ucus/:slug" element={<FlightRoute />} />
               <Route path="/ucuslar" element={<FlightRoutes />} />
+              {/* City Hub Pages */}
+              <Route path="/sehir/:slug" element={<City />} />
+              <Route path="/sehir/:slug/ucuslar" element={<CityFlights />} />
+              <Route path="/sehir/:slug/oteller" element={<CityHotels />} />
+              <Route path="/sehir/:slug/ucak-bileti" element={<CityTickets />} />
+              <Route path="/sehirler" element={<Cities />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

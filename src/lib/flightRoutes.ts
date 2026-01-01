@@ -61,9 +61,15 @@ const DESTINATION_AIRLINES: Record<string, string[]> = {
 };
 
 // Estimated price ranges based on route distance (in TRY)
-function getEstimatedPriceRange(originCode: string, destCode: string, durationMinutes: number): { min: number; max: number } {
+export function getEstimatedPriceRange(originCode: string, destCode: string, durationMinutes?: number): { min: number; max: number } {
+  // If duration not provided, estimate from FLIGHT_DURATIONS
+  let duration = durationMinutes;
+  if (!duration) {
+    duration = FLIGHT_DURATIONS[originCode]?.[destCode] || FLIGHT_DURATIONS[destCode]?.[originCode] || 180;
+  }
+  
   // Base price calculation based on flight duration
-  const basePrice = Math.round(durationMinutes * 15);
+  const basePrice = Math.round(duration * 15);
   
   // Premium routes (long haul, major hubs)
   const premiumDestinations = ['JFK', 'LAX', 'SYD', 'NRT', 'SIN', 'HKG'];
@@ -92,7 +98,7 @@ function getEstimatedPriceRange(originCode: string, destCode: string, durationMi
 }
 
 // Get airlines for a route
-function getRouteAirlines(originCode: string, destCode: string): string[] {
+export function getAirlinesForRoute(originCode: string, destCode: string): string[] {
   const originAirlines = ROUTE_AIRLINES[originCode] || [];
   const destAirlines = DESTINATION_AIRLINES[destCode] || [];
   
@@ -141,7 +147,7 @@ function createRouteSlug(originCity: string, destinationCity: string): string {
 }
 
 // Estimated flight durations between major cities (in minutes)
-const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
+export const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
   'IST': {
     'CDG': 210, 'LHR': 240, 'FCO': 135, 'BCN': 195, 'AMS': 195, 'BER': 150, 'MUC': 140,
     'FRA': 165, 'VIE': 120, 'PRG': 130, 'BUD': 100, 'ATH': 80, 'MAD': 255, 'LIS': 270,
@@ -369,7 +375,7 @@ export function generateFlightRoutes(): FlightRoute[] {
       distance: getFlightDistance(originCode, destCode),
       description: generateRouteDescription(originCity, destCity, duration),
       tips: generateRouteTips(originCity, destCity),
-      airlines: getRouteAirlines(originCode, destCode),
+      airlines: getAirlinesForRoute(originCode, destCode),
       priceRange: getEstimatedPriceRange(originCode, destCode, durationMinutes),
     });
   }
