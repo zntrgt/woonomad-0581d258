@@ -8,6 +8,8 @@ import { SettingsProvider } from "./contexts/SettingsContext";
 import Index from "./pages/Index";
 import Destination from "./pages/Destination";
 import Destinations from "./pages/Destinations";
+import FlightRoute from "./pages/FlightRoute";
+import FlightRoutes from "./pages/FlightRoutes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/ucak-bileti/:slug" element={<Destination />} />
               <Route path="/destinasyonlar" element={<Destinations />} />
+              <Route path="/ucus/:slug" element={<FlightRoute />} />
+              <Route path="/ucuslar" element={<FlightRoutes />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
