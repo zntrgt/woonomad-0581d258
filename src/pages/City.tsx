@@ -12,7 +12,9 @@ import {
   Calendar,
   Star,
   ChevronRight,
-  ArrowRight
+  ArrowRight,
+  Ticket,
+  PartyPopper
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -21,7 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TripPlanner } from '@/components/TripPlanner';
-import { getCityBySlug } from '@/lib/cities';
+import { getCityBySlug, CityEvent } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
 
@@ -175,6 +177,48 @@ const City = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Events Section */}
+              {city.events && city.events.length > 0 && (
+                <Card variant="elevated">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <PartyPopper className="w-6 h-6 text-primary" />
+                      <h2 className="text-2xl font-display font-bold">
+                        Önemli Etkinlikler ve Festivaller
+                      </h2>
+                    </div>
+                    <p className="text-muted-foreground mb-4">
+                      {city.name} şehrindeki önemli etkinlik tarihlerine göre uçuş rezervasyonu yapın.
+                    </p>
+                    <div className="grid gap-4">
+                      {city.events.map((event, index) => (
+                        <div 
+                          key={index}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-muted/50 gap-4"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-semibold text-foreground">{event.name}</h3>
+                              <Badge variant="outline" className="text-xs">
+                                <Calendar className="w-3 h-3 mr-1" />
+                                {event.date}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
+                          </div>
+                          <Button asChild size="sm" className="shrink-0">
+                            <Link to={`/sehir/${city.slug}/ucak-bileti`}>
+                              <Ticket className="w-4 h-4 mr-2" />
+                              Bilet Bul
+                            </Link>
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* AI Trip Planner */}
               <TripPlanner 
