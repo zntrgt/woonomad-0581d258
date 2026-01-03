@@ -2,911 +2,1248 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Ana Sayfa -->
   <url>
-    <loc>https://woonomad.co/</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Tüm Destinasyonlar Sayfası -->
+  <!-- Şehirler Ana Sayfa -->
   <url>
-    <loc>https://woonomad.co/destinasyonlar</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehirler</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
-  <!-- AVRUPA -->
+  <!-- Uçuş Rotaları Ana Sayfa -->
   <url>
-    <loc>https://woonomad.co/ucak-bileti/paris</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/londra</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/roma</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/barselona</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/amsterdam</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/berlin</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/frankfurt</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/munih</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/viyana</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/prag</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/budapeste</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/atina</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/selanik</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/milano</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/venedik</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/napoli</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/madrid</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/palma-de-mallorca</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/malaga</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/lizbon</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/porto</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bruksel</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/zurih</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/cenevre</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/kopenhag</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/stockholm</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/oslo</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/helsinki</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/dublin</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/varsova</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bukres</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/sofya</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/riga</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/vilnius</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/tallinn</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <!-- BALKANLAR (Vizesiz) -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/tiran</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/pristine</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/uskup</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/saraybosna</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/podgorica</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/belgrad</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- KAFKASYA & ORTA ASYA (Vizesiz) -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/tiflis</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/baku</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/almati</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/astana</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/taskent</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/biskek</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <!-- ORTA DOĞU -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/dubai</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/abu-dabi</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/doha</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/amman</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/beyrut</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bahreyn</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/maskat</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/kuveyt</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <!-- ASYA -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/tokyo</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/osaka</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/seul</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/singapur</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/kuala-lumpur</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bangkok</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bali</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/cakarta</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/manila</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/hong-kong</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/taipei</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/katmandu</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/pekin</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/sanghay</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/delhi</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/mumbai</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- AFRİKA -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/tunus</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/kazablanka</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/marakes</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/cape-town</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/johannesburg</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/nairobi</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/zanzibar</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- AMERİKA -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/new-york</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/los-angeles</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/chicago</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/miami</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/san-francisco</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/toronto</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/vancouver</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/montreal</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/sao-paulo</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/rio-de-janeiro</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/buenos-aires</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/santiago</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/bogota</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/lima</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/havana</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- OKYANUSYA -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/sidney</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/melbourne</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/auckland</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <!-- RUSYA -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/moskova</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/st-petersburg</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- KIBRIS -->
-  <url>
-    <loc>https://woonomad.co/ucak-bileti/ercan</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- UÇUŞ ROTALARI SAYFALARI -->
-  <url>
-    <loc>https://woonomad.co/ucuslar</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
-  <!-- İstanbul Çıkışlı Rotalar -->
+  <!-- Oteller Ana Sayfa -->
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-paris</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Blog -->
+  <url>
+    <loc>https://woonomad.com/blog</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
+  
+  <!-- Legal Sayfalar -->
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-londra</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://woonomad.com/gizlilik-politikasi</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/kullanim-kosullari</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/kvkk</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/cerez-politikasi</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- ============ ŞEHİR SAYFALARI ============ -->
+  
+  <!-- Berlin -->
+  <url>
+    <loc>https://woonomad.com/sehir/berlin</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-roma</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-barselona</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-amsterdam</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-berlin</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-munih</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/berlin/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-frankfurt</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/berlin/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-viyana</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/berlin/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Münih -->
+  <url>
+    <loc>https://woonomad.com/sehir/munih</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/munih/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-prag</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/munih/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-budapeste</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/munih/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Frankfurt -->
+  <url>
+    <loc>https://woonomad.com/sehir/frankfurt</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/frankfurt/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-atina</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/frankfurt/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/frankfurt/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Paris -->
+  <url>
+    <loc>https://woonomad.com/sehir/paris</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/paris/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-madrid</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/paris/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/paris/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Londra -->
+  <url>
+    <loc>https://woonomad.com/sehir/londra</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/londra/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/londra/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/londra/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Amsterdam -->
+  <url>
+    <loc>https://woonomad.com/sehir/amsterdam</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amsterdam/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amsterdam/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amsterdam/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Barselona -->
+  <url>
+    <loc>https://woonomad.com/sehir/barcelona</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/barcelona/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/barcelona/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/barcelona/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Madrid -->
+  <url>
+    <loc>https://woonomad.com/sehir/madrid</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/madrid/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/madrid/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/madrid/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Roma -->
+  <url>
+    <loc>https://woonomad.com/sehir/roma</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/roma/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/roma/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/roma/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Milano -->
+  <url>
+    <loc>https://woonomad.com/sehir/milano</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/milano/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-lizbon</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/milano/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-dubai</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/sehir/milano/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Venedik -->
+  <url>
+    <loc>https://woonomad.com/sehir/venedik</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/venedik/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/venedik/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/venedik/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Floransa -->
+  <url>
+    <loc>https://woonomad.com/sehir/floransa</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/floransa/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/floransa/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/floransa/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Lizbon -->
+  <url>
+    <loc>https://woonomad.com/sehir/lizbon</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/lizbon/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/lizbon/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/lizbon/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Porto -->
+  <url>
+    <loc>https://woonomad.com/sehir/porto</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/porto/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/porto/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/porto/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Atina -->
+  <url>
+    <loc>https://woonomad.com/sehir/atina</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/atina/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/atina/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/atina/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Prag -->
+  <url>
+    <loc>https://woonomad.com/sehir/prag</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/prag/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/prag/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/prag/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Viyana -->
+  <url>
+    <loc>https://woonomad.com/sehir/viyana</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/viyana/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/viyana/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/viyana/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Budapeşte -->
+  <url>
+    <loc>https://woonomad.com/sehir/budapeste</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/budapeste/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/budapeste/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/budapeste/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Kopenhag -->
+  <url>
+    <loc>https://woonomad.com/sehir/kopenhag</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/kopenhag/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/kopenhag/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/kopenhag/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Stockholm -->
+  <url>
+    <loc>https://woonomad.com/sehir/stockholm</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/stockholm/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/stockholm/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/stockholm/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Dubai -->
+  <url>
+    <loc>https://woonomad.com/sehir/dubai</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/dubai/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/dubai/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/dubai/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Amman -->
+  <url>
+    <loc>https://woonomad.com/sehir/amman</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amman/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amman/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/amman/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Tiflis -->
+  <url>
+    <loc>https://woonomad.com/sehir/tiflis</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tiflis/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tiflis/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tiflis/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Bakü -->
+  <url>
+    <loc>https://woonomad.com/sehir/baku</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/baku/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/baku/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/baku/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Tokyo -->
+  <url>
+    <loc>https://woonomad.com/sehir/tokyo</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tokyo/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tokyo/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/tokyo/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Bangkok -->
+  <url>
+    <loc>https://woonomad.com/sehir/bangkok</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bangkok/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bangkok/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bangkok/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Singapur -->
+  <url>
+    <loc>https://woonomad.com/sehir/singapur</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/singapur/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/singapur/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/singapur/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Bali -->
+  <url>
+    <loc>https://woonomad.com/sehir/bali</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bali/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bali/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/bali/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Seul -->
+  <url>
+    <loc>https://woonomad.com/sehir/seul</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/seul/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/seul/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/seul/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- New York -->
+  <url>
+    <loc>https://woonomad.com/sehir/newyork</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/newyork/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/newyork/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/newyork/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Belgrad -->
+  <url>
+    <loc>https://woonomad.com/sehir/belgrad</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/belgrad/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/belgrad/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/belgrad/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Saraybosna -->
+  <url>
+    <loc>https://woonomad.com/sehir/sarajevo</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/sarajevo/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/sarajevo/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/sarajevo/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Marakeş -->
+  <url>
+    <loc>https://woonomad.com/sehir/marakes</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/marakes/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/marakes/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/marakes/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Zanzibar -->
+  <url>
+    <loc>https://woonomad.com/sehir/zanzibar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/zanzibar/ucuslar</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/zanzibar/oteller</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/sehir/zanzibar/ucak-bileti</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============ UÇUŞ ROTALARI ============ -->
+  
+  <!-- İstanbul Hub - Avrupa -->
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-paris</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-londra</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-roma</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-barselona</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-amsterdam</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-berlin</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-munih</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-frankfurt</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-viyana</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-prag</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-budapeste</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-atina</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-madrid</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-lizbon</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-milano</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-zurich</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-kopenhag</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-stockholm</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-bruksel</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- İstanbul Hub - Balkanlar (Vizesiz) -->
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-tiflis</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-baku</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-belgrad</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-uskup</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-saraybosna</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- İstanbul Hub - Ortadoğu -->
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-dubai</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-doha</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-doha</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/istanbul-amman</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-beyrut</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-tiflis</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-baku</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-belgrad</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-milano</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-zurih</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-singapur</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-bangkok</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/istanbul-new-york</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-amman</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Avrupa İçi Rotalar -->
+  <!-- İstanbul Hub - Asya -->
   <url>
-    <loc>https://woonomad.co/ucus/paris-londra</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-singapur</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-bangkok</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-tokyo</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-seul</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/paris-roma</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-bali</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- İstanbul Hub - Afrika -->
+  <url>
+    <loc>https://woonomad.com/ucus/istanbul-marakes</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/paris-barselona</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/paris-amsterdam</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/londra-roma</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/londra-barselona</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/londra-amsterdam</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/amsterdam-roma</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/barselona-roma</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/madrid-lizbon</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-zanzibar</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   
-  <!-- Türk Şehirleri Arası -->
+  <!-- İstanbul Hub - Amerika -->
   <url>
-    <loc>https://woonomad.co/ucus/antalya-berlin</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-newyork</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/antalya-amsterdam</loc>
-    <lastmod>2024-12-30</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://woonomad.co/ucus/izmir-atina</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/istanbul-losangeles</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   
-  <!-- Uzun Mesafe -->
+  <!-- Avrupa Arası Rotalar -->
   <url>
-    <loc>https://woonomad.co/ucus/paris-new-york</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/paris-londra</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/londra-new-york</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/paris-roma</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/londra-dubai</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/paris-amsterdam</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/londra-singapur</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/londra-amsterdam</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://woonomad.co/ucus/dubai-singapur</loc>
-    <lastmod>2024-12-30</lastmod>
+    <loc>https://woonomad.com/ucus/londra-madrid</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://woonomad.com/ucus/barselona-roma</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/madrid-lizbon</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Ortadoğu - Asya Rotaları -->
+  <url>
+    <loc>https://woonomad.com/ucus/dubai-singapur</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/dubai-bangkok</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.com/ucus/amman-dubai</loc>
+    <lastmod>2025-01-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
 </urlset>
