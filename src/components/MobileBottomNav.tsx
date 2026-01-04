@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Plane, Building2, MapPin, BookOpen } from 'lucide-react';
+import { Home, Plane, Building2, BookOpen, Hotel } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -12,8 +12,8 @@ const navItems: NavItem[] = [
   { label: 'Ana Sayfa', href: '/', icon: <Home className="h-5 w-5" /> },
   { label: 'Şehirler', href: '/sehirler', icon: <Building2 className="h-5 w-5" /> },
   { label: 'Uçuşlar', href: '/ucuslar', icon: <Plane className="h-5 w-5" /> },
+  { label: 'Oteller', href: '/oteller', icon: <Hotel className="h-5 w-5" /> },
   { label: 'Blog', href: '/blog', icon: <BookOpen className="h-5 w-5" /> },
-  { label: 'Keşfet', href: '/destinasyonlar', icon: <MapPin className="h-5 w-5" /> },
 ];
 
 export function MobileBottomNav() {
@@ -26,28 +26,28 @@ export function MobileBottomNav() {
 
   return (
     <nav 
-      className="mobile-nav-sticky md:hidden pb-safe"
+      className="mobile-nav-sticky md:hidden"
       aria-label="Mobil navigasyon"
     >
-      <div className="flex items-center justify-around py-2">
+      <div className="flex items-center justify-around py-1.5 px-1">
         {navItems.map((item) => (
           <Link
             key={item.href}
             to={item.href}
             className={cn(
-              "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all min-w-[4rem]",
+              "flex flex-col items-center gap-0.5 py-2 px-3 rounded-xl transition-all touch-target",
               isActive(item.href)
                 ? "text-primary"
-                : "text-muted-foreground"
+                : "text-muted-foreground active:text-foreground"
             )}
           >
             <div className={cn(
-              "p-1.5 rounded-xl transition-all",
+              "p-2 rounded-xl transition-all",
               isActive(item.href) && "bg-primary/10"
             )}>
               {item.icon}
             </div>
-            <span className="text-[10px] font-medium leading-none">
+            <span className="text-[10px] font-semibold leading-none">
               {item.label}
             </span>
           </Link>
