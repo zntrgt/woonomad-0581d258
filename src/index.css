@@ -2,32 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Georama:wght@300;400;500;600;700;800&display=swap');
 
-/* WooNomad - Modern Seyahat Platformu - Airbnb/Booking/Skyscanner Tarzı */
+/* WooNomad - Modern Seyahat Platformu */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    --background: 0 0% 99%;
+    --foreground: 150 100% 2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
+    --card-foreground: 150 100% 2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 150 100% 2%;
 
-    /* Modern mavi-yeşil vurgu rengi */
-    --primary: 174 72% 40%;
+    /* Main color: #004D0E -> HSL: 133 100% 15% */
+    --primary: 133 100% 15%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 25%;
+    /* Secondary color: #4D003F -> HSL: 311 100% 15% */
+    --secondary: 311 100% 15%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 150 10% 96%;
+    --muted-foreground: 150 10% 45%;
 
-    --accent: 174 72% 40%;
+    --accent: 133 100% 15%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 71% 45%;
@@ -39,35 +40,35 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 174 72% 40%;
+    --border: 150 10% 90%;
+    --input: 150 10% 90%;
+    --ring: 133 100% 15%;
 
     --radius: 0.75rem;
 
     /* Section backgrounds */
     --section-header: 0 0% 100%;
     --section-search: 0 0% 100%;
-    --section-routes: 220 14% 98%;
-    --section-results: 220 14% 98%;
+    --section-routes: 150 10% 98%;
+    --section-results: 150 10% 98%;
 
     /* Custom travel colors */
-    --travel-teal: 174 72% 40%;
-    --travel-coral: 16 85% 60%;
-    --travel-navy: 220 60% 25%;
+    --travel-green: 133 100% 15%;
+    --travel-magenta: 311 100% 15%;
     --travel-gold: 38 92% 50%;
     --travel-sage: 145 30% 50%;
+    --travel-teal: 174 72% 40%;
 
     /* Badge colors */
-    --badge-popular: 174 72% 40%;
-    --badge-deal: 16 85% 60%;
+    --badge-popular: 133 100% 15%;
+    --badge-deal: 311 100% 15%;
     --badge-new: 262 83% 58%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(174, 72%, 40%) 0%, hsl(174, 72%, 35%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(220, 60%, 25%) 0%, hsl(220, 50%, 35%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(220, 14%, 99%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(16, 85%, 60%) 0%, hsl(38, 92%, 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(133, 100%, 15%) 0%, hsl(133, 80%, 20%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(311, 100%, 15%) 0%, hsl(311, 80%, 22%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(133, 100%, 15%) 0%, hsl(311, 100%, 15%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(150, 10%, 99%) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -79,35 +80,35 @@
     --shadow-float: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 15%;
-    --sidebar-primary: 174 72% 40%;
+    --sidebar-foreground: 150 100% 2%;
+    --sidebar-primary: 133 100% 15%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 220 13% 90%;
-    --sidebar-ring: 174 72% 40%;
+    --sidebar-accent: 150 10% 96%;
+    --sidebar-accent-foreground: 150 100% 2%;
+    --sidebar-border: 150 10% 90%;
+    --sidebar-ring: 133 100% 15%;
   }
 
   .dark {
-    --background: 220 15% 8%;
-    --foreground: 220 10% 92%;
+    --background: 150 15% 6%;
+    --foreground: 150 10% 95%;
 
-    --card: 220 15% 11%;
-    --card-foreground: 220 10% 92%;
+    --card: 150 15% 9%;
+    --card-foreground: 150 10% 95%;
 
-    --popover: 220 15% 11%;
-    --popover-foreground: 220 10% 92%;
+    --popover: 150 15% 9%;
+    --popover-foreground: 150 10% 95%;
 
-    --primary: 174 72% 45%;
+    --primary: 133 80% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 18%;
-    --secondary-foreground: 220 10% 92%;
+    --secondary: 311 80% 35%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 14% 16%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 150 14% 16%;
+    --muted-foreground: 150 10% 55%;
 
-    --accent: 174 72% 45%;
+    --accent: 133 80% 40%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 71% 45%;
@@ -119,42 +120,42 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 220 14% 18%;
-    --input: 220 14% 18%;
-    --ring: 174 72% 45%;
+    --border: 150 14% 18%;
+    --input: 150 14% 18%;
+    --ring: 133 80% 40%;
 
     /* Section backgrounds - dark */
-    --section-header: 220 15% 8%;
-    --section-search: 220 15% 8%;
-    --section-routes: 220 15% 10%;
-    --section-results: 220 15% 10%;
+    --section-header: 150 15% 6%;
+    --section-search: 150 15% 6%;
+    --section-routes: 150 15% 8%;
+    --section-results: 150 15% 8%;
 
-    --travel-teal: 174 72% 45%;
-    --travel-coral: 16 85% 60%;
-    --travel-navy: 220 50% 40%;
+    --travel-green: 133 80% 40%;
+    --travel-magenta: 311 80% 35%;
     --travel-gold: 38 92% 50%;
     --travel-sage: 145 30% 50%;
+    --travel-teal: 174 72% 45%;
 
-    --badge-popular: 174 72% 45%;
-    --badge-deal: 16 85% 60%;
+    --badge-popular: 133 80% 40%;
+    --badge-deal: 311 80% 35%;
     --badge-new: 262 83% 58%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(174, 72%, 45%) 0%, hsl(174, 72%, 40%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(220, 50%, 30%) 0%, hsl(220, 45%, 40%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(220, 15%, 11%) 0%, hsl(220, 15%, 13%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(16, 85%, 55%) 0%, hsl(38, 92%, 45%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(133, 80%, 40%) 0%, hsl(133, 70%, 35%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(311, 80%, 35%) 0%, hsl(311, 70%, 40%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(133, 80%, 35%) 0%, hsl(311, 80%, 30%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(150, 15%, 9%) 0%, hsl(150, 15%, 11%) 100%);
 
     --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.3);
     --shadow-card-hover: 0 12px 28px -8px rgb(0 0 0 / 0.4);
 
-    --sidebar-background: 220 15% 8%;
-    --sidebar-foreground: 220 10% 92%;
-    --sidebar-primary: 174 72% 45%;
+    --sidebar-background: 150 15% 6%;
+    --sidebar-foreground: 150 10% 95%;
+    --sidebar-primary: 133 80% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 16%;
-    --sidebar-accent-foreground: 220 10% 92%;
-    --sidebar-border: 220 14% 18%;
-    --sidebar-ring: 174 72% 45%;
+    --sidebar-accent: 150 14% 16%;
+    --sidebar-accent-foreground: 150 10% 95%;
+    --sidebar-border: 150 14% 18%;
+    --sidebar-ring: 133 80% 40%;
   }
 }
 
@@ -165,17 +166,18 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Georama', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.6;
     letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Georama', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -219,7 +221,7 @@
   }
 
   .badge-deal {
-    background: hsl(var(--travel-coral));
+    background: hsl(var(--secondary));
     @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full;
   }
 
@@ -230,7 +232,7 @@
 
   /* Button micro-interactions */
   .btn-interactive {
-    @apply transition-all duration-200 ease-out;
+    @apply transition-all duration-200 ease-out active:scale-[0.98];
   }
 
   .btn-interactive:hover {
@@ -238,7 +240,7 @@
   }
 
   .btn-interactive:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
   }
 
   /* Star Rating */
@@ -272,11 +274,32 @@
       padding-bottom: 0;
     }
   }
+
+  /* Touch-friendly buttons for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile card improvements */
+  @media (max-width: 640px) {
+    .card-modern {
+      @apply rounded-xl;
+    }
+    
+    .search-bar-float {
+      @apply rounded-xl;
+      box-shadow: var(--shadow-lg);
+    }
+  }
 }
 
 @layer utilities {
   .gradient-primary {
     background: var(--gradient-primary);
+  }
+
+  .gradient-secondary {
+    background: var(--gradient-secondary);
   }
 
   .gradient-hero {
@@ -287,12 +310,15 @@
     background: var(--gradient-card);
   }
 
-  .gradient-sunset {
-    background: var(--gradient-sunset);
-  }
-
   .text-gradient {
     background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-hero {
+    background: var(--gradient-hero);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -361,6 +387,15 @@
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
+
+  /* Mobile-friendly spacing */
+  .mobile-px {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-py {
+    @apply py-4 sm:py-6 lg:py-8;
+  }
 }
 
 @keyframes float {
@@ -423,4 +458,20 @@
 
 .animate-fade-in-up {
   animation: fade-in-up 0.3s ease-out forwards;
+}
+
+/* Mobile touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  .card-modern:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-interactive:hover {
+    transform: none;
+  }
+  
+  .card-image-hover:hover img {
+    transform: none;
+  }
 }

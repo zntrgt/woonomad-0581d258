@@ -18,8 +18,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -64,11 +64,11 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         travel: {
-          teal: "hsl(var(--travel-teal))",
-          coral: "hsl(var(--travel-coral))",
-          navy: "hsl(var(--travel-navy))",
+          green: "hsl(var(--travel-green))",
+          magenta: "hsl(var(--travel-magenta))",
           gold: "hsl(var(--travel-gold))",
           sage: "hsl(var(--travel-sage))",
+          teal: "hsl(var(--travel-teal))",
         },
         badge: {
           popular: "hsl(var(--badge-popular))",
@@ -95,6 +95,7 @@ export default {
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -107,6 +108,7 @@ export default {
       boxShadow: {
         'soft': '0 4px 20px -2px hsl(var(--primary) / 0.1)',
         'glow': '0 0 40px hsl(var(--primary) / 0.3)',
+        'glow-secondary': '0 0 40px hsl(var(--secondary) / 0.3)',
         'card': 'var(--shadow-card)',
         'card-hover': 'var(--shadow-card-hover)',
         'float': 'var(--shadow-float)',
@@ -167,6 +169,10 @@ export default {
       },
       transitionDuration: {
         '400': '400ms',
+      },
+      screens: {
+        'xs': '375px',
+        'touch': { 'raw': '(hover: none) and (pointer: coarse)' },
       },
     },
   },
