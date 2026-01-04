@@ -2,66 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Ana Sayfa -->
   <url>
-    <loc>https://woonomad.com/</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <!-- Şehirler Ana Sayfa -->
   <url>
-    <loc>https://woonomad.com/sehirler</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/sehirler</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <!-- Uçuş Rotaları Ana Sayfa -->
   <url>
-    <loc>https://woonomad.com/ucuslar</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/ucuslar</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <!-- Oteller Ana Sayfa -->
   <url>
-    <loc>https://woonomad.com/oteller</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/oteller</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <!-- Blog -->
   <url>
-    <loc>https://woonomad.com/blog</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/blog</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   
+  <!-- Blog Yazıları - Sevgililer Günü ve Romantik -->
+  <url>
+    <loc>https://woonomad.co/blog/sevgililer-gunu-romantik-sehirler</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/blog/romantik-hafta-sonu-vizesiz-destinasyonlar</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/blog/alternatif-rotalar-gizli-cennetler</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/blog/sevgililer-gunu-ucak-bileti-firsatlari-2026</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/blog/romantik-sehir-rehberi-amsterdam</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
   <!-- Legal Sayfalar -->
   <url>
-    <loc>https://woonomad.com/gizlilik-politikasi</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/gizlilik-politikasi</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://woonomad.com/kullanim-kosullari</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/kullanim-kosullari</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://woonomad.com/kvkk</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/kvkk</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://woonomad.com/cerez-politikasi</loc>
-    <lastmod>2025-01-03</lastmod>
+    <loc>https://woonomad.co/cerez-politikasi</loc>
+    <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

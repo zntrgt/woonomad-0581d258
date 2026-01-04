@@ -138,19 +138,20 @@ const Index = () => {
     return null;
   };
 
-  // JSON-LD Structured Data
+  // JSON-LD Structured Data for SEO and LLM
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'WooNomad',
     alternateName: 'WooNomad Uçak Bileti',
     url: BASE_URL,
-    description: 'En ucuz uçak bileti fiyatlarını karşılaştırın. Tüm havayollarının biletlerini tek seferde arayın.',
+    description: 'Türkiye\'nin en kapsamlı uçak bileti karşılaştırma platformu. Tüm havayollarının biletlerini tek seferde arayın, en ucuz uçuş fırsatlarını yakalayın.',
+    inLanguage: 'tr-TR',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/ucak-bileti/{search_term}`,
+        urlTemplate: `${BASE_URL}/?search={search_term}`,
       },
       'query-input': 'required name=search_term',
     },
@@ -162,12 +163,17 @@ const Index = () => {
     name: 'WooNomad',
     url: BASE_URL,
     logo: `${BASE_URL}/woonomad-logo.png`,
-    description: 'Türkiye\'nin en kapsamlı uçak bileti karşılaştırma platformu',
+    description: 'Türkiye\'nin en kapsamlı uçak bileti karşılaştırma platformu. 500\'den fazla havayolunun biletlerini karşılaştırın.',
+    foundingDate: '2024',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Türkiye',
+    },
     sameAs: [],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      availableLanguage: 'Turkish',
+      availableLanguage: ['Turkish', 'English'],
     },
   };
 
@@ -178,12 +184,21 @@ const Index = () => {
     provider: {
       '@type': 'Organization',
       name: 'WooNomad',
+      url: BASE_URL,
     },
-    description: 'Tüm havayollarının uçak biletlerini karşılaştırın, en ucuz fiyatları bulun',
-    serviceType: 'Flight Search',
+    description: 'Tüm havayollarının uçak biletlerini karşılaştırın, en ucuz fiyatları bulun. Komisyonsuz, şeffaf fiyatlandırma.',
+    serviceType: 'Flight Search and Comparison',
     areaServed: {
       '@type': 'Country',
       name: 'Turkey',
+    },
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        priceCurrency: 'TRY',
+      },
     },
   };
 
@@ -196,7 +211,7 @@ const Index = () => {
         name: 'WooNomad nedir?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı sağlayan bir uçak bileti arama motorudur.',
+          text: 'WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı sağlayan bir uçak bileti arama motorudur. Komisyon almadan, şeffaf fiyatlarla güvenli rezervasyon yapabilirsiniz.',
         },
       },
       {
@@ -204,7 +219,7 @@ const Index = () => {
         name: 'En ucuz uçak bileti nasıl bulunur?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'En ucuz uçak bileti için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve esnek tarih araması kullanın. WooNomad ile tüm havayollarını tek seferde karşılaştırabilirsiniz.',
+          text: 'En ucuz uçak bileti için erken rezervasyon yapın (6-8 hafta öncesi ideal), hafta içi uçuşları tercih edin (Salı-Çarşamba en uygun), esnek tarih araması kullanın ve WooNomad ile tüm havayollarını tek seferde karşılaştırın.',
         },
       },
       {
@@ -212,8 +227,38 @@ const Index = () => {
         name: 'Uçak bileti ne zaman daha ucuz?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Uçak biletleri genellikle Salı ve Çarşamba günleri, düşük sezonlarda (Ocak-Şubat, Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur.',
+          text: 'Uçak biletleri genellikle Salı ve Çarşamba günleri, düşük sezonlarda (Ocak-Şubat, Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur. Ayrıca gece yarısı ve sabah erken saatlerde fiyat güncellemeleri olabilir.',
         },
+      },
+      {
+        '@type': 'Question',
+        name: 'Hangi havayolları karşılaştırılıyor?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'WooNomad, Turkish Airlines, Pegasus, SunExpress, AnadoluJet dahil 500\'den fazla havayolunun biletlerini karşılaştırır. Hem yurt içi hem de yurt dışı uçuşlar için en uygun fiyatları bulabilirsiniz.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'WooNomad komisyon alıyor mu?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Hayır, WooNomad herhangi bir komisyon almaz. Doğrudan havayolu sitelerine yönlendirme yapılır ve ödemeyi orada gerçekleştirirsiniz. Gördüğünüz fiyat, ödeyeceğiniz fiyattır.',
+        },
+      },
+    ],
+  };
+
+  // Breadcrumb Schema for SEO
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Ana Sayfa',
+        item: BASE_URL,
       },
     ],
   };
@@ -242,11 +287,12 @@ const Index = () => {
         <meta name="twitter:title" content="En Ucuz Uçak Bileti - WooNomad" />
         <meta name="twitter:description" content="Tüm havayollarının biletlerini karşılaştırın, en uygun fiyatları bulun." />
         
-        {/* JSON-LD */}
+        {/* JSON-LD Structured Data */}
         <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background flex flex-col">
@@ -602,21 +648,57 @@ const Index = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
+        <footer className="border-t border-border py-8 md:py-12 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <Globe className="h-5 w-5 text-primary" />
-                <span className="font-display font-semibold">WooNomad</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+              <div className="col-span-2 md:col-span-1">
+                <div className="flex items-center gap-2 mb-4">
+                  <Globe className="h-6 w-6 text-primary" />
+                  <span className="font-display font-bold text-lg">WooNomad</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Türkiye'nin en kapsamlı uçak bileti karşılaştırma platformu.
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground text-center">
+              
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground">Keşfet</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/sehirler" className="hover:text-primary transition-colors">Şehirler</a></li>
+                  <li><a href="/ucuslar" className="hover:text-primary transition-colors">Uçuşlar</a></li>
+                  <li><a href="/oteller" className="hover:text-primary transition-colors">Oteller</a></li>
+                  <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground">Popüler</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/sehir/paris" className="hover:text-primary transition-colors">Paris</a></li>
+                  <li><a href="/sehir/amsterdam" className="hover:text-primary transition-colors">Amsterdam</a></li>
+                  <li><a href="/sehir/barcelona" className="hover:text-primary transition-colors">Barcelona</a></li>
+                  <li><a href="/sehir/roma" className="hover:text-primary transition-colors">Roma</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-3 text-foreground">Yasal</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</a></li>
+                  <li><a href="/kullanim-kosullari" className="hover:text-primary transition-colors">Kullanım Koşulları</a></li>
+                  <li><a href="/kvkk" className="hover:text-primary transition-colors">KVKK</a></li>
+                  <li><a href="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-muted-foreground text-center sm:text-left">
                 © {currentYear} WooNomad. Tüm hakları saklıdır.
               </p>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <a href="#" className="hover-underline">Gizlilik</a>
-                <a href="#" className="hover-underline">Kullanım Şartları</a>
-                <a href="#" className="hover-underline">İletişim</a>
-              </div>
+              <p className="text-xs text-muted-foreground/70">
+                Uçak bileti fiyatları değişkenlik gösterebilir.
+              </p>
             </div>
           </div>
         </footer>
