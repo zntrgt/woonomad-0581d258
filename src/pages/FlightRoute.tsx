@@ -78,8 +78,9 @@ export default function FlightRoute() {
   const BASE_URL = 'https://woonomad.co';
   const currentYear = new Date().getFullYear();
 
-  const pageTitle = `${route.originCity} ${route.destinationCity} Uçak Bileti ${currentYear} - WooNomad`;
-  const pageDescription = `${route.originCity} - ${route.destinationCity} uçuş fiyatlarını karşılaştırın. Ortalama uçuş süresi ${route.estimatedDuration}. En ucuz ${route.originCity} ${route.destinationCity} bileti için tıklayın.`;
+  const pageTitle = `${route.originCity} ${route.destinationCity} Uçak Bileti ${currentYear} | Uçuş Süresi, Fiyat - WooNomad`;
+  const pageDescription = `${route.originCity} - ${route.destinationCity} uçak bileti fiyatları, uçuş süresi ${route.estimatedDuration}, mesafe ${route.distance}. ${route.originCity} ${route.destinationCity} arası en ucuz bilet ${formatPrice(route.priceRange.min)} fiyatlarla.`;
+  const pageKeywords = `${route.originCity} ${route.destinationCity} uçak bileti, ${route.originCity} ${route.destinationCity} uçuş süresi, ${route.originCity} ${route.destinationCity} kaç km, ${route.originCity} ${route.destinationCity} kaç saat, ${route.originCity.toLowerCase()} ${route.destinationCity.toLowerCase()} bilet fiyatları, ${route.originCode} ${route.destinationCode} uçuş`;
 
   // JSON-LD Schemas
   const flightSchema = {
@@ -156,7 +157,7 @@ export default function FlightRoute() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`${route.originCity} ${route.destinationCity} uçak bileti, ${route.originCity} ${route.destinationCity} uçuş, ${route.originCity} ${route.destinationCity} bilet fiyatları`} />
+        <meta name="keywords" content={pageKeywords} />
         <link rel="canonical" href={`${BASE_URL}/ucus/${route.slug}`} />
         
         <meta property="og:type" content="website" />
@@ -186,78 +187,78 @@ export default function FlightRoute() {
           ]} />
         </div>
 
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-10 px-4">
+        {/* Hero Section - Compact */}
+        <section className="bg-gradient-to-b from-primary/10 to-background py-6 md:py-8 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-3 mb-3">
               <div className="text-center md:text-right">
-                <span className="text-3xl mb-1 block">{route.originFlag}</span>
-                <h2 className="text-xl font-semibold">{route.originCity}</h2>
-                <p className="text-sm text-muted-foreground">{route.originCode}</p>
+                <span className="text-2xl md:text-3xl mb-1 block">{route.originFlag}</span>
+                <h2 className="text-lg md:text-xl font-semibold">{route.originCity}</h2>
+                <p className="text-xs text-muted-foreground">{route.originCode}</p>
               </div>
               
-              <div className="flex flex-col items-center px-6">
-                <Plane className="h-8 w-8 text-primary mb-1" />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
+              <div className="flex flex-col items-center px-4">
+                <Plane className="h-6 w-6 text-primary mb-1" />
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
                   <span>{route.estimatedDuration}</span>
                 </div>
               </div>
               
               <div className="text-center md:text-left">
-                <span className="text-3xl mb-1 block">{route.destinationFlag}</span>
-                <h2 className="text-xl font-semibold">{route.destinationCity}</h2>
-                <p className="text-sm text-muted-foreground">{route.destinationCode}</p>
+                <span className="text-2xl md:text-3xl mb-1 block">{route.destinationFlag}</span>
+                <h2 className="text-lg md:text-xl font-semibold">{route.destinationCity}</h2>
+                <p className="text-xs text-muted-foreground">{route.destinationCode}</p>
               </div>
             </div>
             
-            <h1 className="text-2xl md:text-4xl font-bold text-center mb-2">
+            <h1 className="text-xl md:text-3xl font-bold text-center mb-1">
               {route.originCity} - {route.destinationCity} Uçak Bileti
             </h1>
-            <p className="text-center text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-center text-muted-foreground text-sm max-w-2xl mx-auto">
               {route.description}
             </p>
           </div>
         </section>
 
         {/* Main Content */}
-        <main className="max-w-6xl mx-auto px-4 py-8">
-          {/* Quick Info */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <main className="max-w-6xl mx-auto px-4 py-6">
+          {/* Quick Info - Compact */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <Card>
-              <CardContent className="p-4 flex items-center gap-3">
-                <Clock className="h-8 w-8 text-primary flex-shrink-0" />
+              <CardContent className="p-3 flex items-center gap-2">
+                <Clock className="h-6 w-6 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Uçuş Süresi</div>
-                  <div className="font-semibold">{route.estimatedDuration}</div>
+                  <div className="text-xs text-muted-foreground">Uçuş Süresi</div>
+                  <div className="font-semibold text-sm">{route.estimatedDuration}</div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4 flex items-center gap-3">
-                <MapPin className="h-8 w-8 text-primary flex-shrink-0" />
+              <CardContent className="p-3 flex items-center gap-2">
+                <MapPin className="h-6 w-6 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Mesafe</div>
-                  <div className="font-semibold">{route.distance}</div>
+                  <div className="text-xs text-muted-foreground">Mesafe</div>
+                  <div className="font-semibold text-sm">{route.distance}</div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4 flex items-center gap-3">
-                <TrendingUp className="h-8 w-8 text-primary flex-shrink-0" />
+              <CardContent className="p-3 flex items-center gap-2">
+                <TrendingUp className="h-6 w-6 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Fiyat Aralığı</div>
-                  <div className="font-semibold text-sm">
+                  <div className="text-xs text-muted-foreground">Fiyat Aralığı</div>
+                  <div className="font-semibold text-xs">
                     {formatPrice(route.priceRange.min)} - {formatPrice(route.priceRange.max)}
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-4 flex items-center gap-3">
-                <Users className="h-8 w-8 text-primary flex-shrink-0" />
+              <CardContent className="p-3 flex items-center gap-2">
+                <Users className="h-6 w-6 text-primary flex-shrink-0" />
                 <div>
-                  <div className="text-sm text-muted-foreground">Havayolları</div>
+                  <div className="text-xs text-muted-foreground">Havayolları</div>
                   <div className="font-semibold text-sm">{route.airlines.length}+ Havayolu</div>
                 </div>
               </CardContent>
@@ -385,54 +386,71 @@ export default function FlightRoute() {
             </Accordion>
           </section>
 
-          {/* LLM Content */}
-          <section className="mb-12 bg-muted/30 rounded-xl p-6">
-            <h2 className="text-2xl font-bold mb-6">
-              {route.originCity} - {route.destinationCity} Uçuş Bilgileri
+          {/* SEO/LLM Technical Info Section */}
+          <section className="mb-8 bg-muted/30 rounded-xl p-4 md:p-6">
+            <h2 className="text-xl font-bold mb-4">
+              {route.originCity} - {route.destinationCity} Teknik Bilgiler
             </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="font-semibold text-lg mb-4">Kalkış Bilgileri</h3>
-                <dl className="space-y-3">
-                  <div className="flex justify-between border-b border-border pb-2">
-                    <dt className="text-muted-foreground">Şehir</dt>
-                    <dd className="font-medium">{route.originCity}</dd>
-                  </div>
-                  <div className="flex justify-between border-b border-border pb-2">
+            
+            {/* Key Facts Table for LLM */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+              <div className="bg-background rounded-lg p-3 text-center">
+                <div className="text-xs text-muted-foreground mb-1">{route.originCity} {route.destinationCity} uçuş süresi</div>
+                <div className="text-lg font-bold text-primary">{route.estimatedDuration}</div>
+              </div>
+              <div className="bg-background rounded-lg p-3 text-center">
+                <div className="text-xs text-muted-foreground mb-1">{route.originCity} {route.destinationCity} kaç km</div>
+                <div className="text-lg font-bold text-primary">{route.distance}</div>
+              </div>
+              <div className="bg-background rounded-lg p-3 text-center">
+                <div className="text-xs text-muted-foreground mb-1">En ucuz bilet</div>
+                <div className="text-lg font-bold text-primary">{formatPrice(route.priceRange.min)}</div>
+              </div>
+              <div className="bg-background rounded-lg p-3 text-center">
+                <div className="text-xs text-muted-foreground mb-1">Havayolu sayısı</div>
+                <div className="text-lg font-bold text-primary">{route.airlines.length}+</div>
+              </div>
+            </div>
+            
+            {/* Detailed Flight Info for SEO */}
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <div className="bg-background rounded-lg p-3">
+                <h3 className="font-semibold text-sm mb-2">Kalkış: {route.originCity}</h3>
+                <dl className="space-y-1 text-sm">
+                  <div className="flex justify-between">
                     <dt className="text-muted-foreground">Ülke</dt>
                     <dd className="font-medium">{route.originCountry}</dd>
                   </div>
-                  <div className="flex justify-between border-b border-border pb-2">
-                    <dt className="text-muted-foreground">Havalimanı</dt>
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">IATA Kodu</dt>
                     <dd className="font-medium">{route.originCode}</dd>
                   </div>
                 </dl>
               </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-4">Varış Bilgileri</h3>
-                <dl className="space-y-3">
-                  <div className="flex justify-between border-b border-border pb-2">
-                    <dt className="text-muted-foreground">Şehir</dt>
-                    <dd className="font-medium">{route.destinationCity}</dd>
-                  </div>
-                  <div className="flex justify-between border-b border-border pb-2">
+              <div className="bg-background rounded-lg p-3">
+                <h3 className="font-semibold text-sm mb-2">Varış: {route.destinationCity}</h3>
+                <dl className="space-y-1 text-sm">
+                  <div className="flex justify-between">
                     <dt className="text-muted-foreground">Ülke</dt>
                     <dd className="font-medium">{route.destinationCountry}</dd>
                   </div>
-                  <div className="flex justify-between border-b border-border pb-2">
-                    <dt className="text-muted-foreground">Havalimanı</dt>
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">IATA Kodu</dt>
                     <dd className="font-medium">{route.destinationCode}</dd>
                   </div>
                 </dl>
               </div>
             </div>
             
-            <div className="mt-8 p-4 bg-background rounded-lg">
-              <p className="text-muted-foreground leading-relaxed">
-                <strong>{route.originCity} - {route.destinationCity} uçak bileti</strong> arayanlar için özet: 
-                {route.originCity} ({route.originCode}) havalimanından {route.destinationCity} ({route.destinationCode}) 
-                havalimanına ortalama {route.estimatedDuration} süren uçuşlar mevcuttur. Mesafe yaklaşık {route.distance}'dir. 
-                En ucuz bilet için erken rezervasyon ve hafta içi uçuşlar önerilir.
+            {/* LLM Optimized Summary */}
+            <div className="p-3 bg-background rounded-lg text-sm text-muted-foreground">
+              <p className="mb-2">
+                <strong>{route.originCity} {route.destinationCity} uçak bileti</strong> fiyatları {formatPrice(route.priceRange.min)} ile {formatPrice(route.priceRange.max)} arasında değişmektedir. 
+                <strong> {route.originCity} {route.destinationCity} uçuş süresi</strong> ortalama {route.estimatedDuration} olup, iki şehir arası mesafe yaklaşık {route.distance}'dir.
+              </p>
+              <p>
+                <strong>{route.originCity} {route.destinationCity} kaç saat:</strong> Direkt uçuşlarla {route.estimatedDuration}, aktarmalı uçuşlarda ise 4-8 saat arası sürmektedir. 
+                Bu rotada {route.airlines.join(', ')} gibi havayolları hizmet vermektedir.
               </p>
             </div>
           </section>

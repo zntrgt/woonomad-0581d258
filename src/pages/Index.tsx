@@ -325,7 +325,7 @@ const Index = () => {
           <section
             className={cn(
               "relative flex flex-col items-center px-4 md:px-6",
-              hasResultsSection ? "py-8 md:py-12" : "py-12 md:py-20"
+              hasResultsSection ? "py-6 md:py-8" : "py-8 md:py-12"
             )}
             aria-labelledby="hero-title"
           >
@@ -338,23 +338,23 @@ const Index = () => {
             {/* Hero Content */}
             <div className={cn(
               "relative text-center max-w-3xl mx-auto",
-              hasResultsSection ? "mb-6 md:mb-8" : "mb-8 md:mb-12"
+              hasResultsSection ? "mb-4 md:mb-6" : "mb-6 md:mb-8"
             )}>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6 animate-fade-in">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-medium mb-4 animate-fade-in">
                 <Sparkles className="h-4 w-4" />
                 <span>Türkiye'nin En Kapsamlı Uçuş Karşılaştırma Platformu</span>
               </div>
               
               <h1 
                 id="hero-title" 
-                className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 animate-fade-in-up"
+                className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-2 animate-fade-in-up"
                 style={{ animationDelay: '0.1s' }}
               >
                 En Ucuz <span className="text-gradient">Uçak Bileti</span>
               </h1>
               
               <p 
-                className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
+                className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: '0.2s' }}
               >
                 Tüm havayollarını tek seferde karşılaştırın, en uygun fiyatı bulun. 
@@ -367,7 +367,7 @@ const Index = () => {
               className="relative w-full max-w-3xl animate-fade-in-up"
               style={{ animationDelay: '0.3s' }}
             >
-              <div className="search-bar-float p-6 md:p-8">
+              <div className="search-bar-float p-4 md:p-6">
                 <SearchForm
                   ref={searchFormRef}
                   onSearch={handleSearch}
@@ -379,7 +379,7 @@ const Index = () => {
             {/* Trust Badges */}
             {!hasResultsSection && (
               <div 
-                className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-muted-foreground animate-fade-in"
+                className="flex flex-wrap items-center justify-center gap-4 mt-6 text-xs md:text-sm text-muted-foreground animate-fade-in"
                 style={{ animationDelay: '0.4s' }}
               >
                 <div className="flex items-center gap-2">
@@ -399,8 +399,8 @@ const Index = () => {
 
             {/* Results Section */}
             {hasResultsSection && (
-              <div ref={resultsRef} className="w-full max-w-4xl mt-8 md:mt-12 animate-fade-in-up">
-                <div className="card-modern p-6 md:p-8">
+              <div ref={resultsRef} className="w-full max-w-4xl mt-6 md:mt-8 animate-fade-in-up">
+                <div className="card-modern p-4 md:p-6">
                   {error && (
                     <div className="bg-destructive/10 text-destructive p-4 rounded-xl mb-6 text-center text-sm font-medium border border-destructive/20">
                       {error}

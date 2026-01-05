@@ -3,8 +3,22 @@ import { addDays, startOfWeek, format, isBefore, startOfToday } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { WeekendDate, TripDuration } from '@/lib/types';
 
+// Check if current weekend has passed (Saturday 14:00)
+function shouldShowNextWeekend(): boolean {
+  const now = new Date();
+  const today = startOfToday();
+  const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
+  const saturday = addDays(currentWeekStart, 5); // Saturday
+  const saturdayAfternoon = new Date(saturday);
+  saturdayAfternoon.setHours(14, 0, 0, 0);
+  
+  return now >= saturdayAfternoon;
+}
+
 export function useWeekendDates() {
-  const [weekOffset, setWeekOffset] = useState(0);
+  // Start from next weekend if current weekend has passed
+  const initialOffset = shouldShowNextWeekend() ? 1 : 0;
+  const [weekOffset, setWeekOffset] = useState(initialOffset);
   const [tripDuration, setTripDuration] = useState<TripDuration>('2-2');
 
   const getDurationDays = useCallback((duration: TripDuration): number => {

@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TripPlanner } from '@/components/TripPlanner';
+import { EventCountdownList } from '@/components/EventCountdown';
 import { getCityBySlug, CityEvent } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
@@ -85,31 +86,31 @@ const City = () => {
           content={`${city.name} seyahat rehberi. ${city.country} ${city.name} uçak bileti fiyatları, otel rezervasyonu, gezilecek yerler ve turistik bilgiler. ${city.name}'e nasıl gidilir?`}
         />
         <meta name="keywords" content={`${city.name}, ${city.name} uçak bileti, ${city.name} otel, ${city.name} gezi rehberi, ${city.country} seyahat`} />
-        <link rel="canonical" href={`https://woonomad.com/sehir/${city.slug}`} />
+        <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}`} />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 
       <Header />
       
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
+      <section className="relative h-[35vh] min-h-[280px] overflow-hidden">
         <img 
           src={city.image} 
           alt={`${city.name} şehir manzarası`}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-8">
+        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
           <div className="container">
             <Breadcrumb items={breadcrumbItems} />
-            <div className="mt-4 flex items-center gap-3">
-              <span className="text-5xl">{flag}</span>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-3xl md:text-4xl">{flag}</span>
               <div>
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground">
+                <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground">
                   {city.name}
                 </h1>
-                <p className="text-lg text-muted-foreground mt-1">
-                  {city.country} • {city.population} nüfus
+                <p className="text-sm text-muted-foreground">
+                  {city.country} • {city.population}
                 </p>
               </div>
             </div>
@@ -118,25 +119,25 @@ const City = () => {
       </section>
 
       {/* Quick Actions */}
-      <section className="py-8 border-b border-border">
+      <section className="py-4 border-b border-border">
         <div className="container">
-          <div className="flex flex-wrap gap-4">
-            <Button asChild size="lg" className="gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="sm" className="gap-1.5">
               <Link to={`/sehir/${city.slug}/ucuslar`}>
-                <Plane className="w-5 h-5" />
-                {city.name} Uçuşları
+                <Plane className="w-4 h-4" />
+                Uçuşlar
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="gap-2">
+            <Button asChild size="sm" variant="outline" className="gap-1.5">
               <Link to={`/sehir/${city.slug}/oteller`}>
-                <Hotel className="w-5 h-5" />
-                {city.name} Otelleri
+                <Hotel className="w-4 h-4" />
+                Oteller
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="gap-2">
+            <Button asChild size="sm" variant="outline" className="gap-1.5">
               <Link to={`/sehir/${city.slug}/ucak-bileti`}>
-                <MapPin className="w-5 h-5" />
-                Uçak Bileti
+                <MapPin className="w-4 h-4" />
+                Bilet
               </Link>
             </Button>
           </div>
@@ -144,18 +145,18 @@ const City = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-12">
+      <section className="py-6">
         <div className="container">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Main Info */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-4">
               {/* About */}
               <Card variant="elevated">
-                <CardContent className="p-6">
-                  <h2 className="text-2xl font-display font-bold mb-4">
+                <CardContent className="p-4">
+                  <h2 className="text-lg font-display font-bold mb-2">
                     {city.name} Hakkında
                   </h2>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {city.description}
                   </p>
                 </CardContent>
@@ -163,14 +164,14 @@ const City = () => {
 
               {/* Highlights */}
               <Card variant="elevated">
-                <CardContent className="p-6">
-                  <h2 className="text-2xl font-display font-bold mb-4">
+                <CardContent className="p-4">
+                  <h2 className="text-lg font-display font-bold mb-2">
                     Öne Çıkan Yerler
                   </h2>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {city.highlights.map((highlight, index) => (
-                      <Badge key={index} variant="secondary" className="px-4 py-2 text-sm">
-                        <Star className="w-4 h-4 mr-2 text-warning" />
+                      <Badge key={index} variant="secondary" className="px-2 py-1 text-xs">
+                        <Star className="w-3 h-3 mr-1 text-warning" />
                         {highlight}
                       </Badge>
                     ))}
@@ -178,44 +179,24 @@ const City = () => {
                 </CardContent>
               </Card>
 
-              {/* Events Section */}
+              {/* Events Section with Countdown */}
               {city.events && city.events.length > 0 && (
                 <Card variant="elevated">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <PartyPopper className="w-6 h-6 text-primary" />
-                      <h2 className="text-2xl font-display font-bold">
-                        Önemli Etkinlikler ve Festivaller
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <PartyPopper className="w-5 h-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">
+                        Yaklaşan Etkinlikler
                       </h2>
                     </div>
-                    <p className="text-muted-foreground mb-4">
-                      {city.name} şehrindeki önemli etkinlik tarihlerine göre uçuş rezervasyonu yapın.
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Etkinlik tarihine göre uçuş planlayın
                     </p>
-                    <div className="grid gap-4">
-                      {city.events.map((event, index) => (
-                        <div 
-                          key={index}
-                          className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-muted/50 gap-4"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-semibold text-foreground">{event.name}</h3>
-                              <Badge variant="outline" className="text-xs">
-                                <Calendar className="w-3 h-3 mr-1" />
-                                {event.date}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
-                          </div>
-                          <Button asChild size="sm" className="shrink-0">
-                            <Link to={`/sehir/${city.slug}/ucak-bileti`}>
-                              <Ticket className="w-4 h-4 mr-2" />
-                              Bilet Bul
-                            </Link>
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
+                    <EventCountdownList 
+                      events={city.events}
+                      citySlug={city.slug}
+                      cityName={city.name}
+                    />
                   </CardContent>
                 </Card>
               )}
