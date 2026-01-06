@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Plane, Menu, Building2, BookOpen, Hotel } from 'lucide-react';
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
+import { SiteSearch } from './SiteSearch';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -63,6 +64,9 @@ export function Header() {
 
         {/* Right Side */}
         <div className="flex items-center gap-2">
+          {/* Site Search */}
+          <SiteSearch />
+          
           {/* Mobile Navigation */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="md:hidden">
