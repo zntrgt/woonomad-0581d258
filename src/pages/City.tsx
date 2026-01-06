@@ -24,6 +24,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TripPlanner } from '@/components/TripPlanner';
 import { EventCountdownList } from '@/components/EventCountdown';
+import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
 import { getCityBySlug, CityEvent } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
@@ -243,7 +244,18 @@ const City = () => {
             </div>
 
             {/* Right Column - Quick Info */}
-            <div className="space-y-6">
+            <div className="space-y-4">
+              {/* Weather Widget */}
+              <WeatherWidget cityName={city.name} />
+
+              {/* Travel Tips */}
+              <TravelTips 
+                cityName={city.name}
+                bestTimeToVisit={city.bestTimeToVisit}
+                currency={city.currency}
+                language={city.language}
+              />
+
               <Card variant="elevated">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-display font-bold mb-4">
