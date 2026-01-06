@@ -13,6 +13,8 @@ import Cities from "./pages/Cities";
 import CityFlights from "./pages/CityFlights";
 import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
+import CityNomad from "./pages/CityNomad";
+import HotelDetail from "./pages/HotelDetail";
 import Hotels from "./pages/Hotels";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -48,9 +50,12 @@ const App = () => (
               <Route path="/sehir/:slug/ucuslar" element={<CityFlights />} />
               <Route path="/sehir/:slug/oteller" element={<CityHotels />} />
               <Route path="/sehir/:slug/ucak-bileti" element={<CityTickets />} />
+              <Route path="/sehir/:slug/nomad" element={<CityNomad />} />
+              <Route path="/sehir/:slug/coworking" element={<CityNomad />} />
               <Route path="/sehirler" element={<Cities />} />
               {/* Hotels */}
               <Route path="/oteller" element={<Hotels />} />
+              <Route path="/otel/:slug" element={<HotelDetail />} />
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
