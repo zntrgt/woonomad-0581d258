@@ -1,11 +1,13 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Flight, SearchParams } from '@/lib/types';
+import { SearchState, flightSearchTelemetry } from '@/components/SearchStatus';
 
 interface FlightSearchResult {
   flights: Flight[];
   isLoading: boolean;
   error: string | null;
+  searchState: SearchState;
   searchFlights: (params: SearchParams) => Promise<void>;
 }
 
@@ -13,11 +15,16 @@ export function useFlightSearch(): FlightSearchResult {
   const [flights, setFlights] = useState<Flight[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchState, setSearchState] = useState<SearchState>('idle');
 
   const searchFlights = useCallback(async (params: SearchParams) => {
     setIsLoading(true);
     setError(null);
     setFlights([]);
+    setSearchState('loading');
+    
+    // Telemetry: search submitted
+    flightSearchTelemetry.submitted(params);
 
     try {
       const { data, error: fnError } = await supabase.functions.invoke('search-flights', {
@@ -34,20 +41,26 @@ export function useFlightSearch(): FlightSearchResult {
 
       const allFlights: Flight[] = data.data || [];
       
-      // API already filters by date, just use results directly
       setFlights(allFlights);
       
       if (allFlights.length === 0) {
+        setSearchState('no-results');
         setError('Bu rota için uçuş bulunamadı. Farklı bir destinasyon deneyin.');
+        flightSearchTelemetry.noResults();
+      } else {
+        setSearchState('success');
+        flightSearchTelemetry.success(allFlights.length);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Bir hata oluştu';
       setError(errorMessage);
+      setSearchState('error');
+      flightSearchTelemetry.error(errorMessage);
       console.error('Flight search error:', err);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  return { flights, isLoading, error, searchFlights };
+  return { flights, isLoading, error, searchState, searchFlights };
 }

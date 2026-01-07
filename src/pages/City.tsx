@@ -14,7 +14,8 @@ import {
   ChevronRight,
   ArrowRight,
   Ticket,
-  PartyPopper
+  PartyPopper,
+  Laptop
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -25,6 +26,7 @@ import { Badge } from '@/components/ui/badge';
 import { TripPlanner } from '@/components/TripPlanner';
 import { EventCountdownList } from '@/components/EventCountdown';
 import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
+import { NomadEntryCard } from '@/components/NomadEntryCard';
 import { getCityBySlug, CityEvent } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
@@ -40,9 +42,10 @@ const City = () => {
         <Header />
         <div className="container py-20 text-center">
           <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
-          <Link to="/sehirler" className="text-primary hover:underline">
-            Tüm Şehirlere Gözat
-          </Link>
+          <p className="text-muted-foreground mb-4">Aradığınız şehir mevcut değil veya henüz eklenmemiş.</p>
+          <Button asChild>
+            <Link to="/sehirler">Tüm Şehirlere Gözat</Link>
+          </Button>
         </div>
       </div>
     );
@@ -139,6 +142,12 @@ const City = () => {
               <Link to={`/sehir/${city.slug}/ucak-bileti`}>
                 <MapPin className="w-4 h-4" />
                 Bilet
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="gap-1.5">
+              <Link to={`/sehir/${city.slug}/nomad`}>
+                <Laptop className="w-4 h-4" />
+                Nomad
               </Link>
             </Button>
           </div>
@@ -245,6 +254,9 @@ const City = () => {
 
             {/* Right Column - Quick Info */}
             <div className="space-y-4">
+              {/* Nomad Entry Card */}
+              <NomadEntryCard citySlug={city.slug} cityName={city.name} />
+              
               {/* Weather Widget */}
               <WeatherWidget cityName={city.name} />
 

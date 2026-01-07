@@ -415,6 +415,22 @@ export function getNomadMetrics(citySlug: string): NomadMetrics | null {
   return nomadMetrics[citySlug] || null;
 }
 
+export function getCityNomadData(citySlug: string): (NomadMetrics & { highlights: string[] }) | null {
+  const metrics = nomadMetrics[citySlug];
+  if (!metrics) return null;
+  
+  // Generate highlights based on metrics
+  const highlights: string[] = [];
+  if (metrics.nomadScore >= 8) highlights.push('Top Nomad Şehri');
+  if (parseInt(metrics.internetSpeed) >= 80) highlights.push('Hızlı İnternet');
+  if (metrics.communityScore >= 8) highlights.push('Güçlü Topluluk');
+  if (metrics.safetyScore >= 8) highlights.push('Güvenli');
+  if (metrics.weatherScore >= 8) highlights.push('İyi Hava');
+  if (metrics.coworkingCount >= 100) highlights.push('Çok Coworking');
+  
+  return { ...metrics, highlights };
+}
+
 export function getCoworkingSpacesByCity(citySlug: string): CoworkingSpace[] {
   return coworkingSpaces.filter(space => space.citySlug === citySlug);
 }

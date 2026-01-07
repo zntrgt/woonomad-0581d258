@@ -14,6 +14,7 @@ import CityFlights from "./pages/CityFlights";
 import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
 import CityNomad from "./pages/CityNomad";
+import CoworkingDetail from "./pages/CoworkingDetail";
 import HotelDetail from "./pages/HotelDetail";
 import Hotels from "./pages/Hotels";
 import Blog from "./pages/Blog";
@@ -53,6 +54,8 @@ const App = () => (
               <Route path="/sehir/:slug/nomad" element={<CityNomad />} />
               <Route path="/sehir/:slug/coworking" element={<CityNomad />} />
               <Route path="/sehirler" element={<Cities />} />
+              {/* Coworking Detail */}
+              <Route path="/coworking/:slug" element={<CoworkingDetail />} />
               {/* Hotels */}
               <Route path="/oteller" element={<Hotels />} />
               <Route path="/otel/:slug" element={<HotelDetail />} />
