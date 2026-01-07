@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
   Plane, MapPin, Clock, Calendar, ArrowRight, ArrowLeft,
@@ -13,6 +13,7 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
+import { SearchStatus, FlightResultsSkeleton, StickyScrollButton } from '@/components/SearchStatus';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -30,8 +31,9 @@ export default function FlightRoute() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const searchFormRef = useRef<SearchFormRef>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const route = slug ? getRouteBySlug(slug) : undefined;
-  const { flights, isLoading, searchFlights } = useFlightSearch();
+  const { flights, isLoading, searchState, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { formatPrice } = useSettings();
 
@@ -55,11 +57,20 @@ export default function FlightRoute() {
     }
   }, [route]);
 
+  // Auto-scroll to results when search completes
+  const scrollToResults = useCallback(() => {
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  useEffect(() => {
+    if (searchState === 'success' || searchState === 'no-results') {
+      setTimeout(scrollToResults, 300);
+    }
+  }, [searchState, scrollToResults]);
+
   const handleSearch = (params: SearchParams) => {
     searchFlights(params);
   };
-
-  if (!route) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <Helmet>
@@ -284,7 +295,7 @@ export default function FlightRoute() {
           </section>
 
           {/* Search Form */}
-          <section className="mb-8 bg-card rounded-xl border border-border p-6">
+          <section className="mb-6 bg-card rounded-xl border border-border p-6">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Plane className="h-5 w-5 text-primary" />
               {route.originCity} - {route.destinationCity} Uçuş Ara
@@ -294,29 +305,47 @@ export default function FlightRoute() {
               onSearch={handleSearch}
               isLoading={isLoading}
             />
+            
+            {/* Search Status */}
+            <SearchStatus 
+              state={searchState}
+              resultsCount={flights.length}
+              onScrollToResults={scrollToResults}
+              className="mt-4"
+            />
           </section>
 
           {/* Flight Results */}
-          {flights.length > 0 && (
-            <section className="mb-8">
-              <h2 className="text-xl font-bold mb-4">
-                Bulunan Uçuşlar ({flights.length} sonuç)
-              </h2>
-              <div className="space-y-3">
-                {flights.slice(0, 10).map((flight, index) => (
-                  <FlightCard
-                    key={`${flight.flight_number}-${flight.departure_at}`}
-                    flight={flight}
-                    isFavorite={isFavorite(flight)}
-                    onToggleFavorite={() => toggleFavorite(flight)}
-                    rank={index === 0 ? 'cheapest' : null}
-                  />
-                ))}
-              </div>
-              
-              {flights.length > 5 && <AdInArticle />}
-            </section>
-          )}
+          <div ref={resultsRef}>
+            {isLoading && <FlightResultsSkeleton count={3} />}
+            
+            {flights.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-xl font-bold mb-4">
+                  Bulunan Uçuşlar ({flights.length} sonuç)
+                </h2>
+                <div className="space-y-3">
+                  {flights.slice(0, 10).map((flight, index) => (
+                    <FlightCard
+                      key={`${flight.flight_number}-${flight.departure_at}`}
+                      flight={flight}
+                      isFavorite={isFavorite(flight)}
+                      onToggleFavorite={() => toggleFavorite(flight)}
+                      rank={index === 0 ? 'cheapest' : null}
+                    />
+                  ))}
+                </div>
+                
+                {flights.length > 5 && <AdInArticle />}
+              </section>
+            )}
+          </div>
+
+          {/* Sticky Scroll Button */}
+          <StickyScrollButton 
+            visible={searchState === 'success' && flights.length > 0} 
+            onClick={scrollToResults} 
+          />
 
           {/* Tips Section */}
           <section className="mb-12">
