@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag } from 'lucide-react';
+import DOMPurify from 'dompurify';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -213,11 +214,17 @@ export default function BlogPost() {
     return elements;
   };
 
-  // Format bold text
+  // Format bold text with XSS sanitization
   const formatInlineText = (text: string) => {
-    return text
+    const formatted = text
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Sanitize to prevent XSS attacks
+    return DOMPurify.sanitize(formatted, {
+      ALLOWED_TAGS: ['strong', 'em', 'a'],
+      ALLOWED_ATTR: ['href', 'class', 'target', 'rel']
+    });
   };
 
   return (
