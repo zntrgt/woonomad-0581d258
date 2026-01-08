@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Plane, Menu, Building2, BookOpen, Hotel } from 'lucide-react';
+import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings } from 'lucide-react';
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
 import { SiteSearch } from './SiteSearch';
@@ -9,8 +9,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from './ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavItem {
   label: string;
@@ -28,6 +30,7 @@ const navItems: NavItem[] = [
 
 export function Header() {
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
   
   const isActive = (href: string) => {
     if (href === '/') return location.pathname === '/';
@@ -60,6 +63,21 @@ export function Header() {
               {item.label}
             </Link>
           ))}
+          {/* Admin Link */}
+          {isAdmin && (
+            <Link
+              to="/blog-admin"
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                isActive('/blog-admin')
+                  ? "bg-primary/10 text-primary"
+                  : "text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950"
+              )}
+            >
+              <Settings className="h-4 w-4" />
+              Admin
+            </Link>
+          )}
         </nav>
 
         {/* Right Side */}
@@ -83,6 +101,17 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
               ))}
+              {isAdmin && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/blog-admin" className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                      <Settings className="h-4 w-4" />
+                      Admin Panel
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           
