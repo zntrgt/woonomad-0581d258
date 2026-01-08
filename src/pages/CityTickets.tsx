@@ -1,3 +1,4 @@
+import { useRef, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { Plane, Calendar, Clock, Users, ArrowRight, TrendingDown } from 'lucide-react';
@@ -7,14 +8,52 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { SearchForm, SearchFormRef } from '@/components/SearchForm';
+import { FlightCard } from '@/components/FlightCard';
+import { SearchStatus, FlightResultsSkeleton, StickyScrollButton } from '@/components/SearchStatus';
 import { getCityBySlug } from '@/lib/cities';
 import { generateFlightRoutes, FLIGHT_DURATIONS, getAirlinesForRoute, getEstimatedPriceRange } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
+import { useFlightSearch } from '@/hooks/useFlightSearch';
+import { useFavorites } from '@/hooks/useFavorites';
+import { SearchParams, Airport } from '@/lib/types';
 
 const CityTickets = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
   const allFlightRoutes = generateFlightRoutes();
+  const searchFormRef = useRef<SearchFormRef>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const { flights, isLoading, searchState, searchFlights } = useFlightSearch();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  // Auto-populate destination airport when city loads
+  useEffect(() => {
+    if (city && city.airportCodes[0] && searchFormRef.current) {
+      const destAirport: Airport = {
+        code: city.airportCodes[0],
+        name: city.name,
+        city: city.name,
+        country: city.country,
+      };
+      searchFormRef.current.setAirports(undefined, destAirport);
+    }
+  }, [city]);
+
+  // Auto-scroll to results when search completes
+  const scrollToResults = useCallback(() => {
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  useEffect(() => {
+    if (searchState === 'success' || searchState === 'no-results') {
+      setTimeout(scrollToResults, 300);
+    }
+  }, [searchState, scrollToResults]);
+
+  const handleSearch = (params: SearchParams) => {
+    searchFlights(params);
+  };
   
   if (!city) {
     return (
@@ -132,6 +171,71 @@ const CityTickets = () => {
           </div>
         </div>
       </section>
+
+      {/* Flight Search Section */}
+      <section className="py-8 bg-muted/30">
+        <div className="container">
+          <Card className="border-border">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                <Plane className="w-5 h-5 text-primary" />
+                {city.name} Uçuş Ara
+              </h2>
+              <SearchForm
+                ref={searchFormRef}
+                onSearch={handleSearch}
+                isLoading={isLoading}
+              />
+              
+              {/* Search Status */}
+              <SearchStatus 
+                state={searchState}
+                resultsCount={flights.length}
+                onScrollToResults={scrollToResults}
+                className="mt-4"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Flight Results */}
+      <div ref={resultsRef}>
+        {isLoading && (
+          <section className="py-8">
+            <div className="container">
+              <FlightResultsSkeleton count={3} />
+            </div>
+          </section>
+        )}
+        
+        {flights.length > 0 && (
+          <section className="py-8">
+            <div className="container">
+              <h2 className="text-xl font-display font-bold mb-4">
+                Bulunan Uçuşlar ({flights.length} sonuç)
+              </h2>
+              <div className="space-y-3">
+                {flights.slice(0, 10).map((flight, index) => (
+                  <FlightCard
+                    key={`${flight.flight_number}-${flight.departure_at}`}
+                    flight={flight}
+                    isFavorite={isFavorite(flight)}
+                    onToggleFavorite={() => toggleFavorite(flight)}
+                    rank={index === 0 ? 'cheapest' : null}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+
+      {/* Sticky Scroll Button */}
+      <StickyScrollButton 
+        visible={searchState === 'success' && flights.length > 0} 
+        onClick={scrollToResults} 
+      />
 
       {/* Flight Options */}
       <section className="py-12">
