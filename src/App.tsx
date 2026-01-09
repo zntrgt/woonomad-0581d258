@@ -17,6 +17,7 @@ import CityNomad from "./pages/CityNomad";
 import CoworkingDetail from "./pages/CoworkingDetail";
 import HotelDetail from "./pages/HotelDetail";
 import Hotels from "./pages/Hotels";
+import NomadHub from "./pages/NomadHub";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
@@ -59,6 +60,9 @@ const App = () => (
               {/* Hotels */}
               <Route path="/oteller" element={<Hotels />} />
               <Route path="/otel/:slug" element={<HotelDetail />} />
+              {/* Nomad Hub */}
+              <Route path="/nomad-hub" element={<NomadHub />} />
+              <Route path="/dijital-gocebe" element={<NomadHub />} />
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
