@@ -1,14 +1,18 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { X, Plus, ArrowRight, Wifi, DollarSign, Shield, Sun, Users, Building2, Coffee, Globe, Star, ChevronDown } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { X, Plus, ArrowRight, Wifi, DollarSign, Shield, Sun, Users, Building2, Coffee, Globe, Star, ChevronDown, Save, Share2, Trash2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import { nomadMetrics, getCitiesWithNomadData, type NomadMetrics } from '@/lib/nomad';
-import { cityData, getAllCities, type CityInfo } from '@/lib/cities';
+import { cityData, type CityInfo } from '@/lib/cities';
+import { useSavedComparisons } from '@/hooks/useSavedComparisons';
 import { cn } from '@/lib/utils';
 
 interface CityWithMetrics extends CityInfo {
@@ -26,8 +30,24 @@ const metricLabels = {
 };
 
 export function CityComparison() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCities, setSelectedCities] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [savedDialogOpen, setSavedDialogOpen] = useState(false);
+  const [comparisonName, setComparisonName] = useState('');
+  const [linkCopied, setLinkCopied] = useState(false);
+  
+  const { comparisons, saveComparison, deleteComparison, copyShareLink } = useSavedComparisons();
+
+  // Load cities from URL on mount
+  useEffect(() => {
+    const compareParam = searchParams.get('compare');
+    if (compareParam) {
+      const cities = compareParam.split(',').slice(0, MAX_CITIES);
+      setSelectedCities(cities);
+    }
+  }, [searchParams]);
 
   // Get all cities with nomad data
   const availableCities = useMemo(() => {
@@ -156,14 +176,119 @@ export function CityComparison() {
         )}
 
         {selectedCities.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSelectedCities([])}
-            className="text-muted-foreground"
-          >
-            Temizle
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedCities([])}
+              className="text-muted-foreground"
+            >
+              Temizle
+            </Button>
+            
+            {/* Save Button */}
+            <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Save className="h-4 w-4 mr-2" />
+                  Kaydet
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Karşılaştırmayı Kaydet</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">İsim</Label>
+                    <Input
+                      id="name"
+                      value={comparisonName}
+                      onChange={(e) => setComparisonName(e.target.value)}
+                      placeholder={`${selectedCityData.map(c => c.name).join(' vs ')}`}
+                    />
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Şehirler: {selectedCityData.map(c => c.name).join(', ')}
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={() => {
+                    saveComparison(selectedCities, comparisonName || undefined);
+                    setSaveDialogOpen(false);
+                    setComparisonName('');
+                    toast.success('Karşılaştırma kaydedildi');
+                  }}>
+                    Kaydet
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            
+            {/* Share Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                const success = await copyShareLink(selectedCities);
+                if (success) {
+                  setLinkCopied(true);
+                  toast.success('Link panoya kopyalandı!');
+                  setTimeout(() => setLinkCopied(false), 2000);
+                }
+              }}
+            >
+              {linkCopied ? <Check className="h-4 w-4 mr-2" /> : <Share2 className="h-4 w-4 mr-2" />}
+              {linkCopied ? 'Kopyalandı!' : 'Paylaş'}
+            </Button>
+          </>
+        )}
+        
+        {/* Saved Comparisons Button */}
+        {comparisons.length > 0 && (
+          <Dialog open={savedDialogOpen} onOpenChange={setSavedDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm">
+                Kayıtlı ({comparisons.length})
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Kayıtlı Karşılaştırmalar</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-2 max-h-80 overflow-y-auto">
+                {comparisons.map((comp) => (
+                  <div 
+                    key={comp.id}
+                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
+                    onClick={() => {
+                      setSelectedCities(comp.cities);
+                      setSavedDialogOpen(false);
+                    }}
+                  >
+                    <div>
+                      <div className="font-medium text-sm">{comp.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {comp.cities.length} şehir • {new Date(comp.createdAt).toLocaleDateString('tr-TR')}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteComparison(comp.id);
+                        toast.success('Silindi');
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
 
