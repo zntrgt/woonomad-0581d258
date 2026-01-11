@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { CityComparison } from '@/components/CityComparison';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Laptop, Wifi, MapPin, Globe, Users, Coffee, 
   Sun, Shield, Star, TrendingUp, Search, ArrowRight,
-  Building2, BookOpen, Plane, Calendar, DollarSign
+  Building2, BookOpen, Plane, Calendar, DollarSign, Scale
 } from 'lucide-react';
 import { nomadMetrics, coworkingSpaces, getAllCoworkingSpaces, getCitiesWithNomadData } from '@/lib/nomad';
 import { cityData, getAllCities } from '@/lib/cities';
@@ -143,6 +144,10 @@ const NomadHub = () => {
               <Globe className="h-4 w-4" />
               <span>Şehirler</span>
             </TabsTrigger>
+            <TabsTrigger value="compare" className="flex items-center gap-2">
+              <Scale className="h-4 w-4" />
+              <span>Karşılaştır</span>
+            </TabsTrigger>
             <TabsTrigger value="coworking" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               <span>Coworking</span>
@@ -233,6 +238,20 @@ const NomadHub = () => {
                 <p>"{searchQuery}" için şehir bulunamadı.</p>
               </div>
             )}
+          </TabsContent>
+
+          {/* Compare Tab */}
+          <TabsContent value="compare" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Şehir Karşılaştırma Aracı</h2>
+                <p className="text-muted-foreground mt-1">
+                  Dijital göçebe metriklerini yan yana karşılaştırın
+                </p>
+              </div>
+            </div>
+            
+            <CityComparison />
           </TabsContent>
 
           {/* Coworking Tab */}

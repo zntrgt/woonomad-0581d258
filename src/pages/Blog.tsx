@@ -151,28 +151,49 @@ export default function Blog() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    name: 'WooNomad Blog',
-    description: 'Seyahat ipuçları, festival rehberleri ve destinasyon önerileri',
+    name: 'WooNomad Seyahat Blogu - Dijital Göçebe, Festival ve Kültür Rehberi',
+    description: 'Dijital göçebeler için kapsamlı seyahat rehberi. Festival haberleri, kültür yazıları, nomad şehir önerileri, coworking mekanları ve yaşam tarzı ipuçları. Avrupa, Asya ve dünyadan en iyi destinasyonlar.',
     url: 'https://woonomad.co/blog',
+    inLanguage: 'tr-TR',
     publisher: {
       '@type': 'Organization',
       name: 'WooNomad',
-      logo: 'https://woonomad.co/woonomad-logo.png'
-    }
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://woonomad.co/woonomad-logo.png'
+      }
+    },
+    blogPost: filteredPosts.slice(0, 10).map(post => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.publishedAt,
+      author: {
+        '@type': 'Person',
+        name: post.author.name
+      },
+      url: `https://woonomad.co/blog/${post.slug}`
+    }))
   };
 
   return (
     <>
       <Helmet>
-        <title>Seyahat Blogu - Festival, Kültür ve Yaşam Tarzı | WooNomad</title>
+        <title>Seyahat Blogu - Dijital Göçebe Rehberi, Festival ve Kültür | WooNomad</title>
         <meta 
           name="description" 
-          content="En güncel seyahat ipuçları, festival rehberleri ve destinasyon önerileri. Dünya'nın dört bir yanından ilham verici hikayeler."
+          content="Dijital göçebeler için eksiksiz seyahat rehberi. En iyi nomad şehirleri, coworking alanları, festival haberleri, kültür yazıları ve yaşam tarzı ipuçları. Avrupa, Asya ve dünyadan ilham verici hikayeler."
         />
+        <meta name="keywords" content="dijital göçebe, digital nomad, seyahat blogu, festival rehberi, nomad şehirleri, coworking, uzaktan çalışma, remote work, Avrupa seyahat, Asya seyahat" />
         <link rel="canonical" href="https://woonomad.co/blog" />
-        <meta property="og:title" content="Seyahat Blogu | WooNomad" />
-        <meta property="og:description" content="Festival rehberleri, kültür yazıları ve seyahat ipuçları" />
+        <meta property="og:title" content="Seyahat Blogu - Dijital Göçebe Rehberi | WooNomad" />
+        <meta property="og:description" content="Dijital göçebeler için kapsamlı seyahat rehberi. Festival haberleri, nomad şehirleri ve yaşam tarzı ipuçları." />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://woonomad.co/blog" />
+        <meta property="og:site_name" content="WooNomad" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Seyahat Blogu | WooNomad" />
+        <meta name="twitter:description" content="Dijital göçebeler için kapsamlı seyahat rehberi ve festival haberleri." />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 

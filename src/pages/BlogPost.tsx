@@ -121,6 +121,7 @@ export default function BlogPost() {
     author: {
       '@type': 'Person',
       name: post.author.name,
+      description: post.author.bio
     },
     publisher: {
       '@type': 'Organization',
@@ -133,8 +134,46 @@ export default function BlogPost() {
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `https://woonomad.co/blog/${post.slug}`
-    }
+    },
+    keywords: post.tags.join(', '),
+    articleSection: categoryInfo?.name || 'Seyahat',
+    inLanguage: 'tr-TR',
+    wordCount: post.content.split(/\s+/).length,
+    ...(city && {
+      about: {
+        '@type': 'City',
+        name: city.name,
+        containedInPlace: {
+          '@type': 'Country',
+          name: city.country
+        }
+      }
+    })
   };
+
+  // FAQ structured data for posts with Q&A content
+  const faqData = post.content.includes('###') ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: post.content
+      .split('###')
+      .slice(1)
+      .map(section => {
+        const lines = section.trim().split('\n');
+        const question = lines[0]?.trim();
+        const answer = lines.slice(1).join(' ').trim().slice(0, 500);
+        return question && answer ? {
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: answer
+          }
+        } : null;
+      })
+      .filter(Boolean)
+      .slice(0, 5)
+  } : null;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -232,14 +271,22 @@ export default function BlogPost() {
       <Helmet>
         <title>{post.title} | WooNomad Blog</title>
         <meta name="description" content={post.excerpt} />
+        <meta name="keywords" content={post.tags.join(', ')} />
         <link rel="canonical" href={`https://woonomad.co/blog/${post.slug}`} />
         
-        <meta property="og:title" content={post.title} />
+        <meta property="og:title" content={`${post.title} | WooNomad`} />
         <meta property="og:description" content={post.excerpt} />
         <meta property="og:image" content={post.coverImage} />
         <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://woonomad.co/blog/${post.slug}`} />
+        <meta property="og:site_name" content="WooNomad" />
         <meta property="article:published_time" content={post.publishedAt} />
+        <meta property="article:modified_time" content={post.updatedAt || post.publishedAt} />
         <meta property="article:author" content={post.author.name} />
+        <meta property="article:section" content={categoryInfo?.name} />
+        {post.tags.map(tag => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
@@ -247,6 +294,7 @@ export default function BlogPost() {
         <meta name="twitter:image" content={post.coverImage} />
         
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        {faqData && <script type="application/ld+json">{JSON.stringify(faqData)}</script>}
       </Helmet>
 
       <div className="min-h-screen bg-background">
