@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { CityComparison } from '@/components/CityComparison';
+import { NomadCostCalculator } from '@/components/NomadCostCalculator';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -242,16 +243,22 @@ const NomadHub = () => {
 
           {/* Compare Tab */}
           <TabsContent value="compare" className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="grid lg:grid-cols-[1fr_380px] gap-8">
               <div>
-                <h2 className="text-2xl font-bold">Şehir Karşılaştırma Aracı</h2>
-                <p className="text-muted-foreground mt-1">
-                  Dijital göçebe metriklerini yan yana karşılaştırın
-                </p>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold">Şehir Karşılaştırma Aracı</h2>
+                  <p className="text-muted-foreground mt-1">
+                    Dijital göçebe metriklerini yan yana karşılaştırın
+                  </p>
+                </div>
+                <CityComparison />
+              </div>
+              
+              {/* Cost Calculator Sidebar */}
+              <div className="lg:sticky lg:top-20 h-fit">
+                <NomadCostCalculator />
               </div>
             </div>
-            
-            <CityComparison />
           </TabsContent>
 
           {/* Coworking Tab */}

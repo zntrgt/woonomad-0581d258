@@ -125,16 +125,38 @@ export default function FlightRoute() {
     ],
   };
 
+  // Parse duration to get hours for natural language
+  const parseDurationHours = (duration: string): string => {
+    const match = duration.match(/(\d+)\s*saat/);
+    if (match) {
+      const hours = parseInt(match[1]);
+      if (hours < 2) return 'yaklaşık 1 saat';
+      if (hours <= 3) return `yaklaşık ${hours} saat`;
+      return `${hours} saat civarında`;
+    }
+    return duration;
+  };
+
+  const flightHours = parseDurationHours(route.estimatedDuration);
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
       {
         '@type': 'Question',
+        name: `${route.originCity} ${route.destinationCity} uçakla kaç saat?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${route.originCity} - ${route.destinationCity} arası uçakla ${flightHours} sürmektedir. Direkt uçuşlarda uçuş süresi ${route.estimatedDuration} olup, aktarmalı uçuşlarda bu süre aktarma noktasına bağlı olarak 2-6 saat daha uzayabilir. ${route.airlines.slice(0, 3).join(', ')} gibi havayolları bu rotada hizmet vermektedir.`,
+        },
+      },
+      {
+        '@type': 'Question',
         name: `${route.originCity} ${route.destinationCity} uçuş süresi ne kadar?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} arası uçuş süresi ortalama ${route.estimatedDuration}'dir. Aktarmalı uçuşlarda bu süre uzayabilir.`,
+          text: `${route.originCity} - ${route.destinationCity} arası uçuş süresi ortalama ${route.estimatedDuration}'dir. Mesafe yaklaşık ${route.distance} olup, direkt ve aktarmalı uçuş seçenekleri mevcuttur.`,
         },
       },
       {
@@ -142,7 +164,7 @@ export default function FlightRoute() {
         name: `${route.originCity} ${route.destinationCity} uçak bileti ne kadar?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} uçak bileti fiyatları sezon ve havayoluna göre değişir. En ucuz bilet için erken rezervasyon yapın ve WooNomad ile tüm havayollarını karşılaştırın.`,
+          text: `${route.originCity} - ${route.destinationCity} uçak bileti fiyatları ${formatPrice(route.priceRange.min)} ile ${formatPrice(route.priceRange.max)} arasında değişmektedir. En ucuz bilet için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve WooNomad ile tüm havayollarını karşılaştırın.`,
         },
       },
       {
@@ -150,7 +172,23 @@ export default function FlightRoute() {
         name: `${route.originCity}'den ${route.destinationCity}'e hangi havayolları uçuyor?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} rotasında Türk Hava Yolları başta olmak üzere birçok havayolu hizmet vermektedir. WooNomad ile tüm seçenekleri karşılaştırabilirsiniz.`,
+          text: `${route.originCity} - ${route.destinationCity} rotasında ${route.airlines.join(', ')} havayolları hizmet vermektedir. WooNomad ile tüm havayollarının fiyatlarını karşılaştırabilirsiniz.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${route.originCity} ${route.destinationCity} arası kaç km?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `${route.originCity} - ${route.destinationCity} arası mesafe ${route.distance}'dir. Bu mesafe uçakla ${route.estimatedDuration} sürede katedilmektedir.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `En ucuz ${route.originCity} ${route.destinationCity} bileti nasıl bulunur?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `En ucuz ${route.originCity} ${route.destinationCity} bileti için: 1) Seyahatinizden 6-8 hafta önce rezervasyon yapın, 2) Salı ve Çarşamba günlerini tercih edin, 3) Esnek tarih araması kullanın, 4) Aktarmalı uçuşları değerlendirin, 5) WooNomad ile tüm havayollarının fiyatlarını anında karşılaştırın.`,
         },
       },
     ],
@@ -375,13 +413,30 @@ export default function FlightRoute() {
               {route.originCity} - {route.destinationCity} Sıkça Sorulan Sorular
             </h2>
             <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="flight-hours">
+                <AccordionTrigger>
+                  {route.originCity} {route.destinationCity} uçakla kaç saat?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  <strong>{route.originCity} - {route.destinationCity} arası uçakla {flightHours} sürmektedir.</strong> Direkt uçuşlarda toplam uçuş süresi {route.estimatedDuration} olup, aktarmalı uçuşlarda bu süre aktarma noktasına bağlı olarak 2-6 saat daha uzayabilir. {route.airlines.slice(0, 3).join(', ')} gibi havayolları bu rotada hizmet vermektedir.
+                </AccordionContent>
+              </AccordionItem>
               <AccordionItem value="duration">
                 <AccordionTrigger>
                   {route.originCity} {route.destinationCity} uçuş süresi ne kadar?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} arası direkt uçuş süresi ortalama {route.estimatedDuration}'dir. 
-                  Aktarmalı uçuşlarda bu süre aktarma noktasına göre 2-6 saat uzayabilir.
+                  {route.originCity} - {route.destinationCity} arası direkt uçuş süresi ortalama <strong>{route.estimatedDuration}</strong>'dir. 
+                  Aktarmalı uçuşlarda bu süre aktarma noktasına göre 2-6 saat uzayabilir. İki şehir arası mesafe yaklaşık {route.distance}'dir.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="distance">
+                <AccordionTrigger>
+                  {route.originCity} {route.destinationCity} arası kaç km?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {route.originCity} - {route.destinationCity} arası mesafe yaklaşık <strong>{route.distance}</strong>'dir. 
+                  Bu mesafe uçakla {route.estimatedDuration} sürede katedilmektedir.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="price">
@@ -389,19 +444,17 @@ export default function FlightRoute() {
                   {route.originCity} {route.destinationCity} uçak bileti ne kadar?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} uçak bileti fiyatları sezona, havayoluna ve 
-                  rezervasyon zamanına göre değişir. En ucuz bilet için erken rezervasyon yapmanızı 
-                  ve hafta içi uçuşları tercih etmenizi öneririz.
+                  {route.originCity} - {route.destinationCity} uçak bileti fiyatları <strong>{formatPrice(route.priceRange.min)}</strong> ile <strong>{formatPrice(route.priceRange.max)}</strong> arasında değişmektedir. 
+                  En ucuz bilet için erken rezervasyon yapmanızı ve hafta içi uçuşları tercih etmenizi öneririz.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="airlines">
                 <AccordionTrigger>
-                  Hangi havayolları bu rotada uçuş yapıyor?
+                  {route.originCity}'den {route.destinationCity}'e hangi havayolları uçuyor?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} rotasında Türk Hava Yolları, Pegasus ve 
-                  çeşitli uluslararası havayolları hizmet vermektedir. WooNomad ile tüm havayollarının 
-                  fiyatlarını karşılaştırabilirsiniz.
+                  {route.originCity} - {route.destinationCity} rotasında <strong>{route.airlines.join(', ')}</strong> havayolları hizmet vermektedir. 
+                  WooNomad ile tüm havayollarının fiyatlarını karşılaştırabilirsiniz.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="cheap">
@@ -410,7 +463,7 @@ export default function FlightRoute() {
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
                   En ucuz bilet için: 1) Seyahatinizden 6-8 hafta önce rezervasyon yapın, 
-                  2) Hafta içi günlerini tercih edin, 3) Esnek tarih araması kullanın, 
+                  2) Salı ve Çarşamba günlerini tercih edin, 3) Esnek tarih araması kullanın, 
                   4) Aktarmalı uçuşları değerlendirin, 5) WooNomad ile tüm havayollarını karşılaştırın.
                 </AccordionContent>
               </AccordionItem>
