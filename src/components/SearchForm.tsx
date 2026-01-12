@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { Search, Users, ArrowRightLeft, Plane, Sparkles } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { VisaSelector } from './VisaSelector';
 import { FlightDatePicker } from './FlightDatePicker';
 import { Airport, SearchParams, CabinClass, VisaOption } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export interface SearchFormRef {
   setAirports: (origin: Airport, destination: Airport) => void;
@@ -19,7 +20,7 @@ interface SearchFormProps {
   isLoading?: boolean;
 }
 
-// Helper to get the next weekend
+// Helper to get the next weekend - always calculate fresh
 function getNextWeekend() {
   const today = startOfToday();
   const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 });
@@ -37,6 +38,7 @@ function getNextWeekend() {
 
 export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
   ({ onSearch, isLoading }, ref) => {
+    const { currency } = useSettings();
     const [origin, setOrigin] = useState<Airport | null>(null);
     const [destination, setDestination] = useState<Airport | null>(null);
     const [passengers, setPassengers] = useState({ adults: 1, children: 0, infants: 0 });
@@ -44,10 +46,10 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const [visaOption, setVisaOption] = useState<VisaOption>('all');
     const [showAdvanced, setShowAdvanced] = useState(false);
     
-    // Date state - default to next weekend
-    const nextWeekend = getNextWeekend();
-    const [departDate, setDepartDate] = useState<Date | undefined>(nextWeekend.saturday);
-    const [returnDate, setReturnDate] = useState<Date | undefined>(nextWeekend.sunday);
+    // Date state - calculate fresh on each render to ensure daily updates
+    const nextWeekend = useMemo(() => getNextWeekend(), []);
+    const [departDate, setDepartDate] = useState<Date | undefined>(() => nextWeekend.saturday);
+    const [returnDate, setReturnDate] = useState<Date | undefined>(() => nextWeekend.sunday);
     const [isFlexible, setIsFlexible] = useState(false);
     const [isOneWay, setIsOneWay] = useState(false);
     
@@ -86,6 +88,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         tripClass: cabinClass,
         visaFilter: visaOption,
         flexibleDates: isFlexible,
+        currency: currency, // Pass user's selected currency to API
       });
     };
 
