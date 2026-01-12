@@ -73,9 +73,21 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
   };
 
-  const formatPrice = (price: number) => {
-    const info = getCurrencyInfo();
-    return `${info.symbol}${price.toLocaleString('tr-TR')}`;
+  const formatPrice = (price: number, overrideCurrency?: Currency) => {
+    const curr = overrideCurrency || currency;
+    const info = CURRENCIES.find(c => c.code === curr) || getCurrencyInfo();
+    
+    // Use appropriate locale for number formatting based on currency
+    const localeMap: Record<Currency, string> = {
+      'TRY': 'tr-TR',
+      'USD': 'en-US',
+      'EUR': 'de-DE',
+      'GBP': 'en-GB',
+      'AED': 'ar-AE',
+    };
+    
+    const locale = localeMap[curr] || 'tr-TR';
+    return `${info.symbol}${price.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
   return (

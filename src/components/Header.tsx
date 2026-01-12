@@ -67,10 +67,10 @@ export function Header() {
           {/* Admin Link */}
           {isAdmin && (
             <Link
-              to="/blog-admin"
+              to="/admin/blog"
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-                isActive('/blog-admin')
+                isActive('/admin/blog')
                   ? "bg-primary/10 text-primary"
                   : "text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950"
               )}
@@ -106,7 +106,7 @@ export function Header() {
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/blog-admin" className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                    <Link to="/admin/blog" className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                       <Settings className="h-4 w-4" />
                       Admin Panel
                     </Link>

@@ -104,11 +104,20 @@ interface FlightSearchParams {
   tripClass?: string;
   visaFilter?: 'all' | 'visa-free' | 'visa-required';
   flexibleDates?: boolean;
+  currency?: string;
 }
+
+// Turkish domestic airports - always accessible, no visa needed
+const TURKISH_AIRPORTS = [
+  'IST', 'SAW', 'ESB', 'ADB', 'AYT', 'BJV', 'DLM', 'TZX', 'GZT', 'DIY', 'VAN',
+  'ADA', 'ASR', 'ERZ', 'SZF', 'GNY', 'MLX', 'HTY', 'EZS', 'KYA', 'DNZ', 'TEQ', 'CKZ'
+];
 
 // Visa-free countries for Turkish passport holders (IATA codes)
 const VISA_FREE_DESTINATIONS: Record<string, string[]> = {
   'visa-free': [
+    // Turkish domestic - always "visa-free" for Turks
+    ...TURKISH_AIRPORTS,
     'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
     'ICN', 'GMP', 'NRT', 'HND', 'KIX',
     'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
@@ -144,7 +153,20 @@ const VISA_FREE_DESTINATIONS: Record<string, string[]> = {
   ]
 };
 
+// Valid currency codes for API
+const VALID_CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'AED'];
+
+function validateCurrency(currency: unknown): string {
+  if (typeof currency !== 'string') return 'TRY';
+  const upper = currency.toUpperCase();
+  return VALID_CURRENCIES.includes(upper) ? upper : 'TRY';
+}
+
 function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' | 'unknown' {
+  // Turkish domestic flights are always "visa-free"
+  if (TURKISH_AIRPORTS.includes(destinationCode)) {
+    return 'visa-free';
+  }
   if (VISA_FREE_DESTINATIONS['visa-free'].includes(destinationCode)) {
     return 'visa-free';
   }
@@ -286,6 +308,7 @@ serve(async (req) => {
     const tripClass = validateTripClass(params.tripClass);
     const visaFilter = validateVisaFilter(params.visaFilter);
     const flexibleDates = params.flexibleDates === true;
+    const currency = validateCurrency(params.currency);
 
     // Validate required fields
     if (!origin) {
@@ -319,7 +342,7 @@ serve(async (req) => {
       });
     }
 
-    console.log('Search params (validated):', { origin, destination, departDate, returnDate, adults, children, infants, tripClass, visaFilter, flexibleDates });
+    console.log('Search params (validated):', { origin, destination, departDate, returnDate, adults, children, infants, tripClass, visaFilter, flexibleDates, currency });
 
     const shifts = flexibleDates ? [-1, 0, 1] : [0];
 
@@ -374,7 +397,7 @@ serve(async (req) => {
             departure_at,
             ...(return_at ? { return_at } : {}),
             one_way: oneWay ? 'true' : 'false',
-            currency: 'TRY',
+            currency,
             sorting: 'price',
             limit: '10',
           });
@@ -439,7 +462,7 @@ serve(async (req) => {
             departure_at,
             ...(return_at ? { return_at } : {}),
             one_way: oneWay ? 'true' : 'false',
-            currency: 'TRY',
+            currency,
             sorting: 'price',
             limit: '30',
           });
@@ -547,7 +570,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       data: flights,
-      currency: 'TRY',
+      currency,
       isAnywhereSearch: isAnywhereSearch || isContinentSearch,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

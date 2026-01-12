@@ -57,6 +57,7 @@ export interface SearchParams {
   tripClass: CabinClass;
   visaFilter?: VisaOption;
   flexibleDates?: boolean;
+  currency?: string; // Currency code for API requests (e.g., 'TRY', 'EUR', 'USD')
 }
 
 // Special "Anywhere" destination
