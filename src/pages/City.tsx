@@ -353,6 +353,52 @@ const City = () => {
         </div>
       </section>
 
+      {/* Popular Hotels Section - Internal Linking */}
+      <section className="py-12 bg-muted/30">
+        <div className="container">
+          <Card variant="elevated">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-display font-bold mb-2">
+                    {city.name} Otelleri
+                  </h2>
+                  <p className="text-muted-foreground">
+                    En popüler konaklama seçeneklerini keşfedin
+                  </p>
+                </div>
+                <Button asChild variant="outline">
+                  <Link to={`/sehir/${city.slug}/oteller`}>
+                    <Hotel className="w-4 h-4 mr-2" />
+                    Tüm Oteller
+                  </Link>
+                </Button>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {['Merkez', 'Havalimanı Yakını', 'Turistik Bölge'].map((area, i) => (
+                  <Link 
+                    key={i}
+                    to={`/sehir/${city.slug}/oteller`}
+                    className="flex items-center gap-3 p-4 rounded-xl bg-background hover:bg-muted transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Hotel className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium group-hover:text-primary transition-colors">
+                        {city.name} {area} Otelleri
+                      </p>
+                      <p className="text-sm text-muted-foreground">Fiyatları karşılaştır</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* LLM Summary */}
       <section className="py-12 section-routes">
         <div className="container">
@@ -375,10 +421,29 @@ const City = () => {
                     : `${city.name}'e ${city.airportCodes[0]} havalimanı üzerinden ulaşabilirsiniz.`
                   }
                 </p>
-                <p>
-                  Detaylı uçuş bilgileri için <Link to={`/sehir/${city.slug}/ucuslar`} className="text-primary hover:underline">{city.name} uçuşları</Link> sayfasını, 
-                  konaklama seçenekleri için <Link to={`/sehir/${city.slug}/oteller`} className="text-primary hover:underline">{city.name} otelleri</Link> sayfasını ziyaret edebilirsiniz.
-                </p>
+                <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">İlgili Sayfalar</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link to={`/sehir/${city.slug}/ucuslar`} className="text-primary hover:underline">
+                      {city.name} uçuşları
+                    </Link> - Tüm uçuş seçeneklerini görüntüle
+                  </li>
+                  <li>
+                    <Link to={`/sehir/${city.slug}/oteller`} className="text-primary hover:underline">
+                      {city.name} otelleri
+                    </Link> - En iyi konaklama fırsatları
+                  </li>
+                  <li>
+                    <Link to={`/sehir/${city.slug}/ucak-bileti`} className="text-primary hover:underline">
+                      {city.name} uçak bileti
+                    </Link> - Fiyatları karşılaştır
+                  </li>
+                  <li>
+                    <Link to={`/sehir/${city.slug}/nomad`} className="text-primary hover:underline">
+                      {city.name} dijital göçebe rehberi
+                    </Link> - Coworking ve yaşam maliyetleri
+                  </li>
+                </ul>
               </div>
             </CardContent>
           </Card>

@@ -58,11 +58,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
+    // Note: Full translation system would go here
+    // For now, language is stored for future use
+    console.log('Language set to:', lang);
   };
 
   const setCurrency = (curr: Currency) => {
     setCurrencyState(curr);
     localStorage.setItem('app-currency', curr);
+    console.log('Currency set to:', curr);
   };
 
   const getLanguageInfo = () => {
