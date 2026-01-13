@@ -9,13 +9,33 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useSettings, LANGUAGES, CURRENCIES, Language, Currency } from '@/contexts/SettingsContext';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export function SettingsDropdown() {
   const { language, currency, setLanguage, setCurrency, getLanguageInfo, getCurrencyInfo } = useSettings();
+  const { toast } = useToast();
 
   const langInfo = getLanguageInfo();
   const currInfo = getCurrencyInfo();
+
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    const langName = LANGUAGES.find(l => l.code === lang)?.name || lang;
+    toast({
+      title: 'Dil değiştirildi',
+      description: `${langName} seçildi. Uçuş aramasında dil tercihi kullanılacak.`,
+    });
+  };
+
+  const handleCurrencyChange = (curr: Currency) => {
+    setCurrency(curr);
+    const currName = CURRENCIES.find(c => c.code === curr)?.name || curr;
+    toast({
+      title: 'Para birimi değiştirildi',
+      description: `${currName} seçildi. Fiyatlar bu para biriminde gösterilecek.`,
+    });
+  };
 
   return (
     <div className="flex items-center gap-1">
@@ -34,7 +54,7 @@ export function SettingsDropdown() {
           {LANGUAGES.map((lang) => (
             <DropdownMenuItem
               key={lang.code}
-              onClick={() => setLanguage(lang.code)}
+              onClick={() => handleLanguageChange(lang.code)}
               className={cn(
                 "cursor-pointer flex items-center justify-between",
                 language === lang.code && "bg-accent"
@@ -65,7 +85,7 @@ export function SettingsDropdown() {
           {CURRENCIES.map((curr) => (
             <DropdownMenuItem
               key={curr.code}
-              onClick={() => setCurrency(curr.code)}
+              onClick={() => handleCurrencyChange(curr.code)}
               className={cn(
                 "cursor-pointer flex items-center justify-between",
                 currency === curr.code && "bg-accent"

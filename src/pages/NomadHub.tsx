@@ -7,6 +7,7 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { CityComparison } from '@/components/CityComparison';
 import { NomadCostCalculator } from '@/components/NomadCostCalculator';
+import { VisaComparisonTool } from '@/components/VisaComparisonTool';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Laptop, Wifi, MapPin, Globe, Users, Coffee, 
   Sun, Shield, Star, TrendingUp, Search, ArrowRight,
-  Building2, BookOpen, Plane, Calendar, DollarSign, Scale
+  Building2, BookOpen, Plane, Calendar, DollarSign, Scale, FileCheck
 } from 'lucide-react';
 import { nomadMetrics, coworkingSpaces, getAllCoworkingSpaces, getCitiesWithNomadData } from '@/lib/nomad';
 import { cityData, getAllCities } from '@/lib/cities';
@@ -156,6 +157,10 @@ const NomadHub = () => {
             <TabsTrigger value="guides" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               <span>Rehberler</span>
+            </TabsTrigger>
+            <TabsTrigger value="visa" className="flex items-center gap-2">
+              <FileCheck className="h-4 w-4" />
+              <span>Vizeler</span>
             </TabsTrigger>
           </TabsList>
 
@@ -412,6 +417,11 @@ const NomadHub = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Visa Tab */}
+          <TabsContent value="visa" className="space-y-6">
+            <VisaComparisonTool />
           </TabsContent>
         </Tabs>
 

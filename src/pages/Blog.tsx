@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -9,9 +9,23 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { getAllPosts, blogCategories, BlogPost, getCategoryInfo } from '@/lib/blog';
 import { getAllCities } from '@/lib/cities';
+import { supabase } from '@/integrations/supabase/client';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+
+interface BackendBlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  category: string | null;
+  city: string | null;
+  image_url: string | null;
+  created_at: string;
+  published: boolean;
+}
 
 function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
   const categoryInfo = getCategoryInfo(post.category);
@@ -113,9 +127,57 @@ export default function Blog() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('all');
+  const [backendPosts, setBackendPosts] = useState<BackendBlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   
-  const allPosts = getAllPosts();
+  const staticPosts = getAllPosts();
   const cities = getAllCities();
+
+  // Fetch backend posts
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          setBackendPosts(data);
+        }
+      } catch (e) {
+        console.error('Error fetching posts:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  // Combine backend posts with static posts (backend takes priority for matching slugs)
+  const allPosts = useMemo(() => {
+    const backendConverted: BlogPost[] = backendPosts.map(bp => ({
+      id: bp.id,
+      slug: bp.slug,
+      title: bp.title,
+      excerpt: bp.excerpt || '',
+      content: bp.content,
+      coverImage: bp.image_url || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=600&fit=crop',
+      category: (bp.category as BlogPost['category']) || 'travel-tips',
+      citySlug: bp.city || undefined,
+      author: { name: 'WooNomad Editör' },
+      publishedAt: bp.created_at,
+      readingTime: Math.ceil(bp.content.split(/\s+/).length / 200),
+      tags: bp.category ? [bp.category] : [],
+    }));
+
+    // Merge: backend posts first, then static posts not in backend
+    const backendSlugs = new Set(backendConverted.map(p => p.slug));
+    const uniqueStaticPosts = staticPosts.filter(p => !backendSlugs.has(p.slug));
+    
+    return [...backendConverted, ...uniqueStaticPosts];
+  }, [backendPosts, staticPosts]);
   
   const filteredPosts = useMemo(() => {
     return allPosts.filter(post => {
@@ -277,11 +339,17 @@ export default function Blog() {
           {/* Results Count */}
           <div className="flex items-center gap-2 mb-4 md:mb-6 text-xs md:text-sm text-muted-foreground">
             <Filter className="h-3 w-3 md:h-4 md:w-4" />
-            <span>{filteredPosts.length} yazı bulundu</span>
+            <span>
+              {loading ? 'Yükleniyor...' : `${filteredPosts.length} yazı bulundu`}
+            </span>
           </div>
           
-          {/* Blog Grid */}
-          {filteredPosts.length > 0 ? (
+          {/* Loading State */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : filteredPosts.length > 0 ? (
             <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Featured Posts */}
               {featuredPosts.map((post, index) => (
