@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Save, Trash2, Loader2, LogOut } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +37,7 @@ const BlogAdmin = () => {
   const [saving, setSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -219,6 +220,67 @@ const BlogAdmin = () => {
     navigate("/");
   };
 
+  const generateWithAI = async (type: 'full' | 'paragraph' | 'improve') => {
+    if (type === 'full' && !formData.title) {
+      toast({ title: "Hata", description: "Önce başlık girin", variant: "destructive" });
+      return;
+    }
+    
+    setGenerating(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-content`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          topic: formData.title,
+          existingContent: formData.content,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'AI error');
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No reader');
+
+      const decoder = new TextDecoder();
+      let content = type === 'improve' ? '' : formData.content;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (!line.startsWith('data: ') || line.includes('[DONE]')) continue;
+          try {
+            const json = JSON.parse(line.slice(6));
+            const delta = json.choices?.[0]?.delta?.content;
+            if (delta) {
+              content += delta;
+              setFormData(prev => ({ ...prev, content }));
+            }
+          } catch {}
+        }
+      }
+      
+      toast({ title: "Başarılı", description: "AI içerik oluşturdu" });
+    } catch (error) {
+      toast({ 
+        title: "Hata", 
+        description: error instanceof Error ? error.message : "AI hatası",
+        variant: "destructive" 
+      });
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -349,7 +411,31 @@ const BlogAdmin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">İçerik (HTML destekli)</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="content">İçerik (Markdown destekli)</Label>
+                  <div className="flex gap-2">
+                    <Button 
+                      type="button" 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => generateWithAI('full')}
+                      disabled={generating}
+                    >
+                      {generating ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
+                      AI ile Oluştur
+                    </Button>
+                    <Button 
+                      type="button" 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => generateWithAI('improve')}
+                      disabled={generating || !formData.content}
+                    >
+                      <Wand2 className="w-4 h-4 mr-1" />
+                      İyileştir
+                    </Button>
+                  </div>
+                </div>
                 <Textarea
                   id="content"
                   value={formData.content}
