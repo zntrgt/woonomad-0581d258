@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 export type Language = 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar';
 export type Currency = 'TRY' | 'USD' | 'EUR' | 'GBP' | 'AED';
@@ -39,12 +41,15 @@ interface SettingsContextType {
   setCurrency: (curr: Currency) => void;
   getLanguageInfo: () => LanguageOption;
   getCurrencyInfo: () => CurrencyOption;
-  formatPrice: (price: number) => string;
+  formatPrice: (price: number, overrideCurrency?: Currency) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
+  
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('app-language');
     return (saved as Language) || 'tr';
@@ -55,18 +60,30 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return (saved as Currency) || 'TRY';
   });
 
+  // Initialize i18n language on mount
+  useEffect(() => {
+    const savedLang = localStorage.getItem('app-language') as Language;
+    if (savedLang && i18n.language !== savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, []);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('app-language', lang);
-    // Note: Full translation system would go here
-    // For now, language is stored for future use
-    console.log('Language set to:', lang);
+    i18n.changeLanguage(lang);
+    
+    // Update document direction for RTL languages
+    if (lang === 'ar') {
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.documentElement.dir = 'ltr';
+    }
   };
 
   const setCurrency = (curr: Currency) => {
     setCurrencyState(curr);
     localStorage.setItem('app-currency', curr);
-    console.log('Currency set to:', curr);
   };
 
   const getLanguageInfo = () => {
@@ -81,7 +98,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const curr = overrideCurrency || currency;
     const info = CURRENCIES.find(c => c.code === curr) || getCurrencyInfo();
     
-    // Use appropriate locale for number formatting based on currency
     const localeMap: Record<Currency, string> = {
       'TRY': 'tr-TR',
       'USD': 'en-US',
@@ -103,6 +119,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       getLanguageInfo,
       getCurrencyInfo,
       formatPrice,
+      t,
     }}>
       {children}
     </SettingsContext.Provider>

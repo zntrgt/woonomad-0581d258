@@ -86,6 +86,75 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_searches: {
+        Row: {
+          created_at: string
+          id: string
+          last_min_price: number | null
+          last_result_count: number | null
+          last_searched_at: string | null
+          search_name: string | null
+          search_params: Json
+          search_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_min_price?: number | null
+          last_result_count?: number | null
+          last_searched_at?: string | null
+          search_name?: string | null
+          search_params: Json
+          search_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_min_price?: number | null
+          last_result_count?: number | null
+          last_searched_at?: string | null
+          search_name?: string | null
+          search_params?: Json
+          search_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          favorite_type: string
+          id: string
+          item_data: Json | null
+          item_name: string
+          item_slug: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          favorite_type: string
+          id?: string
+          item_data?: Json | null
+          item_name: string
+          item_slug: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          favorite_type?: string
+          id?: string
+          item_data?: Json | null
+          item_name?: string
+          item_slug?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
