@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { SettingsProvider } from "./contexts/SettingsContext";
+import "@/i18n";
 import Index from "./pages/Index";
 import FlightRoute from "./pages/FlightRoute";
 import FlightRoutes from "./pages/FlightRoutes";

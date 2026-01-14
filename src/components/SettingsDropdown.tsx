@@ -1,4 +1,5 @@
 import { Globe, ChevronDown, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export function SettingsDropdown() {
+  const { t } = useTranslation();
   const { language, currency, setLanguage, setCurrency, getLanguageInfo, getCurrencyInfo } = useSettings();
   const { toast } = useToast();
 
@@ -23,8 +25,8 @@ export function SettingsDropdown() {
     setLanguage(lang);
     const langName = LANGUAGES.find(l => l.code === lang)?.name || lang;
     toast({
-      title: 'Dil değiştirildi',
-      description: `${langName} seçildi. Uçuş aramasında dil tercihi kullanılacak.`,
+      title: t('settings.languageChanged'),
+      description: `${langName} ${language === 'en' ? 'selected' : 'seçildi'}.`,
     });
   };
 
@@ -32,8 +34,8 @@ export function SettingsDropdown() {
     setCurrency(curr);
     const currName = CURRENCIES.find(c => c.code === curr)?.name || curr;
     toast({
-      title: 'Para birimi değiştirildi',
-      description: `${currName} seçildi. Fiyatlar bu para biriminde gösterilecek.`,
+      title: t('settings.currencyChanged'),
+      description: `${currName} ${language === 'en' ? 'selected' : 'seçildi'}.`,
     });
   };
 
@@ -49,7 +51,7 @@ export function SettingsDropdown() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40 bg-popover z-50">
-          <DropdownMenuLabel className="text-xs text-muted-foreground">Dil Seçin</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-xs text-muted-foreground">{t('settings.language')}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {LANGUAGES.map((lang) => (
             <DropdownMenuItem
@@ -80,7 +82,7 @@ export function SettingsDropdown() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44 bg-popover z-50">
-          <DropdownMenuLabel className="text-xs text-muted-foreground">Para Birimi</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-xs text-muted-foreground">{t('settings.currency')}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {CURRENCIES.map((curr) => (
             <DropdownMenuItem
