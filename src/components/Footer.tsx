@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plane, Mail, MapPin } from 'lucide-react';
 
 export function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -15,7 +17,7 @@ export function Footer() {
               <span className="font-display font-bold text-xl">WooNomad</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
-              En uygun uçak bileti ve otel fiyatlarını karşılaştırın, seyahat planınızı oluşturun.
+              {t('home.heroSubtitle')}
             </p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Mail className="w-4 h-4" />
@@ -27,31 +29,31 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display font-bold mb-4">Hızlı Bağlantılar</h4>
+            <h4 className="font-display font-bold mb-4">{t('common.seeAll')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
-                  Ana Sayfa
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
-                <Link to="/ucus-rotalari" className="text-muted-foreground hover:text-primary transition-colors">
-                  Uçuş Rotaları
+                <Link to="/ucuslar" className="text-muted-foreground hover:text-primary transition-colors">
+                  {t('nav.flights')}
                 </Link>
               </li>
               <li>
                 <Link to="/sehirler" className="text-muted-foreground hover:text-primary transition-colors">
-                  Şehir Rehberleri
+                  {t('nav.cities')}
                 </Link>
               </li>
               <li>
                 <Link to="/oteller" className="text-muted-foreground hover:text-primary transition-colors">
-                  Oteller
+                  {t('nav.hotels')}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
-                  Blog
+                  {t('nav.blog')}
                 </Link>
               </li>
             </ul>
@@ -59,7 +61,7 @@ export function Footer() {
 
           {/* Popular Destinations */}
           <div>
-            <h4 className="font-display font-bold mb-4">Popüler Şehirler</h4>
+            <h4 className="font-display font-bold mb-4">{t('home.popularDestinations')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/sehir/paris" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
@@ -68,22 +70,22 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/sehir/londra" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Londra
+                  <MapPin className="w-3 h-3" /> London
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/roma" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Roma
+                <Link to="/sehir/tokyo" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Tokyo
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/barcelona" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Barcelona
+                <Link to="/sehir/bali" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Bali
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/amsterdam" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Amsterdam
+                <Link to="/sehir/bangkok" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Bangkok
                 </Link>
               </li>
             </ul>
@@ -91,26 +93,26 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-display font-bold mb-4">Yasal</h4>
+            <h4 className="font-display font-bold mb-4">{t('footer.terms')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/gizlilik-politikasi" className="text-muted-foreground hover:text-primary transition-colors">
-                  Gizlilik Politikası
+                  {t('footer.privacy')}
                 </Link>
               </li>
               <li>
                 <Link to="/kullanim-kosullari" className="text-muted-foreground hover:text-primary transition-colors">
-                  Kullanım Koşulları
+                  {t('footer.terms')}
                 </Link>
               </li>
               <li>
                 <Link to="/kvkk" className="text-muted-foreground hover:text-primary transition-colors">
-                  KVKK Aydınlatma Metni
+                  {t('footer.kvkk')}
                 </Link>
               </li>
               <li>
                 <Link to="/cerez-politikasi" className="text-muted-foreground hover:text-primary transition-colors">
-                  Çerez Politikası
+                  {t('footer.cookies')}
                 </Link>
               </li>
             </ul>
@@ -119,9 +121,9 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© {currentYear} WooNomad. Tüm hakları saklıdır.</p>
+          <p>{t('footer.copyright', { year: currentYear })}</p>
           <p className="mt-2 text-xs">
-            WooNomad bir uçak bileti ve otel karşılaştırma platformudur. Rezervasyonlar üçüncü taraf siteler üzerinden gerçekleştirilir.
+            WooNomad - {t('home.heroSubtitle')}
           </p>
         </div>
       </div>

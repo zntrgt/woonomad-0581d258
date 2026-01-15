@@ -23,6 +23,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
 import Auth from "./pages/Auth";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -68,7 +69,9 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/admin/blog" element={<BlogAdmin />} />
+              {/* Auth & Account */}
               <Route path="/auth" element={<Auth />} />
+              <Route path="/hesabim" element={<Account />} />
               {/* Legal Pages */}
               <Route path="/gizlilik-politikasi" element={<PrivacyPolicy />} />
               <Route path="/kullanim-kosullari" element={<TermsOfService />} />

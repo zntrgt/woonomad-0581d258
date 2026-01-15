@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings, Laptop } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings, Laptop, User } from 'lucide-react';
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
 import { SiteSearch } from './SiteSearch';
@@ -15,21 +16,22 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   href: string;
   icon: React.ReactNode;
 }
 
 const navItems: NavItem[] = [
-  { label: 'Ana Sayfa', href: '/', icon: <Home className="h-4 w-4" /> },
-  { label: 'Şehirler', href: '/sehirler', icon: <Building2 className="h-4 w-4" /> },
-  { label: 'Nomad Hub', href: '/nomad-hub', icon: <Laptop className="h-4 w-4" /> },
-  { label: 'Uçuşlar', href: '/ucuslar', icon: <Plane className="h-4 w-4" /> },
-  { label: 'Oteller', href: '/oteller', icon: <Hotel className="h-4 w-4" /> },
-  { label: 'Blog', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
+  { labelKey: 'nav.home', href: '/', icon: <Home className="h-4 w-4" /> },
+  { labelKey: 'nav.cities', href: '/sehirler', icon: <Building2 className="h-4 w-4" /> },
+  { labelKey: 'nav.nomadHub', href: '/nomad-hub', icon: <Laptop className="h-4 w-4" /> },
+  { labelKey: 'nav.flights', href: '/ucuslar', icon: <Plane className="h-4 w-4" /> },
+  { labelKey: 'nav.hotels', href: '/oteller', icon: <Hotel className="h-4 w-4" /> },
+  { labelKey: 'nav.blog', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
 ];
 
 export function Header() {
+  const { t } = useTranslation();
   const location = useLocation();
   const { user, isAdmin } = useAuth();
   
@@ -48,7 +50,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Ana navigasyon">
+        <nav className="hidden md:flex items-center gap-1" aria-label={t('nav.home')}>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -61,7 +63,7 @@ export function Header() {
               )}
             >
               {item.icon}
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           ))}
           {/* Admin Link */}
@@ -86,10 +88,19 @@ export function Header() {
           {/* Site Search */}
           <SiteSearch />
           
+          {/* Account Link */}
+          {user && (
+            <Button variant="ghost" size="icon" asChild className="hidden md:flex">
+              <Link to="/hesabim" aria-label={t('nav.account')}>
+                <User className="h-5 w-5" />
+              </Link>
+            </Button>
+          )}
+          
           {/* Mobile Navigation */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" aria-label="Menü">
+              <Button variant="ghost" size="icon" aria-label="Menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
@@ -98,10 +109,21 @@ export function Header() {
                 <DropdownMenuItem key={item.href} asChild>
                   <Link to={item.href} className="flex items-center gap-2">
                     {item.icon}
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 </DropdownMenuItem>
               ))}
+              {user && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/hesabim" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      {t('nav.account')}
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
               {isAdmin && (
                 <>
                   <DropdownMenuSeparator />
