@@ -1,4 +1,5 @@
 import { useState, forwardRef, useImperativeHandle, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Search, Users, ArrowRightLeft, Plane, Sparkles } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ function getNextWeekend() {
 
 export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
   ({ onSearch, isLoading }, ref) => {
+    const { t } = useTranslation();
     const { currency } = useSettings();
     const [origin, setOrigin] = useState<Airport | null>(null);
     const [destination, setDestination] = useState<Airport | null>(null);
@@ -100,8 +102,8 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-end">
             <div className="flex-1">
               <AirportInput
-                label="Nereden"
-                placeholder="Şehir veya havalimanı"
+                label={t('search.from')}
+                placeholder={t('search.selectAirport')}
                 value={origin}
                 onChange={setOrigin}
                 icon="origin"
@@ -112,15 +114,15 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
               onClick={handleSwap}
               disabled={isAnywhereSearch}
               className="self-center sm:self-auto p-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-primary/30 transition-all duration-200 disabled:opacity-40 group btn-interactive touch-target"
-              aria-label="Nereden ve nereye değiştir"
+              aria-label={t('search.from') + ' / ' + t('search.to')}
             >
               <ArrowRightLeft className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors rotate-90 sm:rotate-0" />
             </button>
 
             <div className="flex-1">
               <AirportInput
-                label="Nereye"
-                placeholder="Şehir veya havalimanı"
+                label={t('search.to')}
+                placeholder={t('search.selectAirport')}
                 value={destination}
                 onChange={setDestination}
                 icon="destination"
@@ -145,7 +147,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-sm">
           {/* Trip Type */}
           <div className="flex items-center gap-1 bg-muted rounded-xl p-1">
-            {['Gidiş-Dönüş', 'Tek Yön'].map((label, i) => (
+            {[t('search.roundTrip'), t('search.oneWay')].map((label, i) => (
               <button
                 key={label}
                 onClick={() => setIsOneWay(i === 1)}
@@ -172,13 +174,13 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             )}
           >
             <Users className="h-4 w-4" />
-            <span className="font-medium text-xs sm:text-sm">{passengers.adults + passengers.children} yolcu</span>
+            <span className="font-medium text-xs sm:text-sm">{passengers.adults + passengers.children} {t('search.passengers')}</span>
           </button>
           
           {isAnywhereSearch && (
             <span className="px-3 py-2 rounded-xl text-xs bg-primary/10 text-primary font-semibold flex items-center gap-1.5">
               <Sparkles className="h-3.5 w-3.5" />
-              Her Yer Modu
+              {t('home.exploreMore')}
             </span>
           )}
         </div>
@@ -189,9 +191,9 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             {/* Passengers */}
             <div className="flex items-center gap-4 sm:gap-6">
               {[
-                { key: 'adults', label: 'Yetişkin', min: 1, desc: '12+ yaş' },
-                { key: 'children', label: 'Çocuk', min: 0, desc: '2-11 yaş' },
-                { key: 'infants', label: 'Bebek', min: 0, desc: '0-2 yaş' },
+                { key: 'adults', label: t('search.adults'), min: 1, desc: '12+' },
+                { key: 'children', label: t('search.children'), min: 0, desc: '2-11' },
+                { key: 'infants', label: t('search.infants'), min: 0, desc: '0-2' },
               ].map(({ key, label, min, desc }) => (
                 <div key={key} className="flex flex-col items-center gap-1.5 sm:gap-2">
                   <span className="text-xs sm:text-sm font-medium text-foreground">{label}</span>
@@ -236,12 +238,12 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             {isLoading ? (
               <div className="flex items-center gap-2 sm:gap-3">
                 <Plane className="h-5 w-5 animate-bounce-gentle" />
-                <span>Aranıyor...</span>
+                <span>{t('common.loading')}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 sm:gap-3">
                 <Search className="h-5 w-5" />
-                <span>{isAnywhereSearch ? 'Tüm Destinasyonları Ara' : 'Uçuş Ara'}</span>
+                <span>{isAnywhereSearch ? t('home.exploreMore') : t('search.searchFlights')}</span>
               </div>
             )}
           </Button>
