@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag } from 'lucide-react';
+import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -8,12 +9,27 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HotelWidget } from '@/components/HotelWidget';
-import { getPostBySlug, getRelatedPosts, getCategoryInfo, BlogPost as BlogPostType } from '@/lib/blog';
-import { getCityBySlug, CityInfo } from '@/lib/cities';
+import { getPostBySlug, getRelatedPosts, getCategoryInfo, BlogPost as BlogPostType, getAllPosts } from '@/lib/blog';
+import { getCityBySlug, CityInfo, getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
+import { supabase } from '@/integrations/supabase/client';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+
+interface BackendBlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  category: string | null;
+  city: string | null;
+  image_url: string | null;
+  created_at: string;
+  updated_at: string;
+  published: boolean;
+}
 
 // Widget: Related City Card
 function CityWidget({ citySlug }: { citySlug: string }) {
@@ -67,7 +83,36 @@ function FlightSearchWidget({ cityName, citySlug }: { cityName: string; citySlug
   );
 }
 
-// HotelsWidget is now replaced by HotelWidget component from @/components/HotelWidget
+// Widget: Related Cities from content
+function RelatedCitiesWidget({ cities }: { cities: CityInfo[] }) {
+  if (cities.length === 0) return null;
+  
+  return (
+    <div className="card-modern p-5 mb-6">
+      <div className="flex items-center gap-2 mb-4">
+        <MapPin className="h-5 w-5 text-primary" />
+        <h3 className="font-display font-semibold">İlgili Şehirler</h3>
+      </div>
+      
+      <div className="space-y-2">
+        {cities.slice(0, 5).map(city => (
+          <Link 
+            key={city.slug}
+            to={`/sehir/${city.slug}`}
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors group"
+          >
+            <span className="text-xl">{getCountryFlag(city.countryCode)}</span>
+            <div className="flex-1">
+              <div className="text-sm font-medium group-hover:text-primary transition-colors">{city.name}</div>
+              <div className="text-xs text-muted-foreground">{city.country}</div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Related Post Card
 function RelatedPostCard({ post }: { post: BlogPostType }) {
@@ -98,9 +143,214 @@ function RelatedPostCard({ post }: { post: BlogPostType }) {
   );
 }
 
+// Table of Contents Component
+function TableOfContents({ headings }: { headings: { id: string; text: string; level: number }[] }) {
+  if (headings.length === 0) return null;
+  
+  return (
+    <nav className="card-modern p-5 mb-8" aria-label="İçindekiler">
+      <div className="flex items-center gap-2 mb-4">
+        <List className="h-5 w-5 text-primary" />
+        <h2 className="font-display font-semibold">İçindekiler</h2>
+      </div>
+      
+      <ol className="space-y-2 text-sm">
+        {headings.map((heading, index) => (
+          <li 
+            key={heading.id}
+            className={cn(
+              "hover:text-primary transition-colors",
+              heading.level === 3 && "ml-4"
+            )}
+          >
+            <a href={`#${heading.id}`} className="flex items-start gap-2">
+              <span className="text-muted-foreground">{index + 1}.</span>
+              <span>{heading.text}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+// Author Box Component
+function AuthorBox({ author, dateModified }: { author: { name: string; avatar?: string; bio?: string }; dateModified?: string }) {
+  return (
+    <div className="card-modern p-6 mb-8 bg-muted/30">
+      <div className="flex items-start gap-4">
+        {author.avatar ? (
+          <img 
+            src={author.avatar} 
+            alt={author.name}
+            className="w-16 h-16 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+            <User className="h-8 w-8 text-muted-foreground" />
+          </div>
+        )}
+        <div className="flex-1">
+          <div className="font-semibold text-lg">{author.name}</div>
+          {author.bio && (
+            <div className="text-sm text-muted-foreground mt-1">{author.bio}</div>
+          )}
+          {dateModified && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-3">
+              <RefreshCcw className="h-3 w-3" />
+              <span>Son güncelleme: {format(parseISO(dateModified), 'd MMMM yyyy', { locale: tr })}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// FAQ Section Component
+function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] }) {
+  if (faqs.length === 0) return null;
+  
+  return (
+    <section className="mt-10 pt-6 border-t border-border">
+      <h2 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
+        <BookOpen className="h-5 w-5 text-primary" />
+        Sıkça Sorulan Sorular
+      </h2>
+      
+      <div className="space-y-4">
+        {faqs.map((faq, index) => (
+          <div key={index} className="card-modern p-5">
+            <h3 className="font-semibold text-foreground mb-2">{faq.question}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : undefined;
+  const [backendPost, setBackendPost] = useState<BackendBlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  const staticPost = slug ? getPostBySlug(slug) : undefined;
+  const allCities = getAllCities();
+  
+  // Fetch from database
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!slug) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .eq('slug', slug)
+          .eq('published', true)
+          .single();
+        
+        if (!error && data) {
+          setBackendPost(data);
+        }
+      } catch (e) {
+        console.error('Error fetching post:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPost();
+  }, [slug]);
+  
+  // Convert backend post to BlogPostType format
+  const post: BlogPostType | undefined = useMemo(() => {
+    if (backendPost) {
+      return {
+        id: backendPost.id,
+        slug: backendPost.slug,
+        title: backendPost.title,
+        excerpt: backendPost.excerpt || '',
+        content: backendPost.content,
+        coverImage: backendPost.image_url || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=600&fit=crop',
+        category: (backendPost.category as BlogPostType['category']) || 'travel-tips',
+        citySlug: backendPost.city || undefined,
+        author: { name: 'WooNomad Editör', bio: 'Seyahat ve dijital göçebe yaşam uzmanı' },
+        publishedAt: backendPost.created_at,
+        updatedAt: backendPost.updated_at,
+        readingTime: Math.ceil(backendPost.content.split(/\s+/).length / 200),
+        tags: backendPost.category ? [backendPost.category] : [],
+      };
+    }
+    return staticPost;
+  }, [backendPost, staticPost]);
+  
+  // Extract headings for TOC
+  const headings = useMemo(() => {
+    if (!post) return [];
+    
+    const lines = post.content.split('\n');
+    const extractedHeadings: { id: string; text: string; level: number }[] = [];
+    
+    lines.forEach((line, index) => {
+      if (line.startsWith('## ')) {
+        const text = line.slice(3).trim();
+        const id = `heading-${index}`;
+        extractedHeadings.push({ id, text, level: 2 });
+      } else if (line.startsWith('### ')) {
+        const text = line.slice(4).trim();
+        const id = `heading-${index}`;
+        extractedHeadings.push({ id, text, level: 3 });
+      }
+    });
+    
+    return extractedHeadings;
+  }, [post]);
+  
+  // Extract FAQs from content (### headers followed by content)
+  const faqs = useMemo(() => {
+    if (!post) return [];
+    
+    const faqPatterns = [
+      /###\s*(.+\?)\s*\n([\s\S]*?)(?=###|##|$)/g,
+    ];
+    
+    const extractedFaqs: { question: string; answer: string }[] = [];
+    
+    for (const pattern of faqPatterns) {
+      let match;
+      while ((match = pattern.exec(post.content)) !== null) {
+        const question = match[1].trim();
+        const answer = match[2].trim().slice(0, 500);
+        if (question && answer && question.includes('?')) {
+          extractedFaqs.push({ question, answer });
+        }
+      }
+    }
+    
+    return extractedFaqs.slice(0, 8);
+  }, [post]);
+  
+  // Extract related cities from content
+  const relatedCities = useMemo(() => {
+    if (!post) return [];
+    
+    const contentLower = post.content.toLowerCase();
+    return allCities.filter(city => 
+      contentLower.includes(city.name.toLowerCase()) ||
+      contentLower.includes(city.slug.toLowerCase())
+    ).slice(0, 5);
+  }, [post, allCities]);
+  
+  // Show loading state
+  if (loading && !staticPost) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
   
   if (!post) {
     return <Navigate to="/blog" replace />;
@@ -109,6 +359,15 @@ export default function BlogPost() {
   const relatedPosts = getRelatedPosts(post, 3);
   const categoryInfo = getCategoryInfo(post.category);
   const city = post.citySlug ? getCityBySlug(post.citySlug) : undefined;
+  
+  // Generate SEO-optimized title and description
+  const seoTitle = post.title.length > 60 
+    ? post.title.slice(0, 57) + '...' 
+    : post.title;
+  
+  const seoDescription = post.excerpt.length > 160
+    ? post.excerpt.slice(0, 157) + '...'
+    : post.excerpt || `${post.title} hakkında kapsamlı rehber. 2026 güncel bilgiler, ipuçları ve öneriler.`;
   
   const structuredData = {
     '@context': 'https://schema.org',
@@ -128,12 +387,12 @@ export default function BlogPost() {
       name: 'WooNomad',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://woonomad.co/woonomad-logo.png'
+        url: 'https://woonomad.lovable.app/woonomad-logo.png'
       }
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://woonomad.co/blog/${post.slug}`
+      '@id': `https://woonomad.lovable.app/blog/${post.slug}`
     },
     keywords: post.tags.join(', '),
     articleSection: categoryInfo?.name || 'Seyahat',
@@ -150,29 +409,45 @@ export default function BlogPost() {
       }
     })
   };
+  
+  // Breadcrumb structured data
+  const breadcrumbData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Ana Sayfa',
+        item: 'https://woonomad.lovable.app/'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://woonomad.lovable.app/blog'
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://woonomad.lovable.app/blog/${post.slug}`
+      }
+    ]
+  };
 
-  // FAQ structured data for posts with Q&A content
-  const faqData = post.content.includes('###') ? {
+  // FAQ structured data
+  const faqData = faqs.length > 0 ? {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: post.content
-      .split('###')
-      .slice(1)
-      .map(section => {
-        const lines = section.trim().split('\n');
-        const question = lines[0]?.trim();
-        const answer = lines.slice(1).join(' ').trim().slice(0, 500);
-        return question && answer ? {
-          '@type': 'Question',
-          name: question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: answer
-          }
-        } : null;
-      })
-      .filter(Boolean)
-      .slice(0, 5)
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer
+      }
+    }))
   } : null;
 
   const handleShare = async () => {
@@ -191,20 +466,35 @@ export default function BlogPost() {
     }
   };
 
-  // Parse markdown-like content to HTML with inline widgets
+  // Parse markdown-like content to HTML with inline widgets and heading IDs
   const renderContent = (content: string) => {
     const lines = content.split('\n');
     const elements: React.ReactNode[] = [];
     const totalLines = lines.length;
-    const insertWidgetAfterLine = Math.floor(totalLines * 0.4); // Insert widget at ~40% of content
+    const insertWidgetAfterLine = Math.floor(totalLines * 0.4);
     let widgetInserted = false;
+    let headingIndex = 0;
 
     lines.forEach((line, index) => {
-      // Headers
+      // Headers with IDs for anchor links
       if (line.startsWith('### ')) {
-        elements.push(<h3 key={index} className="text-lg font-display font-semibold mt-8 mb-3 text-foreground">{line.slice(4)}</h3>);
+        const text = line.slice(4);
+        const id = `heading-${index}`;
+        elements.push(
+          <h3 key={index} id={id} className="text-lg font-display font-semibold mt-8 mb-3 text-foreground scroll-mt-20">
+            {text}
+          </h3>
+        );
+        headingIndex++;
       } else if (line.startsWith('## ')) {
-        elements.push(<h2 key={index} className="text-xl font-display font-bold mt-10 mb-4 text-foreground">{line.slice(3)}</h2>);
+        const text = line.slice(3);
+        const id = `heading-${index}`;
+        elements.push(
+          <h2 key={index} id={id} className="text-xl font-display font-bold mt-10 mb-4 text-foreground scroll-mt-20">
+            {text}
+          </h2>
+        );
+        headingIndex++;
       } else if (line.startsWith('# ')) {
         elements.push(<h1 key={index} className="text-2xl font-display font-bold mt-8 mb-4 text-foreground">{line.slice(2)}</h1>);
       }
@@ -253,11 +543,17 @@ export default function BlogPost() {
     return elements;
   };
 
-  // Format bold text with XSS sanitization
+  // Format bold text with XSS sanitization and internal linking
   const formatInlineText = (text: string) => {
-    const formatted = text
+    let formatted = text
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Add internal links for city names
+    allCities.forEach(city => {
+      const regex = new RegExp(`\\b${city.name}\\b(?![^<]*>)`, 'gi');
+      formatted = formatted.replace(regex, `<a href="/sehir/${city.slug}" class="text-primary hover:underline">${city.name}</a>`);
+    });
     
     // Sanitize to prevent XSS attacks
     return DOMPurify.sanitize(formatted, {
@@ -269,16 +565,16 @@ export default function BlogPost() {
   return (
     <>
       <Helmet>
-        <title>{post.title} | WooNomad Blog</title>
-        <meta name="description" content={post.excerpt} />
+        <title>{seoTitle} | WooNomad Blog</title>
+        <meta name="description" content={seoDescription} />
         <meta name="keywords" content={post.tags.join(', ')} />
-        <link rel="canonical" href={`https://woonomad.co/blog/${post.slug}`} />
+        <link rel="canonical" href={`https://woonomad.lovable.app/blog/${post.slug}`} />
         
         <meta property="og:title" content={`${post.title} | WooNomad`} />
-        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={post.coverImage} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://woonomad.co/blog/${post.slug}`} />
+        <meta property="og:url" content={`https://woonomad.lovable.app/blog/${post.slug}`} />
         <meta property="og:site_name" content="WooNomad" />
         <meta property="article:published_time" content={post.publishedAt} />
         <meta property="article:modified_time" content={post.updatedAt || post.publishedAt} />
@@ -289,11 +585,12 @@ export default function BlogPost() {
         ))}
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.excerpt} />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
         <meta name="twitter:image" content={post.coverImage} />
         
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
         {faqData && <script type="application/ld+json">{JSON.stringify(faqData)}</script>}
       </Helmet>
 
@@ -328,39 +625,27 @@ export default function BlogPost() {
                   {categoryInfo?.emoji} {categoryInfo?.name}
                 </Badge>
                 {city && (
-                  <Badge variant="outline">
-                    {getCountryFlag(city.countryCode)} {city.name}
-                  </Badge>
+                  <Link to={`/sehir/${city.slug}`}>
+                    <Badge variant="outline" className="hover:bg-primary/10 transition-colors">
+                      {getCountryFlag(city.countryCode)} {city.name}
+                    </Badge>
+                  </Link>
                 )}
               </div>
               
-              {/* Title */}
+              {/* Title - H1 */}
               <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-6">
                 {post.title}
               </h1>
               
-              {/* Author & Date */}
+              {/* Author Box with E-E-A-T signals */}
+              <AuthorBox 
+                author={post.author} 
+                dateModified={post.updatedAt || post.publishedAt}
+              />
+              
+              {/* Quick Meta Bar */}
               <div className="flex flex-wrap items-center gap-6 pb-6 border-b border-border mb-8">
-                <div className="flex items-center gap-3">
-                  {post.author.avatar ? (
-                    <img 
-                      src={post.author.avatar} 
-                      alt={post.author.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <User className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div>
-                    <div className="font-semibold">{post.author.name}</div>
-                    {post.author.bio && (
-                      <div className="text-sm text-muted-foreground">{post.author.bio}</div>
-                    )}
-                  </div>
-                </div>
-                
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-4 w-4" />
@@ -368,7 +653,11 @@ export default function BlogPost() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
-                    {post.readingTime} dk
+                    {post.readingTime} dk okuma
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <BookOpen className="h-4 w-4" />
+                    {post.content.split(/\s+/).length} kelime
                   </span>
                 </div>
                 
@@ -383,10 +672,18 @@ export default function BlogPost() {
                 </Button>
               </div>
               
+              {/* Table of Contents */}
+              {headings.length >= 3 && (
+                <TableOfContents headings={headings} />
+              )}
+              
               {/* Content */}
               <div className="prose prose-lg max-w-none text-muted-foreground">
                 {renderContent(post.content)}
               </div>
+              
+              {/* FAQ Section */}
+              {faqs.length > 0 && <FAQSection faqs={faqs} />}
               
               {/* Tags */}
               <div className="flex flex-wrap items-center gap-2 mt-10 pt-6 border-t border-border">
@@ -413,6 +710,11 @@ export default function BlogPost() {
             <aside className="space-y-6 hidden lg:block">
               {/* City Widget */}
               {city && <CityWidget citySlug={city.slug} />}
+              
+              {/* Related Cities from Content */}
+              {!city && relatedCities.length > 0 && (
+                <RelatedCitiesWidget cities={relatedCities} />
+              )}
               
               {/* Flight Search Widget */}
               {city && <FlightSearchWidget cityName={city.name} citySlug={city.slug} />}
@@ -449,6 +751,24 @@ export default function BlogPost() {
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </div>
                 </Link>
+              )}
+              
+              {/* Related Cities on Mobile */}
+              {relatedCities.length > 0 && (
+                <div className="card-modern p-4">
+                  <h3 className="font-semibold text-sm mb-3">İlgili Şehirler</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {relatedCities.slice(0, 4).map(c => (
+                      <Link 
+                        key={c.slug}
+                        to={`/sehir/${c.slug}`}
+                        className="text-xs bg-muted px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors"
+                      >
+                        {getCountryFlag(c.countryCode)} {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               )}
             </aside>
           </div>
