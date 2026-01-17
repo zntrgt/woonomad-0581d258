@@ -466,7 +466,7 @@ export default function BlogPost() {
     }
   };
 
-  // Parse markdown-like content to HTML with inline widgets and heading IDs
+  // Parse markdown-like content to HTML with inline widgets, tables, and heading IDs
   const renderContent = (content: string) => {
     const lines = content.split('\n');
     const elements: React.ReactNode[] = [];
@@ -474,8 +474,87 @@ export default function BlogPost() {
     const insertWidgetAfterLine = Math.floor(totalLines * 0.4);
     let widgetInserted = false;
     let headingIndex = 0;
+    let inTable = false;
+    let tableRows: string[][] = [];
+    let tableHeaders: string[] = [];
+
+    const flushTable = () => {
+      if (tableRows.length > 0 || tableHeaders.length > 0) {
+        elements.push(
+          <div key={`table-${elements.length}`} className="overflow-x-auto my-6">
+            <table className="w-full border-collapse text-sm">
+              {tableHeaders.length > 0 && (
+                <thead>
+                  <tr className="bg-muted">
+                    {tableHeaders.map((header, i) => (
+                      <th key={i} className="border border-border px-4 py-2 text-left font-semibold text-foreground">
+                        {header.trim()}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {tableRows.map((row, rowIndex) => (
+                  <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/30'}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex} className="border border-border px-4 py-2 text-muted-foreground">
+                        <span dangerouslySetInnerHTML={{ __html: formatInlineText(cell.trim()) }} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableRows = [];
+        tableHeaders = [];
+        inTable = false;
+      }
+    };
 
     lines.forEach((line, index) => {
+      // Check for table rows (lines containing |)
+      if (line.includes('|') && line.trim().startsWith('|')) {
+        const cells = line.split('|').filter(cell => cell.trim() !== '');
+        
+        // Check if this is a separator row (|---|---|)
+        if (cells.every(cell => /^[\s-:]+$/.test(cell))) {
+          // Skip separator row but mark as in table
+          inTable = true;
+          return;
+        }
+        
+        if (!inTable && tableHeaders.length === 0) {
+          // First row is header
+          tableHeaders = cells;
+          inTable = true;
+        } else {
+          // Data row
+          tableRows.push(cells);
+        }
+        return;
+      } else if (inTable) {
+        // End of table, flush it
+        flushTable();
+      }
+
+      // Checklist items (- [ ] or - [x])
+      if (line.match(/^-\s*\[([ x])\]\s*/)) {
+        const isChecked = line.includes('[x]');
+        const text = line.replace(/^-\s*\[[ x]\]\s*/, '');
+        elements.push(
+          <div key={index} className="flex items-start gap-3 mb-2">
+            <span className={`mt-1 w-4 h-4 rounded border flex items-center justify-center text-xs ${isChecked ? 'bg-primary border-primary text-primary-foreground' : 'border-border'}`}>
+              {isChecked ? '✓' : ''}
+            </span>
+            <span className={isChecked ? 'line-through text-muted-foreground' : ''} dangerouslySetInnerHTML={{ __html: formatInlineText(text) }} />
+          </div>
+        );
+        return;
+      }
+
       // Headers with IDs for anchor links
       if (line.startsWith('### ')) {
         const text = line.slice(4);
@@ -497,6 +576,22 @@ export default function BlogPost() {
         headingIndex++;
       } else if (line.startsWith('# ')) {
         elements.push(<h1 key={index} className="text-2xl font-display font-bold mt-8 mb-4 text-foreground">{line.slice(2)}</h1>);
+      }
+      // Blockquote
+      else if (line.startsWith('> ')) {
+        elements.push(
+          <blockquote key={index} className="border-l-4 border-primary pl-4 py-2 my-4 italic text-muted-foreground bg-muted/30 rounded-r-lg">
+            <span dangerouslySetInnerHTML={{ __html: formatInlineText(line.slice(2)) }} />
+          </blockquote>
+        );
+      }
+      // Italic note (*Note: or *Fiyatlar)
+      else if (line.startsWith('*') && !line.startsWith('**') && line.endsWith('*')) {
+        elements.push(
+          <p key={index} className="text-sm italic text-muted-foreground my-2">
+            {line.slice(1, -1)}
+          </p>
+        );
       }
       // List items
       else if (line.startsWith('- ')) {
@@ -539,6 +634,9 @@ export default function BlogPost() {
         widgetInserted = true;
       }
     });
+
+    // Flush any remaining table
+    flushTable();
 
     return elements;
   };
