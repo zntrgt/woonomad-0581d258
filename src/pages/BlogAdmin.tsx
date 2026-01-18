@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Header } from "@/components/Header";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { SEOScoreWidget } from "@/components/SEOScoreWidget";
+import { SEOComparisonModal } from "@/components/SEOComparisonModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +29,19 @@ interface BlogPost {
   created_at: string;
 }
 
+interface SEOImproveResult {
+  title: string;
+  metaDescription: string;
+  content: string;
+  toc: Array<{ id: string; text: string; level: number }>;
+  tables: Array<{ title: string; markdown: string }>;
+  checklists: Array<{ title: string; items: string[] }>;
+  faqs: Array<{ q: string; a: string }>;
+  internalLinkSuggestions: Array<{ anchor: string; href: string; reason: string }>;
+  schemaJsonLd: object;
+  changeSummary: string[];
+}
+
 const BlogAdmin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -42,6 +56,9 @@ const BlogAdmin = () => {
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [seoImproving, setSeoImproving] = useState(false);
+  const [seoResult, setSeoResult] = useState<SEOImproveResult | null>(null);
+  const [showSeoModal, setShowSeoModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -350,6 +367,67 @@ const BlogAdmin = () => {
     } finally {
       setGenerating(false);
     }
+  };
+
+  // SEO Improve with AI
+  const handleSEOImprove = async () => {
+    if (!formData.title || !formData.content) {
+      toast({ title: "Hata", description: "Başlık ve içerik gerekli", variant: "destructive" });
+      return;
+    }
+
+    setSeoImproving(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/seo-improve-blog`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postId: editingPost?.id || 'new',
+          title: formData.title,
+          slug: formData.slug,
+          content: formData.content,
+          category: formData.category,
+          city: formData.city,
+          heroImageUrl: formData.image_url,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        if (response.status === 429) {
+          throw new Error('Rate limit aşıldı. Lütfen biraz bekleyin.');
+        }
+        if (response.status === 402) {
+          throw new Error('Kredi yetersiz. Lütfen kredi ekleyin.');
+        }
+        throw new Error(err.error || 'SEO iyileştirme hatası');
+      }
+
+      const result = await response.json();
+      setSeoResult(result);
+      setShowSeoModal(true);
+      toast({ title: "Başarılı", description: "SEO analizi tamamlandı" });
+    } catch (error) {
+      toast({ 
+        title: "Hata", 
+        description: error instanceof Error ? error.message : "SEO iyileştirme hatası",
+        variant: "destructive" 
+      });
+    } finally {
+      setSeoImproving(false);
+    }
+  };
+
+  const applySEOImprovements = (result: SEOImproveResult) => {
+    setFormData(prev => ({
+      ...prev,
+      title: result.title,
+      excerpt: result.metaDescription,
+      content: result.content,
+    }));
+    setShowSeoModal(false);
+    setSeoResult(null);
+    toast({ title: "Uygulandı", description: "SEO iyileştirmeleri başarıyla uygulandı" });
   };
 
   // Insert markdown snippets
@@ -706,7 +784,26 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                   <Label htmlFor="published">Yayınla</Label>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={handleSEOImprove}
+                    disabled={seoImproving || !formData.content}
+                    className="border-primary text-primary hover:bg-primary/10"
+                  >
+                    {seoImproving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        SEO Analiz...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-4 h-4 mr-2" />
+                        AI ile SEO İyileştir
+                      </>
+                    )}
+                  </Button>
                   <Button onClick={handleSave} disabled={saving}>
                     {saving ? (
                       <>
@@ -808,6 +905,19 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
       </main>
 
       <MobileBottomNav />
+
+      {/* SEO Comparison Modal */}
+      <SEOComparisonModal
+        isOpen={showSeoModal}
+        onClose={() => setShowSeoModal(false)}
+        onApply={applySEOImprovements}
+        currentData={{
+          title: formData.title,
+          excerpt: formData.excerpt,
+          content: formData.content,
+        }}
+        improvedData={seoResult}
+      />
     </div>
   );
 };
