@@ -16,7 +16,7 @@ import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
 import CityNomad from "./pages/CityNomad";
 import CoworkingDetail from "./pages/CoworkingDetail";
-import HotelDetail from "./pages/HotelDetail";
+import HotelDetailPage from "./pages/HotelDetailPage";
 import Hotels from "./pages/Hotels";
 import NomadHub from "./pages/NomadHub";
 import Blog from "./pages/Blog";
@@ -53,7 +53,7 @@ const App = () => (
               <Route path="/sehir/:slug" element={<City />} />
               <Route path="/sehir/:slug/ucuslar" element={<CityFlights />} />
               <Route path="/sehir/:slug/oteller" element={<CityHotels />} />
-              <Route path="/sehir/:slug/ucak-bileti" element={<CityTickets />} />
+              <Route path="/sehir/:citySlug/otel/:hotelSlug" element={<HotelDetailPage />} />
               <Route path="/sehir/:slug/nomad" element={<CityNomad />} />
               <Route path="/sehir/:slug/coworking" element={<CityNomad />} />
               <Route path="/sehirler" element={<Cities />} />
@@ -61,7 +61,7 @@ const App = () => (
               <Route path="/coworking/:slug" element={<CoworkingDetail />} />
               {/* Hotels */}
               <Route path="/oteller" element={<Hotels />} />
-              <Route path="/otel/:slug" element={<HotelDetail />} />
+              <Route path="/otel/:slug" element={<HotelDetailPage />} />
               {/* Nomad Hub */}
               <Route path="/nomad-hub" element={<NomadHub />} />
               <Route path="/dijital-gocebe" element={<NomadHub />} />
