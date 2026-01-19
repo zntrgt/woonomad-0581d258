@@ -1,15 +1,17 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2 } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2, Edit } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { getAllPosts, blogCategories, BlogPost, getCategoryInfo } from '@/lib/blog';
 import { getAllCities } from '@/lib/cities';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -129,6 +131,7 @@ export default function Blog() {
   const [selectedCity, setSelectedCity] = useState('all');
   const [backendPosts, setBackendPosts] = useState<BackendBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
   
   const staticPosts = getAllPosts();
   const cities = getAllCities();
@@ -284,6 +287,15 @@ export default function Blog() {
             <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Festival rehberleri, kültür yazıları, dijital göçebe ipuçları ve daha fazlası.
             </p>
+            
+            {isAdmin && (
+              <Link to="/blog-admin" className="inline-block mt-4">
+                <Button variant="outline" size="sm">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Blog Yönetimi
+                </Button>
+              </Link>
+            )}
           </section>
           
           {/* Filters */}
