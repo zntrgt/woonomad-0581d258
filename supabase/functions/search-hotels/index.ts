@@ -85,296 +85,111 @@ interface HotelSearchParams {
   currency?: string;
 }
 
-// City name to Trip.com city keyword mapping - Expanded with all major cities
-const cityNames: Record<string, { en: string; tripcomUrl: string }> = {
+// City name to Hotellook location ID mapping (Travelpayouts API)
+const cityLocations: Record<string, { en: string; locationId: string; iata: string }> = {
   // === GERMANY ===
-  'berlin': { en: 'Berlin', tripcomUrl: 'berlin-182' },
-  'frankfurt': { en: 'Frankfurt', tripcomUrl: 'frankfurt-189' },
-  'munich': { en: 'Munich', tripcomUrl: 'munich-196' },
-  'münih': { en: 'Munich', tripcomUrl: 'munich-196' },
-  'hamburg': { en: 'Hamburg', tripcomUrl: 'hamburg-187' },
-  'cologne': { en: 'Cologne', tripcomUrl: 'cologne-184' },
-  'köln': { en: 'Cologne', tripcomUrl: 'cologne-184' },
-  'dusseldorf': { en: 'Dusseldorf', tripcomUrl: 'dusseldorf-186' },
-  'düsseldorf': { en: 'Dusseldorf', tripcomUrl: 'dusseldorf-186' },
+  'berlin': { en: 'Berlin', locationId: '12153', iata: 'BER' },
+  'frankfurt': { en: 'Frankfurt', locationId: '12168', iata: 'FRA' },
+  'munich': { en: 'Munich', locationId: '12193', iata: 'MUC' },
+  'münih': { en: 'Munich', locationId: '12193', iata: 'MUC' },
+  'hamburg': { en: 'Hamburg', locationId: '12175', iata: 'HAM' },
+  'cologne': { en: 'Cologne', locationId: '12160', iata: 'CGN' },
+  'köln': { en: 'Cologne', locationId: '12160', iata: 'CGN' },
   
   // === FRANCE ===
-  'paris': { en: 'Paris', tripcomUrl: 'paris-418' },
-  'nice': { en: 'Nice', tripcomUrl: 'nice-411' },
-  'nis': { en: 'Nice', tripcomUrl: 'nice-411' },
-  'lyon': { en: 'Lyon', tripcomUrl: 'lyon-406' },
-  'marseille': { en: 'Marseille', tripcomUrl: 'marseille-409' },
-  'marsilya': { en: 'Marseille', tripcomUrl: 'marseille-409' },
-  'bordeaux': { en: 'Bordeaux', tripcomUrl: 'bordeaux-395' },
-  'bordo': { en: 'Bordeaux', tripcomUrl: 'bordeaux-395' },
+  'paris': { en: 'Paris', locationId: '418', iata: 'PAR' },
+  'nice': { en: 'Nice', locationId: '411', iata: 'NCE' },
+  'nis': { en: 'Nice', locationId: '411', iata: 'NCE' },
+  'lyon': { en: 'Lyon', locationId: '406', iata: 'LYS' },
+  'marseille': { en: 'Marseille', locationId: '409', iata: 'MRS' },
+  'marsilya': { en: 'Marseille', locationId: '409', iata: 'MRS' },
   
   // === UK ===
-  'london': { en: 'London', tripcomUrl: 'london-100' },
-  'londra': { en: 'London', tripcomUrl: 'london-100' },
-  'manchester': { en: 'Manchester', tripcomUrl: 'manchester-104' },
-  'edinburgh': { en: 'Edinburgh', tripcomUrl: 'edinburgh-111' },
-  'glasgow': { en: 'Glasgow', tripcomUrl: 'glasgow-112' },
-  'birmingham': { en: 'Birmingham', tripcomUrl: 'birmingham-99' },
-  'liverpool': { en: 'Liverpool', tripcomUrl: 'liverpool-103' },
+  'london': { en: 'London', locationId: '100', iata: 'LON' },
+  'londra': { en: 'London', locationId: '100', iata: 'LON' },
+  'manchester': { en: 'Manchester', locationId: '104', iata: 'MAN' },
+  'edinburgh': { en: 'Edinburgh', locationId: '111', iata: 'EDI' },
   
   // === ITALY ===
-  'rome': { en: 'Rome', tripcomUrl: 'rome-303' },
-  'roma': { en: 'Rome', tripcomUrl: 'rome-303' },
-  'milan': { en: 'Milan', tripcomUrl: 'milan-294' },
-  'milano': { en: 'Milan', tripcomUrl: 'milan-294' },
-  'florence': { en: 'Florence', tripcomUrl: 'florence-285' },
-  'floransa': { en: 'Florence', tripcomUrl: 'florence-285' },
-  'venice': { en: 'Venice', tripcomUrl: 'venice-312' },
-  'venedik': { en: 'Venice', tripcomUrl: 'venice-312' },
-  'naples': { en: 'Naples', tripcomUrl: 'naples-297' },
-  'napoli': { en: 'Naples', tripcomUrl: 'naples-297' },
+  'rome': { en: 'Rome', locationId: '303', iata: 'ROM' },
+  'roma': { en: 'Rome', locationId: '303', iata: 'ROM' },
+  'milan': { en: 'Milan', locationId: '294', iata: 'MIL' },
+  'milano': { en: 'Milan', locationId: '294', iata: 'MIL' },
+  'florence': { en: 'Florence', locationId: '285', iata: 'FLR' },
+  'floransa': { en: 'Florence', locationId: '285', iata: 'FLR' },
+  'venice': { en: 'Venice', locationId: '312', iata: 'VCE' },
+  'venedik': { en: 'Venice', locationId: '312', iata: 'VCE' },
   
   // === SPAIN ===
-  'barcelona': { en: 'Barcelona', tripcomUrl: 'barcelona-562' },
-  'barselona': { en: 'Barcelona', tripcomUrl: 'barcelona-562' },
-  'madrid': { en: 'Madrid', tripcomUrl: 'madrid-556' },
-  'sevilla': { en: 'Seville', tripcomUrl: 'seville-570' },
-  'seville': { en: 'Seville', tripcomUrl: 'seville-570' },
-  'valencia': { en: 'Valencia', tripcomUrl: 'valencia-573' },
-  'malaga': { en: 'Malaga', tripcomUrl: 'malaga-557' },
-  'bilbao': { en: 'Bilbao', tripcomUrl: 'bilbao-563' },
-  'palma': { en: 'Palma de Mallorca', tripcomUrl: 'palma-de-mallorca-559' },
-  'ibiza': { en: 'Ibiza', tripcomUrl: 'ibiza-554' },
+  'barcelona': { en: 'Barcelona', locationId: '562', iata: 'BCN' },
+  'barselona': { en: 'Barcelona', locationId: '562', iata: 'BCN' },
+  'madrid': { en: 'Madrid', locationId: '556', iata: 'MAD' },
+  'sevilla': { en: 'Seville', locationId: '570', iata: 'SVQ' },
+  'seville': { en: 'Seville', locationId: '570', iata: 'SVQ' },
   
   // === PORTUGAL ===
-  'lisbon': { en: 'Lisbon', tripcomUrl: 'lisbon-498' },
-  'lizbon': { en: 'Lisbon', tripcomUrl: 'lisbon-498' },
-  'porto': { en: 'Porto', tripcomUrl: 'porto-502' },
-  'faro': { en: 'Faro', tripcomUrl: 'faro-497' },
+  'lisbon': { en: 'Lisbon', locationId: '498', iata: 'LIS' },
+  'lizbon': { en: 'Lisbon', locationId: '498', iata: 'LIS' },
+  'porto': { en: 'Porto', locationId: '502', iata: 'OPO' },
   
   // === NETHERLANDS ===
-  'amsterdam': { en: 'Amsterdam', tripcomUrl: 'amsterdam-93' },
-  'rotterdam': { en: 'Rotterdam', tripcomUrl: 'rotterdam-96' },
-  'hague': { en: 'The Hague', tripcomUrl: 'the-hague-97' },
-  'lahey': { en: 'The Hague', tripcomUrl: 'the-hague-97' },
-  
-  // === BELGIUM ===
-  'brussels': { en: 'Brussels', tripcomUrl: 'brussels-148' },
-  'brüksel': { en: 'Brussels', tripcomUrl: 'brussels-148' },
-  'bruges': { en: 'Bruges', tripcomUrl: 'bruges-149' },
-  'brugge': { en: 'Bruges', tripcomUrl: 'bruges-149' },
-  'antwerp': { en: 'Antwerp', tripcomUrl: 'antwerp-147' },
+  'amsterdam': { en: 'Amsterdam', locationId: '93', iata: 'AMS' },
+  'rotterdam': { en: 'Rotterdam', locationId: '96', iata: 'RTM' },
   
   // === AUSTRIA ===
-  'vienna': { en: 'Vienna', tripcomUrl: 'vienna-131' },
-  'viyana': { en: 'Vienna', tripcomUrl: 'vienna-131' },
-  'salzburg': { en: 'Salzburg', tripcomUrl: 'salzburg-129' },
-  'innsbruck': { en: 'Innsbruck', tripcomUrl: 'innsbruck-127' },
+  'vienna': { en: 'Vienna', locationId: '131', iata: 'VIE' },
+  'viyana': { en: 'Vienna', locationId: '131', iata: 'VIE' },
+  'salzburg': { en: 'Salzburg', locationId: '129', iata: 'SZG' },
   
   // === SWITZERLAND ===
-  'zurich': { en: 'Zurich', tripcomUrl: 'zurich-138' },
-  'zürih': { en: 'Zurich', tripcomUrl: 'zurich-138' },
-  'geneva': { en: 'Geneva', tripcomUrl: 'geneva-134' },
-  'cenevre': { en: 'Geneva', tripcomUrl: 'geneva-134' },
-  'basel': { en: 'Basel', tripcomUrl: 'basel-132' },
-  'bern': { en: 'Bern', tripcomUrl: 'bern-133' },
-  
-  // === SCANDINAVIA ===
-  'stockholm': { en: 'Stockholm', tripcomUrl: 'stockholm-123' },
-  'oslo': { en: 'Oslo', tripcomUrl: 'oslo-475' },
-  'copenhagen': { en: 'Copenhagen', tripcomUrl: 'copenhagen-169' },
-  'kopenhag': { en: 'Copenhagen', tripcomUrl: 'copenhagen-169' },
-  'helsinki': { en: 'Helsinki', tripcomUrl: 'helsinki-240' },
-  'reykjavik': { en: 'Reykjavik', tripcomUrl: 'reykjavik-274' },
+  'zurich': { en: 'Zurich', locationId: '138', iata: 'ZRH' },
+  'zürih': { en: 'Zurich', locationId: '138', iata: 'ZRH' },
+  'geneva': { en: 'Geneva', locationId: '134', iata: 'GVA' },
+  'cenevre': { en: 'Geneva', locationId: '134', iata: 'GVA' },
   
   // === EASTERN EUROPE ===
-  'prague': { en: 'Prague', tripcomUrl: 'prague-317' },
-  'prag': { en: 'Prague', tripcomUrl: 'prague-317' },
-  'budapest': { en: 'Budapest', tripcomUrl: 'budapest-268' },
-  'budapeşte': { en: 'Budapest', tripcomUrl: 'budapest-268' },
-  'warsaw': { en: 'Warsaw', tripcomUrl: 'warsaw-330' },
-  'varşova': { en: 'Warsaw', tripcomUrl: 'warsaw-330' },
-  'krakow': { en: 'Krakow', tripcomUrl: 'krakow-325' },
-  'bucharest': { en: 'Bucharest', tripcomUrl: 'bucharest-515' },
-  'bükreş': { en: 'Bucharest', tripcomUrl: 'bucharest-515' },
-  'sofia': { en: 'Sofia', tripcomUrl: 'sofia-157' },
-  'sofya': { en: 'Sofia', tripcomUrl: 'sofia-157' },
+  'prague': { en: 'Prague', locationId: '317', iata: 'PRG' },
+  'prag': { en: 'Prague', locationId: '317', iata: 'PRG' },
+  'budapest': { en: 'Budapest', locationId: '268', iata: 'BUD' },
+  'budapeşte': { en: 'Budapest', locationId: '268', iata: 'BUD' },
+  'warsaw': { en: 'Warsaw', locationId: '330', iata: 'WAW' },
+  'varşova': { en: 'Warsaw', locationId: '330', iata: 'WAW' },
   
   // === GREECE ===
-  'athens': { en: 'Athens', tripcomUrl: 'athens-342' },
-  'atina': { en: 'Athens', tripcomUrl: 'athens-342' },
-  'santorini': { en: 'Santorini', tripcomUrl: 'santorini-350' },
-  'mykonos': { en: 'Mykonos', tripcomUrl: 'mykonos-348' },
-  'crete': { en: 'Crete', tripcomUrl: 'crete-344' },
-  'girit': { en: 'Crete', tripcomUrl: 'crete-344' },
-  'rhodes': { en: 'Rhodes', tripcomUrl: 'rhodes-349' },
-  'rodos': { en: 'Rhodes', tripcomUrl: 'rhodes-349' },
-  
-  // === BALKANS ===
-  'skopje': { en: 'Skopje', tripcomUrl: 'skopje-2374' },
-  'üsküp': { en: 'Skopje', tripcomUrl: 'skopje-2374' },
-  'belgrade': { en: 'Belgrade', tripcomUrl: 'belgrade-529' },
-  'belgrad': { en: 'Belgrade', tripcomUrl: 'belgrade-529' },
-  'zagreb': { en: 'Zagreb', tripcomUrl: 'zagreb-162' },
-  'split': { en: 'Split', tripcomUrl: 'split-161' },
-  'dubrovnik': { en: 'Dubrovnik', tripcomUrl: 'dubrovnik-159' },
-  'ljubljana': { en: 'Ljubljana', tripcomUrl: 'ljubljana-539' },
-  'sarajevo': { en: 'Sarajevo', tripcomUrl: 'sarajevo-143' },
-  'saraybosna': { en: 'Sarajevo', tripcomUrl: 'sarajevo-143' },
-  'tirana': { en: 'Tirana', tripcomUrl: 'tirana-140' },
-  'podgorica': { en: 'Podgorica', tripcomUrl: 'podgorica-460' },
+  'athens': { en: 'Athens', locationId: '342', iata: 'ATH' },
+  'atina': { en: 'Athens', locationId: '342', iata: 'ATH' },
+  'santorini': { en: 'Santorini', locationId: '350', iata: 'JTR' },
   
   // === TURKEY ===
-  'istanbul': { en: 'Istanbul', tripcomUrl: 'istanbul-359' },
-  'antalya': { en: 'Antalya', tripcomUrl: 'antalya-360' },
-  'izmir': { en: 'Izmir', tripcomUrl: 'izmir-361' },
-  'bodrum': { en: 'Bodrum', tripcomUrl: 'bodrum-1116' },
-  'ankara': { en: 'Ankara', tripcomUrl: 'ankara-362' },
-  'cappadocia': { en: 'Cappadocia', tripcomUrl: 'cappadocia-363' },
-  'kapadokya': { en: 'Cappadocia', tripcomUrl: 'cappadocia-363' },
-  'fethiye': { en: 'Fethiye', tripcomUrl: 'fethiye-1115' },
-  'marmaris': { en: 'Marmaris', tripcomUrl: 'marmaris-1117' },
-  'kusadasi': { en: 'Kusadasi', tripcomUrl: 'kusadasi-1118' },
-  'kuşadası': { en: 'Kusadasi', tripcomUrl: 'kusadasi-1118' },
-  'trabzon': { en: 'Trabzon', tripcomUrl: 'trabzon-364' },
-  'pamukkale': { en: 'Pamukkale', tripcomUrl: 'pamukkale-365' },
-  
-  // === CAUCASUS ===
-  'tbilisi': { en: 'Tbilisi', tripcomUrl: 'tbilisi-887' },
-  'tiflis': { en: 'Tbilisi', tripcomUrl: 'tbilisi-887' },
-  'batumi': { en: 'Batumi', tripcomUrl: 'batumi-888' },
-  'baku': { en: 'Baku', tripcomUrl: 'baku-144' },
-  'bakü': { en: 'Baku', tripcomUrl: 'baku-144' },
-  'yerevan': { en: 'Yerevan', tripcomUrl: 'yerevan-141' },
-  'erivan': { en: 'Yerevan', tripcomUrl: 'yerevan-141' },
+  'istanbul': { en: 'Istanbul', locationId: '359', iata: 'IST' },
+  'antalya': { en: 'Antalya', locationId: '360', iata: 'AYT' },
+  'izmir': { en: 'Izmir', locationId: '361', iata: 'ADB' },
+  'bodrum': { en: 'Bodrum', locationId: '1116', iata: 'BJV' },
   
   // === MIDDLE EAST ===
-  'dubai': { en: 'Dubai', tripcomUrl: 'dubai-614' },
-  'abu dhabi': { en: 'Abu Dhabi', tripcomUrl: 'abu-dhabi-613' },
-  'doha': { en: 'Doha', tripcomUrl: 'doha-506' },
-  'muscat': { en: 'Muscat', tripcomUrl: 'muscat-481' },
-  'amman': { en: 'Amman', tripcomUrl: 'amman-368' },
-  'beirut': { en: 'Beirut', tripcomUrl: 'beirut-380' },
-  'beyrut': { en: 'Beirut', tripcomUrl: 'beirut-380' },
-  'tel aviv': { en: 'Tel Aviv', tripcomUrl: 'tel-aviv-365' },
-  'jerusalem': { en: 'Jerusalem', tripcomUrl: 'jerusalem-364' },
-  'kudüs': { en: 'Jerusalem', tripcomUrl: 'jerusalem-364' },
+  'dubai': { en: 'Dubai', locationId: '614', iata: 'DXB' },
+  'doha': { en: 'Doha', locationId: '506', iata: 'DOH' },
   
   // === ASIA ===
-  'tokyo': { en: 'Tokyo', tripcomUrl: 'tokyo-58' },
-  'osaka': { en: 'Osaka', tripcomUrl: 'osaka-55' },
-  'kyoto': { en: 'Kyoto', tripcomUrl: 'kyoto-54' },
-  'seoul': { en: 'Seoul', tripcomUrl: 'seoul-234' },
-  'seul': { en: 'Seoul', tripcomUrl: 'seoul-234' },
-  'busan': { en: 'Busan', tripcomUrl: 'busan-232' },
-  'singapore': { en: 'Singapore', tripcomUrl: 'singapore-73' },
-  'singapur': { en: 'Singapore', tripcomUrl: 'singapore-73' },
-  'hong kong': { en: 'Hong Kong', tripcomUrl: 'hong-kong-38' },
-  'taipei': { en: 'Taipei', tripcomUrl: 'taipei-359' },
-  'bangkok': { en: 'Bangkok', tripcomUrl: 'bangkok-191' },
-  'phuket': { en: 'Phuket', tripcomUrl: 'phuket-193' },
-  'chiang mai': { en: 'Chiang Mai', tripcomUrl: 'chiang-mai-192' },
-  'bali': { en: 'Bali', tripcomUrl: 'bali-264' },
-  'jakarta': { en: 'Jakarta', tripcomUrl: 'jakarta-267' },
-  'kuala lumpur': { en: 'Kuala Lumpur', tripcomUrl: 'kuala-lumpur-70' },
-  'hanoi': { en: 'Hanoi', tripcomUrl: 'hanoi-88' },
-  'ho chi minh': { en: 'Ho Chi Minh City', tripcomUrl: 'ho-chi-minh-city-89' },
-  'manila': { en: 'Manila', tripcomUrl: 'manila-203' },
-  'delhi': { en: 'Delhi', tripcomUrl: 'delhi-25' },
-  'mumbai': { en: 'Mumbai', tripcomUrl: 'mumbai-28' },
-  'goa': { en: 'Goa', tripcomUrl: 'goa-26' },
-  'kathmandu': { en: 'Kathmandu', tripcomUrl: 'kathmandu-464' },
-  'colombo': { en: 'Colombo', tripcomUrl: 'colombo-541' },
-  'maldives': { en: 'Maldives', tripcomUrl: 'maldives-451' },
-  'maldivler': { en: 'Maldives', tripcomUrl: 'maldives-451' },
+  'tokyo': { en: 'Tokyo', locationId: '58', iata: 'TYO' },
+  'osaka': { en: 'Osaka', locationId: '55', iata: 'OSA' },
+  'bangkok': { en: 'Bangkok', locationId: '191', iata: 'BKK' },
+  'singapore': { en: 'Singapore', locationId: '73', iata: 'SIN' },
+  'singapur': { en: 'Singapore', locationId: '73', iata: 'SIN' },
+  'bali': { en: 'Bali', locationId: '264', iata: 'DPS' },
+  'hong kong': { en: 'Hong Kong', locationId: '38', iata: 'HKG' },
   
-  // === CHINA ===
-  'beijing': { en: 'Beijing', tripcomUrl: 'beijing-1' },
-  'pekin': { en: 'Beijing', tripcomUrl: 'beijing-1' },
-  'shanghai': { en: 'Shanghai', tripcomUrl: 'shanghai-2' },
-  'guangzhou': { en: 'Guangzhou', tripcomUrl: 'guangzhou-6' },
-  'shenzhen': { en: 'Shenzhen', tripcomUrl: 'shenzhen-5' },
-  'xian': { en: "Xi'an", tripcomUrl: 'xian-7' },
+  // === USA ===
+  'new york': { en: 'New York', locationId: '645', iata: 'NYC' },
+  'los angeles': { en: 'Los Angeles', locationId: '732', iata: 'LAX' },
+  'miami': { en: 'Miami', locationId: '781', iata: 'MIA' },
+  'las vegas': { en: 'Las Vegas', locationId: '733', iata: 'LAS' },
   
-  // === CENTRAL ASIA ===
-  'almaty': { en: 'Almaty', tripcomUrl: 'almaty-373' },
-  'astana': { en: 'Astana', tripcomUrl: 'astana-374' },
-  'tashkent': { en: 'Tashkent', tripcomUrl: 'tashkent-616' },
-  'taşkent': { en: 'Tashkent', tripcomUrl: 'tashkent-616' },
-  'bishkek': { en: 'Bishkek', tripcomUrl: 'bishkek-379' },
-  'bişkek': { en: 'Bishkek', tripcomUrl: 'bishkek-379' },
-  'samarkand': { en: 'Samarkand', tripcomUrl: 'samarkand-617' },
-  'semerkant': { en: 'Samarkand', tripcomUrl: 'samarkand-617' },
-  
-  // === AUSTRALIA & OCEANIA ===
-  'sydney': { en: 'Sydney', tripcomUrl: 'sydney-361' },
-  'melbourne': { en: 'Melbourne', tripcomUrl: 'melbourne-355' },
-  'brisbane': { en: 'Brisbane', tripcomUrl: 'brisbane-352' },
-  'perth': { en: 'Perth', tripcomUrl: 'perth-358' },
-  'auckland': { en: 'Auckland', tripcomUrl: 'auckland-472' },
-  'queenstown': { en: 'Queenstown', tripcomUrl: 'queenstown-476' },
-  'fiji': { en: 'Fiji', tripcomUrl: 'fiji-241' },
-  
-  // === NORTH AMERICA ===
-  'new york': { en: 'New York', tripcomUrl: 'new-york-645' },
-  'los angeles': { en: 'Los Angeles', tripcomUrl: 'los-angeles-732' },
-  'miami': { en: 'Miami', tripcomUrl: 'miami-781' },
-  'las vegas': { en: 'Las Vegas', tripcomUrl: 'las-vegas-733' },
-  'san francisco': { en: 'San Francisco', tripcomUrl: 'san-francisco-736' },
-  'chicago': { en: 'Chicago', tripcomUrl: 'chicago-718' },
-  'boston': { en: 'Boston', tripcomUrl: 'boston-712' },
-  'seattle': { en: 'Seattle', tripcomUrl: 'seattle-737' },
-  'washington': { en: 'Washington D.C.', tripcomUrl: 'washington-740' },
-  'hawaii': { en: 'Hawaii', tripcomUrl: 'hawaii-724' },
-  'toronto': { en: 'Toronto', tripcomUrl: 'toronto-792' },
-  'vancouver': { en: 'Vancouver', tripcomUrl: 'vancouver-803' },
-  'montreal': { en: 'Montreal', tripcomUrl: 'montreal-797' },
-  'mexico city': { en: 'Mexico City', tripcomUrl: 'mexico-city-441' },
-  'cancun': { en: 'Cancun', tripcomUrl: 'cancun-439' },
-  'playa del carmen': { en: 'Playa del Carmen', tripcomUrl: 'playa-del-carmen-443' },
-  
-  // === SOUTH AMERICA ===
-  'buenos aires': { en: 'Buenos Aires', tripcomUrl: 'buenos-aires-142' },
-  'rio de janeiro': { en: 'Rio de Janeiro', tripcomUrl: 'rio-de-janeiro-152' },
-  'sao paulo': { en: 'Sao Paulo', tripcomUrl: 'sao-paulo-153' },
-  'lima': { en: 'Lima', tripcomUrl: 'lima-491' },
-  'bogota': { en: 'Bogota', tripcomUrl: 'bogota-174' },
-  'medellin': { en: 'Medellin', tripcomUrl: 'medellin-175' },
-  'cartagena': { en: 'Cartagena', tripcomUrl: 'cartagena-176' },
-  'santiago': { en: 'Santiago', tripcomUrl: 'santiago-165' },
-  'cusco': { en: 'Cusco', tripcomUrl: 'cusco-492' },
-  'quito': { en: 'Quito', tripcomUrl: 'quito-210' },
-  
-  // === AFRICA ===
-  'cairo': { en: 'Cairo', tripcomUrl: 'cairo-605' },
-  'kahire': { en: 'Cairo', tripcomUrl: 'cairo-605' },
-  'marrakech': { en: 'Marrakech', tripcomUrl: 'marrakech-660' },
-  'marakeş': { en: 'Marrakech', tripcomUrl: 'marrakech-660' },
-  'casablanca': { en: 'Casablanca', tripcomUrl: 'casablanca-658' },
-  'cape town': { en: 'Cape Town', tripcomUrl: 'cape-town-674' },
-  'johannesburg': { en: 'Johannesburg', tripcomUrl: 'johannesburg-675' },
-  'nairobi': { en: 'Nairobi', tripcomUrl: 'nairobi-375' },
-  'zanzibar': { en: 'Zanzibar', tripcomUrl: 'zanzibar-587' },
-  'tunis': { en: 'Tunis', tripcomUrl: 'tunis-591' },
-  'addis ababa': { en: 'Addis Ababa', tripcomUrl: 'addis-ababa-227' },
-  'lagos': { en: 'Lagos', tripcomUrl: 'lagos-473' },
-  'accra': { en: 'Accra', tripcomUrl: 'accra-249' },
-  'mauritius': { en: 'Mauritius', tripcomUrl: 'mauritius-452' },
-  'seychelles': { en: 'Seychelles', tripcomUrl: 'seychelles-533' },
-  'seyşeller': { en: 'Seychelles', tripcomUrl: 'seychelles-533' },
-  
-  // === CARIBBEAN ===
-  'havana': { en: 'Havana', tripcomUrl: 'havana-181' },
-  'punta cana': { en: 'Punta Cana', tripcomUrl: 'punta-cana-206' },
-  'jamaica': { en: 'Jamaica', tripcomUrl: 'jamaica-367' },
-  'bahamas': { en: 'Bahamas', tripcomUrl: 'bahamas-145' },
-  'aruba': { en: 'Aruba', tripcomUrl: 'aruba-143' },
-  
-  // === IRELAND ===
-  'dublin': { en: 'Dublin', tripcomUrl: 'dublin-254' },
-  'galway': { en: 'Galway', tripcomUrl: 'galway-255' },
-  'cork': { en: 'Cork', tripcomUrl: 'cork-253' },
-  
-  // === RUSSIA ===
-  'moscow': { en: 'Moscow', tripcomUrl: 'moscow-518' },
-  'moskova': { en: 'Moscow', tripcomUrl: 'moscow-518' },
-  'saint petersburg': { en: 'Saint Petersburg', tripcomUrl: 'saint-petersburg-519' },
-  'st petersburg': { en: 'Saint Petersburg', tripcomUrl: 'saint-petersburg-519' },
+  // === CAUCASUS ===
+  'tbilisi': { en: 'Tbilisi', locationId: '887', iata: 'TBS' },
+  'tiflis': { en: 'Tbilisi', locationId: '887', iata: 'TBS' },
+  'baku': { en: 'Baku', locationId: '144', iata: 'GYD' },
+  'bakü': { en: 'Baku', locationId: '144', iata: 'GYD' },
 };
 
 serve(async (req) => {
@@ -404,6 +219,7 @@ serve(async (req) => {
   }
 
   try {
+    const TRAVELPAYOUTS_API_TOKEN = Deno.env.get("TRAVELPAYOUTS_API_TOKEN");
     const TRAVELPAYOUTS_PARTNER_ID = Deno.env.get("TRAVELPAYOUTS_PARTNER_ID") || "261144";
 
     let params: HotelSearchParams;
@@ -421,6 +237,8 @@ serve(async (req) => {
     const checkIn = validateDate(params.checkIn);
     const checkOut = validateDate(params.checkOut);
     const adults = validateAdults(params.adults);
+    const limit = params.limit || 12;
+    const currency = params.currency || 'TRY';
 
     // Validate required fields
     if (!checkIn || !checkOut) {
@@ -442,93 +260,157 @@ serve(async (req) => {
 
     // Find city info
     const normalizedLocation = location.toLowerCase().trim();
-    const cityInfo = cityNames[normalizedLocation];
+    const cityInfo = cityLocations[normalizedLocation];
     
     if (!cityInfo) {
       console.log("City not found:", normalizedLocation);
+      // Return affiliate link even if city not found
       return new Response(
         JSON.stringify({ 
           hotels: [],
           location,
           checkIn,
           checkOut,
-          affiliateLinks: {
-            tripcom: `https://www.trip.com/hotels/?locale=tr_TR&curr=TRY`,
-            hotellook: `https://search.hotellook.com/?marker=${TRAVELPAYOUTS_PARTNER_ID}`,
-          }
+          affiliateLink: `https://search.hotellook.com/?marker=${TRAVELPAYOUTS_PARTNER_ID}&destination=${encodeURIComponent(location)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}`,
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Found city:", cityInfo.en, "Trip.com URL:", cityInfo.tripcomUrl);
+    console.log("Found city:", cityInfo.en, "IATA:", cityInfo.iata);
 
-    // Generate affiliate links for multiple platforms
-    const affiliateLinks = {
-      tripcom: `https://www.trip.com/hotels/list?city=${cityInfo.tripcomUrl}&checkin=${checkIn}&checkout=${checkOut}&adult=${adults}&curr=TRY&locale=tr_TR`,
-      hotellook: `https://search.hotellook.com/hotels?destination=${cityInfo.en}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`,
-    };
+    // Generate Hotellook affiliate link (Travelpayouts)
+    const affiliateLink = `https://search.hotellook.com/hotels?destination=${cityInfo.iata}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&currency=${currency}&marker=${TRAVELPAYOUTS_PARTNER_ID}`;
 
-    // Generate sample hotel data for display
-    const sampleHotels = [
-      {
-        id: '1',
-        name: `${cityInfo.en} Grand Hotel`,
-        stars: 5,
-        priceFrom: 2500,
-        priceAvg: 3200,
-        rating: 4.8,
-        reviews: 1250,
-        location: { lat: 0, lon: 0 },
-        photo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
-        link: affiliateLinks.tripcom,
-      },
-      {
-        id: '2',
-        name: `${cityInfo.en} Boutique Stay`,
-        stars: 4,
-        priceFrom: 1800,
-        priceAvg: 2100,
-        rating: 4.6,
-        reviews: 890,
-        location: { lat: 0, lon: 0 },
-        photo: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
-        link: affiliateLinks.tripcom,
-      },
-      {
-        id: '3',
-        name: `${cityInfo.en} Business Hotel`,
-        stars: 4,
-        priceFrom: 1500,
-        priceAvg: 1800,
-        rating: 4.5,
-        reviews: 650,
-        location: { lat: 0, lon: 0 },
-        photo: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
-        link: affiliateLinks.tripcom,
-      },
-      {
-        id: '4',
-        name: `${cityInfo.en} Budget Inn`,
-        stars: 3,
-        priceFrom: 800,
-        priceAvg: 950,
-        rating: 4.2,
-        reviews: 420,
-        location: { lat: 0, lon: 0 },
-        photo: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
-        link: affiliateLinks.tripcom,
-      },
-    ];
+    // Try to fetch real hotel data from Travelpayouts API
+    let hotels: any[] = [];
+    
+    if (TRAVELPAYOUTS_API_TOKEN) {
+      try {
+        // Use Hotellook API for hotel search
+        const apiUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${cityInfo.iata}&checkIn=${checkIn}&checkOut=${checkOut}&currency=${currency}&limit=${limit}&token=${TRAVELPAYOUTS_API_TOKEN}`;
+        
+        console.log("Calling Hotellook API for:", cityInfo.en);
+        
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (Array.isArray(data) && data.length > 0) {
+            hotels = data.slice(0, limit).map((hotel: any, index: number) => ({
+              id: hotel.hotelId || String(index + 1),
+              name: hotel.hotelName || `${cityInfo.en} Hotel ${index + 1}`,
+              stars: hotel.stars || 4,
+              priceFrom: hotel.priceFrom || 1500,
+              priceAvg: hotel.priceAvg || hotel.priceFrom * 1.2,
+              rating: hotel.rating ? hotel.rating / 10 : 4.5,
+              reviews: hotel.reviews || 500,
+              location: hotel.location || { lat: 0, lon: 0 },
+              photo: hotel.photo ? `https://photo.hotellook.com/image_v2/limit/${hotel.photo}/800/520.auto` : `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop`,
+              link: `https://search.hotellook.com/hotels/${cityInfo.iata}/${hotel.hotelId}?checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`,
+            }));
+            console.log(`Found ${hotels.length} hotels from API`);
+          }
+        } else {
+          console.log("Hotellook API error:", response.status);
+        }
+      } catch (apiError) {
+        console.error("Hotellook API error:", apiError);
+      }
+    }
+
+    // If no API results, generate sample hotels
+    if (hotels.length === 0) {
+      console.log("Using sample hotel data");
+      hotels = [
+        {
+          id: '1',
+          name: `${cityInfo.en} Grand Hotel`,
+          stars: 5,
+          priceFrom: 2500,
+          priceAvg: 3200,
+          rating: 4.8,
+          reviews: 1250,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+        {
+          id: '2',
+          name: `${cityInfo.en} Boutique Stay`,
+          stars: 4,
+          priceFrom: 1800,
+          priceAvg: 2100,
+          rating: 4.6,
+          reviews: 890,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+        {
+          id: '3',
+          name: `${cityInfo.en} Business Hotel`,
+          stars: 4,
+          priceFrom: 1500,
+          priceAvg: 1800,
+          rating: 4.5,
+          reviews: 650,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+        {
+          id: '4',
+          name: `${cityInfo.en} Budget Inn`,
+          stars: 3,
+          priceFrom: 800,
+          priceAvg: 950,
+          rating: 4.2,
+          reviews: 420,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+        {
+          id: '5',
+          name: `${cityInfo.en} Central Suites`,
+          stars: 4,
+          priceFrom: 1600,
+          priceAvg: 1900,
+          rating: 4.4,
+          reviews: 780,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+        {
+          id: '6',
+          name: `${cityInfo.en} Luxury Palace`,
+          stars: 5,
+          priceFrom: 3500,
+          priceAvg: 4200,
+          rating: 4.9,
+          reviews: 2100,
+          location: { lat: 0, lon: 0 },
+          photo: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop',
+          link: affiliateLink,
+        },
+      ];
+    }
 
     return new Response(
       JSON.stringify({ 
-        hotels: sampleHotels,
+        hotels,
         location: cityInfo.en,
+        iata: cityInfo.iata,
         checkIn,
         checkOut,
-        affiliateLinks,
-        affiliateLink: affiliateLinks.tripcom,
+        currency,
+        affiliateLink,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
