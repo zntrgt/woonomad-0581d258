@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Header } from "@/components/Header";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -11,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +45,7 @@ interface SEOImproveResult {
 
 const BlogAdmin = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user, loading: authLoading, isAdmin, signOut } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +58,7 @@ const BlogAdmin = () => {
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [editorMode, setEditorMode] = useState<'markdown' | 'html'>('markdown');
   const [seoImproving, setSeoImproving] = useState(false);
   const [seoResult, setSeoResult] = useState<SEOImproveResult | null>(null);
   const [showSeoModal, setShowSeoModal] = useState(false);
@@ -82,6 +85,17 @@ const BlogAdmin = () => {
       fetchPosts();
     }
   }, [user, isAdmin]);
+
+  // Handle edit query param
+  useEffect(() => {
+    const editSlug = searchParams.get('edit');
+    if (editSlug && posts.length > 0) {
+      const postToEdit = posts.find(p => p.slug === editSlug);
+      if (postToEdit) {
+        handleEdit(postToEdit);
+      }
+    }
+  }, [searchParams, posts]);
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -702,7 +716,21 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <Label htmlFor="content">İçerik (Markdown)</Label>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="content">İçerik</Label>
+                      <Tabs value={editorMode} onValueChange={(v) => setEditorMode(v as 'markdown' | 'html')}>
+                        <TabsList className="h-7">
+                          <TabsTrigger value="markdown" className="text-xs px-2 py-1">
+                            <FileText className="w-3 h-3 mr-1" />
+                            MD
+                          </TabsTrigger>
+                          <TabsTrigger value="html" className="text-xs px-2 py-1">
+                            <Code className="w-3 h-3 mr-1" />
+                            HTML
+                          </TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
                     <div className="flex flex-wrap gap-1">
                       <Button type="button" size="sm" variant="outline" onClick={insertTable} title="Tablo Ekle">
                         <Table2 className="w-4 h-4" />
