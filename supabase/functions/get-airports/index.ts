@@ -151,6 +151,88 @@ function normalizeTurkish(text: string): string {
     .replace(/Ç/g, 'c');
 }
 
+// Levenshtein distance for fuzzy matching
+function levenshteinDistance(a: string, b: string): number {
+  const matrix: number[][] = [];
+  
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+  
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  
+  return matrix[b.length][a.length];
+}
+
+// Calculate fuzzy match score (0-1, higher is better)
+function fuzzyMatchScore(query: string, target: string): number {
+  const normalizedQuery = normalizeTurkish(query);
+  const normalizedTarget = normalizeTurkish(target);
+  
+  // Exact match
+  if (normalizedTarget === normalizedQuery) return 1;
+  
+  // Starts with query
+  if (normalizedTarget.startsWith(normalizedQuery)) return 0.95;
+  
+  // Contains query
+  if (normalizedTarget.includes(normalizedQuery)) return 0.85;
+  
+  // Check if query words are in target
+  const queryWords = normalizedQuery.split(/\s+/);
+  const allWordsFound = queryWords.every(word => normalizedTarget.includes(word));
+  if (allWordsFound) return 0.75;
+  
+  // Levenshtein distance based scoring
+  const distance = levenshteinDistance(normalizedQuery, normalizedTarget.slice(0, normalizedQuery.length + 3));
+  const maxLen = Math.max(normalizedQuery.length, normalizedTarget.slice(0, normalizedQuery.length + 3).length);
+  const similarity = 1 - (distance / maxLen);
+  
+  // Only return if similarity is above threshold
+  return similarity > 0.6 ? similarity * 0.7 : 0;
+}
+
+// Common typo corrections
+const typoCorrections: Record<string, string[]> = {
+  'istanbul': ['istanb', 'istanbu', 'istambul', 'istabul', 'istanbull', 'istanbol', 'istanbul', 'isstanbul'],
+  'ankara': ['ankar', 'ankra', 'anakara', 'ankkara'],
+  'izmir': ['izmr', 'izmi', 'izmır', 'ızmir'],
+  'antalya': ['antaly', 'antalay', 'antala', 'antlya'],
+  'paris': ['pris', 'paris', 'parıs', 'pariss'],
+  'london': ['londn', 'londra', 'londen', 'lundon'],
+  'berlin': ['berln', 'berlın', 'berlinn'],
+  'barcelona': ['barcelon', 'barselona', 'barsalona', 'barçelona'],
+  'amsterdam': ['amsterda', 'amsteram', 'amsterdm'],
+  'dubai': ['duba', 'dubaı', 'dubay'],
+  'roma': ['rom', 'rome'],
+  'milano': ['milan', 'millan'],
+  'new york': ['newyork', 'new yor', 'nyc', 'newyorkcity'],
+  'los angeles': ['la', 'losangeles', 'los angel'],
+  'bangkok': ['bangko', 'bangkk', 'bankok'],
+  'tokyo': ['toky', 'tokio', 'tokyoo'],
+  'singapur': ['singapore', 'singapo', 'singapour'],
+  'budapeşte': ['budapest', 'budapeste', 'budapeşt'],
+  'prag': ['prague', 'prg', 'praque'],
+  'viyana': ['vienna', 'wien', 'viena'],
+  'lizbon': ['lisbon', 'lisboa', 'lisbona'],
+  'madrid': ['madrit', 'madrd', 'madrıd'],
+};
+
 // Generic error message - don't expose internal details
 function getGenericErrorMessage(): string {
   return 'Havalimanı araması başarısız oldu. Lütfen tekrar deneyin.';
@@ -201,24 +283,46 @@ serve(async (req) => {
     const normalizedQuery = normalizeTurkish(query);
     console.log('Airport search query (normalized):', normalizedQuery);
 
+    // Check for typo corrections first
+    let correctedQuery = normalizedQuery;
+    for (const [correct, typos] of Object.entries(typoCorrections)) {
+      if (typos.some(typo => normalizeTurkish(typo) === normalizedQuery || normalizedQuery.includes(normalizeTurkish(typo)))) {
+        correctedQuery = correct;
+        console.log(`Typo correction: "${normalizedQuery}" -> "${correctedQuery}"`);
+        break;
+      }
+    }
+
     let filteredAirports = airports;
     
     if (normalizedQuery.length >= 2) {
-      filteredAirports = airports.filter(airport => {
-        const normalizedCode = normalizeTurkish(airport.code);
-        const normalizedName = normalizeTurkish(airport.name);
-        const normalizedCity = normalizeTurkish(airport.city);
-        const normalizedCountry = normalizeTurkish(airport.country);
-        const normalizedRegion = normalizeTurkish(airport.region);
-        const normalizedContinent = normalizeTurkish(airport.continent);
+      // Score each airport based on fuzzy matching
+      const scoredAirports = airports.map(airport => {
+        const fields = [
+          { value: airport.code, weight: 1.2 },
+          { value: airport.city, weight: 1.1 },
+          { value: airport.name, weight: 1.0 },
+          { value: airport.country, weight: 0.9 },
+          { value: airport.region, weight: 0.8 },
+          { value: airport.continent, weight: 0.7 },
+        ];
         
-        return normalizedCode.includes(normalizedQuery) ||
-          normalizedName.includes(normalizedQuery) ||
-          normalizedCity.includes(normalizedQuery) ||
-          normalizedCountry.includes(normalizedQuery) ||
-          normalizedRegion.includes(normalizedQuery) ||
-          normalizedContinent.includes(normalizedQuery);
+        // Calculate best score across all fields, using corrected query
+        let bestScore = 0;
+        for (const field of fields) {
+          const scoreWithCorrected = fuzzyMatchScore(correctedQuery, field.value) * field.weight;
+          const scoreWithOriginal = fuzzyMatchScore(normalizedQuery, field.value) * field.weight;
+          bestScore = Math.max(bestScore, scoreWithCorrected, scoreWithOriginal);
+        }
+        
+        return { airport, score: bestScore };
       });
+      
+      // Filter and sort by score
+      filteredAirports = scoredAirports
+        .filter(item => item.score > 0.5)
+        .sort((a, b) => b.score - a.score)
+        .map(item => item.airport);
     }
 
     return new Response(JSON.stringify({ 

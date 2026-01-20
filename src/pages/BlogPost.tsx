@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen } from 'lucide-react';
+import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen, Edit } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -9,10 +9,12 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HotelWidget } from '@/components/HotelWidget';
+import { BlogCountdown, parseCountdownFromHtml } from '@/components/BlogCountdown';
 import { getPostBySlug, getRelatedPosts, getCategoryInfo, BlogPost as BlogPostType, getAllPosts } from '@/lib/blog';
 import { getCityBySlug, CityInfo, getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -234,6 +236,7 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const [backendPost, setBackendPost] = useState<BackendBlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
   
   const staticPost = slug ? getPostBySlug(slug) : undefined;
   const allCities = getAllCities();
@@ -342,6 +345,12 @@ export default function BlogPost() {
       contentLower.includes(city.slug.toLowerCase())
     ).slice(0, 5);
   }, [post, allCities]);
+  
+  // Parse countdown from content
+  const countdownData = useMemo(() => {
+    if (!post) return null;
+    return parseCountdownFromHtml(post.content);
+  }, [post]);
   
   // Show loading state
   if (loading && !staticPost) {
@@ -759,20 +768,38 @@ export default function BlogPost() {
                   </span>
                 </div>
                 
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleShare}
-                  className="ml-auto"
-                >
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Paylaş
-                </Button>
+                <div className="flex items-center gap-2 ml-auto">
+                  {isAdmin && (
+                    <Link to={`/blog-admin?edit=${slug}`}>
+                      <Button variant="outline" size="sm">
+                        <Edit className="h-4 w-4 mr-2" />
+                        Düzenle
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleShare}
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Paylaş
+                  </Button>
+                </div>
               </div>
               
               {/* Table of Contents */}
               {headings.length >= 3 && (
                 <TableOfContents headings={headings} />
+              )}
+              
+              {/* Countdown Widget if present */}
+              {countdownData && (
+                <BlogCountdown 
+                  targetDate={countdownData.targetDate}
+                  title={countdownData.title}
+                  links={countdownData.links}
+                />
               )}
               
               {/* Content */}
