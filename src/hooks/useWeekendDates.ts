@@ -3,16 +3,28 @@ import { addDays, startOfWeek, format, isBefore, startOfToday } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { WeekendDate, TripDuration } from '@/lib/types';
 
-// Check if current weekend has passed (Saturday 14:00)
+// Check if current weekend has passed
+// From Monday to Friday: show this weekend (Saturday-Sunday)
+// From Friday evening to Sunday: show next weekend (next Saturday-Sunday)
 function shouldShowNextWeekend(): boolean {
   const now = new Date();
-  const today = startOfToday();
-  const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
-  const saturday = addDays(currentWeekStart, 5); // Saturday
-  const saturdayAfternoon = new Date(saturday);
-  saturdayAfternoon.setHours(14, 0, 0, 0);
+  const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   
-  return now >= saturdayAfternoon;
+  // Friday = 5, Saturday = 6, Sunday = 0
+  if (dayOfWeek === 0) {
+    // Sunday - show next weekend
+    return true;
+  }
+  if (dayOfWeek === 6) {
+    // Saturday - after 14:00 show next weekend
+    return now.getHours() >= 14;
+  }
+  if (dayOfWeek === 5) {
+    // Friday - after 18:00 show next weekend (since travel starts soon)
+    return now.getHours() >= 18;
+  }
+  // Monday to Thursday - show this weekend
+  return false;
 }
 
 export function useWeekendDates() {

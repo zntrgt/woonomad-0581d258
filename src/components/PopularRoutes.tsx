@@ -1,7 +1,30 @@
 import { PopularRoute } from '@/lib/types';
-import { getCityImageUrl } from '@/lib/destinations';
 import { useState } from 'react';
 import { MapPin, Sparkles } from 'lucide-react';
+
+// Import local city images
+import antalyaImg from '@/assets/cities/antalya.jpg';
+import izmirImg from '@/assets/cities/izmir.jpg';
+import bodrumImg from '@/assets/cities/bodrum.jpg';
+import athensImg from '@/assets/cities/athens.jpg';
+import tbilisiImg from '@/assets/cities/tbilisi.jpg';
+import skopjeImg from '@/assets/cities/skopje.jpg';
+import parisImg from '@/assets/cities/paris.jpg';
+import romeImg from '@/assets/cities/rome.jpg';
+import barcelonaImg from '@/assets/cities/barcelona.jpg';
+
+// City images mapping
+const cityImages: Record<string, string> = {
+  'Antalya': antalyaImg,
+  'İzmir': izmirImg,
+  'Bodrum': bodrumImg,
+  'Atina': athensImg,
+  'Tiflis': tbilisiImg,
+  'Üsküp': skopjeImg,
+  'Paris': parisImg,
+  'Roma': romeImg,
+  'Barselona': barcelonaImg,
+};
 
 interface PopularRoutesProps {
   onRouteSelect: (origin: string, destination: string) => void;
@@ -42,7 +65,7 @@ function DestinationCardItem({
   index: number;
 }) {
   const [imageError, setImageError] = useState(false);
-  const imageUrl = getCityImageUrl(destination.city, 'small');
+  const imageUrl = cityImages[destination.city] || null;
 
   return (
     <button
