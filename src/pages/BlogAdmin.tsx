@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,6 +62,7 @@ const BlogAdmin = () => {
   const [seoImproving, setSeoImproving] = useState(false);
   const [seoResult, setSeoResult] = useState<SEOImproveResult | null>(null);
   const [showSeoModal, setShowSeoModal] = useState(false);
+  const [generatingImage, setGeneratingImage] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -444,6 +445,58 @@ const BlogAdmin = () => {
     toast({ title: "Uygulandı", description: "SEO iyileştirmeleri başarıyla uygulandı" });
   };
 
+  // Generate AI image for blog
+  const handleGenerateImage = async (imagePrompt?: string) => {
+    const prompt = imagePrompt || formData.title;
+    if (!prompt) {
+      toast({ title: "Hata", description: "Görsel için bir başlık veya prompt gerekli", variant: "destructive" });
+      return;
+    }
+
+    setGeneratingImage(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt,
+          context: `Blog post about ${formData.category || 'travel'} - ${formData.city || 'destination'}`,
+          slug: formData.slug || 'blog-image',
+          generateAltText: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        if (response.status === 429) {
+          throw new Error('Rate limit aşıldı. Lütfen biraz bekleyin.');
+        }
+        if (response.status === 402) {
+          throw new Error('Kredi yetersiz. Lütfen kredi ekleyin.');
+        }
+        throw new Error(err.error || 'Görsel oluşturma hatası');
+      }
+
+      const result = await response.json();
+      
+      if (result.imageUrl) {
+        setFormData(prev => ({ ...prev, image_url: result.imageUrl }));
+        toast({ 
+          title: "Görsel Oluşturuldu", 
+          description: result.altText ? `Alt text: ${result.altText}` : "AI görsel başarıyla oluşturuldu" 
+        });
+      }
+    } catch (error) {
+      toast({ 
+        title: "Hata", 
+        description: error instanceof Error ? error.message : "Görsel oluşturma hatası",
+        variant: "destructive" 
+      });
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
   // Insert markdown snippets
   const insertSnippet = (snippet: string) => {
     setFormData(prev => ({
@@ -672,6 +725,7 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                       variant="outline" 
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
+                      title="Görsel Yükle"
                     >
                       {uploading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -679,7 +733,24 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                         <Upload className="w-4 h-4" />
                       )}
                     </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => handleGenerateImage()}
+                      disabled={generatingImage || !formData.title}
+                      title="AI ile Görsel Oluştur"
+                      className="border-primary text-primary hover:bg-primary/10"
+                    >
+                      {generatingImage ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <ImagePlus className="w-4 h-4" />
+                      )}
+                    </Button>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Görsel yükleyin veya AI ile başlığa uygun görsel oluşturun
+                  </p>
                   {formData.image_url && (
                     <div className="relative w-full h-32 rounded-lg overflow-hidden bg-muted">
                       <img 
