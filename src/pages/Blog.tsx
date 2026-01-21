@@ -289,7 +289,7 @@ export default function Blog() {
             </p>
             
             {isAdmin && (
-              <Link to="/blog-admin" className="inline-block mt-4">
+              <Link to="/admin/blog" className="inline-block mt-4">
                 <Button variant="outline" size="sm">
                   <Edit className="h-4 w-4 mr-2" />
                   Blog Yönetimi

@@ -770,7 +770,7 @@ export default function BlogPost() {
                 
                 <div className="flex items-center gap-2 ml-auto">
                   {isAdmin && (
-                    <Link to={`/blog-admin?edit=${slug}`}>
+                    <Link to={`/admin/blog?edit=${slug}`}>
                       <Button variant="outline" size="sm">
                         <Edit className="h-4 w-4 mr-2" />
                         Düzenle
