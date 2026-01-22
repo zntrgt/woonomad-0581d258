@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2 } from 'lucide-react';
+import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
+import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 

@@ -6,8 +6,8 @@ const corsHeaders = {
 };
 
 // Rate limiting configuration
-const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute per IP (stricter for external API)
+const RATE_LIMIT_WINDOW_MS = 60000;
+const MAX_REQUESTS_PER_WINDOW = 30;
 
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
@@ -43,14 +43,13 @@ const MAX_PASSENGERS = 9;
 const MIN_PASSENGERS = 0;
 const VALID_TRIP_CLASSES = ['Y', 'C', 'F'];
 const VALID_VISA_FILTERS = ['all', 'visa-free', 'visa-required'];
-const VALID_CONTINENTS = ['EU', 'AS', 'AM', 'AF'];
+const VALID_CONTINENTS = ['EU', 'AS', 'AM', 'AF', 'OC'];
 
 // Input validation helpers
 function validateAirportCode(code: unknown): string | null {
   if (typeof code !== 'string') return null;
   const upper = code.toUpperCase().trim();
   if (upper === '' || AIRPORT_CODE_REGEX.test(upper)) return upper;
-  // Allow continent codes
   if (VALID_CONTINENTS.includes(upper)) return upper;
   return null;
 }
@@ -62,7 +61,6 @@ function validateDate(dateStr: unknown): string | null {
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) return null;
   
-  // Check date is not too far in future (2 years)
   const twoYearsFromNow = new Date();
   twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2);
   
@@ -88,7 +86,6 @@ function validateVisaFilter(filter: unknown): 'all' | 'visa-free' | 'visa-requir
   return VALID_VISA_FILTERS.includes(filter) ? filter as 'all' | 'visa-free' | 'visa-required' : 'all';
 }
 
-// Generic error message - don't expose internal details
 function getGenericErrorMessage(): string {
   return 'Uçuş araması başarısız oldu. Lütfen tekrar deneyin.';
 }
@@ -107,54 +104,77 @@ interface FlightSearchParams {
   currency?: string;
 }
 
-// Turkish domestic airports - always accessible, no visa needed
-const TURKISH_AIRPORTS = [
+// GLOBAL VISA DATA - Comprehensive list for Turkish passport holders
+const VISA_FREE_COUNTRIES: Set<string> = new Set([
+  // Turkish Domestic
   'IST', 'SAW', 'ESB', 'ADB', 'AYT', 'BJV', 'DLM', 'TZX', 'GZT', 'DIY', 'VAN',
-  'ADA', 'ASR', 'ERZ', 'SZF', 'GNY', 'MLX', 'HTY', 'EZS', 'KYA', 'DNZ', 'TEQ', 'CKZ'
-];
+  'ADA', 'ASR', 'ERZ', 'SZF', 'GNY', 'MLX', 'HTY', 'EZS', 'KYA', 'DNZ', 'TEQ', 'CKZ', 'NAV',
+  // Balkans
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
+  // Asia Pacific
+  'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO', 'FUK', 'CTS',
+  'SIN', 'KUL', 'PEN', 'LGK', 'BKK', 'DMK', 'HKT', 'CNX', 'USM',
+  'CGK', 'DPS', 'SUB', 'JOG',
+  'MNL', 'CEB', 'DVO',
+  'HKG', 'TPE', 'KHH',
+  'KTM',
+  // Middle East
+  'DOH', 'DXB', 'AUH', 'SHJ', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
+  // Africa
+  'TUN', 'CMN', 'RAK', 'FEZ', 'TNG', 'AGA',
+  'CPT', 'JNB', 'DUR',
+  'NBO', 'MBA', 'DAR', 'ZNZ',
+  'MRU', 'SEZ',
+  // Americas (visa-free or visa on arrival)
+  'GRU', 'GIG', 'BSB', 'FOR', 'REC', 'SSA',
+  'EZE', 'AEP', 'COR', 'MDZ',
+  'SCL', 'BOG', 'MDE', 'CTG',
+  'LIM', 'CUZ', 'UIO', 'GYE',
+  'PTY', 'SJO', 'LIR',
+  'NAS', 'MBJ', 'KIN', 'SDQ', 'PUJ', 'HAV',
+  'CUN', 'MEX', 'GDL', 'SJD',
+  // Central Asia & Caucasus
+  'ALA', 'NQZ', 'TSE', 'TAS', 'SKD', 'FRU', 'OSS', 'GYD', 'TBS', 'KUT', 'BUS',
+  // Cyprus
+  'ECN', 'LCA', 'PFO',
+]);
 
-// Visa-free countries for Turkish passport holders (IATA codes)
-const VISA_FREE_DESTINATIONS: Record<string, string[]> = {
-  'visa-free': [
-    // Turkish domestic - always "visa-free" for Turks
-    ...TURKISH_AIRPORTS,
-    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
-    'ICN', 'GMP', 'NRT', 'HND', 'KIX',
-    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
-    'MNL', 'HKG', 'TPE',
-    'KTM',
-    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
-    'AMM', 'BEY',
-    'TUN', 'CMN', 'RAK',
-    'CPT', 'JNB',
-    'NBO', 'DAR', 'ZNZ',
-    'GRU', 'GIG', 'BSB',
-    'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
-    'PTY', 'SJO',
-    'NAS', 'MBJ', 'SDQ', 'HAV',
-    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
-    'ECN',
-  ],
-  'visa-required': [
-    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
-    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
-    'FCO', 'MXP', 'VCE', 'NAP',
-    'MAD', 'BCN', 'PMI', 'AGP',
-    'LIS', 'OPO', 'ATH', 'SKG',
-    'PRG', 'WAW', 'BUD', 'OTP', 'SOF',
-    'CPH', 'ARN', 'OSL', 'HEL',
-    'DUB', 'RIX', 'VNO', 'TLL',
-    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
-    'YYZ', 'YVR', 'YUL',
-    'SYD', 'MEL', 'AKL',
-    'PEK', 'PVG', 'HGH', 'CAN',
-    'DEL', 'BOM', 'BLR',
-    'SVO', 'LED',
-  ]
-};
+const VISA_REQUIRED_COUNTRIES: Set<string> = new Set([
+  // Europe (Schengen)
+  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'LTN', 'FRA', 'MUC', 'BER', 'DUS', 'HAM', 'CGN',
+  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', 'BSL',
+  'FCO', 'MXP', 'VCE', 'NAP', 'BLQ', 'FLR',
+  'MAD', 'BCN', 'PMI', 'AGP', 'VLC', 'SVQ', 'IBZ',
+  'LIS', 'OPO', 'FAO',
+  'ATH', 'SKG', 'HER', 'CFU', 'RHO', 'MJT',
+  'PRG', 'WAW', 'KRK', 'GDN', 'BUD', 'OTP', 'CLJ', 'SOF', 'VAR',
+  'CPH', 'ARN', 'GOT', 'OSL', 'BGO', 'HEL', 'TKU',
+  'DUB', 'SNN', 'RIX', 'VNO', 'TLL',
+  // North America
+  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', 'ATL', 'DFW', 'DEN', 'SEA', 'BOS', 'LAS',
+  'YYZ', 'YVR', 'YUL', 'YYC', 'YOW',
+  // Oceania
+  'SYD', 'MEL', 'BNE', 'PER', 'AKL', 'WLG', 'CHC',
+  // China
+  'PEK', 'PVG', 'CAN', 'SZX', 'HGH', 'CTU', 'XMN',
+  // India
+  'DEL', 'BOM', 'BLR', 'MAA', 'CCU', 'HYD',
+  // Russia
+  'SVO', 'DME', 'LED', 'VKO',
+]);
+
+function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' | 'unknown' {
+  if (VISA_FREE_COUNTRIES.has(destinationCode)) {
+    return 'visa-free';
+  }
+  if (VISA_REQUIRED_COUNTRIES.has(destinationCode)) {
+    return 'visa-required';
+  }
+  return 'unknown';
+}
 
 // Valid currency codes for API
-const VALID_CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'AED'];
+const VALID_CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'AED', 'JPY', 'SGD', 'THB', 'KRW', 'MXN', 'BRL'];
 
 function validateCurrency(currency: unknown): string {
   if (typeof currency !== 'string') return 'TRY';
@@ -162,86 +182,80 @@ function validateCurrency(currency: unknown): string {
   return VALID_CURRENCIES.includes(upper) ? upper : 'TRY';
 }
 
-function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' | 'unknown' {
-  // Turkish domestic flights are always "visa-free"
-  if (TURKISH_AIRPORTS.includes(destinationCode)) {
-    return 'visa-free';
-  }
-  if (VISA_FREE_DESTINATIONS['visa-free'].includes(destinationCode)) {
-    return 'visa-free';
-  }
-  if (VISA_FREE_DESTINATIONS['visa-required'].includes(destinationCode)) {
-    return 'visa-required';
-  }
-  return 'unknown';
-}
-
-const POPULAR_DESTINATIONS = [
+// GLOBAL POPULAR DESTINATIONS - Expanded worldwide
+const GLOBAL_POPULAR_DESTINATIONS = [
+  // Europe
   'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
-  'ICN', 'GMP', 'NRT', 'HND', 'KIX',
-  'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
-  'MNL', 'HKG', 'TPE', 'KTM',
-  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
-  'AMM', 'BEY',
-  'TUN', 'CMN', 'RAK', 'CPT', 'JNB',
-  'NBO', 'DAR', 'ZNZ',
-  'GRU', 'GIG', 'BSB',
-  'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
-  'PTY', 'SJO',
-  'NAS', 'MBJ', 'SDQ', 'HAV',
-  'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
-  'ECN',
-  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
-  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
-  'FCO', 'MXP', 'VCE', 'NAP',
-  'MAD', 'BCN', 'PMI', 'AGP',
-  'LIS', 'OPO', 'ATH', 'SKG',
-  'PRG', 'WAW', 'BUD', 'OTP', 'SOF',
-  'CPH', 'ARN', 'OSL', 'HEL',
-  'DUB', 'RIX', 'VNO', 'TLL',
-  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
-  'YYZ', 'YVR', 'YUL',
+  'CDG', 'LHR', 'FRA', 'MUC', 'BER', 'AMS', 'BRU', 'VIE', 'ZRH',
+  'FCO', 'MXP', 'VCE', 'MAD', 'BCN', 'LIS', 'ATH', 'PRG', 'WAW', 'BUD',
+  'CPH', 'ARN', 'OSL', 'HEL', 'DUB',
+  // Asia
+  'ICN', 'NRT', 'HND', 'KIX', 'SIN', 'KUL', 'BKK', 'HKT', 'CGK', 'DPS',
+  'MNL', 'HKG', 'TPE', 'KTM', 'CNX',
+  // Middle East
+  'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
+  // Africa
+  'TUN', 'CMN', 'RAK', 'CPT', 'JNB', 'NBO', 'DAR', 'ZNZ', 'MRU',
+  // Americas
+  'JFK', 'LAX', 'MIA', 'SFO', 'YYZ', 'MEX', 'CUN',
+  'GRU', 'GIG', 'EZE', 'SCL', 'BOG', 'LIM', 'PTY', 'SJO', 'MBJ',
+  // Central Asia & Caucasus
+  'ALA', 'TAS', 'FRU', 'GYD', 'TBS',
+  // Oceania
   'SYD', 'MEL', 'AKL',
-  'PEK', 'PVG', 'HGH', 'CAN',
-  'DEL', 'BOM', 'BLR',
-  'SVO', 'LED',
 ];
 
+// Continent-based destinations for targeted searches
 const CONTINENT_DESTINATIONS: Record<string, string[]> = {
   'EU': [
     'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
-    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'TXL',
-    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', 
-    'FCO', 'MXP', 'VCE', 'NAP', 
-    'MAD', 'BCN', 'PMI', 'AGP', 
-    'LIS', 'OPO', 'ATH', 'SKG', 
-    'PRG', 'WAW', 'BUD', 'OTP', 'SOF', 
-    'CPH', 'ARN', 'OSL', 'HEL', 
-    'DUB', 'RIX', 'VNO', 'TLL',
+    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'DUS', 'HAM',
+    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
+    'FCO', 'MXP', 'VCE', 'NAP', 'FLR',
+    'MAD', 'BCN', 'PMI', 'AGP', 'IBZ',
+    'LIS', 'OPO', 'FAO', 'ATH', 'SKG', 'HER',
+    'PRG', 'WAW', 'KRK', 'BUD', 'OTP', 'SOF',
+    'CPH', 'ARN', 'OSL', 'HEL', 'DUB', 'RIX', 'VNO', 'TLL',
   ],
   'AS': [
-    'ICN', 'GMP', 'NRT', 'HND', 'KIX',
-    'SIN', 'KUL', 'BKK', 'DMK', 'CGK', 'DPS',
-    'MNL', 'HKG', 'TPE', 'KTM', 
-    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI',
-    'AMM', 'BEY', 'TLV',
+    'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO',
+    'SIN', 'KUL', 'BKK', 'DMK', 'HKT', 'CNX', 'CGK', 'DPS', 'SUB',
+    'MNL', 'CEB', 'HKG', 'TPE', 'KTM',
+    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
     'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
-    'PEK', 'PVG', 'HGH', 'CAN',
-    'DEL', 'BOM', 'BLR',
+    'PEK', 'PVG', 'CAN', 'HGH', 'DEL', 'BOM', 'BLR',
   ],
   'AM': [
-    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR',
+    'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', 'ATL', 'DFW', 'DEN', 'SEA', 'BOS', 'LAS',
     'YYZ', 'YVR', 'YUL',
-    'GRU', 'GIG', 'BSB',
-    'EZE', 'SCL', 'BOG', 'LIM', 'UIO',
-    'PTY', 'SJO',
-    'NAS', 'MBJ', 'SDQ', 'HAV',
+    'MEX', 'CUN', 'GDL', 'SJD',
+    'GRU', 'GIG', 'BSB', 'EZE', 'SCL', 'BOG', 'MDE', 'LIM', 'CUZ', 'UIO',
+    'PTY', 'SJO', 'NAS', 'MBJ', 'SDQ', 'PUJ', 'HAV',
   ],
   'AF': [
-    'TUN', 'CMN', 'RAK', 'CAI',
-    'CPT', 'JNB',
-    'NBO', 'DAR', 'ZNZ',
+    'TUN', 'CMN', 'RAK', 'FEZ', 'CAI', 'HRG', 'SSH',
+    'CPT', 'JNB', 'DUR', 'NBO', 'MBA', 'DAR', 'ZNZ',
+    'MRU', 'SEZ', 'ADD', 'LOS', 'ACC',
   ],
+  'OC': [
+    'SYD', 'MEL', 'BNE', 'PER', 'AKL', 'WLG', 'CHC',
+    'NAN', 'PPT',
+  ],
+};
+
+// Nearby alternatives for fallback suggestions
+const NEARBY_ALTERNATIVES: Record<string, string[]> = {
+  // If no results for major hubs, suggest nearby alternatives
+  'IST': ['SAW', 'ESB', 'AYT', 'ADB'],
+  'LHR': ['LGW', 'STN', 'LTN', 'CDG', 'AMS'],
+  'CDG': ['ORY', 'LHR', 'AMS', 'BRU'],
+  'FRA': ['MUC', 'DUS', 'BER', 'ZRH'],
+  'JFK': ['EWR', 'LGA', 'BOS', 'PHL'],
+  'LAX': ['SFO', 'SAN', 'LAS', 'PHX'],
+  'DXB': ['AUH', 'SHJ', 'DOH', 'BAH'],
+  'SIN': ['KUL', 'BKK', 'CGK', 'HKG'],
+  'NRT': ['HND', 'KIX', 'NGO', 'ICN'],
+  'SYD': ['MEL', 'BNE', 'AKL', 'PER'],
 };
 
 serve(async (req) => {
@@ -249,7 +263,6 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Rate limiting check
   const clientIP = getClientIP(req);
   const rateLimit = getRateLimitInfo(clientIP);
   
@@ -297,7 +310,7 @@ serve(async (req) => {
       });
     }
 
-    // Validate inputs
+    // Validate inputs - NO ORIGIN RESTRICTIONS (truly global)
     const origin = validateAirportCode(params.origin);
     const destination = validateAirportCode(params.destination) || '';
     const departDate = validateDate(params.departDate);
@@ -310,7 +323,6 @@ serve(async (req) => {
     const flexibleDates = params.flexibleDates === true;
     const currency = validateCurrency(params.currency);
 
-    // Validate required fields
     if (!origin) {
       return new Response(JSON.stringify({ 
         success: false, 
@@ -331,7 +343,6 @@ serve(async (req) => {
       });
     }
 
-    // Validate returnDate is after departDate if provided
     if (returnDate && new Date(returnDate) <= new Date(departDate)) {
       return new Response(JSON.stringify({ 
         success: false, 
@@ -369,13 +380,14 @@ serve(async (req) => {
     const isAnywhereSearch = !destination || destination === '';
     const isContinentSearch = VALID_CONTINENTS.includes(destination);
     let allFlights: any[] = [];
+    let nearbyAlternatives: string[] = [];
 
     if (isAnywhereSearch || isContinentSearch) {
       console.log('Performing', isContinentSearch ? `continent (${destination})` : 'anywhere', 'search with visa filter:', visaFilter);
       
       let baseDestinations = isContinentSearch 
-        ? CONTINENT_DESTINATIONS[destination] || POPULAR_DESTINATIONS
-        : POPULAR_DESTINATIONS;
+        ? CONTINENT_DESTINATIONS[destination] || GLOBAL_POPULAR_DESTINATIONS
+        : GLOBAL_POPULAR_DESTINATIONS;
       
       let destinationsToSearch = baseDestinations;
       if (visaFilter === 'visa-free') {
@@ -451,6 +463,7 @@ serve(async (req) => {
       console.log('Anywhere search raw results:', allFlights.length);
 
     } else {
+      // Specific destination search - GLOBAL SUPPORT
       const searchPromises = searchPairs.map(async (pair) => {
         const oneWay = !pair.return;
 
@@ -510,6 +523,12 @@ serve(async (req) => {
 
       const results = await Promise.all(searchPromises);
       allFlights = results.flat();
+
+      // If no results, provide nearby alternatives
+      if (allFlights.length === 0) {
+        nearbyAlternatives = NEARBY_ALTERNATIVES[destination] || NEARBY_ALTERNATIVES[origin] || [];
+        console.log('No results, suggesting alternatives:', nearbyAlternatives);
+      }
     }
 
     console.log('API response success, data count:', allFlights.length);
@@ -552,7 +571,7 @@ serve(async (req) => {
       (a, b) => (a?.price ?? Number.POSITIVE_INFINITY) - (b?.price ?? Number.POSITIVE_INFINITY)
     );
 
-    const finalFlights = (isAnywhereSearch || isContinentSearch) ? sortedFlights.slice(0, 30) : sortedFlights;
+    const finalFlights = (isAnywhereSearch || isContinentSearch) ? sortedFlights.slice(0, 50) : sortedFlights;
 
     const flights = finalFlights.map((flight: any) => {
       const depYmd = (flight.departure_at ? String(flight.departure_at).split('T')[0] : departDate) || departDate;
@@ -572,12 +591,12 @@ serve(async (req) => {
       data: flights,
       currency,
       isAnywhereSearch: isAnywhereSearch || isContinentSearch,
+      nearbyAlternatives: flights.length === 0 ? nearbyAlternatives : [],
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error: unknown) {
-    // Log full error for debugging, return generic message to client
     console.error('Error in search-flights function:', error);
     return new Response(JSON.stringify({ 
       success: false, 
