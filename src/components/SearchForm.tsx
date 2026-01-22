@@ -132,14 +132,21 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
 
     const handleSearch = () => {
       if (isMultiCity) {
-        // For multi-city, search first leg (simplified - full implementation would need backend changes)
-        const firstLeg = legs[0];
-        if (!firstLeg.origin || !firstLeg.destination || !firstLeg.date) return;
+        // For multi-city, send all legs to backend
+        const validLegs = legs.filter(l => l.origin && l.destination && l.date);
+        if (validLegs.length < 2) return;
+        
+        // Create legs array for backend
+        const legParams = validLegs.map(l => ({
+          origin: l.origin!.code,
+          destination: l.destination!.code,
+          departDate: format(l.date!, 'yyyy-MM-dd'),
+        }));
         
         onSearch({
-          origin: firstLeg.origin.code,
-          destination: firstLeg.destination.code,
-          departDate: format(firstLeg.date, 'yyyy-MM-dd'),
+          origin: legParams[0].origin,
+          destination: legParams[0].destination,
+          departDate: legParams[0].departDate,
           returnDate: undefined,
           adults: passengers.adults,
           children: passengers.children,
@@ -148,6 +155,8 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
           visaFilter: visaOption,
           flexibleDates: isFlexible,
           currency,
+          tripType: 'multicity',
+          legs: legParams,
         });
         return;
       }
@@ -168,6 +177,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
         visaFilter: visaOption,
         flexibleDates: isFlexible,
         currency,
+        tripType: isOneWay ? 'oneway' : 'roundtrip',
       });
     };
 

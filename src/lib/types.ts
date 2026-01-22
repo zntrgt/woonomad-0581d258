@@ -46,6 +46,12 @@ export interface WeekendDate {
   weekOffset: number;
 }
 
+export interface FlightLeg {
+  origin: string;
+  destination: string;
+  departDate: string;
+}
+
 export interface SearchParams {
   origin: string;
   destination: string;
@@ -58,6 +64,26 @@ export interface SearchParams {
   visaFilter?: VisaOption;
   flexibleDates?: boolean;
   currency?: string; // Currency code for API requests (e.g., 'TRY', 'EUR', 'USD')
+  // Multi-city support
+  tripType?: 'roundtrip' | 'oneway' | 'multicity';
+  legs?: FlightLeg[];
+}
+
+export interface MultiCityResult {
+  combined: {
+    type: string;
+    totalPrice: number;
+    legs: any[];
+    currency: string;
+  } | null;
+  legs: {
+    legIndex: number;
+    origin: string;
+    destination: string;
+    date: string;
+    flights: Flight[];
+    noResults?: boolean;
+  }[];
 }
 
 // Special "Anywhere" destination
