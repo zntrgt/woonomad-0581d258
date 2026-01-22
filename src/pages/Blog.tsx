@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2, Edit, Languages } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -14,7 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useSettings } from '@/contexts/SettingsContext';
 import { format, parseISO } from 'date-fns';
-import { tr, enUS, de, fr, es, ar } from 'date-fns/locale';
+import { tr as trLocale, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
 interface BackendBlogPost {
@@ -31,7 +32,25 @@ interface BackendBlogPost {
 }
 
 function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
+  const { t, i18n } = useTranslation();
   const categoryInfo = getCategoryInfo(post.category);
+  
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'en': return enUS;
+      case 'de': return de;
+      case 'fr': return fr;
+      case 'es': return es;
+      case 'ar': return ar;
+      default: return trLocale;
+    }
+  };
+  
+  const getCategoryName = () => {
+    const categoryKey = `blog.categories.${post.category}`;
+    const translated = t(categoryKey);
+    return translated !== categoryKey ? translated : categoryInfo?.name;
+  };
   
   return (
     <Link 
@@ -57,7 +76,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
         {/* Category Badge */}
         <div className="absolute top-4 left-4">
           <Badge variant="popular" className="backdrop-blur-sm">
-            {categoryInfo?.emoji} {categoryInfo?.name}
+            {categoryInfo?.emoji} {getCategoryName()}
           </Badge>
         </div>
         
@@ -66,7 +85,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
           <div className="absolute top-4 right-4">
             <Badge variant="deal" className="backdrop-blur-sm">
               <Sparkles className="h-3 w-3 mr-1" />
-              Öne Çıkan
+              {t('blog.featured')}
             </Badge>
           </div>
         )}
@@ -78,11 +97,11 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
           <span className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" />
-            {format(parseISO(post.publishedAt), 'd MMMM yyyy', { locale: tr })}
+            {format(parseISO(post.publishedAt), 'd MMMM yyyy', { locale: getDateLocale() })}
           </span>
           <span className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
-            {post.readingTime} dk okuma
+            {post.readingTime} {t('blog.readTime')}
           </span>
         </div>
         
@@ -117,7 +136,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
           </div>
           
           <span className="text-sm font-semibold text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
-            Devamını Oku
+            {t('blog.readMore')}
             <ChevronRight className="h-4 w-4" />
           </span>
         </div>
@@ -127,6 +146,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
 }
 
 export default function Blog() {
+  const { t, i18n } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('all');
@@ -136,6 +156,15 @@ export default function Blog() {
   
   const staticPosts = getAllPosts();
   const cities = getAllCities();
+  
+  const getCategoryTranslation = (categoryId: string) => {
+    if (categoryId === 'all') return t('common.all');
+    const categoryKey = `blog.categories.${categoryId}`;
+    const translated = t(categoryKey);
+    if (translated !== categoryKey) return translated;
+    const cat = blogCategories.find(c => c.id === categoryId);
+    return cat?.name || categoryId;
+  };
 
   // Fetch backend posts
   useEffect(() => {
@@ -269,8 +298,8 @@ export default function Blog() {
         <main className="max-w-7xl mx-auto px-4 py-6 md:py-8 pb-24 md:pb-8">
           <Breadcrumb 
             items={[
-              { label: 'Ana Sayfa', href: '/' },
-              { label: 'Blog' }
+              { label: t('nav.home'), href: '/' },
+              { label: t('blog.title') }
             ]}
           />
           
@@ -278,22 +307,22 @@ export default function Blog() {
           <section className="text-center mb-8 md:mb-12 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6">
               <Sparkles className="h-3 w-3 md:h-4 md:w-4" />
-              <span>Seyahat İlhamı</span>
+              <span>{t('blog.travelInspiration')}</span>
             </div>
             
             <h1 className="text-2xl md:text-5xl font-display font-bold text-foreground mb-3 md:mb-4">
-              Seyahat <span className="text-gradient">Blogu</span>
+              {t('blog.title')} <span className="text-gradient">{t('blog.subtitle')}</span>
             </h1>
             
             <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-              Festival rehberleri, kültür yazıları, dijital göçebe ipuçları ve daha fazlası.
+              {t('blog.subtitle')}
             </p>
             
             {isAdmin && (
               <Link to="/admin/blog" className="inline-block mt-4">
                 <Button variant="outline" size="sm">
                   <Edit className="h-4 w-4 mr-2" />
-                  Blog Yönetimi
+                  {t('blog.blogManagement')}
                 </Button>
               </Link>
             )}
@@ -306,7 +335,7 @@ export default function Blog() {
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Blog yazılarında ara..."
+                  placeholder={t('blog.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 md:pl-10 text-sm"
@@ -328,7 +357,7 @@ export default function Blog() {
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                         )}
                       >
-                        {category.emoji} {category.name}
+                        {category.emoji} {getCategoryTranslation(category.id)}
                       </button>
                     ))}
                   </div>
@@ -340,7 +369,7 @@ export default function Blog() {
                   onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full md:w-auto px-3 py-2 rounded-xl border border-border bg-background text-xs md:text-sm font-medium"
                 >
-                  <option value="all">Tüm Şehirler</option>
+                  <option value="all">{t('blog.allCities')}</option>
                   {cities.map(city => (
                     <option key={city.slug} value={city.slug}>{city.name}</option>
                   ))}
@@ -353,7 +382,7 @@ export default function Blog() {
           <div className="flex items-center gap-2 mb-4 md:mb-6 text-xs md:text-sm text-muted-foreground">
             <Filter className="h-3 w-3 md:h-4 md:w-4" />
             <span>
-              {loading ? 'Yükleniyor...' : `${filteredPosts.length} yazı bulundu`}
+              {loading ? t('common.loading') : t('blog.postsFound', { count: filteredPosts.length })}
             </span>
           </div>
           
@@ -389,9 +418,9 @@ export default function Blog() {
           ) : (
             <div className="text-center py-16">
               <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
-              <h3 className="font-display font-semibold text-lg mb-2">Yazı bulunamadı</h3>
+              <h3 className="font-display font-semibold text-lg mb-2">{t('blog.noPostsFound')}</h3>
               <p className="text-muted-foreground">
-                Farklı filtreler veya arama terimleri deneyebilirsiniz
+                {t('blog.tryDifferentFilters')}
               </p>
             </div>
           )}
@@ -400,7 +429,7 @@ export default function Blog() {
         {/* Footer */}
         <footer className="border-t border-border py-8 mt-16 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
+            {t('footer.copyright', { year: new Date().getFullYear() })}
           </div>
         </footer>
 

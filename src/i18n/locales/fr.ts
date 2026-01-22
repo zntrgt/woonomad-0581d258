@@ -235,6 +235,23 @@ const fr = {
     introduction: 'Introduction',
     development: 'Développement',
     conclusion: 'Conclusion',
+    featured: 'À la une',
+    searchPlaceholder: 'Rechercher dans les articles...',
+    postsFound: '{{count}} articles trouvés',
+    noPostsFound: 'Aucun article trouvé',
+    tryDifferentFilters: 'Essayez différents filtres ou termes de recherche',
+    travelInspiration: 'Inspiration voyage',
+    blogManagement: 'Gestion du blog',
+    allCities: 'Toutes les villes',
+    categories: {
+      all: 'Tous',
+      nomad: 'Nomade Numérique',
+      festival: 'Festival',
+      culture: 'Culture',
+      lifestyle: 'Mode de vie',
+      'travel-tips': 'Conseils voyage',
+      food: 'Gastronomie',
+    },
   },
 
   // Auth

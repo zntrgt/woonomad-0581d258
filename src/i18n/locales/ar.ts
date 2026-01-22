@@ -235,6 +235,23 @@ const ar = {
     introduction: 'مقدمة',
     development: 'التطوير',
     conclusion: 'الخاتمة',
+    featured: 'مميز',
+    searchPlaceholder: 'البحث في المقالات...',
+    postsFound: 'تم العثور على {{count}} مقال',
+    noPostsFound: 'لم يتم العثور على مقالات',
+    tryDifferentFilters: 'جرب فلاتر أو مصطلحات بحث مختلفة',
+    travelInspiration: 'إلهام السفر',
+    blogManagement: 'إدارة المدونة',
+    allCities: 'جميع المدن',
+    categories: {
+      all: 'الكل',
+      nomad: 'البدو الرقميون',
+      festival: 'المهرجانات',
+      culture: 'الثقافة',
+      lifestyle: 'نمط الحياة',
+      'travel-tips': 'نصائح السفر',
+      food: 'الطعام والشراب',
+    },
   },
 
   // Auth

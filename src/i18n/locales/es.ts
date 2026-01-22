@@ -235,6 +235,23 @@ const es = {
     introduction: 'Introducción',
     development: 'Desarrollo',
     conclusion: 'Conclusión',
+    featured: 'Destacado',
+    searchPlaceholder: 'Buscar en el blog...',
+    postsFound: '{{count}} artículos encontrados',
+    noPostsFound: 'No se encontraron artículos',
+    tryDifferentFilters: 'Prueba diferentes filtros o términos de búsqueda',
+    travelInspiration: 'Inspiración de Viaje',
+    blogManagement: 'Gestión del Blog',
+    allCities: 'Todas las Ciudades',
+    categories: {
+      all: 'Todos',
+      nomad: 'Nómada Digital',
+      festival: 'Festival',
+      culture: 'Cultura',
+      lifestyle: 'Estilo de Vida',
+      'travel-tips': 'Consejos de Viaje',
+      food: 'Gastronomía',
+    },
   },
 
   // Auth

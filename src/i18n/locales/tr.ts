@@ -235,6 +235,23 @@ const tr = {
     introduction: 'Giriş',
     development: 'Gelişme',
     conclusion: 'Sonuç',
+    featured: 'Öne Çıkan',
+    searchPlaceholder: 'Blog yazılarında ara...',
+    postsFound: '{{count}} yazı bulundu',
+    noPostsFound: 'Yazı bulunamadı',
+    tryDifferentFilters: 'Farklı filtreler veya arama terimleri deneyebilirsiniz',
+    travelInspiration: 'Seyahat İlhamı',
+    blogManagement: 'Blog Yönetimi',
+    allCities: 'Tüm Şehirler',
+    categories: {
+      all: 'Tümü',
+      nomad: 'Dijital Göçebe',
+      festival: 'Festival',
+      culture: 'Kültür',
+      lifestyle: 'Yaşam Tarzı',
+      'travel-tips': 'Seyahat İpuçları',
+      food: 'Yeme-İçme',
+    },
   },
 
   // Auth
