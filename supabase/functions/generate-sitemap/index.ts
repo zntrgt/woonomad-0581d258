@@ -154,45 +154,71 @@ const cities = [
   "marakes", "zanzibar"
 ];
 
-// Static hotel data
+// Static hotel data - synced with src/lib/hotels.ts
 const hotelData = [
-  { citySlug: "istanbul", slug: "four-seasons-sultanahmet" },
-  { citySlug: "istanbul", slug: "ciragan-palace-kempinski" },
-  { citySlug: "istanbul", slug: "raffles-istanbul" },
-  { citySlug: "istanbul", slug: "the-ritz-carlton-istanbul" },
-  { citySlug: "antalya", slug: "regnum-carya" },
-  { citySlug: "antalya", slug: "titanic-mardan-palace" },
-  { citySlug: "antalya", slug: "maxx-royal-belek" },
-  { citySlug: "izmir", slug: "swissotel-buyuk-efes" },
-  { citySlug: "izmir", slug: "movenpick-hotel-izmir" },
+  // Istanbul
+  { citySlug: "istanbul", slug: "four-seasons-sultanahmet-istanbul" },
+  { citySlug: "istanbul", slug: "ciragan-palace-kempinski-istanbul" },
+  { citySlug: "istanbul", slug: "soho-house-istanbul" },
+  { citySlug: "istanbul", slug: "the-marmara-taksim-istanbul" },
+  // Antalya
+  { citySlug: "antalya", slug: "regnum-carya-antalya" },
+  { citySlug: "antalya", slug: "titanic-mardan-palace-antalya" },
+  { citySlug: "antalya", slug: "akra-hotel-antalya" },
+  // Izmir
+  { citySlug: "izmir", slug: "swissotel-buyuk-efes-izmir" },
+  { citySlug: "izmir", slug: "alacati-la-vela-izmir" },
+  // Bodrum
   { citySlug: "bodrum", slug: "mandarin-oriental-bodrum" },
   { citySlug: "bodrum", slug: "the-bodrum-edition" },
-  { citySlug: "berlin", slug: "hotel-adlon-kempinski" },
+  { citySlug: "bodrum", slug: "kempinski-barbaros-bay-bodrum" },
+  // Berlin
+  { citySlug: "berlin", slug: "hotel-adlon-kempinski-berlin" },
+  { citySlug: "berlin", slug: "soho-house-berlin" },
+  { citySlug: "berlin", slug: "the-circus-hotel-berlin" },
+  { citySlug: "berlin", slug: "hotel-zoo-berlin" },
   { citySlug: "berlin", slug: "the-ritz-carlton-berlin" },
-  { citySlug: "lizbon", slug: "four-seasons-ritz-lisbon" },
-  { citySlug: "lizbon", slug: "pestana-palace-lisboa" },
+  { citySlug: "berlin", slug: "michelberger-hotel-berlin" },
+  // Lizbon
+  { citySlug: "lizbon", slug: "santiago-de-alfama-lisbon" },
+  { citySlug: "lizbon", slug: "martinhal-lisbon-chiado" },
+  { citySlug: "lizbon", slug: "lx-boutique-hotel-lisbon" },
+  { citySlug: "lizbon", slug: "pestana-palace-lisbon" },
+  { citySlug: "lizbon", slug: "memmo-alfama-lisbon" },
+  // Barcelona
   { citySlug: "barcelona", slug: "hotel-arts-barcelona" },
-  { citySlug: "barcelona", slug: "w-barcelona" },
-  { citySlug: "amsterdam", slug: "waldorf-astoria-amsterdam" },
-  { citySlug: "amsterdam", slug: "conservatorium-hotel" },
-  { citySlug: "paris", slug: "le-bristol-paris" },
-  { citySlug: "paris", slug: "four-seasons-george-v" },
-  { citySlug: "prag", slug: "four-seasons-prague" },
-  { citySlug: "prag", slug: "mandarin-oriental-prague" },
+  { citySlug: "barcelona", slug: "hotel-casa-camper-barcelona" },
+  { citySlug: "barcelona", slug: "w-hotel-barcelona" },
+  { citySlug: "barcelona", slug: "hotel-1898-barcelona" },
+  { citySlug: "barcelona", slug: "generator-barcelona" },
+  // Amsterdam
+  { citySlug: "amsterdam", slug: "the-hoxton-amsterdam" },
+  { citySlug: "amsterdam", slug: "pulitzer-amsterdam" },
+  { citySlug: "amsterdam", slug: "citizen-m-amsterdam-south" },
+  { citySlug: "amsterdam", slug: "hotel-v-nesplein-amsterdam" },
+  // Paris
+  { citySlug: "paris", slug: "hotel-le-marais-paris" },
+  { citySlug: "paris", slug: "hotel-plaza-athenee-paris" },
+  { citySlug: "paris", slug: "hotel-le-cinq-codet-paris" },
+  { citySlug: "paris", slug: "generator-paris" },
+  // Prag
+  { citySlug: "prag", slug: "aria-hotel-prague" },
+  { citySlug: "prag", slug: "hotel-josef-prague" },
+  // Viyana
   { citySlug: "viyana", slug: "hotel-sacher-wien" },
-  { citySlug: "viyana", slug: "park-hyatt-vienna" },
-  { citySlug: "budapeste", slug: "four-seasons-gresham-palace" },
-  { citySlug: "budapeste", slug: "aria-hotel-budapest" },
-  { citySlug: "roma", slug: "hotel-hassler-roma" },
-  { citySlug: "roma", slug: "hotel-de-russie" },
+  { citySlug: "viyana", slug: "25hours-hotel-vienna" },
+  // Budapeşte
+  { citySlug: "budapeste", slug: "four-seasons-gresham-palace-budapest" },
+  { citySlug: "budapeste", slug: "brody-house-budapest" },
+  // Roma
+  { citySlug: "roma", slug: "hotel-de-russie-rome" },
+  { citySlug: "roma", slug: "the-hoxton-rome" },
+  // Milano
   { citySlug: "milano", slug: "armani-hotel-milano" },
-  { citySlug: "milano", slug: "park-hyatt-milan" },
-  { citySlug: "dubai", slug: "burj-al-arab" },
-  { citySlug: "dubai", slug: "atlantis-the-palm" },
-  { citySlug: "tokyo", slug: "aman-tokyo" },
+  // Dubai
+  { citySlug: "dubai", slug: "burj-al-arab-dubai" },
+  // Tokyo
   { citySlug: "tokyo", slug: "park-hyatt-tokyo" },
-  { citySlug: "bali", slug: "como-shambhala" },
-  { citySlug: "bali", slug: "four-seasons-jimbaran" },
 ];
 
 // Flight routes
