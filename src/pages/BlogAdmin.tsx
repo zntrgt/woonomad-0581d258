@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 import { Header } from "@/components/Header";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { SEOScoreWidget } from "@/components/SEOScoreWidget";
@@ -171,6 +172,12 @@ const BlogAdmin = () => {
           title: "Güncellendi",
           description: "Blog yazısı başarıyla güncellendi.",
         });
+        // Redirect to the updated post
+        const savedSlug = formData.slug;
+        fetchPosts();
+        resetForm();
+        // Navigate to the blog post after successful update
+        window.open(`/blog/${savedSlug}`, '_blank');
         fetchPosts();
         resetForm();
       }
@@ -331,9 +338,21 @@ const BlogAdmin = () => {
     
     setGenerating(true);
     try {
+      // Get auth token for authenticated API call
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      
+      if (!accessToken) {
+        toast({ title: "Hata", description: "Oturum süresi dolmuş. Lütfen tekrar giriş yapın.", variant: "destructive" });
+        return;
+      }
+      
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-content`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           type,
           topic: formData.title,
@@ -343,6 +362,12 @@ const BlogAdmin = () => {
 
       if (!response.ok) {
         const err = await response.json();
+        if (response.status === 401) {
+          throw new Error('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.');
+        }
+        if (response.status === 403) {
+          throw new Error('Bu işlem için admin yetkisi gerekiyor.');
+        }
         throw new Error(err.error || 'AI error');
       }
 
@@ -393,9 +418,22 @@ const BlogAdmin = () => {
 
     setSeoImproving(true);
     try {
+      // Get auth token for authenticated API call
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      
+      if (!accessToken) {
+        toast({ title: "Hata", description: "Oturum süresi dolmuş. Lütfen tekrar giriş yapın.", variant: "destructive" });
+        setSeoImproving(false);
+        return;
+      }
+      
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/seo-improve-blog`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           postId: editingPost?.id || 'new',
           title: formData.title,
@@ -409,6 +447,12 @@ const BlogAdmin = () => {
 
       if (!response.ok) {
         const err = await response.json();
+        if (response.status === 401) {
+          throw new Error('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.');
+        }
+        if (response.status === 403) {
+          throw new Error('Bu işlem için admin yetkisi gerekiyor.');
+        }
         if (response.status === 429) {
           throw new Error('Rate limit aşıldı. Lütfen biraz bekleyin.');
         }
@@ -455,9 +499,22 @@ const BlogAdmin = () => {
 
     setGeneratingImage(true);
     try {
+      // Get auth token for authenticated API call
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      
+      if (!accessToken) {
+        toast({ title: "Hata", description: "Oturum süresi dolmuş. Lütfen tekrar giriş yapın.", variant: "destructive" });
+        setGeneratingImage(false);
+        return;
+      }
+      
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-image`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
           prompt: prompt,
           context: `Blog post about ${formData.category || 'travel'} - ${formData.city || 'destination'}`,
@@ -468,6 +525,12 @@ const BlogAdmin = () => {
 
       if (!response.ok) {
         const err = await response.json();
+        if (response.status === 401) {
+          throw new Error('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.');
+        }
+        if (response.status === 403) {
+          throw new Error('Bu işlem için admin yetkisi gerekiyor.');
+        }
         if (response.status === 429) {
           throw new Error('Rate limit aşıldı. Lütfen biraz bekleyin.');
         }
@@ -850,13 +913,19 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                   {showPreview ? (
                     <div className="border rounded-lg p-4 min-h-[300px] bg-muted/30 prose prose-sm max-w-none">
                       <div dangerouslySetInnerHTML={{ 
-                        __html: formData.content
-                          .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
-                          .replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold mt-6 mb-3">$1</h2>')
-                          .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mt-4 mb-3">$1</h1>')
-                          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                          .replace(/^\- (.*$)/gm, '<li class="ml-4">$1</li>')
-                          .replace(/\n/g, '<br />')
+                        __html: DOMPurify.sanitize(
+                          formData.content
+                            .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+                            .replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold mt-6 mb-3">$1</h2>')
+                            .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mt-4 mb-3">$1</h1>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/^\- (.*$)/gm, '<li class="ml-4">$1</li>')
+                            .replace(/\n/g, '<br />'),
+                          { 
+                            ALLOWED_TAGS: ['h1', 'h2', 'h3', 'strong', 'em', 'li', 'br', 'p', 'ul', 'ol', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'a', 'img'],
+                            ALLOWED_ATTR: ['class', 'href', 'src', 'alt', 'target', 'rel']
+                          }
+                        )
                       }} />
                     </div>
                   ) : (
