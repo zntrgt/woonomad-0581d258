@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2, Edit } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight, Sparkles, Filter, User, Loader2, Edit, Languages } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -12,8 +12,9 @@ import { getAllPosts, blogCategories, BlogPost, getCategoryInfo } from '@/lib/bl
 import { getAllCities } from '@/lib/cities';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useSettings } from '@/contexts/SettingsContext';
 import { format, parseISO } from 'date-fns';
-import { tr } from 'date-fns/locale';
+import { tr, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
 interface BackendBlogPost {

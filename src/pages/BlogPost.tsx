@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen, Edit } from 'lucide-react';
+import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen, Edit, Languages, Loader2 } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -15,8 +15,9 @@ import { getCityBySlug, CityInfo, getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useSettings } from '@/contexts/SettingsContext';
 import { format, parseISO } from 'date-fns';
-import { tr } from 'date-fns/locale';
+import { tr, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
 interface BackendBlogPost {
@@ -236,10 +237,16 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const [backendPost, setBackendPost] = useState<BackendBlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [translatedContent, setTranslatedContent] = useState<{ title: string; excerpt: string; content: string } | null>(null);
+  const [isTranslating, setIsTranslating] = useState(false);
   const { isAdmin } = useAuth();
+  const { language, translatePageContent } = useSettings();
   
   const staticPost = slug ? getPostBySlug(slug) : undefined;
   const allCities = getAllCities();
+  
+  // Date format locale map
+  const localeMap = { tr, en: enUS, de, fr, es, ar };
   
   // Fetch from database
   useEffect(() => {
@@ -288,6 +295,56 @@ export default function BlogPost() {
     }
     return staticPost;
   }, [backendPost, staticPost]);
+  
+  // Translate content when language changes
+  useEffect(() => {
+    const translateContent = async () => {
+      if (!post || language === 'tr') {
+        setTranslatedContent(null);
+        return;
+      }
+
+      setIsTranslating(true);
+      try {
+        const result = await translatePageContent({
+          title: post.title,
+          excerpt: post.excerpt,
+          // Only translate first 2000 chars for performance
+          content: post.content.slice(0, 2000),
+        });
+        
+        if (result) {
+          setTranslatedContent({
+            title: result.title || post.title,
+            excerpt: result.excerpt || post.excerpt,
+            content: result.content 
+              ? post.content.replace(post.content.slice(0, 2000), result.content)
+              : post.content,
+          });
+        }
+      } catch (err) {
+        console.error('Translation error:', err);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateContent();
+  }, [post, language, translatePageContent]);
+  
+  // Get display content (translated or original)
+  const displayContent = useMemo(() => {
+    if (!post) return null;
+    if (translatedContent && language !== 'tr') {
+      return {
+        ...post,
+        title: translatedContent.title,
+        excerpt: translatedContent.excerpt,
+        content: translatedContent.content,
+      };
+    }
+    return post;
+  }, [post, translatedContent, language]);
   
   // Extract headings for TOC
   const headings = useMemo(() => {
@@ -740,10 +797,24 @@ export default function BlogPost() {
                 )}
               </div>
               
-              {/* Title - H1 */}
-              <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-6">
-                {post.title}
-              </h1>
+              {/* Title - H1 with translation indicator */}
+              <div className="relative">
+                {isTranslating && (
+                  <Badge variant="outline" className="absolute -top-2 -right-2 bg-background/80 backdrop-blur-sm text-xs z-10">
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    Çeviriliyor...
+                  </Badge>
+                )}
+                {translatedContent && language !== 'tr' && !isTranslating && (
+                  <Badge variant="secondary" className="absolute -top-2 -right-2 bg-background/80 backdrop-blur-sm text-xs z-10">
+                    <Languages className="h-3 w-3 mr-1" />
+                    AI Çeviri
+                  </Badge>
+                )}
+                <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-6">
+                  {displayContent?.title || post.title}
+                </h1>
+              </div>
               
               {/* Author Box with E-E-A-T signals */}
               <AuthorBox 
@@ -756,18 +827,17 @@ export default function BlogPost() {
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-4 w-4" />
-                    {format(parseISO(post.publishedAt), 'd MMMM yyyy', { locale: tr })}
+                    {format(parseISO(post.publishedAt), 'd MMMM yyyy', { locale: localeMap[language] || tr })}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
-                    {post.readingTime} dk okuma
+                    {post.readingTime} {language === 'en' ? 'min read' : 'dk okuma'}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <BookOpen className="h-4 w-4" />
-                    {post.content.split(/\s+/).length} kelime
+                    {post.content.split(/\s+/).length} {language === 'en' ? 'words' : 'kelime'}
                   </span>
                 </div>
-                
                 <div className="flex items-center gap-2 ml-auto">
                   {isAdmin && (
                     <Link to={`/admin/blog?edit=${slug}`}>
@@ -804,7 +874,7 @@ export default function BlogPost() {
               
               {/* Content */}
               <div className="prose prose-lg max-w-none text-muted-foreground">
-                {renderContent(post.content)}
+                {renderContent(displayContent?.content || post.content)}
               </div>
               
               {/* FAQ Section */}
