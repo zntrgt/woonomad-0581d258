@@ -15,6 +15,7 @@ import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
 import { HotelMapClustered } from '@/components/HotelMapClustered';
 import { HotelComparison, HotelSelectButton } from '@/components/HotelComparison';
+import { LongStayPricing } from '@/components/LongStayPricing';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -643,6 +644,19 @@ const CityHotels = () => {
             onClearSelection={handleClearComparison}
           />
           
+          {/* Long-Stay Pricing Calculator */}
+          <section className="mb-6">
+            <LongStayPricing 
+              cityName={displayName}
+              citySlug={city.slug}
+              baseNightlyPrice={displayHotels.length > 0 
+                ? Math.round(displayHotels.reduce((acc, h) => acc + h.priceFrom, 0) / displayHotels.length)
+                : 1500
+              }
+              currency="₺"
+            />
+          </section>
+          
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
             <h2 className="text-xl font-display font-bold mb-4">{city.name} Otel Rehberi</h2>
@@ -660,6 +674,7 @@ const CityHotels = () => {
                 <li>• Erken rezervasyon ile %20-30 tasarruf sağlayabilirsiniz</li>
                 <li>• Kahvaltı dahil seçenekleri değerlendirin</li>
                 <li>• Hafta içi konaklamalar genellikle daha uygun</li>
+                <li>• <strong>30+ gün kalacaksanız:</strong> Airbnb veya coliving seçenekleri daha ekonomik</li>
               </ul>
             </div>
           </section>

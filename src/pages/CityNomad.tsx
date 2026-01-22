@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { 
@@ -38,9 +39,13 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getCityBySlug, getAllCities, CityInfo } from '@/lib/cities';
 import { getNomadMetrics, getCoworkingSpacesByCity, NomadMetrics } from '@/lib/nomad';
 import { getCountryFlag } from '@/lib/destinations';
+import { WifiSpeedTestForm } from '@/components/WifiSpeedTestForm';
+import { CommunitySpeedTests } from '@/components/CommunitySpeedTests';
+import { LongStayPricing } from '@/components/LongStayPricing';
 
 // Table of Contents sections
 const tocSections = [
@@ -233,6 +238,7 @@ const CityNomad = () => {
   const allCities = getAllCities();
   const metrics = slug ? getNomadMetrics(slug) : null;
   const coworkingSpaces = slug ? getCoworkingSpacesByCity(slug) : [];
+  const [speedTestKey, setSpeedTestKey] = useState(0);
   
   const currentYear = new Date().getFullYear();
   const lastUpdated = new Date().toISOString().split('T')[0]; // Today as last updated
@@ -627,7 +633,7 @@ const CityNomad = () => {
                     İşte bağlantı seçenekleriniz:
                   </p>
                   
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-6 mb-8">
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -667,8 +673,51 @@ const CityNomad = () => {
                       </ul>
                     </div>
                   </div>
+
+                  {/* Community WiFi Speed Tests Section */}
+                  <div className="border-t pt-6">
+                    <h3 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                      <Wifi className="h-5 w-5 text-primary" />
+                      Topluluk WiFi Hız Testleri
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Diğer dijital göçebelerin paylaştığı gerçek hız test sonuçları
+                    </p>
+                    
+                    <Tabs defaultValue="results" className="w-full">
+                      <TabsList className="mb-4">
+                        <TabsTrigger value="results">Sonuçlar</TabsTrigger>
+                        <TabsTrigger value="submit">Test Paylaş</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="results">
+                        <CommunitySpeedTests 
+                          key={speedTestKey}
+                          citySlug={city.slug} 
+                          limit={6} 
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="submit">
+                        <WifiSpeedTestForm 
+                          citySlug={city.slug}
+                          onSuccess={() => setSpeedTestKey(prev => prev + 1)}
+                        />
+                      </TabsContent>
+                    </Tabs>
+                  </div>
                 </CardContent>
               </Card>
+            </section>
+
+            {/* Section: Long-Stay Pricing */}
+            <section id="long-stay">
+              <LongStayPricing 
+                cityName={city.name}
+                citySlug={city.slug}
+                baseNightlyPrice={metrics ? parseInt(metrics.costOfLiving.replace(/[^0-9]/g, '')) / 30 * 1.5 : 1500}
+                currency="₺"
+              />
             </section>
 
             {/* Section: En İyi Bölgeler */}
