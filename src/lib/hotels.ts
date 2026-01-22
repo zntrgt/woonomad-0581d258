@@ -1,4 +1,5 @@
 // Hotel data for individual hotel pages
+import { allExpandedHotels } from './hotelsExpanded';
 
 export interface HotelData {
   slug: string;
@@ -23,8 +24,8 @@ export interface HotelData {
   bookingLink?: string;
 }
 
-// Hotel data - Expanded for all major cities
-export const hotelData: HotelData[] = [
+// Base hotel data - Expanded for all major cities
+const baseHotelData: HotelData[] = [
   // ========== TÜRKIYE - İSTANBUL ==========
   {
     slug: 'four-seasons-sultanahmet-istanbul',
@@ -1068,6 +1069,9 @@ export const hotelData: HotelData[] = [
   },
 ];
 
+// Combine base hotels with expanded hotels
+export const hotelData: HotelData[] = [...baseHotelData, ...allExpandedHotels];
+
 // Helper functions
 export function getHotelBySlug(slug: string): HotelData | null {
   return hotelData.find(hotel => hotel.slug === slug) || null;
@@ -1089,5 +1093,5 @@ export function getRelatedHotels(hotelSlug: string, citySlug: string, limit: num
 
 export function getHotelCities(): string[] {
   const cities = new Set(hotelData.map(hotel => hotel.citySlug));
-  return Array.from(cities);
+  return Array.from(cities) as string[];
 }
