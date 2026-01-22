@@ -393,8 +393,8 @@ export default function FlightRoute() {
           />
 
           {/* Tips Section */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">
+          <section className="mb-6">
+            <h2 className="text-xl font-bold mb-4">
               {route.originCity} - {route.destinationCity} Uçuş İpuçları
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
@@ -410,11 +410,13 @@ export default function FlightRoute() {
           </section>
 
           {/* Ad Banner */}
-          <AdBanner />
+          <div className="mb-6">
+            <AdBanner />
+          </div>
 
           {/* FAQ Section */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">
+          <section className="mb-6">
+            <h2 className="text-xl font-bold mb-4">
               {route.originCity} - {route.destinationCity} Sıkça Sorulan Sorular
             </h2>
             <Accordion type="single" collapsible className="w-full">
