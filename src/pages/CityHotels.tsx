@@ -1,414 +1,52 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart, Map, List, Scale } from 'lucide-react';
+import { Hotel, ExternalLink, Calendar, Users, MapPin, Star, Building, CreditCard } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
-import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
-import { HotelData, getHotelsByCity } from '@/lib/hotels';
-import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
-import { HotelMapClustered } from '@/components/HotelMapClustered';
-import { HotelComparison, HotelSelectButton } from '@/components/HotelComparison';
-import { LongStayPricing } from '@/components/LongStayPricing';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 // Travelpayouts Partner ID - Hotellook affiliate
 const HOTELLOOK_PARTNER_ID = "261144";
 
-const amenityIcons: Record<string, typeof Wifi> = {
-  wifi: Wifi,
-  breakfast: Coffee,
-  parking: Car,
-  gym: Dumbbell,
-  pool: Waves,
-  spa: Heart,
-};
-
-// Fallback sample data with real photos
-const getSampleHotels = (cityName: string): HotelType[] => {
-  const hotelPhotos = [
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop',
-  ];
-
-  const hotelTypes = [
-    { suffix: 'Grand Hotel', stars: 5, basePrice: 2500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast'] },
-    { suffix: 'Boutique Stay', stars: 4, basePrice: 1800, amenities: ['wifi', 'breakfast', 'spa'] },
-    { suffix: 'Business Hotel', stars: 4, basePrice: 1500, amenities: ['wifi', 'gym', 'parking', 'breakfast'] },
-    { suffix: 'Budget Inn', stars: 3, basePrice: 800, amenities: ['wifi', 'parking'] },
-    { suffix: 'Central Suites', stars: 4, basePrice: 1600, amenities: ['wifi', 'breakfast', 'gym'] },
-    { suffix: 'Luxury Palace', stars: 5, basePrice: 3500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast', 'parking'] },
-  ];
-
-  return hotelTypes.map((type, index) => ({
-    id: String(index + 1),
-    name: `${cityName} ${type.suffix}`,
-    stars: type.stars,
-    priceFrom: type.basePrice + Math.floor(Math.random() * 300),
-    priceAvg: Math.floor(type.basePrice * 1.2),
-    rating: 4.0 + (Math.random() * 0.9),
-    reviews: 150 + Math.floor(Math.random() * 1200),
-    location: { lat: 0, lon: 0 },
-    photo: hotelPhotos[index % hotelPhotos.length],
-    amenities: type.amenities,
-    link: '#',
-  }));
-};
-
-// Static hotel card for hotels with detail pages
-function StaticHotelCard({ hotel, citySlug }: { hotel: HotelData; citySlug: string }) {
-  return (
-    <Link to={`/sehir/${citySlug}/otel/${hotel.slug}`} className="block">
-      <Card className="card-modern overflow-hidden group h-full">
-        <div className="relative aspect-video overflow-hidden">
-          <img
-            src={hotel.images[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'}
-            alt={hotel.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          
-          <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
-            {Array.from({ length: hotel.stars }).map((_, i) => (
-              <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
-            ))}
-          </div>
-          
-          {hotel.priceRange && (
-            <div className="absolute bottom-3 right-3">
-              <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
-                <div className="text-xs text-muted-foreground">Gecelik</div>
-                <div className="text-xl font-display font-bold text-primary">
-                  ₺{hotel.priceRange.min.toLocaleString('tr-TR')}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <CardContent className="p-4">
-          <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
-            {hotel.name}
-          </h3>
-          
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-            {hotel.rating && (
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
-                <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
-              </div>
-            )}
-            {hotel.neighborhood && <span>{hotel.neighborhood}</span>}
-          </div>
-          
-          <div className="flex items-center text-sm text-primary font-medium">
-            <span>Detayları Gör</span>
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
-
-function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
-  const isPopular = index === 0;
-  const isDeal = hotel.priceFrom < 1000;
-  
-  return (
-    <Card className="card-modern overflow-hidden group">
-      <div className="relative aspect-video overflow-hidden">
-        <img
-          src={hotel.photo || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'}
-          alt={hotel.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        
-        <div className="absolute top-3 left-3 flex gap-2">
-          {isPopular && <Badge variant="popular">Popüler</Badge>}
-          {isDeal && <Badge variant="deal">Fırsat</Badge>}
-        </div>
-        
-        <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
-          {Array.from({ length: hotel.stars }).map((_, i) => (
-            <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
-          ))}
-        </div>
-        
-        <div className="absolute bottom-3 right-3">
-          <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
-            <div className="text-xs text-muted-foreground">Gecelik</div>
-            <div className="text-xl font-display font-bold text-primary">
-              ₺{hotel.priceFrom.toLocaleString('tr-TR')}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <CardContent className="p-4">
-        <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
-          {hotel.name}
-        </h3>
-        
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-          <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
-            <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
-            <span>({hotel.reviews} yorum)</span>
-          </div>
-        </div>
-        
-        {/* Amenities */}
-        {hotel.amenities && hotel.amenities.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {hotel.amenities.slice(0, 4).map((amenity) => {
-              const Icon = amenityIcons[amenity] || Wifi;
-              return (
-                <Badge key={amenity} variant="outline" className="text-[10px] px-2 py-0.5 gap-1">
-                  <Icon className="h-3 w-3" />
-                  <span className="hidden sm:inline capitalize">{amenity}</span>
-                </Badge>
-              );
-            })}
-            {hotel.amenities.length > 4 && (
-              <Badge variant="outline" className="text-[10px] px-2 py-0.5">
-                +{hotel.amenities.length - 4}
-              </Badge>
-            )}
-          </div>
-        )}
-        
-        <a href={hotel.link} target="_blank" rel="noopener noreferrer sponsored">
-          <Button className="w-full gradient-primary hover:opacity-90">
-            <span>Rezervasyon Yap</span>
-            <ExternalLink className="h-4 w-4 ml-2" />
-          </Button>
-        </a>
-      </CardContent>
-    </Card>
-  );
-}
-
-interface HotelCardWithComparisonProps {
-  hotel: HotelType;
-  index: number;
-  isSelected: boolean;
-  onToggle: (id: string) => void;
-  disabled: boolean;
-}
-
-function HotelCardWithComparison({ hotel, index, isSelected, onToggle, disabled }: HotelCardWithComparisonProps) {
-  const isPopular = index === 0;
-  const isDeal = hotel.priceFrom < 1000;
-  
-  return (
-    <Card className="card-modern overflow-hidden group">
-      <div className="relative aspect-video overflow-hidden">
-        <img
-          src={hotel.photo || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'}
-          alt={hotel.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        
-        <div className="absolute top-3 left-3 flex gap-2">
-          {isPopular && <Badge variant="popular">Popüler</Badge>}
-          {isDeal && <Badge variant="deal">Fırsat</Badge>}
-        </div>
-        
-        <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
-          {Array.from({ length: hotel.stars }).map((_, i) => (
-            <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
-          ))}
-        </div>
-        
-        <div className="absolute bottom-3 right-3">
-          <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
-            <div className="text-xs text-muted-foreground">Gecelik</div>
-            <div className="text-xl font-display font-bold text-primary">
-              ₺{hotel.priceFrom.toLocaleString('tr-TR')}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <CardContent className="p-4">
-        <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
-          {hotel.name}
-        </h3>
-        
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-          <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
-            <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
-            <span>({hotel.reviews} yorum)</span>
-          </div>
-        </div>
-        
-        {/* Amenities */}
-        {hotel.amenities && hotel.amenities.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {hotel.amenities.slice(0, 4).map((amenity) => {
-              const Icon = amenityIcons[amenity] || Wifi;
-              return (
-                <Badge key={amenity} variant="outline" className="text-[10px] px-2 py-0.5 gap-1">
-                  <Icon className="h-3 w-3" />
-                  <span className="hidden sm:inline capitalize">{amenity}</span>
-                </Badge>
-              );
-            })}
-            {hotel.amenities.length > 4 && (
-              <Badge variant="outline" className="text-[10px] px-2 py-0.5">
-                +{hotel.amenities.length - 4}
-              </Badge>
-            )}
-          </div>
-        )}
-        
-        <div className="flex gap-2">
-          <a href={hotel.link} target="_blank" rel="noopener noreferrer sponsored" className="flex-1">
-            <Button className="w-full gradient-primary hover:opacity-90">
-              <span>Rezervasyon</span>
-              <ExternalLink className="h-4 w-4 ml-2" />
-            </Button>
-          </a>
-          <HotelSelectButton
-            hotelId={hotel.id}
-            isSelected={isSelected}
-            onToggle={onToggle}
-            disabled={disabled}
-          />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { t, i18n } = useTranslation();
   const city = slug ? getCityBySlug(slug) : null;
   const { displayName, displayCountry } = useCityDisplay(city);
-  const { hotels, isLoading, error, affiliateLink, searchHotels } = useHotelSearch();
-  const [hasSearched, setHasSearched] = useState(false);
-  
-  // Filter and sort state
-  const [filters, setFilters] = useState<HotelFilterOptions>({
-    priceRange: [0, 10000],
-    minStars: 0,
-    minRating: 0,
-    amenities: [],
-  });
-  const [sortBy, setSortBy] = useState<SortOption>('popular');
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
-  const [selectedForComparison, setSelectedForComparison] = useState<string[]>([]);
-  
-  const handleToggleComparison = (hotelId: string) => {
-    setSelectedForComparison(prev => {
-      if (prev.includes(hotelId)) {
-        return prev.filter(id => id !== hotelId);
-      }
-      if (prev.length >= 3) return prev; // Max 3 hotels
-      return [...prev, hotelId];
-    });
-  };
-  
-  const handleClearComparison = () => {
-    setSelectedForComparison([]);
-  };
   
   // Default dates
-  const checkIn = format(addDays(new Date(), 7), 'yyyy-MM-dd');
-  const checkOut = format(addDays(new Date(), 9), 'yyyy-MM-dd');
+  const today = new Date();
+  const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
+  const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
   
-  useEffect(() => {
-    if (city && !hasSearched) {
-      setHasSearched(true);
-      searchHotels({
-        location: city.nameEn || city.name,
-        checkIn,
-        checkOut,
-        adults: 2,
-        limit: 24,
-      });
-    }
-  }, [city, hasSearched]);
+  // Language for Travelpayouts
+  const tpLanguage = i18n.language === 'tr' ? 'tr' : i18n.language === 'de' ? 'de' : i18n.language === 'fr' ? 'fr' : i18n.language === 'es' ? 'es' : 'en';
   
-  // Use API hotels if available, otherwise use sample data
-  const displayHotels = hotels.length > 0 ? hotels : getSampleHotels(city?.name || 'City');
+  // Generate Hotellook affiliate search URL
+  const searchCity = city?.nameEn || city?.name || '';
+  const affiliateSearchUrl = `https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}`;
   
-  // Calculate max price for filter
-  const maxPrice = useMemo(() => {
-    return Math.max(...displayHotels.map(h => h.priceFrom), 5000);
-  }, [displayHotels]);
-  
-  // Apply filters and sorting
-  const filteredAndSortedHotels = useMemo(() => {
-    let result = displayHotels.filter(hotel => {
-      // Price filter
-      if (hotel.priceFrom < filters.priceRange[0] || hotel.priceFrom > filters.priceRange[1]) {
-        return false;
-      }
-      // Stars filter
-      if (filters.minStars > 0 && hotel.stars < filters.minStars) {
-        return false;
-      }
-      // Rating filter
-      if (filters.minRating > 0 && hotel.rating < filters.minRating) {
-        return false;
-      }
-      // Amenities filter
-      if (filters.amenities.length > 0 && hotel.amenities) {
-        const hasAllAmenities = filters.amenities.every(a => hotel.amenities?.includes(a));
-        if (!hasAllAmenities) return false;
-      }
-      return true;
-    });
-    
-    // Sort
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case 'price-asc':
-          return a.priceFrom - b.priceFrom;
-        case 'price-desc':
-          return b.priceFrom - a.priceFrom;
-        case 'rating':
-          return b.rating - a.rating;
-        case 'stars':
-          return b.stars - a.stars;
-        case 'popular':
-        default:
-          return b.reviews - a.reviews;
-      }
-    });
-    
-    return result;
-  }, [displayHotels, filters, sortBy]);
+  // Travelpayouts White Label Widget URL
+  const whitelabelUrl = `https://tp.media/content?0=null&1=12&currency=try&promo_id=4040&shmarker=${HOTELLOOK_PARTNER_ID}&campaign_id=101&trs=304871&search_host=search.hotellook.com&locale=${tpLanguage}&powered_by=true&destination=${encodeURIComponent(searchCity)}&check_in=${checkIn}&check_out=${checkOut}&adults=2`;
   
   if (!city) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl font-display font-bold mb-4">{t('cityNotFound', 'Şehir Bulunamadı')}</h1>
           <Link to="/sehirler" className="text-primary hover:underline">
-            Tüm Şehirlere Gözat
+            {t('browseAllCities', 'Tüm Şehirlere Gözat')}
           </Link>
         </div>
       </div>
@@ -419,48 +57,31 @@ const CityHotels = () => {
   const currentYear = new Date().getFullYear();
 
   const breadcrumbItems = [
-    { label: 'Ana Sayfa', href: '/' },
-    { label: 'Şehirler', href: '/sehirler' },
+    { label: t('nav.home', 'Ana Sayfa'), href: '/' },
+    { label: t('nav.cities', 'Şehirler'), href: '/sehirler' },
     { label: displayName, href: `/sehir/${city.slug}` },
-    { label: 'Oteller' }
+    { label: t('nav.hotels', 'Oteller') }
   ];
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": `${displayName} Otelleri`,
-    "description": `${displayName} otel fiyatları ve rezervasyon`,
-    "numberOfItems": filteredAndSortedHotels.length,
-    "itemListElement": filteredAndSortedHotels.slice(0, 10).map((hotel, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "Hotel",
-        "name": hotel.name,
-        "starRating": {
-          "@type": "Rating",
-          "ratingValue": hotel.stars
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": hotel.rating.toFixed(1),
-          "reviewCount": hotel.reviews
-        }
-      }
-    }))
+    "name": `${displayName} ${t('nav.hotels', 'Otelleri')}`,
+    "description": `${displayName} ${t('hotels.hotelPricesAndBooking', 'otel fiyatları ve rezervasyon')}`,
+    "numberOfItems": 50,
   };
 
   return (
     <>
       <Helmet>
-        <title>{`${displayName} Otelleri - En İyi Fiyatlarla Otel Rezervasyonu ${currentYear} | WooNomad`}</title>
+        <title>{`${displayName} ${t('nav.hotels', 'Otelleri')} - ${t('hotels.bestPricesHotelBooking', 'En İyi Fiyatlarla Otel Rezervasyonu')} ${currentYear} | WooNomad`}</title>
         <meta 
           name="description" 
-          content={`${displayName} otel fiyatları ve online rezervasyon. ${displayCountry}'da en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın.`}
+          content={`${displayName} ${t('hotels.hotelPricesOnlineBooking', 'otel fiyatları ve online rezervasyon')}. ${displayCountry}'da ${t('hotels.compareBestHotels', "en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın")}.`}
         />
         <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/oteller`} />
-        <meta property="og:title" content={`${displayName} Otelleri | WooNomad`} />
-        <meta property="og:description" content={`${displayName} otel fiyatları ve rezervasyon`} />
+        <meta property="og:title" content={`${displayName} ${t('nav.hotels', 'Otelleri')} | WooNomad`} />
+        <meta property="og:description" content={`${displayName} ${t('hotels.hotelPricesAndBooking', 'otel fiyatları ve rezervasyon')}`} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
@@ -472,210 +93,183 @@ const CityHotels = () => {
           <Breadcrumb items={breadcrumbItems} />
           
           {/* Hero Section */}
-          <section className="text-center mb-6 animate-fade-in">
+          <section className="text-center mb-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-3">
               <Hotel className="h-4 w-4" />
-              <span>Otel Karşılaştırma</span>
+              <span>{t('hotels.hotelComparison', 'Otel Karşılaştırma')}</span>
             </div>
             
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
-              {flag} {displayName} <span className="text-gradient">Otelleri</span>
+            <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3">
+              {flag} {displayName} <span className="text-gradient">{t('nav.hotels', 'Otelleri')}</span>
             </h1>
             
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              {displayName} için en uygun otel fiyatlarını karşılaştırın
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
+              {displayName} {t('hotels.compareHotelPricesFor', 'için en uygun otel fiyatlarını karşılaştırın')}
             </p>
-          </section>
-          
-          {/* Search Info */}
-          <div className="card-modern p-3 mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
+            
+            {/* Search Info */}
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground mb-6">
+              <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
                 <Calendar className="h-4 w-4" />
                 <span>
                   {format(new Date(checkIn), 'd MMM', { locale: tr })} - {format(new Date(checkOut), 'd MMM', { locale: tr })}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
                 <Users className="h-4 w-4" />
-                <span>2 Yetişkin</span>
+                <span>2 {t('hotels.adults', 'Yetişkin')}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
+                <MapPin className="h-4 w-4" />
+                <span>{displayCountry}</span>
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              {/* View Toggle */}
-              <div className="flex rounded-lg border overflow-hidden">
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="rounded-none h-8"
-                  onClick={() => setViewMode('list')}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'map' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="rounded-none h-8"
-                  onClick={() => setViewMode('map')}
-                >
-                  <Map className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <SortSelector value={sortBy} onChange={setSortBy} />
-            </div>
-          </div>
-          
-          {/* Filters */}
-          {!isLoading && (
-            <HotelFilters
-              maxPrice={maxPrice}
-              onFilterChange={setFilters}
-              resultsCount={filteredAndSortedHotels.length}
-              totalCount={displayHotels.length}
-            />
-          )}
-          
-          {/* Hotellook Affiliate CTA */}
-          {affiliateLink && (
-            <div className="card-modern p-4 mb-6 text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
-                <Hotel className="h-4 w-4" />
-                <span>Hotellook Partner</span>
-              </div>
-              <h3 className="font-display font-semibold text-xl mb-2">
-                {city.name} Otellerinde En İyi Fiyatlar
-              </h3>
-              <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
-                Hotellook üzerinden güncel otel fiyatlarını karşılaştırın ve en uygun rezervasyonu yapın
-              </p>
-              <a href={affiliateLink} target="_blank" rel="noopener noreferrer sponsored">
-                <Button size="lg" className="gradient-primary hover:opacity-90">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Hotellook'ta Otelleri Gör
-                </Button>
-              </a>
-            </div>
-          )}
-          
-          {/* Hotel Grid */}
-          {isLoading ? (
-            <div className="text-center py-12">
-              <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">Oteller aranıyor...</p>
-            </div>
-          ) : filteredAndSortedHotels.length === 0 ? (
-            <div className="text-center py-12 card-modern">
-              <Hotel className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Otel Bulunamadı</h3>
-              <p className="text-muted-foreground mb-4">
-                Filtre kriterlerinize uygun otel bulunamadı. Filtreleri değiştirmeyi deneyin.
-              </p>
-              <Button variant="outline" onClick={() => setFilters({
-                priceRange: [0, maxPrice],
-                minStars: 0,
-                minRating: 0,
-                amenities: [],
-              })}>
-                Filtreleri Temizle
+            {/* Main CTA */}
+            <a 
+              href={affiliateSearchUrl}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+            >
+              <Button size="lg" className="gradient-primary hover:opacity-90 gap-2">
+                <Hotel className="h-5 w-5" />
+                {t('hotels.searchHotels', 'Otel Ara')}
+                <ExternalLink className="h-4 w-4" />
               </Button>
-            </div>
-          ) : viewMode === 'map' ? (
-            <section className="mb-8">
-              <HotelMapClustered 
-                hotels={filteredAndSortedHotels} 
-                cityName={city.name}
-              />
-              {/* Small hotel list below map */}
-              <div className="mt-4 grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-                {filteredAndSortedHotels.slice(0, 8).map((hotel) => (
-                  <div key={hotel.id} className="p-3 border rounded-lg hover:border-primary/50 transition-colors">
-                    <div className="flex items-center gap-2">
-                      {hotel.photo && (
-                        <img src={hotel.photo} alt={hotel.name} className="w-10 h-10 rounded object-cover" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium truncate">{hotel.name}</h4>
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: Math.min(hotel.stars, 5) }).map((_, i) => (
-                            <Star key={i} className="h-2.5 w-2.5 fill-travel-gold text-travel-gold" />
-                          ))}
-                          <span className="text-xs text-primary font-semibold ml-1">
-                            ₺{hotel.priceFrom.toLocaleString('tr-TR')}
-                          </span>
-                        </div>
-                      </div>
-                      <HotelSelectButton
-                        hotelId={hotel.id}
-                        isSelected={selectedForComparison.includes(hotel.id)}
-                        onToggle={handleToggleComparison}
-                        disabled={selectedForComparison.length >= 3}
-                      />
-                    </div>
+            </a>
+          </section>
+          
+          {/* Quick Stats */}
+          <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <Card className="text-center p-4">
+              <Hotel className="h-8 w-8 mx-auto text-primary mb-2" />
+              <div className="text-2xl font-bold text-primary">500+</div>
+              <div className="text-sm text-muted-foreground">{t('hotels.hotelOptions', 'Otel Seçeneği')}</div>
+            </Card>
+            <Card className="text-center p-4">
+              <Star className="h-8 w-8 mx-auto text-travel-gold mb-2" />
+              <div className="text-2xl font-bold text-primary">4.5+</div>
+              <div className="text-sm text-muted-foreground">{t('hotels.avgRating', 'Ortalama Puan')}</div>
+            </Card>
+            <Card className="text-center p-4">
+              <CreditCard className="h-8 w-8 mx-auto text-green-600 mb-2" />
+              <div className="text-2xl font-bold text-primary">%30</div>
+              <div className="text-sm text-muted-foreground">{t('hotels.savingsUpTo', 'Tasarruf')}</div>
+            </Card>
+            <Card className="text-center p-4">
+              <Building className="h-8 w-8 mx-auto text-blue-600 mb-2" />
+              <div className="text-2xl font-bold text-primary">1-5★</div>
+              <div className="text-sm text-muted-foreground">{t('hotels.allCategories', 'Tüm Kategoriler')}</div>
+            </Card>
+          </section>
+          
+          {/* Hotel Search Widget - Travelpayouts White Label */}
+          <section className="mb-8">
+            <Card className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 p-8 text-center">
+                  <Hotel className="h-16 w-16 mx-auto text-primary mb-4" />
+                  <h2 className="text-2xl font-display font-bold mb-3">
+                    {displayName} {t('hotels.findBestHotels', 'En İyi Otelleri Keşfet')}
+                  </h2>
+                  <p className="text-muted-foreground max-w-xl mx-auto mb-6">
+                    {t('hotels.compareHotelPrices', 'Binlerce oteli karşılaştır, en uygun fiyatı bul')}. 
+                    Hotellook {t('hotels.poweredSearch', 'destekli arama ile güvenilir fiyat karşılaştırması')}.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a 
+                      href={affiliateSearchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                    >
+                      <Button size="lg" className="gradient-primary hover:opacity-90 w-full sm:w-auto gap-2">
+                        <Hotel className="h-5 w-5" />
+                        {t('hotels.searchAllHotels', 'Tüm Otelleri Ara')}
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </a>
+                    <a 
+                      href={`https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}&stars=5`}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                    >
+                      <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2">
+                        <Star className="h-5 w-5 text-travel-gold" />
+                        {t('hotels.luxuryHotels', '5 Yıldızlı Oteller')}
+                      </Button>
+                    </a>
                   </div>
-                ))}
-              </div>
-            </section>
-          ) : (
-            <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-              {filteredAndSortedHotels.map((hotel, index) => (
-                <div 
-                  key={hotel.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}
-                >
-                  <HotelCardWithComparison 
-                    hotel={hotel} 
-                    index={index}
-                    isSelected={selectedForComparison.includes(hotel.id)}
-                    onToggle={handleToggleComparison}
-                    disabled={selectedForComparison.length >= 3}
-                  />
+                  
+                  {/* Trust badges */}
+                  <div className="flex flex-wrap justify-center gap-4 mt-6 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">✓ {t('hotels.freeCancellation', 'Ücretsiz İptal')}</span>
+                    <span className="flex items-center gap-1">✓ {t('hotels.bestPriceGuarantee', 'En İyi Fiyat Garantisi')}</span>
+                    <span className="flex items-center gap-1">✓ {t('hotels.securePayment', 'Güvenli Ödeme')}</span>
+                    <span className="flex items-center gap-1">✓ {t('hotels.support247', '7/24 Destek')}</span>
+                  </div>
                 </div>
+              </CardContent>
+            </Card>
+          </section>
+          
+          {/* Hotel Categories */}
+          <section className="mb-8">
+            <h2 className="text-xl font-display font-bold mb-4">{t('hotels.hotelsByCategory', 'Kategoriye Göre Oteller')}</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { stars: 5, label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400' },
+                { stars: 4, label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400' },
+                { stars: 3, label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400' },
+                { stars: 0, label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400' },
+              ].map((category) => (
+                <a 
+                  key={category.stars}
+                  href={`https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}${category.stars > 0 ? `&stars=${category.stars}` : ''}`}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="group"
+                >
+                  <Card className="overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02]">
+                    <div className={`bg-gradient-to-br ${category.color} p-4 text-white`}>
+                      <div className="flex items-center gap-1 mb-2">
+                        {category.stars > 0 ? (
+                          Array.from({ length: category.stars }).map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-white" />
+                          ))
+                        ) : (
+                          <CreditCard className="h-5 w-5" />
+                        )}
+                      </div>
+                      <h3 className="font-semibold">{category.label}</h3>
+                      <div className="flex items-center gap-1 mt-2 text-sm opacity-80 group-hover:opacity-100">
+                        <span>{t('hotels.viewHotels', 'Otelleri Gör')}</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Card>
+                </a>
               ))}
-            </section>
-          )}
-          
-          {/* Hotel Comparison Bar */}
-          <HotelComparison
-            hotels={filteredAndSortedHotels}
-            selectedHotels={selectedForComparison}
-            onToggleHotel={handleToggleComparison}
-            onClearSelection={handleClearComparison}
-          />
-          
-          {/* Long-Stay Pricing Calculator */}
-          <section className="mb-6">
-            <LongStayPricing 
-              cityName={displayName}
-              citySlug={city.slug}
-              baseNightlyPrice={displayHotels.length > 0 
-                ? Math.round(displayHotels.reduce((acc, h) => acc + h.priceFrom, 0) / displayHotels.length)
-                : 1500
-              }
-              currency="₺"
-            />
+            </div>
           </section>
           
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
-            <h2 className="text-xl font-display font-bold mb-4">{city.name} Otel Rehberi</h2>
+            <h2 className="text-xl font-display font-bold mb-4">{city.name} {t('hotels.hotelGuide', 'Otel Rehberi')}</h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
-                {city.name}, {city.country}'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. 
-                Şehirde her bütçeye uygun konaklama seçenekleri bulunmaktadır.
+                {city.name}, {city.country} {t('hotels.hotelGuideIntro', "'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. Şehirde her bütçeye uygun konaklama seçenekleri bulunmaktadır.")}
               </p>
               
               <h3 className="text-xl font-display font-semibold text-foreground mt-6 mb-3">
-                Konaklama İpuçları
+                {t('hotels.accommodationTips', 'Konaklama İpuçları')}
               </h3>
               <ul className="space-y-2">
-                <li>• Şehir merkezinde konaklamak ulaşım masraflarını azaltır</li>
-                <li>• Erken rezervasyon ile %20-30 tasarruf sağlayabilirsiniz</li>
-                <li>• Kahvaltı dahil seçenekleri değerlendirin</li>
-                <li>• Hafta içi konaklamalar genellikle daha uygun</li>
-                <li>• <strong>30+ gün kalacaksanız:</strong> Airbnb veya coliving seçenekleri daha ekonomik</li>
+                <li>• {t('hotels.tip1', 'Şehir merkezinde konaklamak ulaşım masraflarını azaltır')}</li>
+                <li>• {t('hotels.tip2', 'Erken rezervasyon ile %20-30 tasarruf sağlayabilirsiniz')}</li>
+                <li>• {t('hotels.tip3', 'Kahvaltı dahil seçenekleri değerlendirin')}</li>
+                <li>• {t('hotels.tip4', 'Hafta içi konaklamalar genellikle daha uygun')}</li>
+                <li>• <strong>{t('hotels.tip5LongStay', '30+ gün kalacaksanız:')}</strong> {t('hotels.tip5Desc', 'Airbnb veya coliving seçenekleri daha ekonomik')}</li>
               </ul>
             </div>
           </section>
@@ -692,21 +286,21 @@ const CityHotels = () => {
           <section className="grid md:grid-cols-3 gap-4">
             <Link to={`/sehir/${city.slug}/aktiviteler`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                🎯 {city.name} Aktiviteleri
+                🎯 {city.name} {t('activities.title', 'Aktiviteleri')}
               </h3>
-              <p className="text-sm text-muted-foreground">Turlar ve deneyimler</p>
+              <p className="text-sm text-muted-foreground">{t('activities.toursAndExperiences', 'Turlar ve deneyimler')}</p>
             </Link>
             <Link to={`/sehir/${city.slug}/ucak-bileti`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                ✈️ {city.name} Uçak Bileti
+                ✈️ {city.name} {t('flights.flightTicket', 'Uçak Bileti')}
               </h3>
-              <p className="text-sm text-muted-foreground">En uygun uçuş fiyatlarını karşılaştırın</p>
+              <p className="text-sm text-muted-foreground">{t('flights.compareFlightPrices', 'En uygun uçuş fiyatlarını karşılaştırın')}</p>
             </Link>
             <Link to={`/sehir/${city.slug}`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                🏙️ {city.name} Şehir Rehberi
+                🏙️ {city.name} {t('cities.about', 'Şehir Rehberi')}
               </h3>
-              <p className="text-sm text-muted-foreground">Gezilecek yerler ve pratik bilgiler</p>
+              <p className="text-sm text-muted-foreground">{t('cities.highlights', 'Gezilecek yerler ve pratik bilgiler')}</p>
             </Link>
           </section>
         </main>
@@ -714,7 +308,7 @@ const CityHotels = () => {
         {/* Footer */}
         <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {currentYear} WooNomad. Tüm hakları saklıdır.
+            © {currentYear} WooNomad. {t('common.allRightsReserved', 'Tüm hakları saklıdır')}.
           </div>
         </footer>
 
