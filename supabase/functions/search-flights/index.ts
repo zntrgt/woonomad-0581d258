@@ -464,6 +464,8 @@ serve(async (req) => {
 
     } else {
       // Specific destination search - GLOBAL SUPPORT
+      let nearbyDateFlights: any[] = [];
+      
       const searchPromises = searchPairs.map(async (pair) => {
         const oneWay = !pair.return;
 
@@ -498,7 +500,7 @@ serve(async (req) => {
         };
 
         const exact = await callApi(pair.depart, pair.return);
-        if (exact.length > 0) return exact;
+        if (exact.length > 0) return { exact, monthData: [] };
 
         const monthDepart = pair.depart.slice(0, 7);
         const monthReturn = pair.return ? pair.return.slice(0, 7) : undefined;
@@ -518,33 +520,65 @@ serve(async (req) => {
           return true;
         });
 
-        return filtered;
+        // Return both filtered (exact match) and all month data for fallback
+        return { exact: filtered, monthData };
       });
 
       const results = await Promise.all(searchPromises);
-      allFlights = results.flat();
+      allFlights = results.flatMap(r => r.exact);
+      
+      // Collect month data for nearby date suggestions
+      const allMonthData = results.flatMap(r => r.monthData);
 
-      // If no results, provide nearby alternatives
-      if (allFlights.length === 0) {
+      // If no results for exact dates, provide nearby date flights from same route
+      if (allFlights.length === 0 && allMonthData.length > 0) {
+        // Sort by departure date and pick closest ones
+        const sorted = allMonthData
+          .filter((f: any) => f.departure_at)
+          .sort((a: any, b: any) => {
+            const dateA = new Date(a.departure_at).getTime();
+            const dateB = new Date(b.departure_at).getTime();
+            const target = new Date(departDate).getTime();
+            return Math.abs(dateA - target) - Math.abs(dateB - target);
+          });
+        
+        nearbyDateFlights = sorted.slice(0, 5);
+        console.log('No exact date results, returning nearby dates:', nearbyDateFlights.length);
+      }
+
+      // If still no results, provide airport alternatives
+      if (allFlights.length === 0 && nearbyDateFlights.length === 0) {
         nearbyAlternatives = NEARBY_ALTERNATIVES[destination] || NEARBY_ALTERNATIVES[origin] || [];
         console.log('No results, suggesting alternatives:', nearbyAlternatives);
       }
+      
+      // If we have nearby date flights but no exact matches, use those
+      if (allFlights.length === 0 && nearbyDateFlights.length > 0) {
+        allFlights = nearbyDateFlights;
+      }
     }
 
-    console.log('API response success, data count:', allFlights.length);
+    // Skip strict date filtering if we already relaxed to nearby dates
+    const skipStrictDateFilter = !isAnywhereSearch && !isContinentSearch && allFlights.length > 0;
+    
+    let dateFilteredFlights: any[];
+    if (skipStrictDateFilter) {
+      // Already filtered or using nearby dates - just dedupe
+      dateFilteredFlights = allFlights;
+    } else {
+      dateFilteredFlights = allFlights.filter((flight: any) => {
+        const dep = dateOnly(flight.departure_at);
+        if (!dep || !allowedDepartDates.has(dep)) return false;
 
-    const dateFilteredFlights = allFlights.filter((flight: any) => {
-      const dep = dateOnly(flight.departure_at);
-      if (!dep || !allowedDepartDates.has(dep)) return false;
+        if (returnDate) {
+          const ret = dateOnly(flight.return_at);
+          if (!ret) return false;
+          return allowedPairs.has(`${dep}|${ret}`);
+        }
 
-      if (returnDate) {
-        const ret = dateOnly(flight.return_at);
-        if (!ret) return false;
-        return allowedPairs.has(`${dep}|${ret}`);
-      }
-
-      return true;
-    });
+        return true;
+      });
+    }
 
     console.log('After date filter:', dateFilteredFlights.length);
 
