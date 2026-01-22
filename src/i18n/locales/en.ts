@@ -235,6 +235,23 @@ const en = {
     introduction: 'Introduction',
     development: 'Development',
     conclusion: 'Conclusion',
+    featured: 'Featured',
+    searchPlaceholder: 'Search blog posts...',
+    postsFound: '{{count}} posts found',
+    noPostsFound: 'No posts found',
+    tryDifferentFilters: 'Try different filters or search terms',
+    travelInspiration: 'Travel Inspiration',
+    blogManagement: 'Blog Management',
+    allCities: 'All Cities',
+    categories: {
+      all: 'All',
+      nomad: 'Digital Nomad',
+      festival: 'Festival',
+      culture: 'Culture',
+      lifestyle: 'Lifestyle',
+      'travel-tips': 'Travel Tips',
+      food: 'Food & Drink',
+    },
   },
 
   // Auth
