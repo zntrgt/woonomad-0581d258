@@ -479,15 +479,15 @@ const Index = () => {
             )}
 
             {/* Popular Routes */}
-            <div className={cn("w-full max-w-3xl", hasResultsSection ? "mt-12" : "mt-10 md:mt-16")}>
+            <div className={cn("w-full max-w-3xl", hasResultsSection ? "mt-8" : "mt-6 md:mt-10")}>
               <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
             </div>
           </section>
 
           {/* Features Section */}
-          <section className="py-16 md:py-24 section-routes" aria-labelledby="seo-features">
+          <section className="py-8 md:py-12 section-routes" aria-labelledby="seo-features">
             <div className="max-w-6xl mx-auto px-4">
-              <div className="text-center mb-12">
+              <div className="text-center mb-6">
                 <h2 id="seo-features" className="text-2xl md:text-4xl font-display font-bold text-foreground mb-4">
                   {t('index.whyWooNomad')}
                 </h2>
@@ -538,23 +538,23 @@ const Index = () => {
           </section>
 
           {/* Banner Ad */}
-          <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto px-4 py-4">
             <AdBanner />
           </div>
 
           {/* LLM-Friendly Content */}
-          <section className="max-w-4xl mx-auto px-4 py-12 md:py-16 seo-content" aria-labelledby="seo-info">
-            <div className="card-modern p-8 md:p-12">
-              <h2 id="seo-info" className="text-2xl md:text-3xl font-display font-bold mb-8 text-foreground">
+          <section className="max-w-4xl mx-auto px-4 py-6 md:py-8 seo-content" aria-labelledby="seo-info">
+            <div className="card-modern p-6 md:p-8">
+              <h2 id="seo-info" className="text-2xl md:text-3xl font-display font-bold mb-4 text-foreground">
                 Ucuz Uçak Bileti Nasıl Bulunur?
               </h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
+              <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
                 <p className="leading-relaxed text-base md:text-lg">
                   En uygun uçak bileti fiyatlarını bulmak için doğru zamanı ve stratejileri bilmek önemlidir. 
                   WooNomad olarak, yolcuların en avantajlı fiyatları yakalamasına yardımcı oluyoruz.
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-8 my-10">
+                <div className="grid md:grid-cols-2 gap-6 my-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-display font-semibold text-foreground flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
