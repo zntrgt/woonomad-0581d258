@@ -87,17 +87,17 @@ export function FlightDatePicker({
   const weekendLabel = getWeekendLabel();
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Quick Weekend Buttons */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted-foreground">Hızlı Seçim:</span>
+    <div className="flex flex-col gap-3 sm:gap-4">
+      {/* Quick Weekend Buttons - Compact */}
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+        <span className="text-xs sm:text-sm text-muted-foreground mr-1">Hızlı:</span>
         <Button
           variant="outline"
           size="sm"
           onClick={() => selectWeekend(0)}
           className={cn(
-            "rounded-full text-xs",
-            weekendLabel === 'Bu Hafta Sonu' && "bg-primary text-primary-foreground"
+            "rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3",
+            weekendLabel === 'Bu Hafta Sonu' && "bg-primary text-primary-foreground border-primary"
           )}
         >
           Bu Hafta Sonu
@@ -107,8 +107,8 @@ export function FlightDatePicker({
           size="sm"
           onClick={() => selectWeekend(1)}
           className={cn(
-            "rounded-full text-xs",
-            weekendLabel === 'Gelecek Hafta Sonu' && "bg-primary text-primary-foreground"
+            "rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3",
+            weekendLabel === 'Gelecek Hafta Sonu' && "bg-primary text-primary-foreground border-primary"
           )}
         >
           Gelecek Hafta Sonu
@@ -117,9 +117,9 @@ export function FlightDatePicker({
           variant="outline"
           size="sm"
           onClick={() => selectWeekend(2)}
-          className="rounded-full text-xs"
+          className="rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3"
         >
-          2 Hafta Sonra
+          +2 Hafta
         </Button>
       </div>
 
@@ -204,42 +204,24 @@ export function FlightDatePicker({
         )}
       </div>
 
-      {/* Flexible Dates Toggle */}
-      <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/30">
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">Esnek Tarihler</span>
-          <span className="text-xs text-muted-foreground">
-            ±1 gün içindeki uçuşları da göster
-          </span>
+      {/* Flexible Dates Toggle - Inline compact */}
+      <div className="flex items-center justify-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-lg bg-muted/30 border border-border/30">
+          <Switch
+            checked={isFlexible}
+            onCheckedChange={onFlexibleChange}
+            className="scale-90 sm:scale-100"
+          />
+          <span className="text-xs sm:text-sm font-medium">±1 gün esnek</span>
         </div>
-        <Switch
-          checked={isFlexible}
-          onCheckedChange={onFlexibleChange}
-        />
+        
+        {/* Weekend label badge - no date repetition */}
+        {weekendLabel && (
+          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
+            {weekendLabel}
+          </span>
+        )}
       </div>
-
-      {/* Selected Date Summary */}
-      {departDate && (
-        <div className="flex items-center justify-center gap-2 text-sm">
-          <span className={cn(
-            "px-3 py-1.5 rounded-full font-medium",
-            "bg-primary/10 text-primary"
-          )}>
-            📅 {formatShortDate(departDate)}
-            {!isOneWay && returnDate && ` - ${formatShortDate(returnDate)}`}
-          </span>
-          {isFlexible && (
-            <span className="px-2 py-1 rounded-full text-xs bg-accent/10 text-accent">
-              ±1 gün
-            </span>
-          )}
-          {weekendLabel && (
-            <span className="text-xs text-muted-foreground">
-              ({weekendLabel})
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 }
