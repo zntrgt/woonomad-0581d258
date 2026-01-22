@@ -154,17 +154,37 @@ const cities = [
   "marakes", "zanzibar"
 ];
 
-// Static hotel data - synced with src/lib/hotels.ts
+// Static hotel data - synced with src/lib/hotels.ts and src/lib/hotelsExpanded.ts
 const hotelData = [
-  // Istanbul
+  // Istanbul (base + expanded)
   { citySlug: "istanbul", slug: "four-seasons-sultanahmet-istanbul" },
   { citySlug: "istanbul", slug: "ciragan-palace-kempinski-istanbul" },
   { citySlug: "istanbul", slug: "soho-house-istanbul" },
   { citySlug: "istanbul", slug: "the-marmara-taksim-istanbul" },
-  // Antalya
+  { citySlug: "istanbul", slug: "raffles-istanbul" },
+  { citySlug: "istanbul", slug: "st-regis-istanbul" },
+  { citySlug: "istanbul", slug: "shangri-la-bosphorus-istanbul" },
+  { citySlug: "istanbul", slug: "pera-palace-hotel-istanbul" },
+  { citySlug: "istanbul", slug: "ajwa-hotel-sultanahmet-istanbul" },
+  { citySlug: "istanbul", slug: "ritz-carlton-istanbul" },
+  { citySlug: "istanbul", slug: "swissotel-bosphorus-istanbul" },
+  { citySlug: "istanbul", slug: "w-istanbul" },
+  { citySlug: "istanbul", slug: "hotel-niles-istanbul" },
+  { citySlug: "istanbul", slug: "ada-hotel-istanbul" },
+  // Antalya (base + expanded)
   { citySlug: "antalya", slug: "regnum-carya-antalya" },
   { citySlug: "antalya", slug: "titanic-mardan-palace-antalya" },
   { citySlug: "antalya", slug: "akra-hotel-antalya" },
+  { citySlug: "antalya", slug: "maxx-royal-belek-antalya" },
+  { citySlug: "antalya", slug: "rixos-premium-belek-antalya" },
+  { citySlug: "antalya", slug: "calista-luxury-resort-antalya" },
+  { citySlug: "antalya", slug: "gloria-serenity-resort-antalya" },
+  { citySlug: "antalya", slug: "susesi-luxury-resort-antalya" },
+  { citySlug: "antalya", slug: "delphin-imperial-antalya" },
+  { citySlug: "antalya", slug: "club-hotel-sera-antalya" },
+  { citySlug: "antalya", slug: "hillside-su-antalya" },
+  { citySlug: "antalya", slug: "voyage-belek-antalya" },
+  { citySlug: "antalya", slug: "tui-blue-palm-garden-antalya" },
   // Izmir
   { citySlug: "izmir", slug: "swissotel-buyuk-efes-izmir" },
   { citySlug: "izmir", slug: "alacati-la-vela-izmir" },
@@ -215,10 +235,42 @@ const hotelData = [
   { citySlug: "roma", slug: "the-hoxton-rome" },
   // Milano
   { citySlug: "milano", slug: "armani-hotel-milano" },
-  // Dubai
+  // Dubai (base + expanded)
   { citySlug: "dubai", slug: "burj-al-arab-dubai" },
-  // Tokyo
+  { citySlug: "dubai", slug: "atlantis-the-palm-dubai" },
+  { citySlug: "dubai", slug: "one-only-the-palm-dubai" },
+  { citySlug: "dubai", slug: "jumeirah-al-qasr-dubai" },
+  { citySlug: "dubai", slug: "address-downtown-dubai" },
+  { citySlug: "dubai", slug: "armani-hotel-dubai" },
+  { citySlug: "dubai", slug: "four-seasons-dubai-jumeirah" },
+  { citySlug: "dubai", slug: "raffles-dubai" },
+  { citySlug: "dubai", slug: "waldorf-astoria-palm-jumeirah-dubai" },
+  { citySlug: "dubai", slug: "ritz-carlton-dubai" },
+  { citySlug: "dubai", slug: "palace-downtown-dubai" },
+  // Tokyo (base + expanded)
   { citySlug: "tokyo", slug: "park-hyatt-tokyo" },
+  { citySlug: "tokyo", slug: "aman-tokyo" },
+  { citySlug: "tokyo", slug: "mandarin-oriental-tokyo" },
+  { citySlug: "tokyo", slug: "andaz-tokyo-toranomon-hills" },
+  { citySlug: "tokyo", slug: "the-peninsula-tokyo" },
+  { citySlug: "tokyo", slug: "hoshinoya-tokyo" },
+  { citySlug: "tokyo", slug: "the-ritz-carlton-tokyo" },
+  { citySlug: "tokyo", slug: "conrad-tokyo" },
+  { citySlug: "tokyo", slug: "granbell-hotel-shinjuku-tokyo" },
+  { citySlug: "tokyo", slug: "the-prince-gallery-tokyo" },
+  { citySlug: "tokyo", slug: "trunk-hotel-tokyo" },
+  // Bali (base + expanded)
+  { citySlug: "bali", slug: "four-seasons-bali-sayan" },
+  { citySlug: "bali", slug: "como-shambhala-estate-bali" },
+  { citySlug: "bali", slug: "bulgari-resort-bali" },
+  { citySlug: "bali", slug: "mandapa-ritz-carlton-bali" },
+  { citySlug: "bali", slug: "st-regis-bali" },
+  { citySlug: "bali", slug: "ayana-resort-bali" },
+  { citySlug: "bali", slug: "mulia-resort-bali" },
+  { citySlug: "bali", slug: "alila-ubud-bali" },
+  { citySlug: "bali", slug: "capella-ubud-bali" },
+  { citySlug: "bali", slug: "w-bali-seminyak" },
+  { citySlug: "bali", slug: "hanging-gardens-bali" },
 ];
 
 // Flight routes
