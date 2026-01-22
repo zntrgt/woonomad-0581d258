@@ -49,7 +49,7 @@ const Cities = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-8 md:py-10 gradient-hero text-white">
+      <section className="py-6 md:py-8 gradient-hero text-white">
         <div className="container">
           <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -109,11 +109,11 @@ const Cities = () => {
       </section>
 
       {/* SEO Content */}
-      <section className="py-12 section-routes">
+      <section className="py-6 section-routes">
         <div className="container">
           <Card variant="elevated">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-display font-bold mb-4">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-display font-bold mb-3">
                 Dünya Şehirlerine Seyahat
               </h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">

@@ -328,7 +328,7 @@ export default function Blog() {
           </section>
           
           {/* Filters */}
-          <section className="mb-6 md:mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <section className="mb-4 md:mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div className="card-modern p-4 md:p-6">
               {/* Search - Always visible */}
                 <div className="flex gap-2 mb-4">
@@ -438,7 +438,7 @@ export default function Blog() {
         </main>
         
         {/* Footer */}
-        <footer className="border-t border-border py-8 mt-16 mb-20 md:mb-0 bg-muted/30">
+        <footer className="border-t border-border py-6 mt-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
             {t('footer.copyright', { year: new Date().getFullYear() })}
           </div>
