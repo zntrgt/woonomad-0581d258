@@ -9,6 +9,7 @@ import { CityComparison } from '@/components/CityComparison';
 import { NomadCostCalculator } from '@/components/NomadCostCalculator';
 import { VisaComparisonTool } from '@/components/VisaComparisonTool';
 import { DeepWorkPlanner } from '@/components/DeepWorkPlanner';
+import { WorkCentricFilters, WorkCentricFilterOptions } from '@/components/WorkCentricFilters';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,16 +19,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
   Laptop, Wifi, MapPin, Globe, Users, Coffee, 
   Sun, Shield, Star, TrendingUp, Search, ArrowRight,
-  Building2, BookOpen, Plane, Calendar, DollarSign, Scale, FileCheck, Brain
+  Building2, BookOpen, Plane, Calendar, DollarSign, Scale, FileCheck, Brain, Zap
 } from 'lucide-react';
-import { nomadMetrics, coworkingSpaces, getAllCoworkingSpaces, getCitiesWithNomadData } from '@/lib/nomad';
-import { cityData, getAllCities } from '@/lib/cities';
-import { getPostsByCategory, blogCategories } from '@/lib/blog';
+import { nomadMetrics, getAllCoworkingSpaces, getCitiesWithNomadData, CoworkingSpace } from '@/lib/nomad';
+import { cityData } from '@/lib/cities';
+import { getPostsByCategory } from '@/lib/blog';
+
+// Helper to parse wifi speed from amenities
+const parseWifiSpeed = (amenities: string[]): number => {
+  const wifiAmenity = amenities.find(a => a.toLowerCase().includes('wifi') || a.toLowerCase().includes('mbps'));
+  if (!wifiAmenity) return 50; // default
+  const match = wifiAmenity.match(/(\d+)\s*mbps/i);
+  return match ? parseInt(match[1]) : 50;
+};
+
+// Helper to check if space has specific amenity
+const hasAmenity = (amenities: string[], keywords: string[]): boolean => {
+  return amenities.some(a => keywords.some(k => a.toLowerCase().includes(k.toLowerCase())));
+};
 
 const NomadHub = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTab, setSelectedTab] = useState('cities');
   const [selectedPlannerCity, setSelectedPlannerCity] = useState('istanbul');
+  const [workFilters, setWorkFilters] = useState<WorkCentricFilterOptions>({
+    minWifiSpeed: 0,
+    hasErgonomicDesk: null,
+    quietLevel: 'any',
+    hasPowerOutlets: null,
+    has24HourAccess: null,
+    hasPrivateRooms: null,
+    priceRange: [0, 500],
+    amenities: [],
+  });
 
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
@@ -65,14 +89,89 @@ const NomadHub = () => {
   }, [nomadCities, searchQuery]);
 
   const filteredCoworkings = useMemo(() => {
-    if (!searchQuery) return allCoworkings;
-    const query = searchQuery.toLowerCase();
-    return allCoworkings.filter(space => 
-      space.name.toLowerCase().includes(query) || 
-      space.citySlug.toLowerCase().includes(query) ||
-      space.neighborhood?.toLowerCase().includes(query)
-    );
-  }, [allCoworkings, searchQuery]);
+    let spaces = allCoworkings;
+    
+    // Text search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      spaces = spaces.filter(space => 
+        space.name.toLowerCase().includes(query) || 
+        space.citySlug.toLowerCase().includes(query) ||
+        space.neighborhood?.toLowerCase().includes(query)
+      );
+    }
+
+    // Work-centric filters
+    if (workFilters.minWifiSpeed > 0) {
+      spaces = spaces.filter(space => {
+        const speed = parseWifiSpeed(space.amenities);
+        return speed >= workFilters.minWifiSpeed;
+      });
+    }
+
+    if (workFilters.hasErgonomicDesk === true) {
+      spaces = spaces.filter(space => 
+        hasAmenity(space.amenities, ['ergonomik', 'ergonomic', 'masa', 'desk'])
+      );
+    }
+
+    if (workFilters.has24HourAccess === true) {
+      spaces = spaces.filter(space => 
+        space.hours?.includes('24') || hasAmenity(space.amenities, ['24/7', '24 saat'])
+      );
+    }
+
+    if (workFilters.hasPowerOutlets === true) {
+      spaces = spaces.filter(space => 
+        hasAmenity(space.amenities, ['priz', 'outlet', 'şarj', 'power'])
+      );
+    }
+
+    if (workFilters.hasPrivateRooms === true) {
+      spaces = spaces.filter(space => 
+        hasAmenity(space.amenities, ['özel', 'private', 'ofis', 'office', 'toplantı', 'meeting'])
+      );
+    }
+
+    // Price filter
+    if (workFilters.priceRange[0] > 0 || workFilters.priceRange[1] < 500) {
+      spaces = spaces.filter(space => {
+        if (!space.pricing?.monthly) return true;
+        return space.pricing.monthly >= workFilters.priceRange[0] && 
+               space.pricing.monthly <= workFilters.priceRange[1];
+      });
+    }
+
+    // Amenity filters
+    if (workFilters.amenities.length > 0) {
+      spaces = spaces.filter(space => {
+        return workFilters.amenities.every(amenityId => {
+          switch (amenityId) {
+            case 'fast-wifi':
+              return parseWifiSpeed(space.amenities) >= 100;
+            case 'ergonomic':
+              return hasAmenity(space.amenities, ['ergonomik', 'ergonomic']);
+            case 'monitor':
+              return hasAmenity(space.amenities, ['monitör', 'monitor', 'ekran']);
+            case 'quiet-zone':
+              return hasAmenity(space.amenities, ['sessiz', 'quiet']);
+            case 'meeting-room':
+              return hasAmenity(space.amenities, ['toplantı', 'meeting']);
+            case 'coffee':
+              return hasAmenity(space.amenities, ['kahve', 'coffee', 'kafeterya']);
+            case '24-7':
+              return space.hours?.includes('24') || hasAmenity(space.amenities, ['24/7']);
+            case 'locker':
+              return hasAmenity(space.amenities, ['dolap', 'locker', 'kilitli']);
+            default:
+              return true;
+          }
+        });
+      });
+    }
+
+    return spaces;
+  }, [allCoworkings, searchQuery, workFilters]);
 
   const getScoreColor = (score: number) => {
     if (score >= 8) return 'text-green-600 bg-green-100';
@@ -276,12 +375,25 @@ const NomadHub = () => {
           {/* Coworking Tab */}
           <TabsContent value="coworking" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Coworking Alanları</h2>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Building2 className="h-6 w-6 text-primary" />
+                Coworking Alanları
+              </h2>
             </div>
+
+            {/* Work-Centric Filters */}
+            <WorkCentricFilters
+              maxPrice={500}
+              onFilterChange={setWorkFilters}
+              resultsCount={filteredCoworkings.length}
+              totalCount={allCoworkings.length}
+              filterType="coworking"
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredCoworkings.map((space) => {
                 const city = cityData[space.citySlug];
+                const wifiSpeed = parseWifiSpeed(space.amenities);
                 return (
                   <Link key={space.slug} to={`/coworking/${space.slug}`}>
                     <Card className="h-full hover:shadow-lg transition-all group">
@@ -296,12 +408,18 @@ const NomadHub = () => {
                               {city?.name || space.citySlug}, {space.neighborhood}
                             </CardDescription>
                           </div>
-                          {space.rating && (
-                            <Badge className="bg-yellow-100 text-yellow-700">
-                              <Star className="h-3 w-3 mr-1 fill-current" />
-                              {space.rating}
+                          <div className="flex flex-col gap-1 items-end">
+                            {space.rating && (
+                              <Badge className="bg-amber-100 text-amber-700">
+                                <Star className="h-3 w-3 mr-1 fill-current" />
+                                {space.rating}
+                              </Badge>
+                            )}
+                            <Badge variant="secondary" className="text-xs gap-1">
+                              <Wifi className="h-3 w-3" />
+                              {wifiSpeed}+ Mbps
                             </Badge>
-                          )}
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent>
