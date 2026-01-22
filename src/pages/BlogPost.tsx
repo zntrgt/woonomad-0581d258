@@ -16,6 +16,7 @@ import { getCountryFlag } from '@/lib/destinations';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useBlogTranslation } from '@/hooks/useBlogTranslation';
 import { format, parseISO } from 'date-fns';
 import { tr, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -237,10 +238,8 @@ export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const [backendPost, setBackendPost] = useState<BackendBlogPost | null>(null);
   const [loading, setLoading] = useState(true);
-  const [translatedContent, setTranslatedContent] = useState<{ title: string; excerpt: string; content: string } | null>(null);
-  const [isTranslating, setIsTranslating] = useState(false);
   const { isAdmin } = useAuth();
-  const { language, translatePageContent } = useSettings();
+  const { language } = useSettings();
   
   const staticPost = slug ? getPostBySlug(slug) : undefined;
   const allCities = getAllCities();
@@ -296,41 +295,17 @@ export default function BlogPost() {
     return staticPost;
   }, [backendPost, staticPost]);
   
-  // Translate content when language changes
-  useEffect(() => {
-    const translateContent = async () => {
-      if (!post || language === 'tr') {
-        setTranslatedContent(null);
-        return;
-      }
-
-      setIsTranslating(true);
-      try {
-        const result = await translatePageContent({
-          title: post.title,
-          excerpt: post.excerpt,
-          // Only translate first 2000 chars for performance
-          content: post.content.slice(0, 2000),
-        });
-        
-        if (result) {
-          setTranslatedContent({
-            title: result.title || post.title,
-            excerpt: result.excerpt || post.excerpt,
-            content: result.content 
-              ? post.content.replace(post.content.slice(0, 2000), result.content)
-              : post.content,
-          });
-        }
-      } catch (err) {
-        console.error('Translation error:', err);
-      } finally {
-        setIsTranslating(false);
-      }
+  // Use the new blog translation hook with Supabase caching
+  const originalContent = useMemo(() => {
+    if (!post) return null;
+    return {
+      title: post.title,
+      excerpt: post.excerpt,
+      content: post.content,
     };
-
-    translateContent();
-  }, [post, language, translatePageContent]);
+  }, [post]);
+  
+  const { translatedContent, isTranslating } = useBlogTranslation(post?.id, originalContent);
   
   // Get display content (translated or original)
   const displayContent = useMemo(() => {

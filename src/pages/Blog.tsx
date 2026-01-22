@@ -13,6 +13,8 @@ import { getAllPosts, blogCategories, BlogPost, getCategoryInfo } from '@/lib/bl
 import { getAllCities } from '@/lib/cities';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useBlogListTranslation } from '@/hooks/useBlogTranslation';
+import { useSettings } from '@/contexts/SettingsContext';
 import { format, parseISO } from 'date-fns';
 import { tr as trLocale, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -30,7 +32,17 @@ interface BackendBlogPost {
   published: boolean;
 }
 
-function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
+function BlogCard({ 
+  post, 
+  featured = false,
+  translatedTitle,
+  translatedExcerpt,
+}: { 
+  post: BlogPost; 
+  featured?: boolean;
+  translatedTitle?: string;
+  translatedExcerpt?: string;
+}) {
   const { t, i18n } = useTranslation();
   const categoryInfo = getCategoryInfo(post.category);
   
@@ -50,6 +62,10 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
     const translated = t(categoryKey);
     return translated !== categoryKey ? translated : categoryInfo?.name;
   };
+
+  // Use translated content if available
+  const displayTitle = translatedTitle || post.title;
+  const displayExcerpt = translatedExcerpt || post.excerpt;
   
   return (
     <Link 
@@ -66,7 +82,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
       )}>
         <img
           src={post.coverImage}
-          alt={post.title}
+          alt={displayTitle}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
@@ -109,12 +125,12 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
           "font-display font-bold text-foreground group-hover:text-primary transition-colors mb-3",
           featured ? "text-xl md:text-2xl" : "text-lg"
         )}>
-          {post.title}
+          {displayTitle}
         </h2>
         
         {/* Excerpt */}
         <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
-          {post.excerpt}
+          {displayExcerpt}
         </p>
         
         {/* Author & Read More */}
@@ -152,6 +168,7 @@ export default function Blog() {
   const [backendPosts, setBackendPosts] = useState<BackendBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const { isAdmin } = useAuth();
+  const { language } = useSettings();
   
   const staticPosts = getAllPosts();
   const cities = getAllCities();
@@ -241,7 +258,17 @@ export default function Blog() {
   
   const featuredPosts = filteredPosts.filter(p => p.featured);
   const regularPosts = filteredPosts.filter(p => !p.featured);
-  
+
+  // Blog list translation hook
+  const postsForTranslation = useMemo(() => 
+    filteredPosts.map(p => ({ id: p.id, title: p.title, excerpt: p.excerpt })),
+    [filteredPosts]
+  );
+  const { translatedPosts, isTranslating: isTranslatingList } = useBlogListTranslation(
+    postsForTranslation,
+    language !== 'tr'
+  );
+
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
@@ -405,26 +432,41 @@ export default function Blog() {
           ) : filteredPosts.length > 0 ? (
             <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Featured Posts */}
-              {featuredPosts.map((post, index) => (
-                <div 
-                  key={post.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <BlogCard post={post} featured />
-                </div>
-              ))}
+              {featuredPosts.map((post, index) => {
+                const translation = translatedPosts.get(post.id);
+                return (
+                  <div 
+                    key={post.id}
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <BlogCard 
+                      post={post} 
+                      featured 
+                      translatedTitle={translation?.title}
+                      translatedExcerpt={translation?.excerpt}
+                    />
+                  </div>
+                );
+              })}
               
               {/* Regular Posts */}
-              {regularPosts.map((post, index) => (
-                <div 
-                  key={post.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${(featuredPosts.length + index) * 0.05}s` }}
-                >
-                  <BlogCard post={post} />
-                </div>
-              ))}
+              {regularPosts.map((post, index) => {
+                const translation = translatedPosts.get(post.id);
+                return (
+                  <div 
+                    key={post.id}
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${(featuredPosts.length + index) * 0.05}s` }}
+                  >
+                    <BlogCard 
+                      post={post}
+                      translatedTitle={translation?.title}
+                      translatedExcerpt={translation?.excerpt}
+                    />
+                  </div>
+                );
+              })}
             </section>
           ) : (
             <div className="text-center py-16">
