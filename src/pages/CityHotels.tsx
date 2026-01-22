@@ -15,8 +15,8 @@ import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 
-// Travelpayouts Partner ID - Hotellook affiliate
-const HOTELLOOK_PARTNER_ID = "261144";
+// Travelpayouts Partner ID for Booking.com
+const TRAVELPAYOUTS_MARKER = "261144";
 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -29,15 +29,15 @@ const CityHotels = () => {
   const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
   const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
   
-  // Language for Travelpayouts
+  // Language for Booking.com
   const tpLanguage = i18n.language === 'tr' ? 'tr' : i18n.language === 'de' ? 'de' : i18n.language === 'fr' ? 'fr' : i18n.language === 'es' ? 'es' : 'en';
   
-  // Generate Hotellook affiliate search URL
+  // Generate Booking.com affiliate search URL via Travelpayouts
   const searchCity = city?.nameEn || city?.name || '';
-  const affiliateSearchUrl = `https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}`;
+  const bookingSearchUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(searchCity)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=2&no_rooms=1&aid=2311236&label=woonomad-${TRAVELPAYOUTS_MARKER}`;
   
-  // Travelpayouts White Label Widget URL
-  const whitelabelUrl = `https://tp.media/content?0=null&1=12&currency=try&promo_id=4040&shmarker=${HOTELLOOK_PARTNER_ID}&campaign_id=101&trs=304871&search_host=search.hotellook.com&locale=${tpLanguage}&powered_by=true&destination=${encodeURIComponent(searchCity)}&check_in=${checkIn}&check_out=${checkOut}&adults=2`;
+  // Alternative: Agoda affiliate link
+  const agodaSearchUrl = `https://www.agoda.com/search?city=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=1844104`;
   
   if (!city) {
     return (
@@ -127,7 +127,7 @@ const CityHotels = () => {
             
             {/* Main CTA */}
             <a 
-              href={affiliateSearchUrl}
+              href={bookingSearchUrl}
               target="_blank"
               rel="noopener noreferrer sponsored"
             >
@@ -163,7 +163,7 @@ const CityHotels = () => {
             </Card>
           </section>
           
-          {/* Hotel Search Widget - Travelpayouts White Label */}
+          {/* Hotel Search Widget */}
           <section className="mb-8">
             <Card className="overflow-hidden">
               <CardContent className="p-0">
@@ -174,12 +174,12 @@ const CityHotels = () => {
                   </h2>
                   <p className="text-muted-foreground max-w-xl mx-auto mb-6">
                     {t('hotels.compareHotelPrices', 'Binlerce oteli karşılaştır, en uygun fiyatı bul')}. 
-                    Hotellook {t('hotels.poweredSearch', 'destekli arama ile güvenilir fiyat karşılaştırması')}.
+                    Booking.com {t('hotels.poweredSearch', 'destekli arama ile güvenilir fiyat karşılaştırması')}.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a 
-                      href={affiliateSearchUrl}
+                      href={bookingSearchUrl}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                     >
@@ -190,7 +190,7 @@ const CityHotels = () => {
                       </Button>
                     </a>
                     <a 
-                      href={`https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}&stars=5`}
+                      href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(searchCity)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=2&no_rooms=1&aid=2311236&label=woonomad-${TRAVELPAYOUTS_MARKER}&nflt=class%3D5`}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                     >
@@ -218,14 +218,14 @@ const CityHotels = () => {
             <h2 className="text-xl font-display font-bold mb-4">{t('hotels.hotelsByCategory', 'Kategoriye Göre Oteller')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { stars: 5, label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400' },
-                { stars: 4, label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400' },
-                { stars: 3, label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400' },
-                { stars: 0, label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400' },
+                { stars: 5, filter: 'class%3D5', label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400' },
+                { stars: 4, filter: 'class%3D4', label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400' },
+                { stars: 3, filter: 'class%3D3', label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400' },
+                { stars: 0, filter: 'price%3DTRY-min-500-1', label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400' },
               ].map((category) => (
                 <a 
                   key={category.stars}
-                  href={`https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=${HOTELLOOK_PARTNER_ID}&language=${tpLanguage}${category.stars > 0 ? `&stars=${category.stars}` : ''}`}
+                  href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(searchCity)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=2&no_rooms=1&aid=2311236&label=woonomad-${TRAVELPAYOUTS_MARKER}${category.filter ? `&nflt=${category.filter}` : ''}`}
                   target="_blank"
                   rel="noopener noreferrer sponsored"
                   className="group"

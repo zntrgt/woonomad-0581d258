@@ -10,59 +10,48 @@ interface HotelWidgetProps {
   className?: string;
 }
 
-// Travelpayouts Partner ID - Hotellook affiliate
-const HOTELLOOK_PARTNER_ID = "261144";
+// Travelpayouts Partner ID for Booking.com (Hotellook discontinued Oct 2025)
+const BOOKING_AID = "2311236";
+const TRAVELPAYOUTS_MARKER = "261144";
 
-// City name mappings for Hotellook URLs
-const cityMappings: Record<string, { locationId: string; englishName: string }> = {
-  'berlin': { locationId: '12153', englishName: 'Berlin' },
-  'londra': { locationId: '12190', englishName: 'London' },
-  'paris': { locationId: '12220', englishName: 'Paris' },
-  'amsterdam': { locationId: '12086', englishName: 'Amsterdam' },
-  'barcelona': { locationId: '12093', englishName: 'Barcelona' },
-  'roma': { locationId: '12233', englishName: 'Rome' },
-  'prag': { locationId: '12225', englishName: 'Prague' },
-  'viyana': { locationId: '12272', englishName: 'Vienna' },
-  'lisbon': { locationId: '12187', englishName: 'Lisbon' },
-  'dublin': { locationId: '12155', englishName: 'Dublin' },
-  'kopenhag': { locationId: '12150', englishName: 'Copenhagen' },
-  'stockholm': { locationId: '12256', englishName: 'Stockholm' },
-  'oslo': { locationId: '12218', englishName: 'Oslo' },
-  'helsinki': { locationId: '12172', englishName: 'Helsinki' },
-  'budapeşte': { locationId: '12119', englishName: 'Budapest' },
-  'varsova': { locationId: '12280', englishName: 'Warsaw' },
-  'atina': { locationId: '12091', englishName: 'Athens' },
-  'brüksel': { locationId: '12118', englishName: 'Brussels' },
-  'münih': { locationId: '12208', englishName: 'Munich' },
-  'milano': { locationId: '12200', englishName: 'Milan' },
-  'tokyo': { locationId: '12266', englishName: 'Tokyo' },
-  'new-york': { locationId: '12212', englishName: 'New York' },
-  'bangkok': { locationId: '12092', englishName: 'Bangkok' },
-  'singapur': { locationId: '12248', englishName: 'Singapore' },
-  'dubai': { locationId: '12154', englishName: 'Dubai' },
-  'istanbul': { locationId: '12180', englishName: 'Istanbul' },
-  'antalya': { locationId: '12088', englishName: 'Antalya' },
-  'izmir': { locationId: '12181', englishName: 'Izmir' },
-  'bodrum': { locationId: '12112', englishName: 'Bodrum' },
+// City name mappings for Booking.com URLs
+const cityMappings: Record<string, { englishName: string }> = {
+  'berlin': { englishName: 'Berlin' },
+  'londra': { englishName: 'London' },
+  'paris': { englishName: 'Paris' },
+  'amsterdam': { englishName: 'Amsterdam' },
+  'barcelona': { englishName: 'Barcelona' },
+  'roma': { englishName: 'Rome' },
+  'prag': { englishName: 'Prague' },
+  'viyana': { englishName: 'Vienna' },
+  'lisbon': { englishName: 'Lisbon' },
+  'dublin': { englishName: 'Dublin' },
+  'kopenhag': { englishName: 'Copenhagen' },
+  'stockholm': { englishName: 'Stockholm' },
+  'oslo': { englishName: 'Oslo' },
+  'helsinki': { englishName: 'Helsinki' },
+  'budapeşte': { englishName: 'Budapest' },
+  'varsova': { englishName: 'Warsaw' },
+  'atina': { englishName: 'Athens' },
+  'brüksel': { englishName: 'Brussels' },
+  'münih': { englishName: 'Munich' },
+  'milano': { englishName: 'Milan' },
+  'tokyo': { englishName: 'Tokyo' },
+  'new-york': { englishName: 'New York' },
+  'bangkok': { englishName: 'Bangkok' },
+  'singapur': { englishName: 'Singapore' },
+  'dubai': { englishName: 'Dubai' },
+  'istanbul': { englishName: 'Istanbul' },
+  'antalya': { englishName: 'Antalya' },
+  'izmir': { englishName: 'Izmir' },
+  'bodrum': { englishName: 'Bodrum' },
 };
 
-function getHotellookUrl(citySlug: string, cityName: string): string {
+function getBookingUrl(citySlug: string, cityName: string): string {
   const mapping = cityMappings[citySlug.toLowerCase()];
   const destination = mapping?.englishName || cityName;
-  const locationId = mapping?.locationId || '';
   
-  const params = new URLSearchParams({
-    marker: HOTELLOOK_PARTNER_ID,
-    destination: destination,
-    language: 'tr',
-    currency: 'TRY',
-  });
-  
-  if (locationId) {
-    params.append('locationId', locationId);
-  }
-  
-  return `https://search.hotellook.com/?${params.toString()}`;
+  return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}&aid=${BOOKING_AID}&label=woonomad-${TRAVELPAYOUTS_MARKER}`;
 }
 
 // Sample featured hotels for widget display
@@ -73,12 +62,12 @@ const featuredHotels = [
 ];
 
 export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className }: HotelWidgetProps) {
-  const hotellookUrl = getHotellookUrl(citySlug, cityName);
+  const bookingUrl = getBookingUrl(citySlug, cityName);
 
   if (variant === 'compact') {
     return (
       <a
-        href={hotellookUrl}
+        href={bookingUrl}
         target="_blank"
         rel="noopener noreferrer sponsored"
         className={cn(
@@ -125,7 +114,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         </div>
 
         <a
-          href={hotellookUrl}
+          href={bookingUrl}
           target="_blank"
           rel="noopener noreferrer sponsored"
         >
@@ -148,7 +137,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         </div>
         <div>
           <h3 className="font-display font-semibold text-sm">{cityName} Otelleri</h3>
-          <p className="text-xs text-muted-foreground">Hotellook Partner</p>
+          <p className="text-xs text-muted-foreground">Booking.com Partner</p>
         </div>
       </div>
       
@@ -168,7 +157,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
       </div>
 
       <a
-        href={hotellookUrl}
+        href={bookingUrl}
         target="_blank"
         rel="noopener noreferrer sponsored"
       >

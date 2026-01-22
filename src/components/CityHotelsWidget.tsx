@@ -38,13 +38,10 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
   const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
   const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
   
-  // Travelpayouts White Label URL
-  const locationId = cityLocationIds[citySlug] || '';
   const searchCity = cityNameEn || cityName;
-  const language = i18n.language === 'tr' ? 'tr' : i18n.language === 'de' ? 'de' : i18n.language === 'fr' ? 'fr' : i18n.language === 'es' ? 'es' : 'en';
   
-  // Direct Hotellook affiliate search link
-  const affiliateLink = `https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=261144&language=${language}`;
+  // Direct Booking.com affiliate search link (Hotellook discontinued Oct 2025)
+  const affiliateLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(searchCity)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=2&no_rooms=1&aid=2311236&label=woonomad-261144`;
 
   return (
     <Card>
