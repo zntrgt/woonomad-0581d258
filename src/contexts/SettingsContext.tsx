@@ -49,7 +49,8 @@ interface SettingsContextType {
   translatePageContent: (texts: Record<string, string>) => Promise<Record<string, string> | null>;
 }
 
-const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+// Create stable context reference to avoid HMR issues
+const SettingsContext = createContext<SettingsContextType | null>(null);
 
 // Translation cache
 const translationCache: Record<string, Record<string, Record<string, string>>> = {};
@@ -197,7 +198,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
 export function useSettings() {
   const context = useContext(SettingsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
