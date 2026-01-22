@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,6 +69,8 @@ const BlogAdmin = () => {
   const [showSeoModal, setShowSeoModal] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
   const [importingPost, setImportingPost] = useState<string | null>(null);
+  const [listQuery, setListQuery] = useState("");
+  const [sitemapUpdating, setSitemapUpdating] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -343,6 +345,52 @@ const BlogAdmin = () => {
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const handleGenerateSitemap = async () => {
+    setSitemapUpdating(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-sitemap`, {
+        method: 'GET',
+        headers: {
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Sitemap oluşturulamadı');
+      }
+
+      const xml = await response.text();
+      const blob = new Blob([xml], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sitemap.xml';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Sitemap güncellendi',
+        description: 'sitemap.xml indirildi.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Hata',
+        description: error instanceof Error ? error.message : 'Sitemap güncellenemedi.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSitemapUpdating(false);
+    }
   };
 
   // Image upload handler
@@ -733,6 +781,21 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
     insertSnippet(budgetSnippet);
   };
 
+  const normalizedListQuery = listQuery.trim().toLowerCase();
+  const filteredDbPosts = normalizedListQuery
+    ? posts.filter((p) => {
+        const hay = [p.title, p.slug, p.category ?? '', p.city ?? ''].join(' ').toLowerCase();
+        return hay.includes(normalizedListQuery);
+      })
+    : posts;
+
+  const filteredStaticPosts = normalizedListQuery
+    ? staticPosts.filter((p) => {
+        const hay = [p.title, p.slug, p.category ?? '', p.citySlug ?? ''].join(' ').toLowerCase();
+        return hay.includes(normalizedListQuery);
+      })
+    : staticPosts;
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -780,6 +843,18 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                 Yeni Yazı
               </Button>
             )}
+            <Button
+              variant="outline"
+              onClick={handleGenerateSitemap}
+              disabled={sitemapUpdating}
+            >
+              {sitemapUpdating ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="w-4 h-4 mr-2" />
+              )}
+              Sitemap Güncelle
+            </Button>
             <Button variant="outline" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
               Çıkış
@@ -1103,20 +1178,45 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
           <div className="space-y-6">
             {/* Database Posts Section */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Database className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-semibold">Veritabanındaki Yazılar ({posts.length})</h2>
+              <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <Database className="w-5 h-5 text-primary" />
+                  <h2 className="text-lg font-semibold">
+                    Veritabanındaki Yazılar ({filteredDbPosts.length}{normalizedListQuery ? `/${posts.length}` : ''})
+                  </h2>
+                </div>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1 sm:w-72">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      value={listQuery}
+                      onChange={(e) => setListQuery(e.target.value)}
+                      placeholder="Bloglarda ara..."
+                      className="pl-9"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setListQuery((q) => q.trim())}
+                    className="shrink-0"
+                  >
+                    <Search className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Ara</span>
+                  </Button>
+                </div>
               </div>
               
-              {posts.length === 0 ? (
+              {filteredDbPosts.length === 0 ? (
                 <Card>
                   <CardContent className="py-8 text-center text-muted-foreground">
-                    Henüz veritabanında blog yazısı yok.
+                    {normalizedListQuery ? 'Arama kriterine uygun yazı bulunamadı.' : 'Henüz veritabanında blog yazısı yok.'}
                   </CardContent>
                 </Card>
               ) : (
                 <div className="space-y-3">
-                  {posts.map((post) => (
+                  {filteredDbPosts.map((post) => (
                     <Card key={post.id}>
                       <CardContent className="py-4">
                         <div className="flex items-center justify-between">
@@ -1164,11 +1264,13 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
             </div>
 
             {/* Static Posts Section (not yet in DB) */}
-            {staticPosts.length > 0 && (
+            {filteredStaticPosts.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <FileText className="w-5 h-5 text-orange-500" />
-                  <h2 className="text-lg font-semibold">Statik Yazılar ({staticPosts.length})</h2>
+                  <h2 className="text-lg font-semibold">
+                    Statik Yazılar ({filteredStaticPosts.length}{normalizedListQuery ? `/${staticPosts.length}` : ''})
+                  </h2>
                   <Badge variant="secondary" className="text-xs">Kod İçinde</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -1176,7 +1278,7 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                 </p>
                 
                 <div className="space-y-3">
-                  {staticPosts.map((post) => (
+                  {filteredStaticPosts.map((post) => (
                     <Card key={post.id} className="border-orange-200 dark:border-orange-900/50">
                       <CardContent className="py-4">
                         <div className="flex items-center justify-between">

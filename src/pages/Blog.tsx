@@ -331,15 +331,27 @@ export default function Blog() {
           <section className="mb-6 md:mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div className="card-modern p-4 md:p-6">
               {/* Search - Always visible */}
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
-                <Input
-                  placeholder={t('blog.searchPlaceholder')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 md:pl-10 text-sm"
-                />
-              </div>
+                <div className="flex gap-2 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                    <Input
+                      placeholder={t('blog.searchPlaceholder')}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 md:pl-10 text-sm"
+                    />
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setSearchQuery((q) => q.trim())}
+                    className="shrink-0"
+                  >
+                    <Search className="h-4 w-4 md:mr-2" />
+                    <span className="hidden md:inline">{t('common.search')}</span>
+                  </Button>
+                </div>
               
               {/* Category Filter - Horizontal scroll on mobile */}
               <div className="flex gap-4 items-start md:items-center flex-col md:flex-row">
