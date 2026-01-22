@@ -1,5 +1,6 @@
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,11 +11,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useSettings, LANGUAGES, CURRENCIES, Language, Currency } from '@/contexts/SettingsContext';
+import { translateUrl } from '@/lib/i18n-routes';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export function SettingsDropdown() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { language, currency, setLanguage, setCurrency, getLanguageInfo, getCurrencyInfo } = useSettings();
   const { toast } = useToast();
 
@@ -22,11 +26,19 @@ export function SettingsDropdown() {
   const currInfo = getCurrencyInfo();
 
   const handleLanguageChange = (lang: Language) => {
+    // Get translated URL for the new language
+    const newPath = translateUrl(location.pathname, lang);
+    
+    // Update language setting
     setLanguage(lang);
+    
+    // Navigate to the translated URL
+    navigate(newPath + location.search);
+    
     const langName = LANGUAGES.find(l => l.code === lang)?.name || lang;
     toast({
       title: t('settings.languageChanged'),
-      description: `${langName} ${language === 'en' ? 'selected' : 'seçildi'}.`,
+      description: `${langName} ${lang === 'en' ? 'selected' : 'seçildi'}.`,
     });
   };
 
