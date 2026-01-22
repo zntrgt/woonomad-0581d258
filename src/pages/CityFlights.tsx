@@ -10,10 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { getCityBySlug } from '@/lib/cities';
 import { generateFlightRoutes, FLIGHT_DURATIONS, getAirlinesForRoute, getEstimatedPriceRange } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
+import { useCityDisplay } from '@/hooks/useCityDisplay';
 
 const CityFlights = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
+  const { displayName, displayCountry } = useCityDisplay(city);
   const allFlightRoutes = generateFlightRoutes();
   
   if (!city) {
@@ -47,7 +49,7 @@ const CityFlights = () => {
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
     { label: 'Şehirler', href: '/sehirler' },
-    { label: city.name, href: `/sehir/${city.slug}` },
+    { label: displayName, href: `/sehir/${city.slug}` },
     { label: 'Uçuşlar' }
   ];
 
@@ -57,15 +59,15 @@ const CityFlights = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": `${city.name} Uçuşları`,
-    "description": `${city.name} uçuş rotaları ve bilet fiyatları`,
+    "name": `${displayName} Uçuşları`,
+    "description": `${displayName} uçuş rotaları ve bilet fiyatları`,
     "breadcrumb": {
       "@type": "BreadcrumbList",
       "itemListElement": breadcrumbItems.map((item, index) => ({
         "@type": "ListItem",
         "position": index + 1,
         "name": item.label,
-        "item": item.href ? `https://woonomad.com${item.href}` : undefined
+        "item": item.href ? `https://woonomad.co${item.href}` : undefined
       }))
     }
   };
@@ -73,12 +75,12 @@ const CityFlights = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{`${city.name} Uçuşları ${currentYear} | Tüm Uçuş Rotaları ve Fiyatlar`}</title>
+        <title>{`${displayName} Uçuşları ${currentYear} | Tüm Uçuş Rotaları ve Fiyatlar`}</title>
         <meta 
           name="description" 
-          content={`${city.name} uçuş rotaları, havayolu şirketleri ve bilet fiyatları. ${city.name}'e ve ${city.name}'den tüm uçuş seçenekleri.`}
+          content={`${displayName} uçuş rotaları, havayolu şirketleri ve bilet fiyatları. ${displayName}'e ve ${displayName}'den tüm uçuş seçenekleri.`}
         />
-        <link rel="canonical" href={`https://woonomad.com/sehir/${city.slug}/ucuslar`} />
+        <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/ucuslar`} />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 
@@ -92,7 +94,7 @@ const CityFlights = () => {
             <span className="text-3xl">{flag}</span>
             <div>
               <h1 className="text-2xl md:text-3xl font-display font-bold">
-                {city.name} Uçuşları
+                {displayName} Uçuşları
               </h1>
               <p className="text-white/80 text-sm">
                 {cityRoutes.length} uçuş rotası mevcut

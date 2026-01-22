@@ -37,6 +37,7 @@ import { getCityBySlug, getAllCities, CityInfo } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
 import { nomadMetrics, coworkingSpaces } from '@/lib/nomad';
+import { useCityDisplay } from '@/hooks/useCityDisplay';
 
 // Helper to check if city has sufficient data
 const hasSufficientData = (city: CityInfo): boolean => {
@@ -154,6 +155,7 @@ const getNeighborhoods = (citySlug: string): { name: string; description: string
 const City = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
+  const { displayName, displayCountry } = useCityDisplay(city);
   const allCities = getAllCities();
   const allFlightRoutes = generateFlightRoutes();
   const currentYear = new Date().getFullYear();
@@ -190,18 +192,18 @@ const City = () => {
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
     { label: 'Şehirler', href: '/sehirler' },
-    { label: city.name }
+    { label: displayName }
   ];
 
-  // SEO: Dynamic title and description
-  const seoTitle = `${city.name} Seyahat Rehberi ${currentYear} | Uçuş, Otel, Coworking, Nomad`;
+  // SEO: Dynamic title and description - use localized names
+  const seoTitle = `${displayName} Seyahat Rehberi ${currentYear} | Uçuş, Otel, Coworking, Nomad`;
   
   // Build meta description with actual data (150-160 chars)
-  const metaDescParts = [`${city.name} seyahat rehberi.`];
+  const metaDescParts = [`${displayName} seyahat rehberi.`];
   if (cityNomadData) {
     metaDescParts.push(`İnternet: ${cityNomadData.internetSpeed}, Aylık maliyet: ${cityNomadData.costOfLiving}.`);
   }
-  metaDescParts.push(`${city.country}'da gezilecek yerler, otel ve uçuş fırsatları.`);
+  metaDescParts.push(`${displayCountry}'da gezilecek yerler, otel ve uçuş fırsatları.`);
   const metaDescription = metaDescParts.join(' ').slice(0, 160);
 
   const canonicalUrl = `https://woonomad.co/sehir/${city.slug}`;
