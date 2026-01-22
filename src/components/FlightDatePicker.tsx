@@ -109,11 +109,10 @@ export function FlightDatePicker({
   const handleDepartSelect = (date: Date | undefined) => {
     onDepartDateChange(date);
     if (date && !isOneWay) {
-      // Auto-set return date if needed
-      if (!returnDate || isBefore(returnDate, date)) {
-        onReturnDateChange(addDays(date, 1));
-      }
-      // Auto-open return calendar
+      // ALWAYS set return date to departure + 1 day when departure changes
+      // This provides better UX - user doesn't need to manually adjust return date
+      onReturnDateChange(addDays(date, 1));
+      // Auto-open return calendar so user can adjust if needed
       setActiveCalendar('return');
     } else {
       setActiveCalendar(null);
