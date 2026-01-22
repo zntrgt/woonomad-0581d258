@@ -15,6 +15,9 @@ import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
+// Travelpayouts Partner ID - Hotellook affiliate
+const HOTELLOOK_PARTNER_ID = "261144";
+
 const amenityIcons: Record<string, typeof Wifi> = {
   wifi: Wifi,
   breakfast: Coffee,
@@ -329,23 +332,23 @@ const CityHotels = () => {
             </div>
           </div>
           
-          {/* Trip.com Affiliate CTA */}
+          {/* Hotellook Affiliate CTA */}
           {affiliateLink && (
             <div className="card-modern p-4 mb-6 text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
                 <Hotel className="h-4 w-4" />
-                <span>Trip.com Partner</span>
+                <span>Hotellook Partner</span>
               </div>
               <h3 className="font-display font-semibold text-xl mb-2">
                 {city.name} Otellerinde En İyi Fiyatlar
               </h3>
               <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
-                Trip.com üzerinden güncel otel fiyatlarını karşılaştırın ve en uygun rezervasyonu yapın
+                Hotellook üzerinden güncel otel fiyatlarını karşılaştırın ve en uygun rezervasyonu yapın
               </p>
-              <a href={affiliateLink} target="_blank" rel="noopener noreferrer">
+              <a href={affiliateLink} target="_blank" rel="noopener noreferrer sponsored">
                 <Button size="lg" className="gradient-primary hover:opacity-90">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Trip.com'da Otelleri Gör
+                  Hotellook'ta Otelleri Gör
                 </Button>
               </a>
             </div>
