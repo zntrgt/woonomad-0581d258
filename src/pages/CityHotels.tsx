@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight } from 'lucide-react';
+import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -12,6 +12,7 @@ import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
 import { HotelData, getHotelsByCity } from '@/lib/hotels';
+import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
@@ -23,59 +24,44 @@ const amenityIcons: Record<string, typeof Wifi> = {
   breakfast: Coffee,
   parking: Car,
   gym: Dumbbell,
+  pool: Waves,
+  spa: Heart,
 };
 
-// Fallback sample data
-const getSampleHotels = (cityName: string) => [
-  {
-    id: '1',
-    name: `${cityName} Grand Hotel`,
-    rating: 4.8,
-    stars: 5,
-    priceFrom: 2500,
-    priceAvg: 3200,
-    reviews: 1250,
-    photo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+// Fallback sample data with real photos
+const getSampleHotels = (cityName: string): HotelType[] => {
+  const hotelPhotos = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop',
+  ];
+
+  const hotelTypes = [
+    { suffix: 'Grand Hotel', stars: 5, basePrice: 2500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast'] },
+    { suffix: 'Boutique Stay', stars: 4, basePrice: 1800, amenities: ['wifi', 'breakfast', 'spa'] },
+    { suffix: 'Business Hotel', stars: 4, basePrice: 1500, amenities: ['wifi', 'gym', 'parking', 'breakfast'] },
+    { suffix: 'Budget Inn', stars: 3, basePrice: 800, amenities: ['wifi', 'parking'] },
+    { suffix: 'Central Suites', stars: 4, basePrice: 1600, amenities: ['wifi', 'breakfast', 'gym'] },
+    { suffix: 'Luxury Palace', stars: 5, basePrice: 3500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast', 'parking'] },
+  ];
+
+  return hotelTypes.map((type, index) => ({
+    id: String(index + 1),
+    name: `${cityName} ${type.suffix}`,
+    stars: type.stars,
+    priceFrom: type.basePrice + Math.floor(Math.random() * 300),
+    priceAvg: Math.floor(type.basePrice * 1.2),
+    rating: 4.0 + (Math.random() * 0.9),
+    reviews: 150 + Math.floor(Math.random() * 1200),
     location: { lat: 0, lon: 0 },
+    photo: hotelPhotos[index % hotelPhotos.length],
+    amenities: type.amenities,
     link: '#',
-  },
-  {
-    id: '2',
-    name: `${cityName} Boutique Stay`,
-    rating: 4.6,
-    stars: 4,
-    priceFrom: 1800,
-    priceAvg: 2100,
-    reviews: 890,
-    photo: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
-    location: { lat: 0, lon: 0 },
-    link: '#',
-  },
-  {
-    id: '3',
-    name: `${cityName} Business Hotel`,
-    rating: 4.5,
-    stars: 4,
-    priceFrom: 1500,
-    priceAvg: 1800,
-    reviews: 650,
-    photo: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
-    location: { lat: 0, lon: 0 },
-    link: '#',
-  },
-  {
-    id: '4',
-    name: `${cityName} Budget Inn`,
-    rating: 4.2,
-    stars: 3,
-    priceFrom: 800,
-    priceAvg: 950,
-    reviews: 420,
-    photo: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
-    location: { lat: 0, lon: 0 },
-    link: '#',
-  },
-];
+  }));
+};
 
 // Static hotel card for hotels with detail pages
 function StaticHotelCard({ hotel, citySlug }: { hotel: HotelData; citySlug: string }) {
@@ -171,11 +157,11 @@ function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
       </div>
       
       <CardContent className="p-4">
-        <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+        <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
           {hotel.name}
         </h3>
         
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
             <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
@@ -183,7 +169,27 @@ function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
           </div>
         </div>
         
-        <a href={hotel.link} target="_blank" rel="noopener noreferrer">
+        {/* Amenities */}
+        {hotel.amenities && hotel.amenities.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {hotel.amenities.slice(0, 4).map((amenity) => {
+              const Icon = amenityIcons[amenity] || Wifi;
+              return (
+                <Badge key={amenity} variant="outline" className="text-[10px] px-2 py-0.5 gap-1">
+                  <Icon className="h-3 w-3" />
+                  <span className="hidden sm:inline capitalize">{amenity}</span>
+                </Badge>
+              );
+            })}
+            {hotel.amenities.length > 4 && (
+              <Badge variant="outline" className="text-[10px] px-2 py-0.5">
+                +{hotel.amenities.length - 4}
+              </Badge>
+            )}
+          </div>
+        )}
+        
+        <a href={hotel.link} target="_blank" rel="noopener noreferrer sponsored">
           <Button className="w-full gradient-primary hover:opacity-90">
             <span>Rezervasyon Yap</span>
             <ExternalLink className="h-4 w-4 ml-2" />
@@ -199,6 +205,15 @@ const CityHotels = () => {
   const city = slug ? getCityBySlug(slug) : null;
   const { hotels, isLoading, error, affiliateLink, searchHotels } = useHotelSearch();
   const [hasSearched, setHasSearched] = useState(false);
+  
+  // Filter and sort state
+  const [filters, setFilters] = useState<HotelFilterOptions>({
+    priceRange: [0, 10000],
+    minStars: 0,
+    minRating: 0,
+    amenities: [],
+  });
+  const [sortBy, setSortBy] = useState<SortOption>('popular');
   
   // Default dates
   const checkIn = format(addDays(new Date(), 7), 'yyyy-MM-dd');
@@ -217,6 +232,57 @@ const CityHotels = () => {
     }
   }, [city, hasSearched]);
   
+  // Use API hotels if available, otherwise use sample data
+  const displayHotels = hotels.length > 0 ? hotels : getSampleHotels(city?.name || 'City');
+  
+  // Calculate max price for filter
+  const maxPrice = useMemo(() => {
+    return Math.max(...displayHotels.map(h => h.priceFrom), 5000);
+  }, [displayHotels]);
+  
+  // Apply filters and sorting
+  const filteredAndSortedHotels = useMemo(() => {
+    let result = displayHotels.filter(hotel => {
+      // Price filter
+      if (hotel.priceFrom < filters.priceRange[0] || hotel.priceFrom > filters.priceRange[1]) {
+        return false;
+      }
+      // Stars filter
+      if (filters.minStars > 0 && hotel.stars < filters.minStars) {
+        return false;
+      }
+      // Rating filter
+      if (filters.minRating > 0 && hotel.rating < filters.minRating) {
+        return false;
+      }
+      // Amenities filter
+      if (filters.amenities.length > 0 && hotel.amenities) {
+        const hasAllAmenities = filters.amenities.every(a => hotel.amenities?.includes(a));
+        if (!hasAllAmenities) return false;
+      }
+      return true;
+    });
+    
+    // Sort
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc':
+          return a.priceFrom - b.priceFrom;
+        case 'price-desc':
+          return b.priceFrom - a.priceFrom;
+        case 'rating':
+          return b.rating - a.rating;
+        case 'stars':
+          return b.stars - a.stars;
+        case 'popular':
+        default:
+          return b.reviews - a.reviews;
+      }
+    });
+    
+    return result;
+  }, [displayHotels, filters, sortBy]);
+  
   if (!city) {
     return (
       <div className="min-h-screen bg-background">
@@ -231,8 +297,6 @@ const CityHotels = () => {
     );
   }
 
-  // Use API hotels if available, otherwise use sample data
-  const displayHotels = hotels.length > 0 ? hotels : getSampleHotels(city.name);
   const flag = getCountryFlag(city.countryCode);
   const currentYear = new Date().getFullYear();
 
@@ -248,8 +312,8 @@ const CityHotels = () => {
     "@type": "ItemList",
     "name": `${city.name} Otelleri`,
     "description": `${city.name} otel fiyatları ve rezervasyon`,
-    "numberOfItems": displayHotels.length,
-    "itemListElement": displayHotels.map((hotel, index) => ({
+    "numberOfItems": filteredAndSortedHotels.length,
+    "itemListElement": filteredAndSortedHotels.slice(0, 10).map((hotel, index) => ({
       "@type": "ListItem",
       "position": index + 1,
       "item": {
@@ -261,7 +325,7 @@ const CityHotels = () => {
         },
         "aggregateRating": {
           "@type": "AggregateRating",
-          "ratingValue": hotel.rating,
+          "ratingValue": hotel.rating.toFixed(1),
           "reviewCount": hotel.reviews
         }
       }
@@ -306,7 +370,7 @@ const CityHotels = () => {
           </section>
           
           {/* Search Info */}
-          <div className="card-modern p-3 mb-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="card-modern p-3 mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
@@ -320,17 +384,18 @@ const CityHotels = () => {
               </div>
             </div>
             
-            <div className="text-sm text-muted-foreground">
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Oteller aranıyor...
-                </span>
-              ) : (
-                <span>{displayHotels.length} otel bulundu</span>
-              )}
-            </div>
+            <SortSelector value={sortBy} onChange={setSortBy} />
           </div>
+          
+          {/* Filters */}
+          {!isLoading && (
+            <HotelFilters
+              maxPrice={maxPrice}
+              onFilterChange={setFilters}
+              resultsCount={filteredAndSortedHotels.length}
+              totalCount={displayHotels.length}
+            />
+          )}
           
           {/* Hotellook Affiliate CTA */}
           {affiliateLink && (
@@ -360,13 +425,29 @@ const CityHotels = () => {
               <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-3" />
               <p className="text-muted-foreground text-sm">Oteller aranıyor...</p>
             </div>
+          ) : filteredAndSortedHotels.length === 0 ? (
+            <div className="text-center py-12 card-modern">
+              <Hotel className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="font-display font-semibold text-lg mb-2">Otel Bulunamadı</h3>
+              <p className="text-muted-foreground mb-4">
+                Filtre kriterlerinize uygun otel bulunamadı. Filtreleri değiştirmeyi deneyin.
+              </p>
+              <Button variant="outline" onClick={() => setFilters({
+                priceRange: [0, maxPrice],
+                minStars: 0,
+                minRating: 0,
+                amenities: [],
+              })}>
+                Filtreleri Temizle
+              </Button>
+            </div>
           ) : (
             <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-              {displayHotels.map((hotel, index) => (
+              {filteredAndSortedHotels.map((hotel, index) => (
                 <div 
                   key={hotel.id}
                   className="animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
+                  style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}
                 >
                   <HotelCard hotel={hotel} index={index} />
                 </div>

@@ -16,6 +16,7 @@ export interface Hotel {
   };
   photo: string | null;
   link: string;
+  amenities?: string[];
 }
 
 export interface HotelSearchResult {
