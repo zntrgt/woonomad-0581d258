@@ -4,7 +4,7 @@ const GENERAL_FAVORITES_KEY = 'woonomad-favorites';
 
 export interface FavoriteItem {
   id: string;
-  type: 'city' | 'hotel' | 'itinerary' | 'flight';
+  type: 'city' | 'hotel' | 'itinerary' | 'flight' | 'deep-work-rota';
   title: string;
   subtitle?: string;
   image?: string;

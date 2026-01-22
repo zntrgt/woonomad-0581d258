@@ -8,15 +8,17 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { CityComparison } from '@/components/CityComparison';
 import { NomadCostCalculator } from '@/components/NomadCostCalculator';
 import { VisaComparisonTool } from '@/components/VisaComparisonTool';
+import { DeepWorkPlanner } from '@/components/DeepWorkPlanner';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Laptop, Wifi, MapPin, Globe, Users, Coffee, 
   Sun, Shield, Star, TrendingUp, Search, ArrowRight,
-  Building2, BookOpen, Plane, Calendar, DollarSign, Scale, FileCheck
+  Building2, BookOpen, Plane, Calendar, DollarSign, Scale, FileCheck, Brain
 } from 'lucide-react';
 import { nomadMetrics, coworkingSpaces, getAllCoworkingSpaces, getCitiesWithNomadData } from '@/lib/nomad';
 import { cityData, getAllCities } from '@/lib/cities';
@@ -25,6 +27,7 @@ import { getPostsByCategory, blogCategories } from '@/lib/blog';
 const NomadHub = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTab, setSelectedTab] = useState('cities');
+  const [selectedPlannerCity, setSelectedPlannerCity] = useState('istanbul');
 
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
@@ -161,6 +164,10 @@ const NomadHub = () => {
             <TabsTrigger value="visa" className="flex items-center gap-2">
               <FileCheck className="h-4 w-4" />
               <span>Vizeler</span>
+            </TabsTrigger>
+            <TabsTrigger value="planner" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              <span>AI Planner</span>
             </TabsTrigger>
           </TabsList>
 
@@ -422,6 +429,101 @@ const NomadHub = () => {
           {/* Visa Tab */}
           <TabsContent value="visa" className="space-y-6">
             <VisaComparisonTool />
+          </TabsContent>
+
+          {/* AI Deep Work Planner Tab */}
+          <TabsContent value="planner" className="space-y-6">
+            <div className="grid lg:grid-cols-[1fr_380px] gap-6">
+              <div>
+                <div className="mb-4">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Brain className="h-6 w-6 text-violet-500" />
+                    AI Deep Work Planner
+                  </h2>
+                  <p className="text-muted-foreground mt-1">
+                    Saat diliminize göre çalışma + keşif rotası oluşturun. AI, müşteri saatlerinizi hedef şehre göre optimize eder.
+                  </p>
+                </div>
+
+                {/* City Selector */}
+                <div className="mb-6">
+                  <label className="text-sm font-medium mb-2 block">Hedef Şehir Seçin</label>
+                  <Select value={selectedPlannerCity} onValueChange={setSelectedPlannerCity}>
+                    <SelectTrigger className="w-full max-w-xs">
+                      <SelectValue placeholder="Şehir seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {nomadCities.slice(0, 15).map((city) => city && (
+                        <SelectItem key={city.slug} value={city.slug}>
+                          {city.name}, {city.country}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Deep Work Planner Component */}
+                {selectedPlannerCity && cityData[selectedPlannerCity] && (
+                  <DeepWorkPlanner 
+                    cityName={cityData[selectedPlannerCity].name}
+                    citySlug={selectedPlannerCity}
+                    country={cityData[selectedPlannerCity].country}
+                    timezone={nomadMetrics[selectedPlannerCity]?.timezone}
+                  />
+                )}
+              </div>
+
+              {/* Info Sidebar */}
+              <div className="lg:sticky lg:top-20 h-fit space-y-4">
+                <Card className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-violet-500/20">
+                  <CardContent className="pt-6">
+                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                      <Laptop className="h-5 w-5 text-violet-500" />
+                      Deep Work Nedir?
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Kesintisiz, yoğun odaklanma gerektiren çalışma bloklarıdır. 
+                      Cal Newport'un popülerleştirdiği bu konsept, dijital nomadlar için 
+                      kritik öneme sahiptir.
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">2-4 saat</Badge>
+                        <span>İdeal deep work bloğu</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">Sabah</Badge>
+                        <span>En verimli saatler</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">Wifi 50+ Mbps</Badge>
+                        <span>Video call için minimum</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="pt-6">
+                    <h3 className="font-semibold mb-3">Saat Dilimi İpuçları</h3>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        ABD müşterileri için Avrupa/Ortadoğu idealdir (6-10 saat fark)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        Asya müşterileri için Latin Amerika düşünün
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        Split schedule: Sabah deep work, akşam toplantı
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
 
