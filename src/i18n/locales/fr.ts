@@ -45,6 +45,7 @@ const fr = {
     sort: 'Trier',
     noResults: 'Aucun résultat trouvé',
     seeAll: 'Voir tout',
+    confirm: 'Confirmer',
   },
 
   // Home page
@@ -118,6 +119,9 @@ const fr = {
     weekend: 'Ce week-end',
     nextWeekend: 'Week-end prochain',
     flexible: 'Dates flexibles',
+    options: 'Options',
+    cabinClass: 'Classe de cabine',
+    visaFilter: 'Statut du visa',
   },
 
   // Flight results
