@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart } from 'lucide-react';
+import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart, Map, List } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -13,6 +13,7 @@ import { getCountryFlag } from '@/lib/destinations';
 import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
 import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
+import { HotelMap } from '@/components/HotelMap';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
@@ -214,6 +215,7 @@ const CityHotels = () => {
     amenities: [],
   });
   const [sortBy, setSortBy] = useState<SortOption>('popular');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   
   // Default dates
   const checkIn = format(addDays(new Date(), 7), 'yyyy-MM-dd');
@@ -384,7 +386,29 @@ const CityHotels = () => {
               </div>
             </div>
             
-            <SortSelector value={sortBy} onChange={setSortBy} />
+            <div className="flex items-center gap-2">
+              {/* View Toggle */}
+              <div className="flex rounded-lg border overflow-hidden">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-none h-8"
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'map' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-none h-8"
+                  onClick={() => setViewMode('map')}
+                >
+                  <Map className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <SortSelector value={sortBy} onChange={setSortBy} />
+            </div>
           </div>
           
           {/* Filters */}
@@ -441,6 +465,36 @@ const CityHotels = () => {
                 Filtreleri Temizle
               </Button>
             </div>
+          ) : viewMode === 'map' ? (
+            <section className="mb-8">
+              <HotelMap 
+                hotels={filteredAndSortedHotels} 
+                cityName={city.name}
+              />
+              {/* Small hotel list below map */}
+              <div className="mt-4 grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {filteredAndSortedHotels.slice(0, 8).map((hotel, index) => (
+                  <div key={hotel.id} className="p-3 border rounded-lg hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-2">
+                      {hotel.photo && (
+                        <img src={hotel.photo} alt={hotel.name} className="w-10 h-10 rounded object-cover" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium truncate">{hotel.name}</h4>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: Math.min(hotel.stars, 5) }).map((_, i) => (
+                            <Star key={i} className="h-2.5 w-2.5 fill-travel-gold text-travel-gold" />
+                          ))}
+                          <span className="text-xs text-primary font-semibold ml-1">
+                            ₺{hotel.priceFrom.toLocaleString('tr-TR')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           ) : (
             <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
               {filteredAndSortedHotels.map((hotel, index) => (
