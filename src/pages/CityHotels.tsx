@@ -287,23 +287,23 @@ const CityHotels = () => {
           <Breadcrumb items={breadcrumbItems} />
           
           {/* Hero Section */}
-          <section className="text-center mb-10 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <section className="text-center mb-6 animate-fade-in">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-3">
               <Hotel className="h-4 w-4" />
               <span>Otel Karşılaştırma</span>
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
               {flag} {city.name} <span className="text-gradient">Otelleri</span>
             </h1>
             
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {city.name} için en uygun otel fiyatlarını karşılaştırın, güvenli rezervasyon yapın
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {city.name} için en uygun otel fiyatlarını karşılaştırın
             </p>
           </section>
           
           {/* Search Info */}
-          <div className="card-modern p-4 mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div className="card-modern p-3 mb-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
@@ -331,7 +331,7 @@ const CityHotels = () => {
           
           {/* Trip.com Affiliate CTA */}
           {affiliateLink && (
-            <div className="card-modern p-6 mb-8 text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+            <div className="card-modern p-4 mb-6 text-center bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
                 <Hotel className="h-4 w-4" />
                 <span>Trip.com Partner</span>
@@ -353,12 +353,12 @@ const CityHotels = () => {
           
           {/* Hotel Grid */}
           {isLoading ? (
-            <div className="text-center py-16">
-              <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-              <p className="text-muted-foreground">Oteller aranıyor...</p>
+            <div className="text-center py-12">
+              <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-3" />
+              <p className="text-muted-foreground text-sm">Oteller aranıyor...</p>
             </div>
           ) : (
-            <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
               {displayHotels.map((hotel, index) => (
                 <div 
                   key={hotel.id}
@@ -372,8 +372,8 @@ const CityHotels = () => {
           )}
           
           {/* SEO Content */}
-          <section className="card-modern p-8 mb-8">
-            <h2 className="text-2xl font-display font-bold mb-6">{city.name} Otel Rehberi</h2>
+          <section className="card-modern p-6 mb-6">
+            <h2 className="text-xl font-display font-bold mb-4">{city.name} Otel Rehberi</h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
                 {city.name}, {city.country}'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. 

@@ -85,27 +85,27 @@ const CityFlights = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-10 gradient-hero text-white">
+      <section className="py-6 md:py-8 gradient-hero text-white">
         <div className="container">
-          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-4xl">{flag}</span>
+          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-3" />
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-3xl">{flag}</span>
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold">
+              <h1 className="text-2xl md:text-3xl font-display font-bold">
                 {city.name} Uçuşları
               </h1>
-              <p className="text-white/80">
+              <p className="text-white/80 text-sm">
                 {cityRoutes.length} uçuş rotası mevcut
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3 mt-6">
-            <Button asChild variant="secondary">
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Button asChild variant="secondary" size="sm">
               <Link to={`/sehir/${city.slug}`}>
                 {city.name} Rehberi
               </Link>
             </Button>
-            <Button asChild variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
               <Link to={`/sehir/${city.slug}/oteller`}>
                 {city.name} Otelleri
               </Link>
@@ -116,10 +116,10 @@ const CityFlights = () => {
 
       {/* Incoming Routes */}
       {incomingRoutes.length > 0 && (
-        <section className="py-12">
+        <section className="py-6 md:py-8">
           <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-              <Plane className="w-6 h-6 text-primary" />
+            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+              <Plane className="w-5 h-5 text-primary" />
               {city.name}'e Uçuşlar
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -169,10 +169,10 @@ const CityFlights = () => {
 
       {/* Outgoing Routes */}
       {outgoingRoutes.length > 0 && (
-        <section className="py-12 section-routes">
+        <section className="py-6 md:py-8 section-routes">
           <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-              <Plane className="w-6 h-6 text-primary rotate-45" />
+            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+              <Plane className="w-5 h-5 text-primary rotate-45" />
               {city.name}'den Uçuşlar
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -221,11 +221,11 @@ const CityFlights = () => {
       )}
 
       {/* SEO Content */}
-      <section className="py-12">
+      <section className="py-6 md:py-8">
         <div className="container">
           <Card variant="elevated">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-display font-bold mb-4">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-display font-bold mb-3">
                 {city.name} Uçuş Rehberi
               </h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">
