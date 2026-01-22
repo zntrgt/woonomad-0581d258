@@ -45,7 +45,6 @@ const VALID_TRIP_CLASSES = ['Y', 'C', 'F'];
 const VALID_VISA_FILTERS = ['all', 'visa-free', 'visa-required'];
 const VALID_CONTINENTS = ['EU', 'AS', 'AM', 'AF', 'OC'];
 
-// Input validation helpers
 function validateAirportCode(code: unknown): string | null {
   if (typeof code !== 'string') return null;
   const upper = code.toUpperCase().trim();
@@ -90,6 +89,12 @@ function getGenericErrorMessage(): string {
   return 'Uçuş araması başarısız oldu. Lütfen tekrar deneyin.';
 }
 
+interface FlightLeg {
+  origin: string;
+  destination: string;
+  departDate: string;
+}
+
 interface FlightSearchParams {
   origin: string;
   destination: string;
@@ -102,6 +107,9 @@ interface FlightSearchParams {
   visaFilter?: 'all' | 'visa-free' | 'visa-required';
   flexibleDates?: boolean;
   currency?: string;
+  // Multi-city support
+  tripType?: 'roundtrip' | 'oneway' | 'multicity';
+  legs?: FlightLeg[];
 }
 
 // GLOBAL VISA DATA - Comprehensive list for Turkish passport holders
@@ -110,71 +118,93 @@ const VISA_FREE_COUNTRIES: Set<string> = new Set([
   'IST', 'SAW', 'ESB', 'ADB', 'AYT', 'BJV', 'DLM', 'TZX', 'GZT', 'DIY', 'VAN',
   'ADA', 'ASR', 'ERZ', 'SZF', 'GNY', 'MLX', 'HTY', 'EZS', 'KYA', 'DNZ', 'TEQ', 'CKZ', 'NAV',
   // Balkans
-  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
-  // Asia Pacific
-  'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO', 'FUK', 'CTS',
-  'SIN', 'KUL', 'PEN', 'LGK', 'BKK', 'DMK', 'HKT', 'CNX', 'USM',
-  'CGK', 'DPS', 'SUB', 'JOG',
-  'MNL', 'CEB', 'DVO',
-  'HKG', 'TPE', 'KHH',
-  'KTM',
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', 'ZAG', 'SPU', 'DBV', 'LJU',
+  // Asia Pacific - visa-free or visa on arrival
+  'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO', 'FUK', 'CTS', 'OKA', 'HIJ',
+  'SIN', 'KUL', 'PEN', 'LGK', 'BKI', 'BKK', 'DMK', 'HKT', 'CNX', 'USM', 'KBV',
+  'CGK', 'DPS', 'SUB', 'JOG', 'LOP',
+  'MNL', 'CEB', 'DVO', 'CRK',
+  'HKG', 'TPE', 'KHH', 'TSA',
+  'KTM', 'PBH',
+  'SGN', 'HAN', 'DAD', 'CXR', 'PQC',
+  'PNH', 'REP', 'VTE', 'LPQ', 'RGN',
   // Middle East
-  'DOH', 'DXB', 'AUH', 'SHJ', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
+  'DOH', 'DXB', 'AUH', 'SHJ', 'BAH', 'MCT', 'KWI', 'AMM', 'AQJ', 'BEY',
   // Africa
   'TUN', 'CMN', 'RAK', 'FEZ', 'TNG', 'AGA',
   'CPT', 'JNB', 'DUR',
-  'NBO', 'MBA', 'DAR', 'ZNZ',
-  'MRU', 'SEZ',
+  'NBO', 'MBA', 'DAR', 'ZNZ', 'JRO', 'EBB', 'KGL',
+  'MRU', 'SEZ', 'TNR', 'RUN',
   // Americas (visa-free or visa on arrival)
-  'GRU', 'GIG', 'BSB', 'FOR', 'REC', 'SSA',
-  'EZE', 'AEP', 'COR', 'MDZ',
-  'SCL', 'BOG', 'MDE', 'CTG',
-  'LIM', 'CUZ', 'UIO', 'GYE',
-  'PTY', 'SJO', 'LIR',
-  'NAS', 'MBJ', 'KIN', 'SDQ', 'PUJ', 'HAV',
-  'CUN', 'MEX', 'GDL', 'SJD',
+  'GRU', 'GIG', 'BSB', 'CGH', 'SDU', 'CNF', 'FOR', 'REC', 'SSA', 'POA', 'CWB', 'FLN',
+  'EZE', 'AEP', 'COR', 'MDZ', 'BRC', 'IGR', 'USH',
+  'SCL', 'IPC', 'PUQ',
+  'BOG', 'MDE', 'CTG',
+  'LIM', 'CUZ', 'UIO', 'GYE', 'GPS',
+  'CCS', 'VVI', 'LPB', 'ASU', 'MVD', 'GEO', 'PBM',
+  'PTY', 'SJO', 'LIR', 'GUA', 'SAL', 'BZE', 'MGA', 'TGU',
+  'NAS', 'MBJ', 'KIN', 'SDQ', 'PUJ', 'HAV', 'VRA', 'SJU', 'AUA', 'CUR', 'BGI', 'POS', 'SXM',
+  'CUN', 'MEX', 'GDL', 'SJD', 'PVR', 'MTY', 'TIJ',
   // Central Asia & Caucasus
-  'ALA', 'NQZ', 'TSE', 'TAS', 'SKD', 'FRU', 'OSS', 'GYD', 'TBS', 'KUT', 'BUS',
+  'ALA', 'NQZ', 'TSE', 'TAS', 'SKD', 'BHK', 'FRU', 'OSS', 'DYU', 'ASB', 'GYD', 'TBS', 'KUT', 'BUS', 'EVN',
   // Cyprus
   'ECN', 'LCA', 'PFO',
+  // Pacific
+  'NAN', 'APW', 'TBU', 'VLI',
 ]);
 
 const VISA_REQUIRED_COUNTRIES: Set<string> = new Set([
   // Europe (Schengen)
-  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'LTN', 'FRA', 'MUC', 'BER', 'DUS', 'HAM', 'CGN',
-  'AMS', 'BRU', 'VIE', 'ZRH', 'GVA', 'BSL',
-  'FCO', 'MXP', 'VCE', 'NAP', 'BLQ', 'FLR',
-  'MAD', 'BCN', 'PMI', 'AGP', 'VLC', 'SVQ', 'IBZ',
-  'LIS', 'OPO', 'FAO',
-  'ATH', 'SKG', 'HER', 'CFU', 'RHO', 'MJT',
-  'PRG', 'WAW', 'KRK', 'GDN', 'BUD', 'OTP', 'CLJ', 'SOF', 'VAR',
-  'CPH', 'ARN', 'GOT', 'OSL', 'BGO', 'HEL', 'TKU',
-  'DUB', 'SNN', 'RIX', 'VNO', 'TLL',
-  // North America
-  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', 'ATL', 'DFW', 'DEN', 'SEA', 'BOS', 'LAS',
-  'YYZ', 'YVR', 'YUL', 'YYC', 'YOW',
-  // Oceania
-  'SYD', 'MEL', 'BNE', 'PER', 'AKL', 'WLG', 'CHC',
-  // China
-  'PEK', 'PVG', 'CAN', 'SZX', 'HGH', 'CTU', 'XMN',
-  // India
-  'DEL', 'BOM', 'BLR', 'MAA', 'CCU', 'HYD',
+  'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'LTN', 'MAN', 'BHX', 'EDI', 'GLA', 'DUB', 'SNN',
+  'FRA', 'MUC', 'BER', 'DUS', 'HAM', 'CGN', 'STR', 'HAJ', 'NUE', 'LEJ',
+  'AMS', 'RTM', 'EIN', 'BRU', 'CRL', 'LUX',
+  'VIE', 'SZG', 'INN', 'ZRH', 'GVA', 'BSL',
+  'FCO', 'MXP', 'VCE', 'NAP', 'BLQ', 'FLR', 'PSA', 'CTA', 'PMO',
+  'MAD', 'BCN', 'PMI', 'AGP', 'ALC', 'VLC', 'SVQ', 'IBZ', 'TFS', 'LPA', 'BIO',
+  'LIS', 'OPO', 'FAO', 'FNC', 'PDL',
+  'ATH', 'SKG', 'HER', 'CFU', 'RHO', 'JMK', 'JTR', 'KGS', 'ZTH', 'CHQ',
+  'MLA',
+  'PRG', 'WAW', 'KRK', 'GDN', 'WRO', 'POZ', 'BUD', 'OTP', 'CLJ', 'IAS', 'TSR', 'SOF', 'VAR', 'BOJ',
+  'CPH', 'ARN', 'GOT', 'OSL', 'BGO', 'TRD', 'HEL', 'KEF',
+  'RIX', 'VNO', 'KUN', 'TLL',
   // Russia
-  'SVO', 'DME', 'LED', 'VKO',
+  'SVO', 'DME', 'VKO', 'LED', 'AER', 'KZN',
+  // North America
+  'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', 'LGA', 'ATL', 'DFW', 'DEN', 'SEA', 'BOS', 'LAS',
+  'IAD', 'DCA', 'PHL', 'CLT', 'MCO', 'FLL', 'TPA', 'MDW', 'IAH', 'HOU', 'MSP', 'DTW', 'MSY',
+  'SAN', 'PHX', 'PDX', 'SJC', 'OAK', 'HNL', 'OGG', 'ANC',
+  'YYZ', 'YVR', 'YUL', 'YYC', 'YOW', 'YEG', 'YHZ', 'YWG',
+  // Oceania
+  'SYD', 'MEL', 'BNE', 'PER', 'ADL', 'CNS', 'OOL', 'DRW', 'HBA',
+  'AKL', 'WLG', 'CHC', 'ZQN',
+  'PPT', 'NOU', 'POM',
+  // China
+  'PEK', 'PKX', 'PVG', 'SHA', 'CAN', 'SZX', 'CTU', 'CKG', 'XIY', 'HGH', 'NKG', 'WUH', 'KMG', 'XMN', 'TAO', 'SYX', 'HAK',
+  'MFM',
+  // India & Pakistan
+  'DEL', 'BOM', 'BLR', 'MAA', 'CCU', 'HYD', 'COK', 'GOI', 'AMD', 'JAI',
+  'ISB', 'KHI', 'LHE',
+  // Bangladesh & Sri Lanka & Maldives
+  'DAC', 'CMB', 'MLE',
+  // Middle East requiring visa
+  'RUH', 'JED', 'MED', 'DMM', 'TLV', 'DAM', 'BGW', 'EBL', 'NJF', 'IKA', 'THR', 'MHD', 'SYZ', 'IFN',
+  // Ukraine & Moldova
+  'KBP', 'LWO', 'ODS', 'KIV',
+  // Mongolia
+  'UBN',
+  // North Africa requiring visa
+  'CAI', 'HRG', 'SSH', 'LXR', 'ASW', 'ALG', 'TIP',
+  // West Africa
+  'LOS', 'ABV', 'ACC', 'DKR', 'ABJ', 'ADD',
 ]);
 
 function getVisaStatus(destinationCode: string): 'visa-free' | 'visa-required' | 'unknown' {
-  if (VISA_FREE_COUNTRIES.has(destinationCode)) {
-    return 'visa-free';
-  }
-  if (VISA_REQUIRED_COUNTRIES.has(destinationCode)) {
-    return 'visa-required';
-  }
+  if (VISA_FREE_COUNTRIES.has(destinationCode)) return 'visa-free';
+  if (VISA_REQUIRED_COUNTRIES.has(destinationCode)) return 'visa-required';
   return 'unknown';
 }
 
-// Valid currency codes for API
-const VALID_CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'AED', 'JPY', 'SGD', 'THB', 'KRW', 'MXN', 'BRL'];
+const VALID_CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'AED', 'JPY', 'SGD', 'THB', 'KRW', 'MXN', 'BRL', 'IDR', 'MYR', 'PHP', 'VND', 'INR', 'AUD', 'NZD', 'CAD', 'CHF'];
 
 function validateCurrency(currency: unknown): string {
   if (typeof currency !== 'string') return 'TRY';
@@ -185,67 +215,69 @@ function validateCurrency(currency: unknown): string {
 // GLOBAL POPULAR DESTINATIONS - Expanded worldwide
 const GLOBAL_POPULAR_DESTINATIONS = [
   // Europe
-  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
+  'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', 'ZAG', 'DBV',
   'CDG', 'LHR', 'FRA', 'MUC', 'BER', 'AMS', 'BRU', 'VIE', 'ZRH',
   'FCO', 'MXP', 'VCE', 'MAD', 'BCN', 'LIS', 'ATH', 'PRG', 'WAW', 'BUD',
-  'CPH', 'ARN', 'OSL', 'HEL', 'DUB',
+  'CPH', 'ARN', 'OSL', 'HEL', 'DUB', 'KEF',
   // Asia
   'ICN', 'NRT', 'HND', 'KIX', 'SIN', 'KUL', 'BKK', 'HKT', 'CGK', 'DPS',
-  'MNL', 'HKG', 'TPE', 'KTM', 'CNX',
+  'MNL', 'HKG', 'TPE', 'KTM', 'CNX', 'SGN', 'HAN', 'PNH', 'REP',
   // Middle East
   'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
   // Africa
-  'TUN', 'CMN', 'RAK', 'CPT', 'JNB', 'NBO', 'DAR', 'ZNZ', 'MRU',
+  'TUN', 'CMN', 'RAK', 'CPT', 'JNB', 'NBO', 'DAR', 'ZNZ', 'MRU', 'SEZ', 'CAI',
   // Americas
   'JFK', 'LAX', 'MIA', 'SFO', 'YYZ', 'MEX', 'CUN',
-  'GRU', 'GIG', 'EZE', 'SCL', 'BOG', 'LIM', 'PTY', 'SJO', 'MBJ',
+  'GRU', 'GIG', 'EZE', 'SCL', 'BOG', 'LIM', 'PTY', 'SJO', 'MBJ', 'PUJ', 'HAV',
   // Central Asia & Caucasus
   'ALA', 'TAS', 'FRU', 'GYD', 'TBS',
   // Oceania
-  'SYD', 'MEL', 'AKL',
+  'SYD', 'MEL', 'AKL', 'NAN',
 ];
 
-// Continent-based destinations for targeted searches
 const CONTINENT_DESTINATIONS: Record<string, string[]> = {
   'EU': [
-    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG',
-    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'FRA', 'MUC', 'BER', 'DUS', 'HAM',
-    'AMS', 'BRU', 'VIE', 'ZRH', 'GVA',
-    'FCO', 'MXP', 'VCE', 'NAP', 'FLR',
-    'MAD', 'BCN', 'PMI', 'AGP', 'IBZ',
-    'LIS', 'OPO', 'FAO', 'ATH', 'SKG', 'HER',
+    'TIR', 'PRN', 'SKP', 'SJJ', 'TGD', 'BEG', 'ZAG', 'SPU', 'DBV', 'LJU',
+    'CDG', 'ORY', 'LHR', 'LGW', 'STN', 'MAN', 'EDI', 'DUB',
+    'FRA', 'MUC', 'BER', 'DUS', 'HAM', 'CGN', 'STR',
+    'AMS', 'BRU', 'VIE', 'SZG', 'ZRH', 'GVA',
+    'FCO', 'MXP', 'VCE', 'NAP', 'FLR', 'BLQ',
+    'MAD', 'BCN', 'PMI', 'AGP', 'IBZ', 'TFS', 'LPA',
+    'LIS', 'OPO', 'FAO', 'ATH', 'SKG', 'HER', 'JMK', 'JTR', 'RHO',
     'PRG', 'WAW', 'KRK', 'BUD', 'OTP', 'SOF',
-    'CPH', 'ARN', 'OSL', 'HEL', 'DUB', 'RIX', 'VNO', 'TLL',
+    'CPH', 'ARN', 'OSL', 'HEL', 'KEF', 'RIX', 'VNO', 'TLL',
+    'MLA', 'LCA',
   ],
   'AS': [
-    'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO',
-    'SIN', 'KUL', 'BKK', 'DMK', 'HKT', 'CNX', 'CGK', 'DPS', 'SUB',
+    'ICN', 'GMP', 'NRT', 'HND', 'KIX', 'NGO', 'FUK', 'CTS',
+    'SIN', 'KUL', 'BKK', 'DMK', 'HKT', 'CNX', 'CGK', 'DPS', 'SUB', 'JOG',
     'MNL', 'CEB', 'HKG', 'TPE', 'KTM',
-    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY',
-    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS',
-    'PEK', 'PVG', 'CAN', 'HGH', 'DEL', 'BOM', 'BLR',
+    'SGN', 'HAN', 'DAD', 'PNH', 'REP', 'VTE', 'RGN',
+    'DOH', 'DXB', 'AUH', 'BAH', 'MCT', 'KWI', 'AMM', 'BEY', 'JED', 'RUH',
+    'ALA', 'NQZ', 'TAS', 'FRU', 'GYD', 'TBS', 'KUT', 'BUS',
+    'PEK', 'PVG', 'CAN', 'HGH', 'DEL', 'BOM', 'BLR', 'MLE',
   ],
   'AM': [
     'JFK', 'LAX', 'ORD', 'MIA', 'SFO', 'EWR', 'ATL', 'DFW', 'DEN', 'SEA', 'BOS', 'LAS',
-    'YYZ', 'YVR', 'YUL',
-    'MEX', 'CUN', 'GDL', 'SJD',
+    'MCO', 'FLL', 'IAD', 'SAN', 'PHX', 'HNL',
+    'YYZ', 'YVR', 'YUL', 'YYC',
+    'MEX', 'CUN', 'GDL', 'SJD', 'PVR',
     'GRU', 'GIG', 'BSB', 'EZE', 'SCL', 'BOG', 'MDE', 'LIM', 'CUZ', 'UIO',
-    'PTY', 'SJO', 'NAS', 'MBJ', 'SDQ', 'PUJ', 'HAV',
+    'PTY', 'SJO', 'NAS', 'MBJ', 'SDQ', 'PUJ', 'HAV', 'SJU', 'AUA',
   ],
   'AF': [
-    'TUN', 'CMN', 'RAK', 'FEZ', 'CAI', 'HRG', 'SSH',
-    'CPT', 'JNB', 'DUR', 'NBO', 'MBA', 'DAR', 'ZNZ',
-    'MRU', 'SEZ', 'ADD', 'LOS', 'ACC',
+    'TUN', 'CMN', 'RAK', 'FEZ', 'AGA', 'CAI', 'HRG', 'SSH', 'LXR',
+    'CPT', 'JNB', 'DUR', 'NBO', 'MBA', 'DAR', 'ZNZ', 'JRO', 'ADD', 'EBB', 'KGL',
+    'MRU', 'SEZ', 'TNR', 'LOS', 'ACC', 'DKR',
   ],
   'OC': [
-    'SYD', 'MEL', 'BNE', 'PER', 'AKL', 'WLG', 'CHC',
-    'NAN', 'PPT',
+    'SYD', 'MEL', 'BNE', 'PER', 'ADL', 'CNS', 'OOL',
+    'AKL', 'WLG', 'CHC', 'ZQN',
+    'NAN', 'PPT', 'NOU', 'POM',
   ],
 };
 
-// Nearby alternatives for fallback suggestions
 const NEARBY_ALTERNATIVES: Record<string, string[]> = {
-  // If no results for major hubs, suggest nearby alternatives
   'IST': ['SAW', 'ESB', 'AYT', 'ADB'],
   'LHR': ['LGW', 'STN', 'LTN', 'CDG', 'AMS'],
   'CDG': ['ORY', 'LHR', 'AMS', 'BRU'],
@@ -256,7 +288,51 @@ const NEARBY_ALTERNATIVES: Record<string, string[]> = {
   'SIN': ['KUL', 'BKK', 'CGK', 'HKG'],
   'NRT': ['HND', 'KIX', 'NGO', 'ICN'],
   'SYD': ['MEL', 'BNE', 'AKL', 'PER'],
+  'DPS': ['CGK', 'SUB', 'SIN', 'KUL'],
+  'BKK': ['DMK', 'HKT', 'SIN', 'KUL'],
 };
+
+// Helper function for single leg search
+async function searchSingleLeg(
+  apiToken: string,
+  partnerId: string | undefined,
+  origin: string,
+  destination: string,
+  departDate: string,
+  currency: string,
+  tripClass: string,
+): Promise<any[]> {
+  const searchParams = new URLSearchParams({
+    token: apiToken,
+    origin,
+    destination,
+    departure_at: departDate,
+    one_way: 'true',
+    currency,
+    sorting: 'price',
+    limit: '20',
+  });
+
+  const apiUrl = `https://api.travelpayouts.com/aviasales/v3/prices_for_dates?${searchParams.toString()}`;
+  
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (!response.ok) {
+      console.error(`API error for ${origin}->${destination}:`, response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    return data?.data || [];
+  } catch (e) {
+    console.error(`Error searching ${origin}->${destination}:`, e);
+    return [];
+  }
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -310,7 +386,135 @@ serve(async (req) => {
       });
     }
 
-    // Validate inputs - NO ORIGIN RESTRICTIONS (truly global)
+    const currency = validateCurrency(params.currency);
+    const tripClass = validateTripClass(params.tripClass);
+    const visaFilter = validateVisaFilter(params.visaFilter);
+
+    // ============================================
+    // MULTI-CITY SEARCH HANDLING
+    // ============================================
+    if (params.tripType === 'multicity' && params.legs && params.legs.length >= 2) {
+      console.log('Multi-city search with', params.legs.length, 'legs');
+      
+      // Validate all legs
+      const validatedLegs: FlightLeg[] = [];
+      for (const leg of params.legs) {
+        const origin = validateAirportCode(leg.origin);
+        const destination = validateAirportCode(leg.destination);
+        const departDate = validateDate(leg.departDate);
+        
+        if (!origin || !destination || !departDate) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            error: `Geçersiz bacak verisi: ${leg.origin} -> ${leg.destination}`
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        
+        validatedLegs.push({ origin, destination, departDate });
+      }
+      
+      // Search all legs in parallel
+      const legSearchPromises = validatedLegs.map(leg => 
+        searchSingleLeg(apiToken, partnerId, leg.origin, leg.destination, leg.departDate, currency, tripClass)
+      );
+      
+      const legResults = await Promise.all(legSearchPromises);
+      
+      // Build combined results
+      const multiCityResults: any[] = [];
+      
+      // Find best flight for each leg
+      const bestFlightsPerLeg = legResults.map((flights, index) => {
+        if (flights.length === 0) return null;
+        // Sort by price and get cheapest
+        const sorted = [...flights].sort((a, b) => (a.price || 0) - (b.price || 0));
+        return {
+          ...sorted[0],
+          legIndex: index,
+          legOrigin: validatedLegs[index].origin,
+          legDestination: validatedLegs[index].destination,
+          legDate: validatedLegs[index].departDate,
+        };
+      });
+      
+      // Check if all legs have results
+      const allLegsHaveResults = bestFlightsPerLeg.every(f => f !== null);
+      
+      if (allLegsHaveResults) {
+        // Calculate total price
+        const totalPrice = bestFlightsPerLeg.reduce((sum, f) => sum + (f?.price || 0), 0);
+        
+        // Create combined result
+        const combinedResult = {
+          type: 'multicity',
+          totalPrice,
+          legs: bestFlightsPerLeg,
+          currency,
+        };
+        
+        // Also return individual options for each leg
+        const allOptions = legResults.map((flights, index) => ({
+          legIndex: index,
+          origin: validatedLegs[index].origin,
+          destination: validatedLegs[index].destination,
+          date: validatedLegs[index].departDate,
+          flights: flights.slice(0, 10).map((f: any) => ({
+            ...f,
+            visaStatus: getVisaStatus(f.destination),
+            affiliateLink: partnerId
+              ? `https://www.aviasales.com/search/${validatedLegs[index].origin}${validatedLegs[index].departDate.replace(/-/g, '')}${validatedLegs[index].destination}1?marker=${partnerId}`
+              : null,
+          })),
+        }));
+        
+        return new Response(JSON.stringify({ 
+          success: true, 
+          data: {
+            combined: combinedResult,
+            legs: allOptions,
+          },
+          currency,
+          isMultiCity: true,
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      } else {
+        // Some legs don't have results
+        const missingLegs = validatedLegs
+          .filter((_, i) => !bestFlightsPerLeg[i])
+          .map(l => `${l.origin} → ${l.destination}`);
+        
+        return new Response(JSON.stringify({ 
+          success: true,
+          data: {
+            combined: null,
+            legs: legResults.map((flights, index) => ({
+              legIndex: index,
+              origin: validatedLegs[index].origin,
+              destination: validatedLegs[index].destination,
+              date: validatedLegs[index].departDate,
+              flights: flights.slice(0, 10).map((f: any) => ({
+                ...f,
+                visaStatus: getVisaStatus(f.destination),
+              })),
+              noResults: flights.length === 0,
+            })),
+          },
+          currency,
+          isMultiCity: true,
+          warning: `Şu rotalar için uçuş bulunamadı: ${missingLegs.join(', ')}`,
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // ============================================
+    // STANDARD SEARCH (roundtrip/oneway)
+    // ============================================
     const origin = validateAirportCode(params.origin);
     const destination = validateAirportCode(params.destination) || '';
     const departDate = validateDate(params.departDate);
@@ -318,10 +522,7 @@ serve(async (req) => {
     const adults = validatePassengerCount(params.adults, 1);
     const children = validatePassengerCount(params.children, 0);
     const infants = validatePassengerCount(params.infants, 0);
-    const tripClass = validateTripClass(params.tripClass);
-    const visaFilter = validateVisaFilter(params.visaFilter);
     const flexibleDates = params.flexibleDates === true;
-    const currency = validateCurrency(params.currency);
 
     if (!origin) {
       return new Response(JSON.stringify({ 
@@ -520,19 +721,15 @@ serve(async (req) => {
           return true;
         });
 
-        // Return both filtered (exact match) and all month data for fallback
         return { exact: filtered, monthData };
       });
 
       const results = await Promise.all(searchPromises);
       allFlights = results.flatMap(r => r.exact);
       
-      // Collect month data for nearby date suggestions
       const allMonthData = results.flatMap(r => r.monthData);
 
-      // If no results for exact dates, provide nearby date flights from same route
       if (allFlights.length === 0 && allMonthData.length > 0) {
-        // Sort by departure date and pick closest ones
         const sorted = allMonthData
           .filter((f: any) => f.departure_at)
           .sort((a: any, b: any) => {
@@ -546,24 +743,20 @@ serve(async (req) => {
         console.log('No exact date results, returning nearby dates:', nearbyDateFlights.length);
       }
 
-      // If still no results, provide airport alternatives
       if (allFlights.length === 0 && nearbyDateFlights.length === 0) {
         nearbyAlternatives = NEARBY_ALTERNATIVES[destination] || NEARBY_ALTERNATIVES[origin] || [];
         console.log('No results, suggesting alternatives:', nearbyAlternatives);
       }
       
-      // If we have nearby date flights but no exact matches, use those
       if (allFlights.length === 0 && nearbyDateFlights.length > 0) {
         allFlights = nearbyDateFlights;
       }
     }
 
-    // Skip strict date filtering if we already relaxed to nearby dates
     const skipStrictDateFilter = !isAnywhereSearch && !isContinentSearch && allFlights.length > 0;
     
     let dateFilteredFlights: any[];
     if (skipStrictDateFilter) {
-      // Already filtered or using nearby dates - just dedupe
       dateFilteredFlights = allFlights;
     } else {
       dateFilteredFlights = allFlights.filter((flight: any) => {
