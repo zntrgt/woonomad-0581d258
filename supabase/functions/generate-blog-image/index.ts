@@ -19,6 +19,46 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: authError } = await supabaseAuth.auth.getClaims(token);
+    
+    if (authError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Verify admin role
+    const { data: roleData, error: roleError } = await supabaseAuth
+      .rpc('has_role', { _user_id: userId, _role: 'admin' });
+
+    if (roleError || !roleData) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden - Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const body: GenerateImageRequest = await req.json();
     const { prompt, context, slug, generateAltText = true } = body;
 
@@ -38,14 +78,13 @@ serve(async (req) => {
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    // Use service role client for storage operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Enhanced prompt for travel/blog images
     const enhancedPrompt = `Professional travel photography style, high quality, 16:9 aspect ratio, vibrant colors, natural lighting: ${prompt}. ${context ? `Context: ${context}` : ''}. Ultra high resolution.`;
 
-    console.log("Generating image with prompt:", enhancedPrompt.substring(0, 100) + "...");
+    console.log(`Admin ${userId} generating image: ${enhancedPrompt.substring(0, 100)}...`);
 
     // Generate image using Lovable AI Gateway with image model
     const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
