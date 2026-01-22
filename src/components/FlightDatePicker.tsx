@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Calendar as CalendarIcon, Plane, ArrowRight } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore, isSameDay } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
@@ -31,8 +31,7 @@ export function FlightDatePicker({
   onFlexibleChange,
   isOneWay = false,
 }: FlightDatePickerProps) {
-  const [departOpen, setDepartOpen] = useState(false);
-  const [returnOpen, setReturnOpen] = useState(false);
+  const [activeCalendar, setActiveCalendar] = useState<'depart' | 'return' | null>(null);
 
   const today = startOfToday();
 
@@ -43,7 +42,6 @@ export function FlightDatePicker({
     const saturday = addDays(targetWeekStart, 5);
     const sunday = addDays(targetWeekStart, 6);
     
-    // If this weekend has passed, get next
     if (isBefore(sunday, today) && offset === 0) {
       return getNextWeekend(1);
     }
@@ -59,14 +57,15 @@ export function FlightDatePicker({
     }
   };
 
-  const formatDateDisplay = (date: Date | undefined) => {
-    if (!date) return 'Tarih Seç';
-    return format(date, 'd MMM yyyy, EEEE', { locale: tr });
+  // Compact date format for buttons
+  const formatCompact = (date: Date | undefined) => {
+    if (!date) return 'Seç';
+    return format(date, 'd MMM', { locale: tr });
   };
 
-  const formatShortDate = (date: Date | undefined) => {
-    if (!date) return 'Tarih Seç';
-    return format(date, 'd MMM', { locale: tr });
+  const formatDayName = (date: Date | undefined) => {
+    if (!date) return '';
+    return format(date, 'EEE', { locale: tr });
   };
 
   // Get weekend label
@@ -75,152 +74,209 @@ export function FlightDatePicker({
     
     const thisWeekend = getNextWeekend(0);
     const nextWeekend = getNextWeekend(1);
+    const thirdWeekend = getNextWeekend(2);
     
-    if (isSameDay(departDate, thisWeekend.saturday)) {
-      return 'Bu Hafta Sonu';
-    } else if (isSameDay(departDate, nextWeekend.saturday)) {
-      return 'Gelecek Hafta Sonu';
-    }
+    if (isSameDay(departDate, thisWeekend.saturday)) return 'Bu Hafta Sonu';
+    if (isSameDay(departDate, nextWeekend.saturday)) return 'Gelecek Hafta Sonu';
+    if (isSameDay(departDate, thirdWeekend.saturday)) return '+2 Hafta';
     return null;
   };
 
   const weekendLabel = getWeekendLabel();
 
-  return (
-    <div className="flex flex-col gap-3 sm:gap-4">
-      {/* Quick Weekend Buttons - Compact */}
-      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-        <span className="text-xs sm:text-sm text-muted-foreground mr-1">Hızlı:</span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => selectWeekend(0)}
-          className={cn(
-            "rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3",
-            weekendLabel === 'Bu Hafta Sonu' && "bg-primary text-primary-foreground border-primary"
-          )}
-        >
-          Bu Hafta Sonu
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => selectWeekend(1)}
-          className={cn(
-            "rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3",
-            weekendLabel === 'Gelecek Hafta Sonu' && "bg-primary text-primary-foreground border-primary"
-          )}
-        >
-          Gelecek Hafta Sonu
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => selectWeekend(2)}
-          className="rounded-full text-[10px] sm:text-xs h-7 sm:h-8 px-2.5 sm:px-3"
-        >
-          +2 Hafta
-        </Button>
-      </div>
+  const handleDepartSelect = (date: Date | undefined) => {
+    onDepartDateChange(date);
+    if (date && !isOneWay) {
+      // Auto-set return date if needed
+      if (!returnDate || isBefore(returnDate, date)) {
+        onReturnDateChange(addDays(date, 1));
+      }
+      // Auto-open return calendar
+      setActiveCalendar('return');
+    } else {
+      setActiveCalendar(null);
+    }
+  };
 
-      {/* Date Pickers */}
-      <div className="flex flex-col sm:flex-row gap-3">
+  const handleReturnSelect = (date: Date | undefined) => {
+    onReturnDateChange(date);
+    setActiveCalendar(null);
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Main Date Selection - Unified compact row */}
+      <div className="flex items-stretch gap-2">
         {/* Departure Date */}
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Gidiş Tarihi
-          </label>
-          <Popover open={departOpen} onOpenChange={setDepartOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal h-12 rounded-xl",
-                  "bg-muted/50 border-border/50 hover:bg-muted",
-                  !departDate && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
-                {formatDateDisplay(departDate)}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={departDate}
-                onSelect={(date) => {
-                  onDepartDateChange(date);
-                  setDepartOpen(false);
-                  // Auto-set return date to next day if not set or before new depart date
-                  if (date && !isOneWay && (!returnDate || isBefore(returnDate, date))) {
-                    onReturnDateChange(addDays(date, 1));
-                  }
-                }}
-                disabled={(date) => isBefore(date, today)}
-                initialFocus
-                locale={tr}
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
+        <Popover 
+          open={activeCalendar === 'depart'} 
+          onOpenChange={(open) => setActiveCalendar(open ? 'depart' : null)}
+        >
+          <PopoverTrigger asChild>
+            <button
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 rounded-xl border transition-all",
+                "hover:border-primary/50 hover:bg-muted/50",
+                activeCalendar === 'depart' 
+                  ? "border-primary bg-primary/5 ring-2 ring-primary/20" 
+                  : "border-border bg-card",
+                !departDate && "text-muted-foreground"
+              )}
+            >
+              <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">Gidiş</span>
+              <span className="text-base sm:text-lg font-bold text-foreground">{formatCompact(departDate)}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground">{formatDayName(departDate)}</span>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="center" sideOffset={8}>
+            <div className="p-2 border-b border-border bg-muted/50">
+              <p className="text-xs font-medium text-center">Gidiş Tarihi Seçin</p>
+            </div>
+            <Calendar
+              mode="single"
+              selected={departDate}
+              onSelect={handleDepartSelect}
+              disabled={(date) => isBefore(date, today)}
+              initialFocus
+              locale={tr}
+              className="p-2 sm:p-3 pointer-events-auto"
+              classNames={{
+                months: "flex flex-col",
+                month: "space-y-2",
+                caption: "flex justify-center pt-1 relative items-center",
+                caption_label: "text-sm font-semibold",
+                nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-muted rounded-md",
+                nav_button_previous: "absolute left-1",
+                nav_button_next: "absolute right-1",
+                table: "w-full border-collapse",
+                head_row: "flex",
+                head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-[10px] sm:text-xs",
+                row: "flex w-full mt-1",
+                cell: "h-8 w-8 sm:h-9 sm:w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+                day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal text-xs sm:text-sm rounded-md hover:bg-muted aria-selected:opacity-100",
+                day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                day_today: "bg-accent text-accent-foreground font-semibold",
+                day_outside: "text-muted-foreground opacity-40",
+                day_disabled: "text-muted-foreground opacity-30",
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+
+        {/* Arrow / Divider */}
+        <div className="flex items-center justify-center px-1">
+          {isOneWay ? (
+            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <div className="flex flex-col items-center gap-0.5">
+              <Plane className="h-3.5 w-3.5 text-primary" />
+              <div className="h-3 w-px bg-border" />
+              <Plane className="h-3.5 w-3.5 text-primary rotate-180" />
+            </div>
+          )}
         </div>
 
         {/* Return Date */}
-        {!isOneWay && (
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-foreground/80 mb-2">
-              Dönüş Tarihi
-            </label>
-            <Popover open={returnOpen} onOpenChange={setReturnOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal h-12 rounded-xl",
-                    "bg-muted/50 border-border/50 hover:bg-muted",
-                    !returnDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
-                  {formatDateDisplay(returnDate)}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={returnDate}
-                  onSelect={(date) => {
-                    onReturnDateChange(date);
-                    setReturnOpen(false);
-                  }}
-                  disabled={(date) => departDate ? isBefore(date, departDate) : isBefore(date, today)}
-                  initialFocus
-                  locale={tr}
-                  className={cn("p-3 pointer-events-auto")}
-                />
-              </PopoverContent>
-            </Popover>
+        {!isOneWay ? (
+          <Popover 
+            open={activeCalendar === 'return'} 
+            onOpenChange={(open) => setActiveCalendar(open ? 'return' : null)}
+          >
+            <PopoverTrigger asChild>
+              <button
+                className={cn(
+                  "flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 rounded-xl border transition-all",
+                  "hover:border-primary/50 hover:bg-muted/50",
+                  activeCalendar === 'return' 
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/20" 
+                    : "border-border bg-card",
+                  !returnDate && "text-muted-foreground"
+                )}
+              >
+                <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">Dönüş</span>
+                <span className="text-base sm:text-lg font-bold text-foreground">{formatCompact(returnDate)}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">{formatDayName(returnDate)}</span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="center" sideOffset={8}>
+              <div className="p-2 border-b border-border bg-muted/50">
+                <p className="text-xs font-medium text-center">Dönüş Tarihi Seçin</p>
+              </div>
+              <Calendar
+                mode="single"
+                selected={returnDate}
+                onSelect={handleReturnSelect}
+                disabled={(date) => departDate ? isBefore(date, departDate) : isBefore(date, today)}
+                initialFocus
+                locale={tr}
+                className="p-2 sm:p-3 pointer-events-auto"
+                classNames={{
+                  months: "flex flex-col",
+                  month: "space-y-2",
+                  caption: "flex justify-center pt-1 relative items-center",
+                  caption_label: "text-sm font-semibold",
+                  nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-muted rounded-md",
+                  nav_button_previous: "absolute left-1",
+                  nav_button_next: "absolute right-1",
+                  table: "w-full border-collapse",
+                  head_row: "flex",
+                  head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-[10px] sm:text-xs",
+                  row: "flex w-full mt-1",
+                  cell: "h-8 w-8 sm:h-9 sm:w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+                  day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal text-xs sm:text-sm rounded-md hover:bg-muted aria-selected:opacity-100",
+                  day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                  day_today: "bg-accent text-accent-foreground font-semibold",
+                  day_outside: "text-muted-foreground opacity-40",
+                  day_disabled: "text-muted-foreground opacity-30",
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 rounded-xl border border-dashed border-border/50 bg-muted/20">
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Tek yön</span>
           </div>
         )}
       </div>
 
-      {/* Flexible Dates Toggle - Inline compact */}
-      <div className="flex items-center justify-center gap-3 sm:gap-4">
-        <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-lg bg-muted/30 border border-border/30">
-          <Switch
-            checked={isFlexible}
-            onCheckedChange={onFlexibleChange}
-            className="scale-90 sm:scale-100"
-          />
-          <span className="text-xs sm:text-sm font-medium">±1 gün esnek</span>
-        </div>
-        
-        {/* Weekend label badge - no date repetition */}
-        {weekendLabel && (
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-            {weekendLabel}
-          </span>
-        )}
+      {/* Quick Actions Row */}
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+        {/* Weekend Quick Select */}
+        {[
+          { label: 'Bu Hafta Sonu', offset: 0 },
+          { label: 'Gelecek Hafta Sonu', offset: 1 },
+          { label: '+2 Hafta', offset: 2 },
+        ].map(({ label, offset }) => (
+          <Button
+            key={label}
+            variant="outline"
+            size="sm"
+            onClick={() => selectWeekend(offset)}
+            className={cn(
+              "rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium",
+              weekendLabel === label && "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+            )}
+          >
+            {label}
+          </Button>
+        ))}
+
+        {/* Divider */}
+        <div className="h-4 w-px bg-border mx-1 hidden sm:block" />
+
+        {/* Flexible Toggle - Compact */}
+        <button
+          onClick={() => onFlexibleChange(!isFlexible)}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium border transition-all",
+            isFlexible 
+              ? "bg-primary/10 text-primary border-primary/30" 
+              : "bg-card text-muted-foreground border-border hover:border-primary/30"
+          )}
+        >
+          <CalendarIcon className="h-3 w-3" />
+          <span>±1 gün</span>
+        </button>
       </div>
     </div>
   );
