@@ -391,6 +391,35 @@ const de = {
     forbidden: 'Sie haben keine Berechtigung für diese Aktion',
     serverError: 'Serverfehler. Bitte versuchen Sie es später erneut.',
   },
+
+  // Activities
+  activities: 'Aktivitäten',
+  viewAllActivities: 'Alle Aktivitäten ansehen',
+  cityActivities: {
+    activities: 'Aktivitäten',
+    cityNotFound: 'Stadt nicht gefunden',
+    browseCities: 'Alle Städte durchsuchen',
+    seoTitle: '{{city}} Aktivitäten & Touren {{year}} | Top-Erlebnisse',
+    seoDescription: 'Top-Touren, Aktivitäten und Erlebnisse in {{city}}. Stadtführungen, Bootstouren, kulinarische Touren und mehr.',
+    pageTitle: '{{city}} Aktivitäten & Touren',
+    pageSubtitle: 'Die beliebtesten Erlebnisse und Touren',
+    exploreCategories: 'Nach Kategorie erkunden',
+    viewAllIn: 'Alle in {{city}} ansehen',
+    popularActivities: 'Beliebte Aktivitäten',
+    aboutTitle: 'Über Aktivitäten in {{city}}',
+    aboutText: '{{city}} ist bekannt für seine vielfältigen Aktivitäten und Erlebnisse. Von Stadtführungen bis Bootstouren, kulinarischen Erlebnissen bis Abenteuersport gibt es Optionen für jeden Geschmack.',
+    tipsTitle: 'Aktivitäten-Tipps',
+    tip1: 'Besuchen Sie beliebte Sehenswürdigkeiten früh am Morgen',
+    tip2: 'Buchen Sie online, um Warteschlangen zu überspringen',
+    tip3: 'Wählen Sie Touren mit lokalen Guides',
+    tip4: 'Nutzen Sie Gruppenrabatte',
+    quickLinks: 'Schnellzugriff',
+    findHotels: '{{city}} Hotels',
+    findFlights: '{{city}} Flüge',
+    cityGuide: '{{city}} Reiseführer',
+    discoverAll: 'Alle Aktivitäten entdecken',
+    discoverAllDesc: 'Hunderte von Aktivitäten und Touren in {{city}}',
+  },
 };
 
 export default de;

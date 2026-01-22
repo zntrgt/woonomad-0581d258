@@ -20,7 +20,8 @@ import {
   Building2,
   Coffee,
   Search,
-  AlertTriangle
+  AlertTriangle,
+  Compass
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -408,6 +409,12 @@ const City = () => {
               <Link to={`/sehir/${city.slug}/coworking`}>
                 <Building2 className="w-4 h-4" />
                 Coworking
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="gap-1.5">
+              <Link to={`/sehir/${city.slug}/aktiviteler`}>
+                <Compass className="w-4 h-4" />
+                Aktiviteler
               </Link>
             </Button>
             <Button asChild size="sm" variant="outline" className="gap-1.5">

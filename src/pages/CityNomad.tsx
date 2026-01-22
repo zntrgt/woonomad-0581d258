@@ -46,6 +46,7 @@ import { getCountryFlag } from '@/lib/destinations';
 import { WifiSpeedTestForm } from '@/components/WifiSpeedTestForm';
 import { CommunitySpeedTests } from '@/components/CommunitySpeedTests';
 import { LongStayPricing } from '@/components/LongStayPricing';
+import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 
 // Table of Contents sections
 const tocSections = [
@@ -1160,6 +1161,14 @@ const CityNomad = () => {
                 </Card>
               </section>
             )}
+
+            {/* Klook Activities */}
+            <section>
+              <KlookActivitiesWidget 
+                citySlug={city.slug}
+                cityName={city.name}
+              />
+            </section>
 
             {/* CTA Section */}
             <section>

@@ -4,14 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExternalLink, Compass } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 interface KlookActivitiesWidgetProps {
   citySlug: string;
   cityName?: string;
   className?: string;
+  showFullPageLink?: boolean;
 }
 
-export function KlookActivitiesWidget({ citySlug, cityName, className = '' }: KlookActivitiesWidgetProps) {
+export function KlookActivitiesWidget({ citySlug, cityName, className = '', showFullPageLink = true }: KlookActivitiesWidgetProps) {
   const { data, isLoading, error } = useKlookActivities(citySlug);
   const { t } = useTranslation();
 
@@ -34,12 +36,14 @@ export function KlookActivitiesWidget({ citySlug, cityName, className = '' }: Kl
     return null;
   }
 
+  const displayName = cityName || data.cityName;
+
   return (
     <Card className={`border-primary/20 ${className}`}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Compass className="h-5 w-5 text-primary" />
-          {cityName || data.cityName} {t('activities', 'Aktiviteleri')}
+          {displayName} {t('activities', 'Aktiviteleri')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -59,26 +63,34 @@ export function KlookActivitiesWidget({ citySlug, cityName, className = '' }: Kl
           </a>
         ))}
         
+        {showFullPageLink && (
+          <Link to={`/sehir/${citySlug}/aktiviteler`}>
+            <Button
+              variant="outline"
+              className="w-full mt-3 border-primary/30 hover:bg-primary/10"
+            >
+              {t('viewAllActivities', 'Tüm Aktiviteleri Gör')}
+            </Button>
+          </Link>
+        )}
+        
         {data.cityLink && (
           <Button
             asChild
-            variant="outline"
-            className="w-full mt-3 border-primary/30 hover:bg-primary/10"
+            variant="ghost"
+            size="sm"
+            className="w-full text-xs text-muted-foreground hover:text-primary"
           >
             <a
               href={data.cityLink}
               target="_blank"
               rel="noopener noreferrer sponsored"
             >
-              {t('viewAllActivities', 'Tüm Aktiviteleri Gör')}
-              <ExternalLink className="h-4 w-4 ml-2" />
+              Klook'ta Gör
+              <ExternalLink className="h-3 w-3 ml-1" />
             </a>
           </Button>
         )}
-        
-        <p className="text-xs text-muted-foreground text-center pt-2">
-          Powered by Klook
-        </p>
       </CardContent>
     </Card>
   );

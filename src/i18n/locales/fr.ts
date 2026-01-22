@@ -391,6 +391,35 @@ const fr = {
     forbidden: "Vous n'avez pas la permission pour cette action",
     serverError: 'Erreur serveur. Veuillez réessayer plus tard.',
   },
+
+  // Activities
+  activities: 'Activités',
+  viewAllActivities: 'Voir toutes les activités',
+  cityActivities: {
+    activities: 'Activités',
+    cityNotFound: 'Ville non trouvée',
+    browseCities: 'Parcourir toutes les villes',
+    seoTitle: 'Activités et visites à {{city}} {{year}} | Meilleures expériences',
+    seoDescription: 'Meilleures visites, activités et expériences à {{city}}. Visites de ville, excursions en bateau, circuits gastronomiques et plus.',
+    pageTitle: 'Activités et visites à {{city}}',
+    pageSubtitle: 'Les expériences et visites les plus populaires',
+    exploreCategories: 'Explorer par catégorie',
+    viewAllIn: 'Voir tout à {{city}}',
+    popularActivities: 'Activités populaires',
+    aboutTitle: 'À propos des activités à {{city}}',
+    aboutText: '{{city}} est célèbre pour ses activités et expériences variées. Des visites de ville aux excursions en bateau, des expériences culinaires aux sports d\'aventure, il y en a pour tous les goûts.',
+    tipsTitle: 'Conseils activités',
+    tip1: 'Visitez les sites populaires tôt le matin',
+    tip2: 'Réservez en ligne pour éviter les files d\'attente',
+    tip3: 'Choisissez des visites avec des guides locaux',
+    tip4: 'Profitez des réductions de groupe',
+    quickLinks: 'Liens rapides',
+    findHotels: 'Hôtels à {{city}}',
+    findFlights: 'Vols vers {{city}}',
+    cityGuide: 'Guide de {{city}}',
+    discoverAll: 'Découvrir toutes les activités',
+    discoverAllDesc: 'Des centaines d\'activités et de visites à {{city}}',
+  },
 };
 
 export default fr;

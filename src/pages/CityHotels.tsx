@@ -16,6 +16,7 @@ import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/co
 import { HotelMapClustered } from '@/components/HotelMapClustered';
 import { HotelComparison, HotelSelectButton } from '@/components/HotelComparison';
 import { LongStayPricing } from '@/components/LongStayPricing';
+import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -679,8 +680,22 @@ const CityHotels = () => {
             </div>
           </section>
           
+          {/* Klook Activities Widget */}
+          <section className="mb-6">
+            <KlookActivitiesWidget 
+              citySlug={city.slug}
+              cityName={city.name}
+            />
+          </section>
+          
           {/* Related Links */}
-          <section className="grid md:grid-cols-2 gap-4">
+          <section className="grid md:grid-cols-3 gap-4">
+            <Link to={`/sehir/${city.slug}/aktiviteler`} className="card-modern p-6 group hover:border-primary/30">
+              <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
+                🎯 {city.name} Aktiviteleri
+              </h3>
+              <p className="text-sm text-muted-foreground">Turlar ve deneyimler</p>
+            </Link>
             <Link to={`/sehir/${city.slug}/ucak-bileti`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
                 ✈️ {city.name} Uçak Bileti
