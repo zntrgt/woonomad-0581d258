@@ -38,6 +38,7 @@ import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
 import { nomadMetrics, coworkingSpaces } from '@/lib/nomad';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
+import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 
 // Helper to check if city has sufficient data
 const hasSufficientData = (city: CityInfo): boolean => {
@@ -823,6 +824,12 @@ const City = () => {
 
               {/* Weather Widget */}
               <WeatherWidget cityName={city.name} />
+
+              {/* Klook Activities Widget */}
+              <KlookActivitiesWidget 
+                citySlug={city.slug}
+                cityName={city.name}
+              />
 
               {/* Hotels Widget */}
               <CityHotelsWidget 
