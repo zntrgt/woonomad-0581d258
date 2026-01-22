@@ -73,6 +73,63 @@ const getSampleHotels = (cityName: string) => [
   },
 ];
 
+// Static hotel card for hotels with detail pages
+function StaticHotelCard({ hotel, citySlug }: { hotel: HotelData; citySlug: string }) {
+  return (
+    <Link to={`/sehir/${citySlug}/otel/${hotel.slug}`} className="block">
+      <Card className="card-modern overflow-hidden group h-full">
+        <div className="relative aspect-video overflow-hidden">
+          <img
+            src={hotel.images[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'}
+            alt={hotel.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          
+          <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
+            {Array.from({ length: hotel.stars }).map((_, i) => (
+              <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
+            ))}
+          </div>
+          
+          {hotel.priceRange && (
+            <div className="absolute bottom-3 right-3">
+              <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
+                <div className="text-xs text-muted-foreground">Gecelik</div>
+                <div className="text-xl font-display font-bold text-primary">
+                  ₺{hotel.priceRange.min.toLocaleString('tr-TR')}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <CardContent className="p-4">
+          <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
+            {hotel.name}
+          </h3>
+          
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+            {hotel.rating && (
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
+                <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
+              </div>
+            )}
+            {hotel.neighborhood && <span>{hotel.neighborhood}</span>}
+          </div>
+          
+          <div className="flex items-center text-sm text-primary font-medium">
+            <span>Detayları Gör</span>
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
 function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
   const isPopular = index === 0;
   const isDeal = hotel.priceFrom < 1000;
@@ -88,20 +145,17 @@ function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         
-        {/* Badges */}
         <div className="absolute top-3 left-3 flex gap-2">
           {isPopular && <Badge variant="popular">Popüler</Badge>}
           {isDeal && <Badge variant="deal">Fırsat</Badge>}
         </div>
         
-        {/* Stars */}
         <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
           {Array.from({ length: hotel.stars }).map((_, i) => (
             <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
           ))}
         </div>
         
-        {/* Price */}
         <div className="absolute bottom-3 right-3">
           <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
             <div className="text-xs text-muted-foreground">Gecelik</div>
@@ -154,7 +208,7 @@ const CityHotels = () => {
         checkIn,
         checkOut,
         adults: 2,
-        limit: 12,
+        limit: 24,
       });
     }
   }, [city, hasSearched]);
