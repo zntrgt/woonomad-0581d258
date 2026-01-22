@@ -159,11 +159,11 @@ const Hotels = () => {
         </section>
 
         {/* SEO Content */}
-        <section className="py-12 section-routes">
+        <section className="py-6 md:py-8 section-routes">
           <div className="container">
             <Card variant="elevated">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-display font-bold mb-4">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-display font-bold mb-3">
                   Otel Rezervasyonu Hakkında
                 </h2>
                 <div className="prose prose-lg max-w-none text-muted-foreground">

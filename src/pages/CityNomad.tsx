@@ -368,19 +368,19 @@ const CityNomad = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-16 gradient-hero text-white overflow-hidden">
+      <section className="relative py-8 md:py-10 gradient-hero text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img src={city.image} alt="" className="w-full h-full object-cover" />
         </div>
         <div className="container relative z-10">
-          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-6" />
-          <div className="flex items-start gap-4 mb-4">
-            <span className="text-5xl md:text-6xl">{flag}</span>
+          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
+          <div className="flex items-start gap-3 mb-3">
+            <span className="text-4xl md:text-5xl">{flag}</span>
             <div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-tight">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold leading-tight">
                 {city.name} Dijital Göçebe Rehberi ({currentYear})
               </h1>
-              <p className="text-white/80 text-lg mt-2">
+              <p className="text-white/80 mt-1">
                 {city.country}'da uzaktan çalışma için eksiksiz rehber
               </p>
             </div>
@@ -388,36 +388,36 @@ const CityNomad = () => {
           
           {/* Key Stats Bar */}
           {metrics && (
-            <div className="flex flex-wrap gap-4 mt-6">
-              <Badge variant="secondary" className="text-sm py-1.5 px-3">
-                <Laptop className="w-4 h-4 mr-1.5" />
-                Nomad Skoru: {metrics.nomadScore}/10
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Badge variant="secondary" className="text-xs py-1 px-2">
+                <Laptop className="w-3 h-3 mr-1" />
+                Nomad: {metrics.nomadScore}/10
               </Badge>
-              <Badge variant="outline" className="text-sm py-1.5 px-3 border-white/30 text-white">
-                <Wifi className="w-4 h-4 mr-1.5" />
+              <Badge variant="outline" className="text-xs py-1 px-2 border-white/30 text-white">
+                <Wifi className="w-3 h-3 mr-1" />
                 {metrics.internetSpeed}
               </Badge>
-              <Badge variant="outline" className="text-sm py-1.5 px-3 border-white/30 text-white">
-                <DollarSign className="w-4 h-4 mr-1.5" />
+              <Badge variant="outline" className="text-xs py-1 px-2 border-white/30 text-white">
+                <DollarSign className="w-3 h-3 mr-1" />
                 {metrics.costOfLiving}
               </Badge>
-              <Badge variant="outline" className="text-sm py-1.5 px-3 border-white/30 text-white">
-                <Building2 className="w-4 h-4 mr-1.5" />
+              <Badge variant="outline" className="text-xs py-1 px-2 border-white/30 text-white">
+                <Building2 className="w-3 h-3 mr-1" />
                 {metrics.coworkingCount}+ Coworking
               </Badge>
             </div>
           )}
           
           {/* Last Updated */}
-          <p className="text-white/60 text-sm mt-4">
-            <Calendar className="w-4 h-4 inline mr-1" />
+          <p className="text-white/60 text-xs mt-3">
+            <Calendar className="w-3 h-3 inline mr-1" />
             Son güncelleme: {new Date(lastUpdated).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
       </section>
 
-      <main className="container py-8 md:py-12">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <main className="container py-6 md:py-8">
+        <div className="grid lg:grid-cols-4 gap-6">
           {/* Sidebar - Table of Contents */}
           <aside className="lg:col-span-1">
             <Card variant="elevated" className="sticky top-20">
@@ -451,7 +451,7 @@ const CityNomad = () => {
           </aside>
 
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-10">
+          <div className="lg:col-span-3 space-y-6">
             
             {/* Thin Content Warning */}
             {!hasFullData && (

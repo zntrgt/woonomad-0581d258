@@ -118,16 +118,16 @@ const CityTickets = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-10 gradient-hero text-white">
+      <section className="py-6 md:py-8 gradient-hero text-white">
         <div className="container">
-          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-4xl">{flag}</span>
+          <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-3" />
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-3xl">{flag}</span>
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold">
+              <h1 className="text-2xl md:text-3xl font-display font-bold">
                 {city.name} Uçak Bileti
               </h1>
-              <p className="text-white/80">
+              <p className="text-white/80 text-sm">
                 {priceRange ? `${priceRange.min}₺'den başlayan fiyatlarla` : 'En uygun fiyatlar'}
               </p>
             </div>
@@ -157,13 +157,13 @@ const CityTickets = () => {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-3 mt-6">
-            <Button asChild variant="secondary">
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Button asChild variant="secondary" size="sm">
               <Link to={`/sehir/${city.slug}`}>
                 {city.name} Rehberi
               </Link>
             </Button>
-            <Button asChild variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
               <Link to={`/sehir/${city.slug}/oteller`}>
                 {city.name} Otelleri
               </Link>
@@ -173,11 +173,11 @@ const CityTickets = () => {
       </section>
 
       {/* Flight Search Section */}
-      <section className="py-8 bg-muted/30">
+      <section className="py-6 bg-muted/30">
         <div className="container">
           <Card className="border-border">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <CardContent className="p-4 md:p-6">
+              <h2 className="text-lg font-display font-bold mb-3 flex items-center gap-2">
                 <Plane className="w-5 h-5 text-primary" />
                 {city.name} Uçuş Ara
               </h2>
@@ -238,9 +238,9 @@ const CityTickets = () => {
       />
 
       {/* Flight Options */}
-      <section className="py-12">
+      <section className="py-6 md:py-8">
         <div className="container">
-          <h2 className="text-2xl font-display font-bold mb-6">
+          <h2 className="text-xl font-display font-bold mb-4">
             Türkiye'den {city.name} Uçuşları
           </h2>
 
@@ -323,11 +323,11 @@ const CityTickets = () => {
       </section>
 
       {/* Booking Tips */}
-      <section className="py-12 section-routes">
+      <section className="py-6 md:py-8 section-routes">
         <div className="container">
           <Card variant="elevated">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-display font-bold mb-6">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-display font-bold mb-4">
                 {city.name} Uçak Bileti Alma İpuçları
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -386,11 +386,11 @@ const CityTickets = () => {
       </section>
 
       {/* SEO Content */}
-      <section className="py-12">
+      <section className="py-6 md:py-8">
         <div className="container">
           <Card variant="elevated">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-display font-bold mb-4">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-display font-bold mb-3">
                 {city.name} Uçak Bileti Fiyatları Hakkında
               </h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">

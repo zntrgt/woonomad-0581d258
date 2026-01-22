@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Calendar as CalendarIcon, Plane, ArrowRight } from 'lucide-react';
-import { format, addDays, startOfWeek, startOfToday, isBefore, isSameDay } from 'date-fns';
+import { Calendar as CalendarIcon, Plane, ArrowRight, ChevronDown } from 'lucide-react';
+import { format, addDays, startOfWeek, startOfToday, isBefore, isSameDay, startOfMonth, endOfMonth, addMonths } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -9,7 +9,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Switch } from '@/components/ui/switch';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
 interface FlightDatePickerProps {
@@ -245,7 +252,6 @@ export function FlightDatePicker({
         {[
           { label: 'Bu Hafta Sonu', offset: 0 },
           { label: 'Gelecek Hafta Sonu', offset: 1 },
-          { label: '+2 Hafta', offset: 2 },
         ].map(({ label, offset }) => (
           <Button
             key={label}
@@ -260,6 +266,87 @@ export function FlightDatePicker({
             {label}
           </Button>
         ))}
+
+        {/* More Date Options Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium"
+            >
+              Daha Fazla
+              <ChevronDown className="h-3 w-3 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center" className="w-48">
+            <DropdownMenuLabel className="text-xs">Hafta Sonları</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => selectWeekend(2)} className="text-sm">
+              +2 Hafta Sonra
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => selectWeekend(3)} className="text-sm">
+              +3 Hafta Sonra
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => selectWeekend(4)} className="text-sm">
+              +4 Hafta Sonra
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs">Aylık</DropdownMenuLabel>
+            <DropdownMenuItem 
+              onClick={() => {
+                const thisMonth = startOfMonth(today);
+                const monthEnd = endOfMonth(today);
+                onDepartDateChange(isBefore(today, thisMonth) ? thisMonth : today);
+                if (!isOneWay) onReturnDateChange(monthEnd);
+              }}
+              className="text-sm"
+            >
+              Bu Ay ({format(today, 'MMMM', { locale: tr })})
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => {
+                const nextMonth = addMonths(today, 1);
+                onDepartDateChange(startOfMonth(nextMonth));
+                if (!isOneWay) onReturnDateChange(endOfMonth(nextMonth));
+              }}
+              className="text-sm"
+            >
+              Gelecek Ay ({format(addMonths(today, 1), 'MMMM', { locale: tr })})
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => {
+                const twoMonthsLater = addMonths(today, 2);
+                onDepartDateChange(startOfMonth(twoMonthsLater));
+                if (!isOneWay) onReturnDateChange(endOfMonth(twoMonthsLater));
+              }}
+              className="text-sm"
+            >
+              {format(addMonths(today, 2), 'MMMM', { locale: tr })}
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs">Uzun Süreli</DropdownMenuLabel>
+            <DropdownMenuItem 
+              onClick={() => {
+                onDepartDateChange(addDays(today, 7));
+                if (!isOneWay) onReturnDateChange(addDays(today, 37)); // ~1 month
+              }}
+              className="text-sm"
+            >
+              1 Ay (30 gün)
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => {
+                onDepartDateChange(addDays(today, 7));
+                if (!isOneWay) onReturnDateChange(addDays(today, 97)); // ~3 months
+              }}
+              className="text-sm"
+            >
+              3 Ay (90 gün)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Divider */}
         <div className="h-4 w-px bg-border mx-1 hidden sm:block" />
