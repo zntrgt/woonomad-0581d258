@@ -18,6 +18,7 @@ import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
 import CityNomad from "./pages/CityNomad";
 import CoworkingDetail from "./pages/CoworkingDetail";
+import CityActivities from "./pages/CityActivities";
 import HotelDetailPage from "./pages/HotelDetailPage";
 import Hotels from "./pages/Hotels";
 import NomadHub from "./pages/NomadHub";
@@ -50,6 +51,7 @@ const routeConfig = {
   cityFlights: { tr: '/sehir/:slug/ucuslar', en: '/city/:slug/flights', de: '/stadt/:slug/fluege', fr: '/ville/:slug/vols', es: '/ciudad/:slug/vuelos', ar: '/city/:slug/flights' },
   cityNomad: { tr: '/sehir/:slug/nomad', en: '/city/:slug/nomad', de: '/stadt/:slug/nomad', fr: '/ville/:slug/nomade', es: '/ciudad/:slug/nomada', ar: '/city/:slug/nomad' },
   cityCoworking: { tr: '/sehir/:slug/coworking', en: '/city/:slug/coworking', de: '/stadt/:slug/coworking', fr: '/ville/:slug/coworking', es: '/ciudad/:slug/coworking', ar: '/city/:slug/coworking' },
+  cityActivities: { tr: '/sehir/:slug/aktiviteler', en: '/city/:slug/activities', de: '/stadt/:slug/aktivitaeten', fr: '/ville/:slug/activites', es: '/ciudad/:slug/actividades', ar: '/city/:slug/activities' },
   // Hotels
   hotels: { tr: '/oteller', en: '/hotels', de: '/hotels', fr: '/hotels', es: '/hoteles', ar: '/hotels' },
   hotelDetail: { tr: '/otel/:slug', en: '/hotel/:slug', de: '/hotel/:slug', fr: '/hotel/:slug', es: '/hotel/:slug', ar: '/hotel/:slug' },
@@ -87,6 +89,7 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       <Route path={`${prefix}${routeConfig.cityFlights[lang]}`} element={<CityFlights />} />
       <Route path={`${prefix}${routeConfig.cityNomad[lang]}`} element={<CityNomad />} />
       <Route path={`${prefix}${routeConfig.cityCoworking[lang]}`} element={<CityNomad />} />
+      <Route path={`${prefix}${routeConfig.cityActivities[lang]}`} element={<CityActivities />} />
       {/* Hotels */}
       <Route path={`${prefix}${routeConfig.hotels[lang]}`} element={<Hotels />} />
       <Route path={`${prefix}${routeConfig.hotelDetail[lang]}`} element={<HotelDetailPage />} />

@@ -391,6 +391,35 @@ const ar = {
     forbidden: 'ليس لديك إذن لهذا الإجراء',
     serverError: 'خطأ في الخادم. يرجى المحاولة لاحقاً.',
   },
+
+  // Activities
+  activities: 'الأنشطة',
+  viewAllActivities: 'عرض جميع الأنشطة',
+  cityActivities: {
+    activities: 'الأنشطة',
+    cityNotFound: 'المدينة غير موجودة',
+    browseCities: 'تصفح جميع المدن',
+    seoTitle: 'أنشطة وجولات {{city}} {{year}} | أفضل التجارب',
+    seoDescription: 'أفضل الجولات والأنشطة والتجارب في {{city}}. جولات المدينة، رحلات القوارب، جولات الطعام والمزيد.',
+    pageTitle: 'أنشطة وجولات {{city}}',
+    pageSubtitle: 'التجارب والجولات الأكثر شعبية',
+    exploreCategories: 'استكشاف حسب الفئة',
+    viewAllIn: 'عرض الكل في {{city}}',
+    popularActivities: 'الأنشطة الشائعة',
+    aboutTitle: 'حول الأنشطة في {{city}}',
+    aboutText: '{{city}} مشهورة بأنشطتها وتجاربها المتنوعة. من جولات المدينة إلى رحلات القوارب، تجارب الطعام إلى الرياضات المغامرة، هناك خيارات لكل ذوق.',
+    tipsTitle: 'نصائح الأنشطة',
+    tip1: 'قم بزيارة الأماكن السياحية الشهيرة في الصباح الباكر',
+    tip2: 'احجز عبر الإنترنت لتجنب الطوابير',
+    tip3: 'اختر الجولات مع المرشدين المحليين',
+    tip4: 'استفد من خصومات المجموعات',
+    quickLinks: 'روابط سريعة',
+    findHotels: 'فنادق {{city}}',
+    findFlights: 'رحلات {{city}}',
+    cityGuide: 'دليل {{city}}',
+    discoverAll: 'اكتشف جميع الأنشطة',
+    discoverAllDesc: 'مئات الأنشطة والجولات في {{city}}',
+  },
 };
 
 export default ar;

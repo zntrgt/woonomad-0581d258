@@ -391,6 +391,35 @@ const tr = {
     forbidden: 'Bu işlem için yetkiniz yok',
     serverError: 'Sunucu hatası. Lütfen daha sonra tekrar deneyin.',
   },
+
+  // Activities
+  activities: 'Aktiviteleri',
+  viewAllActivities: 'Tüm Aktiviteleri Gör',
+  cityActivities: {
+    activities: 'Aktiviteler',
+    cityNotFound: 'Şehir Bulunamadı',
+    browseCities: 'Tüm Şehirlere Gözat',
+    seoTitle: '{{city}} Aktiviteleri & Turları {{year}} | En Popüler Deneyimler',
+    seoDescription: '{{city}} için en popüler turlar, aktiviteler ve deneyimler. Şehir turları, tekne gezileri, yemek turları ve daha fazlası.',
+    pageTitle: '{{city}} Aktiviteleri & Turları',
+    pageSubtitle: 'En popüler deneyimler ve turlar',
+    exploreCategories: 'Kategorilere Göre Keşfet',
+    viewAllIn: '{{city}} için tümünü gör',
+    popularActivities: 'Popüler Aktiviteler',
+    aboutTitle: '{{city}} Hakkında Aktiviteler',
+    aboutText: '{{city}}, ziyaretçilere sunduğu çeşitli aktiviteler ve deneyimlerle ünlüdür. Şehir turlarından tekne gezilerine, yemek deneyimlerinden macera sporlarına kadar her zevke uygun seçenekler bulunmaktadır.',
+    tipsTitle: 'Aktivite İpuçları',
+    tip1: 'Popüler turistik yerlere erken saatlerde gidin',
+    tip2: 'Online rezervasyon yaparak kuyrukları atlayın',
+    tip3: 'Yerel rehberli turları tercih edin',
+    tip4: 'Grup turlarında indirimlerden yararlanın',
+    quickLinks: 'Hızlı Linkler',
+    findHotels: '{{city}} Otelleri',
+    findFlights: '{{city}} Uçuşları',
+    cityGuide: '{{city}} Rehberi',
+    discoverAll: 'Tüm Aktiviteleri Keşfet',
+    discoverAllDesc: '{{city}} için yüzlerce aktivite ve tur seçeneği',
+  },
 };
 
 export default tr;

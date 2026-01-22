@@ -391,6 +391,35 @@ const en = {
     forbidden: 'You do not have permission for this action',
     serverError: 'Server error. Please try again later.',
   },
+
+  // Activities
+  activities: 'Activities',
+  viewAllActivities: 'View All Activities',
+  cityActivities: {
+    activities: 'Activities',
+    cityNotFound: 'City Not Found',
+    browseCities: 'Browse All Cities',
+    seoTitle: '{{city}} Activities & Tours {{year}} | Top Experiences',
+    seoDescription: 'Top tours, activities and experiences in {{city}}. City tours, boat trips, food tours and more.',
+    pageTitle: '{{city}} Activities & Tours',
+    pageSubtitle: 'Most popular experiences and tours',
+    exploreCategories: 'Explore by Category',
+    viewAllIn: 'View all in {{city}}',
+    popularActivities: 'Popular Activities',
+    aboutTitle: 'About Activities in {{city}}',
+    aboutText: '{{city}} is famous for its diverse activities and experiences. From city tours to boat trips, food experiences to adventure sports, there are options for every taste.',
+    tipsTitle: 'Activity Tips',
+    tip1: 'Visit popular tourist spots early in the morning',
+    tip2: 'Book online to skip the queues',
+    tip3: 'Choose tours with local guides',
+    tip4: 'Take advantage of group discounts',
+    quickLinks: 'Quick Links',
+    findHotels: '{{city}} Hotels',
+    findFlights: '{{city}} Flights',
+    cityGuide: '{{city}} Guide',
+    discoverAll: 'Discover All Activities',
+    discoverAllDesc: 'Hundreds of activities and tours in {{city}}',
+  },
 };
 
 export default en;
