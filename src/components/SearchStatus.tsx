@@ -152,18 +152,20 @@ export function FlightResultsSkeleton({ count = 3 }: { count?: number }) {
   );
 }
 
-// Telemetry helper (console-based for MVP)
+// Telemetry helper (silent in production)
+const isDev = import.meta.env.DEV;
+
 export const flightSearchTelemetry = {
-  submitted: (params: Record<string, any>) => {
-    console.log('[Telemetry] flight_search_submitted', params);
+  submitted: (_params: object) => {
+    if (isDev) console.log('[Telemetry] flight_search_submitted');
   },
-  success: (resultsCount: number) => {
-    console.log('[Telemetry] flight_search_success', { results_count: resultsCount });
+  success: (_resultsCount: number) => {
+    // Silent in production
   },
   noResults: () => {
-    console.log('[Telemetry] flight_search_no_results');
+    // Silent in production
   },
   error: (error: string) => {
-    console.error('[Telemetry] flight_search_error', { error });
+    if (isDev) console.error('[Telemetry] flight_search_error', { error });
   },
 };

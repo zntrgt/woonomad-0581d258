@@ -45,6 +45,7 @@ const tr = {
     sort: 'Sırala',
     noResults: 'Sonuç bulunamadı',
     seeAll: 'Tümünü Gör',
+    confirm: 'Onayla',
   },
 
   // Home page
@@ -118,6 +119,9 @@ const tr = {
     weekend: 'Bu Hafta Sonu',
     nextWeekend: 'Gelecek Hafta Sonu',
     flexible: 'Esnek Tarihler',
+    options: 'Seçenekler',
+    cabinClass: 'Kabin Sınıfı',
+    visaFilter: 'Vize Durumu',
   },
 
   // Flight results

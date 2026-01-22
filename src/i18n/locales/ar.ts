@@ -45,6 +45,7 @@ const ar = {
     sort: 'ترتيب',
     noResults: 'لم يتم العثور على نتائج',
     seeAll: 'عرض الكل',
+    confirm: 'تأكيد',
   },
 
   // Home page
@@ -118,6 +119,9 @@ const ar = {
     weekend: 'نهاية الأسبوع هذه',
     nextWeekend: 'نهاية الأسبوع القادمة',
     flexible: 'تواريخ مرنة',
+    options: 'خيارات',
+    cabinClass: 'درجة المقصورة',
+    visaFilter: 'حالة التأشيرة',
   },
 
   // Flight results
