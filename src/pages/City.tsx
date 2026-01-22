@@ -32,6 +32,7 @@ import { Badge } from '@/components/ui/badge';
 import { TripPlanner } from '@/components/TripPlanner';
 import { EventCountdownList } from '@/components/EventCountdown';
 import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
+import { CityHotelsWidget } from '@/components/CityHotelsWidget';
 import { getCityBySlug, getAllCities, CityInfo } from '@/lib/cities';
 import { generateFlightRoutes } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
@@ -820,6 +821,13 @@ const City = () => {
 
               {/* Weather Widget */}
               <WeatherWidget cityName={city.name} />
+
+              {/* Hotels Widget */}
+              <CityHotelsWidget 
+                citySlug={city.slug}
+                cityName={city.name}
+                cityNameEn={city.nameEn}
+              />
 
               {/* Travel Tips */}
               <TravelTips 
