@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Hotel, Star, ExternalLink, Loader2 } from 'lucide-react';
+import { Hotel, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useHotelSearch, Hotel as APIHotel } from '@/hooks/useHotelSearch';
-import { getHotelsByCity, HotelData } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface CityHotelsWidgetProps {
   citySlug: string;
@@ -14,27 +11,40 @@ interface CityHotelsWidgetProps {
   cityNameEn?: string;
 }
 
+// City slug to Hotellook location ID mapping
+const cityLocationIds: Record<string, string> = {
+  'istanbul': '12153',
+  'antalya': '12168',
+  'izmir': '12193',
+  'bodrum': '12175',
+  'paris': '418',
+  'london': '100',
+  'rome': '303',
+  'barcelona': '562',
+  'amsterdam': '93',
+  'berlin': '12153',
+  'dubai': '614',
+  'tokyo': '58',
+  'bali': '264',
+  'athens': '342',
+  'tbilisi': '887',
+  'skopje': '2510',
+};
+
 export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsWidgetProps) {
-  const { hotels: apiHotels, isLoading, searchHotels, affiliateLink } = useHotelSearch();
-  const staticHotels = getHotelsByCity(citySlug).slice(0, 3);
+  const { t, i18n } = useTranslation();
   
   const today = new Date();
   const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
   const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
-
-  useEffect(() => {
-    // Fetch live prices from API
-    searchHotels({
-      location: cityNameEn || cityName,
-      checkIn,
-      checkOut,
-      adults: 2,
-      limit: 3,
-    });
-  }, [cityName, cityNameEn]);
-
-  // Combine static data with live API prices
-  const displayHotels = apiHotels.length > 0 ? apiHotels.slice(0, 3) : [];
+  
+  // Travelpayouts White Label URL
+  const locationId = cityLocationIds[citySlug] || '';
+  const searchCity = cityNameEn || cityName;
+  const language = i18n.language === 'tr' ? 'tr' : i18n.language === 'de' ? 'de' : i18n.language === 'fr' ? 'fr' : i18n.language === 'es' ? 'es' : 'en';
+  
+  // Direct Hotellook affiliate search link
+  const affiliateLink = `https://search.hotellook.com/hotels?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&adults=2&marker=261144&language=${language}`;
 
   return (
     <Card>
@@ -42,121 +52,55 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Hotel className="h-4 w-4 text-primary" />
-            {cityName} Otelleri
+            {cityName} {t('nav.hotels', 'Otelleri')}
           </CardTitle>
           <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
             <Link to={`/sehir/${citySlug}/oteller`}>
-              Tümü →
+              {t('common.seeAll', 'Tümü')} →
             </Link>
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-6">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-            <span className="ml-2 text-sm text-muted-foreground">Fiyatlar yükleniyor...</span>
+        {/* Travelpayouts Hotel Search Widget */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-4 text-center">
+          <Hotel className="h-8 w-8 mx-auto text-primary mb-2" />
+          <h4 className="font-medium text-sm mb-1">
+            {t('hotels.findBestHotels', 'En İyi Otelleri Keşfet')}
+          </h4>
+          <p className="text-xs text-muted-foreground mb-3">
+            {t('hotels.compareHotelPrices', 'Binlerce oteli karşılaştır, en uygun fiyatı bul')}
+          </p>
+          
+          <a 
+            href={affiliateLink}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="block"
+          >
+            <Button className="w-full gap-2" size="sm">
+              <Hotel className="h-4 w-4" />
+              {t('hotels.searchHotels', 'Otel Ara')}
+              <ExternalLink className="h-3 w-3" />
+            </Button>
+          </a>
+        </div>
+
+        {/* Quick info */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="bg-muted/50 rounded p-2 text-center">
+            <span className="font-semibold text-primary">50+</span>
+            <p className="text-muted-foreground">{t('hotels.hotelOptions', 'Otel Seçeneği')}</p>
           </div>
-        ) : displayHotels.length > 0 ? (
-          <>
-            {displayHotels.map((hotel, index) => (
-              <div 
-                key={hotel.id || index}
-                className="flex gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                {hotel.photo && (
-                  <img 
-                    src={hotel.photo} 
-                    alt={hotel.name}
-                    className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                    loading="lazy"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm truncate">{hotel.name}</h4>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    {Array.from({ length: hotel.stars }).map((_, i) => (
-                      <Star key={i} className="h-2.5 w-2.5 fill-travel-gold text-travel-gold" />
-                    ))}
-                    {hotel.rating > 0 && (
-                      <span className="text-xs text-muted-foreground ml-1">
-                        {hotel.rating.toFixed(1)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs text-primary font-semibold">
-                      ₺{hotel.priceFrom.toLocaleString('tr-TR')}/gece
-                    </span>
-                    {hotel.link && (
-                      <a 
-                        href={hotel.link}
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        className="text-xs text-muted-foreground hover:text-primary"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            
-            {affiliateLink && (
-              <a 
-                href={affiliateLink}
-                target="_blank"
-                rel="noopener noreferrer sponsored"
-                className="block"
-              >
-                <Button variant="outline" size="sm" className="w-full gap-2 mt-2">
-                  <Hotel className="h-4 w-4" />
-                  Tüm {cityName} Otellerini Gör
-                  <ExternalLink className="h-3 w-3" />
-                </Button>
-              </a>
-            )}
-          </>
-        ) : staticHotels.length > 0 ? (
-          <>
-            {staticHotels.map((hotel) => (
-              <Link 
-                key={hotel.slug}
-                to={`/sehir/${citySlug}/otel/${hotel.slug}`}
-                className="flex gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <img 
-                  src={hotel.images[0]} 
-                  alt={hotel.name}
-                  className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                  loading="lazy"
-                />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm truncate">{hotel.name}</h4>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    {Array.from({ length: hotel.stars }).map((_, i) => (
-                      <Star key={i} className="h-2.5 w-2.5 fill-travel-gold text-travel-gold" />
-                    ))}
-                  </div>
-                  {hotel.priceRange && (
-                    <span className="text-xs text-primary font-semibold">
-                      ₺{hotel.priceRange.min.toLocaleString('tr-TR')}+
-                    </span>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </>
-        ) : (
-          <div className="text-center py-4 text-sm text-muted-foreground">
-            <p>Otel verisi bulunamadı</p>
+          <div className="bg-muted/50 rounded p-2 text-center">
+            <span className="font-semibold text-primary">%30</span>
+            <p className="text-muted-foreground">{t('hotels.savingsUpTo', 'Tasarruf')}</p>
           </div>
-        )}
+        </div>
 
         <Button asChild variant="secondary" size="sm" className="w-full mt-2">
           <Link to={`/sehir/${citySlug}/oteller`}>
-            {cityName} Oteller Sayfasına Git
+            {cityName} {t('hotels.title', 'Oteller')}
           </Link>
         </Button>
       </CardContent>
