@@ -333,7 +333,7 @@ const Index = () => {
           <section
             className={cn(
               "relative flex flex-col items-center px-4 md:px-6",
-              hasResultsSection ? "py-6 md:py-8" : "py-8 md:py-12"
+              hasResultsSection ? "py-4 md:py-6" : "py-6 md:py-10"
             )}
             aria-labelledby="hero-title"
           >
@@ -346,7 +346,7 @@ const Index = () => {
             {/* Hero Content */}
             <div className={cn(
               "relative text-center max-w-3xl mx-auto",
-              hasResultsSection ? "mb-4 md:mb-6" : "mb-6 md:mb-8"
+              hasResultsSection ? "mb-3 md:mb-4" : "mb-4 md:mb-6"
             )}>
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-medium mb-4 animate-fade-in">
                 <Sparkles className="h-4 w-4" />

@@ -87,12 +87,12 @@ const NomadHub = () => {
 
       <Header />
 
-      <main className="container mx-auto px-4 py-8 pb-24 md:pb-8">
+      <main className="container mx-auto px-4 py-4 md:py-6">
         <Breadcrumb items={breadcrumbItems} />
 
         {/* Hero Section */}
-        <section className="relative rounded-2xl overflow-hidden mb-12 bg-gradient-to-br from-primary/10 via-primary/5 to-background border">
-          <div className="relative z-10 py-12 px-6 md:py-16 md:px-12">
+        <section className="relative rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border">
+          <div className="relative z-10 py-8 px-4 md:py-12 md:px-10">
             <div className="flex items-center gap-2 mb-4">
               <Laptop className="h-8 w-8 text-primary" />
               <span className="text-sm font-medium text-primary">Dijital Göçebe Merkezi</span>
@@ -100,13 +100,13 @@ const NomadHub = () => {
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Dijital Göçebe Hub
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mb-8">
+            <p className="text-base text-muted-foreground max-w-2xl mb-6">
               Dünyanın dört bir yanından çalışın. En iyi nomad şehirleri, coworking alanları, 
               vize rehberleri ve topluluk ipuçları tek bir yerde.
             </p>
             
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               <div className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border">
                 <div className="text-2xl font-bold text-primary">{nomadCities.length}+</div>
                 <div className="text-sm text-muted-foreground">Nomad Şehri</div>

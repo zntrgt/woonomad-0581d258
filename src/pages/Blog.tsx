@@ -294,7 +294,7 @@ export default function Blog() {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="max-w-7xl mx-auto px-4 py-6 md:py-8 pb-24 md:pb-8">
+        <main className="max-w-7xl mx-auto px-4 py-4 md:py-6">
           <Breadcrumb 
             items={[
               { label: t('nav.home'), href: '/' },
@@ -303,7 +303,7 @@ export default function Blog() {
           />
           
           {/* Hero Section */}
-          <section className="text-center mb-8 md:mb-12 animate-fade-in">
+          <section className="text-center mb-6 md:mb-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6">
               <Sparkles className="h-3 w-3 md:h-4 md:w-4" />
               <span>{t('blog.travelInspiration')}</span>

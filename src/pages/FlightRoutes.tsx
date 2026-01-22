@@ -86,7 +86,7 @@ export default function FlightRoutes() {
         </div>
 
         {/* Hero */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-12 px-4">
+        <section className="bg-gradient-to-b from-primary/10 to-background py-6 md:py-10 px-4">
           <div className="max-w-6xl mx-auto text-center">
             <div className="flex justify-center mb-4">
               <Plane className="h-12 w-12 text-primary" />

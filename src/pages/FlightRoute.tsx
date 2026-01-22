@@ -239,7 +239,7 @@ export default function FlightRoute() {
         </div>
 
         {/* Hero Section - Ultra Compact */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-4 md:py-8 px-4">
+        <section className="bg-gradient-to-b from-primary/10 to-background py-3 md:py-6 px-4">
           <div className="max-w-6xl mx-auto">
             {/* Mobile: Horizontal compact row | Desktop: Standard layout */}
             <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-3">

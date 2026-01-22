@@ -77,7 +77,7 @@ const Hotels = () => {
         <Header />
 
         {/* Hero Section */}
-        <section className="py-12 gradient-hero text-white">
+        <section className="py-8 md:py-10 gradient-hero text-white">
           <div className="container">
             <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
             <div className="flex items-center gap-3 mb-4">
@@ -97,7 +97,7 @@ const Hotels = () => {
         </section>
 
         {/* City Hotels Grid */}
-        <section className="py-12">
+        <section className="py-6 md:py-8">
           <div className="container">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cities.map((city) => {

@@ -771,7 +771,7 @@ export default function BlogPost() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
         
-        <main className="max-w-7xl mx-auto px-4 -mt-24 md:-mt-32 relative z-10 pb-20 md:pb-0">
+        <main className="max-w-7xl mx-auto px-4 -mt-24 md:-mt-32 relative z-10">
           <div className="grid lg:grid-cols-[1fr_320px] gap-6 lg:gap-8">
             {/* Main Content */}
             <article className="card-modern p-4 md:p-8 lg:p-10">
