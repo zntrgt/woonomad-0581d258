@@ -59,6 +59,47 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_translations: {
+        Row: {
+          blog_post_id: string
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          language: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          blog_post_id: string
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          language: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          blog_post_id?: string
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          language?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_translations_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_searches: {
         Row: {
           created_at: string
