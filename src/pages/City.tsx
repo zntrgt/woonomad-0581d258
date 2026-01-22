@@ -417,11 +417,11 @@ const City = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-6">
+      <section className="py-4">
         <div className="container">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-6">
               
               {/* H2: About City */}
               <Card variant="elevated">
@@ -851,11 +851,11 @@ const City = () => {
       </section>
 
       {/* Popular Searches Module */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-6 bg-muted/30">
         <div className="container">
           <Card variant="elevated">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-6">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center gap-3 mb-4">
                 <Search className="w-6 h-6 text-primary" />
                 <h2 className="text-2xl font-display font-bold">
                   {city.name} Popüler Aramalar
@@ -910,11 +910,11 @@ const City = () => {
 
       {/* Similar Cities Module */}
       {similarCities.length > 0 && (
-        <section className="py-12">
+        <section className="py-6">
           <div className="container">
             <Card variant="elevated">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex items-center justify-between mb-6">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-2xl font-display font-bold">
                       Benzer Şehirler

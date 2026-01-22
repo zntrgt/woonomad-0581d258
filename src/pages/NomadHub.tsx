@@ -91,8 +91,8 @@ const NomadHub = () => {
         <Breadcrumb items={breadcrumbItems} />
 
         {/* Hero Section */}
-        <section className="relative rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-primary/10 via-primary/5 to-background border">
-          <div className="relative z-10 py-8 px-4 md:py-12 md:px-10">
+        <section className="relative rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-primary/10 via-primary/5 to-background border">
+          <div className="relative z-10 py-6 px-4 md:py-8 md:px-10">
             <div className="flex items-center gap-2 mb-4">
               <Laptop className="h-8 w-8 text-primary" />
               <span className="text-sm font-medium text-primary">Dijital Göçebe Merkezi</span>
@@ -100,13 +100,13 @@ const NomadHub = () => {
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Dijital Göçebe Hub
             </h1>
-            <p className="text-base text-muted-foreground max-w-2xl mb-6">
+            <p className="text-sm text-muted-foreground max-w-2xl mb-4">
               Dünyanın dört bir yanından çalışın. En iyi nomad şehirleri, coworking alanları, 
               vize rehberleri ve topluluk ipuçları tek bir yerde.
             </p>
             
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
               <div className="bg-background/80 backdrop-blur-sm rounded-lg p-4 border">
                 <div className="text-2xl font-bold text-primary">{nomadCities.length}+</div>
                 <div className="text-sm text-muted-foreground">Nomad Şehri</div>
@@ -140,7 +140,7 @@ const NomadHub = () => {
         </section>
 
         {/* Content Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-8">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="cities" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
@@ -165,7 +165,7 @@ const NomadHub = () => {
           </TabsList>
 
           {/* Cities Tab */}
-          <TabsContent value="cities" className="space-y-6">
+          <TabsContent value="cities" className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">En İyi Nomad Şehirleri</h2>
               <Link to="/sehirler">
@@ -175,7 +175,7 @@ const NomadHub = () => {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredCities.slice(0, 9).map((city) => city && (
                 <Link key={city.slug} to={`/sehir/${city.slug}/nomad`}>
                   <Card className="h-full hover:shadow-lg transition-all group overflow-hidden">
@@ -247,10 +247,10 @@ const NomadHub = () => {
           </TabsContent>
 
           {/* Compare Tab */}
-          <TabsContent value="compare" className="space-y-6">
-            <div className="grid lg:grid-cols-[1fr_380px] gap-8">
+          <TabsContent value="compare" className="space-y-4">
+            <div className="grid lg:grid-cols-[1fr_380px] gap-6">
               <div>
-                <div className="mb-6">
+                <div className="mb-4">
                   <h2 className="text-2xl font-bold">Şehir Karşılaştırma Aracı</h2>
                   <p className="text-muted-foreground mt-1">
                     Dijital göçebe metriklerini yan yana karşılaştırın
@@ -267,12 +267,12 @@ const NomadHub = () => {
           </TabsContent>
 
           {/* Coworking Tab */}
-          <TabsContent value="coworking" className="space-y-6">
+          <TabsContent value="coworking" className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Coworking Alanları</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredCoworkings.map((space) => {
                 const city = cityData[space.citySlug];
                 return (
@@ -338,7 +338,7 @@ const NomadHub = () => {
           </TabsContent>
 
           {/* Guides Tab */}
-          <TabsContent value="guides" className="space-y-6">
+          <TabsContent value="guides" className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Dijital Göçebe Rehberleri</h2>
               <Link to="/blog">
@@ -348,7 +348,7 @@ const NomadHub = () => {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {nomadPosts.map((post) => (
                 <Link key={post.id} to={`/blog/${post.slug}`}>
                   <Card className="h-full hover:shadow-lg transition-all group overflow-hidden">

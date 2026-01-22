@@ -823,7 +823,7 @@ export default function BlogPost() {
               />
               
               {/* Quick Meta Bar */}
-              <div className="flex flex-wrap items-center gap-6 pb-6 border-b border-border mb-8">
+              <div className="flex flex-wrap items-center gap-6 pb-4 border-b border-border mb-6">
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-4 w-4" />
@@ -881,7 +881,7 @@ export default function BlogPost() {
               {faqs.length > 0 && <FAQSection faqs={faqs} />}
               
               {/* Tags */}
-              <div className="flex flex-wrap items-center gap-2 mt-10 pt-6 border-t border-border">
+              <div className="flex flex-wrap items-center gap-2 mt-6 pt-4 border-t border-border">
                 <Tag className="h-4 w-4 text-muted-foreground" />
                 {post.tags.map(tag => (
                   <Badge key={tag} variant="outline" className="text-xs">
@@ -891,7 +891,7 @@ export default function BlogPost() {
               </div>
               
               {/* Back to Blog */}
-              <div className="mt-8">
+              <div className="mt-6">
                 <Link to="/blog">
                   <Button variant="outline">
                     <ArrowLeft className="h-4 w-4 mr-2" />
@@ -931,7 +931,7 @@ export default function BlogPost() {
             </aside>
 
             {/* Mobile Widgets - below content */}
-            <aside className="lg:hidden space-y-4 mt-8">
+            <aside className="lg:hidden space-y-4 mt-6">
               {city && <HotelWidget cityName={city.name} citySlug={city.slug} variant="compact" />}
               {city && (
                 <Link to={`/sehir/${city.slug}/ucak-bileti`} className="block">
@@ -970,7 +970,7 @@ export default function BlogPost() {
         </main>
         
         {/* Footer */}
-        <footer className="border-t border-border py-8 mt-16 mb-20 md:mb-0 bg-muted/30">
+        <footer className="border-t border-border py-6 mt-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
           </div>
