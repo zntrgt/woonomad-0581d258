@@ -15,6 +15,7 @@ import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
 import { HotelMapClustered } from '@/components/HotelMapClustered';
 import { HotelComparison, HotelSelectButton } from '@/components/HotelComparison';
+import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
@@ -301,6 +302,7 @@ function HotelCardWithComparison({ hotel, index, isSelected, onToggle, disabled 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
+  const { displayName, displayCountry } = useCityDisplay(city);
   const { hotels, isLoading, error, affiliateLink, searchHotels } = useHotelSearch();
   const [hasSearched, setHasSearched] = useState(false);
   
@@ -417,15 +419,15 @@ const CityHotels = () => {
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
     { label: 'Şehirler', href: '/sehirler' },
-    { label: city.name, href: `/sehir/${city.slug}` },
+    { label: displayName, href: `/sehir/${city.slug}` },
     { label: 'Oteller' }
   ];
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": `${city.name} Otelleri`,
-    "description": `${city.name} otel fiyatları ve rezervasyon`,
+    "name": `${displayName} Otelleri`,
+    "description": `${displayName} otel fiyatları ve rezervasyon`,
     "numberOfItems": filteredAndSortedHotels.length,
     "itemListElement": filteredAndSortedHotels.slice(0, 10).map((hotel, index) => ({
       "@type": "ListItem",
@@ -449,14 +451,14 @@ const CityHotels = () => {
   return (
     <>
       <Helmet>
-        <title>{`${city.name} Otelleri - En İyi Fiyatlarla Otel Rezervasyonu ${currentYear} | WooNomad`}</title>
+        <title>{`${displayName} Otelleri - En İyi Fiyatlarla Otel Rezervasyonu ${currentYear} | WooNomad`}</title>
         <meta 
           name="description" 
-          content={`${city.name} otel fiyatları ve online rezervasyon. ${city.country}'da en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın.`}
+          content={`${displayName} otel fiyatları ve online rezervasyon. ${displayCountry}'da en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın.`}
         />
         <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/oteller`} />
-        <meta property="og:title" content={`${city.name} Otelleri | WooNomad`} />
-        <meta property="og:description" content={`${city.name} otel fiyatları ve rezervasyon`} />
+        <meta property="og:title" content={`${displayName} Otelleri | WooNomad`} />
+        <meta property="og:description" content={`${displayName} otel fiyatları ve rezervasyon`} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
@@ -475,11 +477,11 @@ const CityHotels = () => {
             </div>
             
             <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
-              {flag} {city.name} <span className="text-gradient">Otelleri</span>
+              {flag} {displayName} <span className="text-gradient">Otelleri</span>
             </h1>
             
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {city.name} için en uygun otel fiyatlarını karşılaştırın
+              {displayName} için en uygun otel fiyatlarını karşılaştırın
             </p>
           </section>
           
