@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// Deno std hash module isn't available in this runtime; use std crypto helpers instead.
+import { crypto } from "https://deno.land/std@0.177.0/crypto/mod.ts";
+import { toHashString } from "https://deno.land/std@0.177.0/crypto/to_hash_string.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,6 +37,18 @@ function getClientIP(req: Request): string {
          req.headers.get('cf-connecting-ip') || 
          req.headers.get('x-real-ip') || 
          'unknown';
+}
+
+async function md5(input: string): Promise<string> {
+  const data = new TextEncoder().encode(input);
+  const digest = await crypto.subtle.digest("MD5", data);
+  return toHashString(digest);
+}
+
+function normalizeCustomerIp(ip: string): string {
+  // Hotellook API requires an IP-like value for signature; fall back to loopback if unknown.
+  if (!ip || ip === 'unknown') return '127.0.0.1';
+  return ip;
 }
 
 // Input validation constants
@@ -463,38 +478,102 @@ serve(async (req) => {
     
     if (TRAVELPAYOUTS_API_TOKEN) {
       try {
-        const apiUrl = `https://engine.hotellook.com/api/v2/cache.json?location=${cityInfo.iata}&checkIn=${checkIn}&checkOut=${checkOut}&currency=${currency}&limit=${limit}&token=${TRAVELPAYOUTS_API_TOKEN}`;
-        
-        console.log("Calling Hotellook API for:", cityInfo.en);
-        
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
+        // NOTE: The cache endpoint frequently returns 404 (no cached data). For real hotels we use
+        // the Hotel Search API (start.json -> getResult.json) which requires MD5 signature.
+        const customerIP = normalizeCustomerIp(clientIP);
+        const lang = 'en';
+        const childrenCount = 0;
+        const adultsCount = adults;
+        const waitForResult = 1;
+
+        const signatureString = `${TRAVELPAYOUTS_API_TOKEN}:${TRAVELPAYOUTS_PARTNER_ID}:${adultsCount}:${checkIn}:${checkOut}:${childrenCount}:${currency}:${customerIP}:${cityInfo.iata}:${lang}:${waitForResult}`;
+        const signature = await md5(signatureString);
+
+        const startParams = new URLSearchParams({
+          iata: cityInfo.iata,
+          checkIn,
+          checkOut,
+          adultsCount: String(adultsCount),
+          childrenCount: String(childrenCount),
+          customerIP,
+          lang,
+          currency,
+          waitForResult: String(waitForResult),
+          marker: TRAVELPAYOUTS_PARTNER_ID,
+          signature,
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          
-          if (Array.isArray(data) && data.length > 0) {
-            hotels = data.slice(0, limit).map((hotel: any, index: number) => ({
-              id: hotel.hotelId || String(index + 1),
-              name: hotel.hotelName || `${cityInfo.en} Hotel ${index + 1}`,
-              stars: hotel.stars || 4,
-              priceFrom: hotel.priceFrom || 1500,
-              priceAvg: hotel.priceAvg || hotel.priceFrom * 1.2,
-              rating: hotel.rating ? hotel.rating / 10 : 4.5,
-              reviews: hotel.reviews || 500,
-              location: hotel.location || { lat: 0, lon: 0 },
-              photo: hotel.photo ? `https://photo.hotellook.com/image_v2/limit/${hotel.photo}/800/520.auto` : `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop`,
-              link: `https://search.hotellook.com/hotels/${cityInfo.iata}/${hotel.hotelId}?checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&marker=${TRAVELPAYOUTS_PARTNER_ID}`,
-            }));
-            console.log(`Found ${hotels.length} hotels from API`);
-          }
+        const startUrl = `https://engine.hotellook.com/api/v2/search/start.json?${startParams.toString()}`;
+        console.log('Calling Hotellook Search API (start) for:', cityInfo.en);
+
+        const startResp = await fetch(startUrl, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!startResp.ok) {
+          console.log('Hotellook start error:', startResp.status);
         } else {
-          console.log("Hotellook API error:", response.status);
+          const startData = await startResp.json();
+          const searchId = startData?.searchId ?? startData?.search_id ?? startData?.id;
+
+          if (!searchId) {
+            console.log('Hotellook start missing searchId');
+          } else {
+            const resultParams = new URLSearchParams({
+              searchId: String(searchId),
+              limit: String(limit),
+              offset: '0',
+              sortBy: 'popularity',
+              sortAsc: '-1',
+            });
+
+            const resultUrl = `https://engine.hotellook.com/api/v2/search/getResult.json?${resultParams.toString()}`;
+            console.log('Calling Hotellook Search API (getResult) searchId:', searchId);
+
+            const resultResp = await fetch(resultUrl, {
+              method: 'GET',
+              headers: { Accept: 'application/json' },
+            });
+
+            if (!resultResp.ok) {
+              console.log('Hotellook getResult error:', resultResp.status);
+            } else {
+              const resultData = await resultResp.json();
+              const resultArr = resultData?.result ?? resultData?.results ?? [];
+
+              if (Array.isArray(resultArr) && resultArr.length > 0) {
+                hotels = resultArr.slice(0, limit).map((hotel: any, index: number) => {
+                  const id = hotel?.id ?? hotel?.hotelId ?? String(index + 1);
+                  const name = hotel?.name ?? hotel?.hotelName ?? `${cityInfo.en} Hotel ${index + 1}`;
+                  const stars = hotel?.stars ?? 4;
+                  const priceFrom = hotel?.minPriceTotal ?? hotel?.price ?? 1500;
+                  const rating = typeof hotel?.guestScore === 'number'
+                    ? Math.max(1, Math.min(5, hotel.guestScore / 20))
+                    : 4.5;
+
+                  return {
+                    id: String(id),
+                    name,
+                    stars,
+                    priceFrom,
+                    priceAvg: hotel?.maxPricePerNight ?? (priceFrom ? Math.round(priceFrom * 1.2) : 1800),
+                    rating,
+                    reviews: 0,
+                    location: hotel?.location || { lat: 0, lon: 0 },
+                    photo: `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop`,
+                    link: hotel?.fullUrl || hotel?.url || affiliateLink,
+                  };
+                });
+                console.log(`Found ${hotels.length} hotels from Search API`);
+              } else {
+                console.log('Hotellook getResult returned no results');
+              }
+            }
+          }
         }
       } catch (apiError) {
-        console.error("Hotellook API error:", apiError);
+        console.error('Hotellook Search API error:', apiError);
       }
     }
 
