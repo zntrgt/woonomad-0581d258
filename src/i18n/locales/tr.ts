@@ -60,6 +60,37 @@ const tr = {
     exploreMore: 'Daha Fazla Keşfet',
   },
 
+  // Index page specific
+  index: {
+    platformBadge: "Türkiye'nin En Kapsamlı Uçuş Karşılaştırma Platformu",
+    heroTitle: 'En Ucuz',
+    heroHighlight: 'Uçak Bileti',
+    heroDescription: 'Tüm havayollarını tek seferde karşılaştırın, en uygun fiyatı bulun. Hızlı, güvenli ve komisyonsuz.',
+    securePayment: 'Güvenli Ödeme',
+    bestPriceGuarantee: 'En İyi Fiyat Garantisi',
+    airlines500: '500+ Havayolu',
+    total: 'toplam',
+    noFilteredFlights: 'Filtrelere uygun uçuş bulunamadı',
+    tryDifferentFilters: 'Farklı filtreler deneyebilirsiniz',
+    searchingFlights: 'Uçuşlar aranıyor...',
+    pleaseWait: 'Lütfen bekleyin',
+    whyWooNomad: 'Neden WooNomad?',
+    featuresSubtitle: 'Seyahat planlamanızı kolaylaştıran güçlü özellikler',
+    featureSearchTitle: 'Kapsamlı Arama',
+    featureSearchDesc: 'Tüm havayollarının uçak biletlerini tek seferde karşılaştırın. En ucuz bilet fiyatlarını anında görün.',
+    featureSecureTitle: 'Güvenli Rezervasyon',
+    featureSecureDesc: 'Doğrudan havayolu sitelerine yönlendirme ile güvenli online bilet alımı. Aracı komisyon yok.',
+    featureFastTitle: 'Hızlı Sonuçlar',
+    featureFastDesc: 'Saniyeler içinde yüzlerce uçuş seçeneği. Esnek tarih ve filtre seçenekleriyle arama yapın.',
+    faqTitle: 'Sık Sorulan Sorular',
+    faq1Question: 'WooNomad nedir?',
+    faq1Answer: 'WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı sağlayan bir uçak bileti arama motorudur. Komisyon almadan, şeffaf fiyatlarla güvenli rezervasyon yapabilirsiniz.',
+    faq2Question: 'En ucuz uçak bileti nasıl bulunur?',
+    faq2Answer: 'En ucuz uçak bileti için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve esnek tarih araması kullanın. WooNomad ile tüm havayollarını tek seferde karşılaştırabilirsiniz.',
+    faq3Question: 'Uçak bileti ne zaman daha ucuz?',
+    faq3Answer: 'Uçak biletleri genellikle Salı ve Çarşamba günleri, düşük sezonlarda (Ocak-Şubat, Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur.',
+  },
+
   // Search form
   search: {
     from: 'Nereden',

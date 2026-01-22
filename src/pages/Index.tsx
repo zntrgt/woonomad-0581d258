@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { Plane, Search, Globe, Shield, Clock, CreditCard, Sparkles, MapPin, TrendingUp, Star } from 'lucide-react';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
@@ -15,7 +17,6 @@ import { SearchParams, Flight, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { parseISO, format } from 'date-fns';
 import { tr } from 'date-fns/locale';
-
 type SortOption = 'price' | 'duration' | 'departure' | 'best';
 
 // Airport lookup for popular routes - includes all destinations
@@ -40,12 +41,14 @@ const airportLookup: Record<string, Airport> = {
 };
 
 const Index = () => {
+  const { t } = useTranslation();
   const { flights, isLoading, error, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { formatPrice } = useSettings();
+  const { formatPrice, language } = useSettings();
   const searchFormRef = useRef<SearchFormRef>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const didAutoScrollRef = useRef(false);
+  const prevFlightsLengthRef = useRef(0);
 
   const [sortBy, setSortBy] = useState<SortOption>('best');
   const [filters, setFilters] = useState<FilterOptions>({
@@ -66,15 +69,20 @@ const Index = () => {
     searchFlights(params);
   };
 
+  // Auto-scroll to results when flights are loaded (not during loading)
   useEffect(() => {
-    if (!hasResultsSection) return;
-    if (didAutoScrollRef.current) return;
-
-    requestAnimationFrame(() => {
-      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      didAutoScrollRef.current = true;
-    });
-  }, [hasResultsSection]);
+    const hasNewFlights = flights.length > 0 && !isLoading;
+    const wasEmpty = prevFlightsLengthRef.current === 0;
+    
+    if (hasNewFlights && wasEmpty && !didAutoScrollRef.current) {
+      requestAnimationFrame(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        didAutoScrollRef.current = true;
+      });
+    }
+    
+    prevFlightsLengthRef.current = flights.length;
+  }, [flights.length, isLoading]);
 
   const handlePopularRouteSelect = (originCode: string, destinationCode: string) => {
     const origin = airportLookup[originCode];
@@ -304,7 +312,7 @@ const Index = () => {
             <span className="inline-flex items-center gap-3 flex-wrap justify-center">
               <span className="inline-flex items-center gap-2">
                 <Plane className="h-4 w-4 animate-bounce-gentle" aria-hidden="true" />
-                <span className="font-semibold">{filteredAndSortedFlights.length} uçuş bulundu</span>
+                <span className="font-semibold">{t('flights.foundFlights', { count: filteredAndSortedFlights.length })}</span>
               </span>
               {priceRange && (
                 <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
@@ -313,7 +321,7 @@ const Index = () => {
               )}
               {filteredAndSortedFlights.length !== flights.length && (
                 <span className="text-primary-foreground/70 text-xs">
-                  ({flights.length} toplam)
+                  ({flights.length} {t('index.total')})
                 </span>
               )}
             </span>
@@ -342,7 +350,7 @@ const Index = () => {
             )}>
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-medium mb-4 animate-fade-in">
                 <Sparkles className="h-4 w-4" />
-                <span>Türkiye'nin En Kapsamlı Uçuş Karşılaştırma Platformu</span>
+                <span>{t('index.platformBadge')}</span>
               </div>
               
               <h1 
@@ -350,15 +358,14 @@ const Index = () => {
                 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-2 animate-fade-in-up"
                 style={{ animationDelay: '0.1s' }}
               >
-                En Ucuz <span className="text-gradient">Uçak Bileti</span>
+                {t('index.heroTitle')} <span className="text-gradient">{t('index.heroHighlight')}</span>
               </h1>
               
               <p 
                 className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: '0.2s' }}
               >
-                Tüm havayollarını tek seferde karşılaştırın, en uygun fiyatı bulun. 
-                Hızlı, güvenli ve komisyonsuz.
+                {t('index.heroDescription')}
               </p>
             </div>
 
@@ -384,15 +391,15 @@ const Index = () => {
               >
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-success" />
-                  <span>Güvenli Ödeme</span>
+                  <span>{t('index.securePayment')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-primary" />
-                  <span>En İyi Fiyat Garantisi</span>
+                  <span>{t('index.bestPriceGuarantee')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 text-travel-gold" />
-                  <span>500+ Havayolu</span>
+                  <span>{t('index.airlines500')}</span>
                 </div>
               </div>
             )}
@@ -413,7 +420,7 @@ const Index = () => {
                         <div className="flex items-center gap-2">
                           <MapPin className="h-5 w-5 text-primary" />
                           <span className="font-semibold text-foreground">
-                            {filteredAndSortedFlights.length} uçuş bulundu
+                            {t('flights.foundFlights', { count: filteredAndSortedFlights.length })}
                           </span>
                         </div>
 
@@ -447,8 +454,8 @@ const Index = () => {
                       {filteredAndSortedFlights.length === 0 && (
                         <div className="text-center py-12 text-muted-foreground">
                           <Search className="h-12 w-12 mx-auto mb-4 opacity-30" />
-                          <p className="font-medium">Filtrelere uygun uçuş bulunamadı</p>
-                          <p className="text-sm mt-1">Farklı filtreler deneyebilirsiniz</p>
+                          <p className="font-medium">{t('index.noFilteredFlights')}</p>
+                          <p className="text-sm mt-1">{t('index.tryDifferentFilters')}</p>
                         </div>
                       )}
                     </>
@@ -460,8 +467,8 @@ const Index = () => {
                         <Plane className="h-12 w-12 text-primary animate-bounce-gentle" aria-hidden="true" />
                         <div className="absolute inset-0 rounded-full animate-pulse-ring border-2 border-primary" />
                       </div>
-                      <p className="text-muted-foreground mt-4 font-medium">Uçuşlar aranıyor...</p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">Lütfen bekleyin</p>
+                      <p className="text-muted-foreground mt-4 font-medium">{t('index.searchingFlights')}</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">{t('index.pleaseWait')}</p>
                     </div>
                   )}
                 </div>
@@ -482,10 +489,10 @@ const Index = () => {
             <div className="max-w-6xl mx-auto px-4">
               <div className="text-center mb-12">
                 <h2 id="seo-features" className="text-2xl md:text-4xl font-display font-bold text-foreground mb-4">
-                  Neden WooNomad?
+                  {t('index.whyWooNomad')}
                 </h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Seyahat planlamanızı kolaylaştıran güçlü özellikler
+                  {t('index.featuresSubtitle')}
                 </p>
               </div>
               
@@ -493,25 +500,25 @@ const Index = () => {
                 {[
                   {
                     icon: Search,
-                    title: 'Kapsamlı Arama',
-                    description: 'Tüm havayollarının uçak biletlerini tek seferde karşılaştırın. En ucuz bilet fiyatlarını anında görün.',
+                    titleKey: 'index.featureSearchTitle',
+                    descriptionKey: 'index.featureSearchDesc',
                     color: 'bg-primary/10 text-primary'
                   },
                   {
                     icon: Shield,
-                    title: 'Güvenli Rezervasyon',
-                    description: 'Doğrudan havayolu sitelerine yönlendirme ile güvenli online bilet alımı. Aracı komisyon yok.',
+                    titleKey: 'index.featureSecureTitle',
+                    descriptionKey: 'index.featureSecureDesc',
                     color: 'bg-success/10 text-success'
                   },
                   {
                     icon: Clock,
-                    title: 'Hızlı Sonuçlar',
-                    description: 'Saniyeler içinde yüzlerce uçuş seçeneği. Esnek tarih ve filtre seçenekleriyle arama yapın.',
+                    titleKey: 'index.featureFastTitle',
+                    descriptionKey: 'index.featureFastDesc',
                     color: 'bg-travel-coral/10 text-travel-coral'
                   }
                 ].map((feature, index) => (
                   <div 
-                    key={feature.title}
+                    key={feature.titleKey}
                     className="card-modern p-8 text-center group hover:border-primary/30"
                   >
                     <div className={cn(
@@ -520,9 +527,9 @@ const Index = () => {
                     )}>
                       <feature.icon className="h-8 w-8" aria-hidden="true" />
                     </div>
-                    <h3 className="font-display font-semibold text-lg mb-3 text-foreground">{feature.title}</h3>
+                    <h3 className="font-display font-semibold text-lg mb-3 text-foreground">{t(feature.titleKey)}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      {feature.description}
+                      {t(feature.descriptionKey)}
                     </p>
                   </div>
                 ))}
@@ -621,26 +628,26 @@ const Index = () => {
           {/* FAQ Section */}
           <section className="max-w-4xl mx-auto px-4 pb-16 md:pb-24">
             <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-10">
-              Sık Sorulan Sorular
+              {t('index.faqTitle')}
             </h2>
             <div className="space-y-4">
               {[
                 {
-                  question: 'WooNomad nedir?',
-                  answer: 'WooNomad, tüm havayollarının uçak biletlerini karşılaştırarak en ucuz fiyatları bulmanızı sağlayan bir uçak bileti arama motorudur. Komisyon almadan, şeffaf fiyatlarla güvenli rezervasyon yapabilirsiniz.'
+                  questionKey: 'index.faq1Question',
+                  answerKey: 'index.faq1Answer'
                 },
                 {
-                  question: 'En ucuz uçak bileti nasıl bulunur?',
-                  answer: 'En ucuz uçak bileti için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve esnek tarih araması kullanın. WooNomad ile tüm havayollarını tek seferde karşılaştırabilirsiniz.'
+                  questionKey: 'index.faq2Question',
+                  answerKey: 'index.faq2Answer'
                 },
                 {
-                  question: 'Uçak bileti ne zaman daha ucuz?',
-                  answer: 'Uçak biletleri genellikle Salı ve Çarşamba günleri, düşük sezonlarda (Ocak-Şubat, Kasım) ve seyahatten 6-8 hafta önce daha ucuzdur.'
+                  questionKey: 'index.faq3Question',
+                  answerKey: 'index.faq3Answer'
                 }
               ].map((faq, index) => (
                 <div key={index} className="card-modern p-6">
-                  <h3 className="font-display font-semibold text-foreground mb-2">{faq.question}</h3>
-                  <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                  <h3 className="font-display font-semibold text-foreground mb-2">{t(faq.questionKey)}</h3>
+                  <p className="text-sm text-muted-foreground">{t(faq.answerKey)}</p>
                 </div>
               ))}
             </div>
@@ -648,60 +655,7 @@ const Index = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-border py-8 md:py-12 mb-20 md:mb-0 bg-muted/30">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-              <div className="col-span-2 md:col-span-1">
-                <div className="flex items-center gap-2 mb-4">
-                  <Globe className="h-6 w-6 text-primary" />
-                  <span className="font-display font-bold text-lg">WooNomad</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Türkiye'nin en kapsamlı uçak bileti karşılaştırma platformu.
-                </p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3 text-foreground">Keşfet</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><a href="/sehirler" className="hover:text-primary transition-colors">Şehirler</a></li>
-                  <li><a href="/ucuslar" className="hover:text-primary transition-colors">Uçuşlar</a></li>
-                  <li><a href="/oteller" className="hover:text-primary transition-colors">Oteller</a></li>
-                  <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3 text-foreground">Popüler</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><a href="/sehir/paris" className="hover:text-primary transition-colors">Paris</a></li>
-                  <li><a href="/sehir/amsterdam" className="hover:text-primary transition-colors">Amsterdam</a></li>
-                  <li><a href="/sehir/barcelona" className="hover:text-primary transition-colors">Barcelona</a></li>
-                  <li><a href="/sehir/roma" className="hover:text-primary transition-colors">Roma</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3 text-foreground">Yasal</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><a href="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</a></li>
-                  <li><a href="/kullanim-kosullari" className="hover:text-primary transition-colors">Kullanım Koşulları</a></li>
-                  <li><a href="/kvkk" className="hover:text-primary transition-colors">KVKK</a></li>
-                  <li><a href="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</a></li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-sm text-muted-foreground text-center sm:text-left">
-                © {currentYear} WooNomad. Tüm hakları saklıdır.
-              </p>
-              <p className="text-xs text-muted-foreground/70">
-                Uçak bileti fiyatları değişkenlik gösterebilir.
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
 
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav />

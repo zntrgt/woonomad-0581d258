@@ -60,6 +60,37 @@ const en = {
     exploreMore: 'Explore More',
   },
 
+  // Index page specific
+  index: {
+    platformBadge: "The Most Comprehensive Flight Comparison Platform",
+    heroTitle: 'Cheapest',
+    heroHighlight: 'Flight Tickets',
+    heroDescription: 'Compare all airlines at once, find the best price. Fast, secure, and commission-free.',
+    securePayment: 'Secure Payment',
+    bestPriceGuarantee: 'Best Price Guarantee',
+    airlines500: '500+ Airlines',
+    total: 'total',
+    noFilteredFlights: 'No flights match the filters',
+    tryDifferentFilters: 'Try different filters',
+    searchingFlights: 'Searching flights...',
+    pleaseWait: 'Please wait',
+    whyWooNomad: 'Why WooNomad?',
+    featuresSubtitle: 'Powerful features to simplify your travel planning',
+    featureSearchTitle: 'Comprehensive Search',
+    featureSearchDesc: 'Compare flight tickets from all airlines at once. See the cheapest prices instantly.',
+    featureSecureTitle: 'Secure Booking',
+    featureSecureDesc: 'Direct redirect to airline websites for secure online ticket purchase. No agency commission.',
+    featureFastTitle: 'Fast Results',
+    featureFastDesc: 'Hundreds of flight options in seconds. Search with flexible dates and filter options.',
+    faqTitle: 'Frequently Asked Questions',
+    faq1Question: 'What is WooNomad?',
+    faq1Answer: 'WooNomad is a flight ticket search engine that compares prices from all airlines to find the cheapest options. You can make secure reservations with transparent pricing without any commission.',
+    faq2Question: 'How to find the cheapest flight ticket?',
+    faq2Answer: 'For the cheapest flight tickets, book early, prefer weekday flights, and use flexible date search. With WooNomad, you can compare all airlines at once.',
+    faq3Question: 'When are flight tickets cheaper?',
+    faq3Answer: 'Flight tickets are usually cheaper on Tuesdays and Wednesdays, during low seasons (January-February, November), and 6-8 weeks before travel.',
+  },
+
   // Search form
   search: {
     from: 'From',
