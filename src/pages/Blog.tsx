@@ -13,7 +13,6 @@ import { getAllPosts, blogCategories, BlogPost, getCategoryInfo } from '@/lib/bl
 import { getAllCities } from '@/lib/cities';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useSettings } from '@/contexts/SettingsContext';
 import { format, parseISO } from 'date-fns';
 import { tr as trLocale, enUS, de, fr, es, ar } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
