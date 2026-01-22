@@ -238,35 +238,40 @@ export default function FlightRoute() {
           ]} />
         </div>
 
-        {/* Hero Section - Compact */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-6 md:py-8 px-4">
+        {/* Hero Section - Ultra Compact */}
+        <section className="bg-gradient-to-b from-primary/10 to-background py-4 md:py-8 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-3 mb-3">
-              <div className="text-center md:text-right">
-                <span className="text-2xl md:text-3xl mb-1 block">{route.originFlag}</span>
-                <h2 className="text-lg md:text-xl font-semibold">{route.originCity}</h2>
-                <p className="text-xs text-muted-foreground">{route.originCode}</p>
-              </div>
-              
-              <div className="flex flex-col items-center px-4">
-                <Plane className="h-6 w-6 text-primary mb-1" />
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>{route.estimatedDuration}</span>
+            {/* Mobile: Horizontal compact row | Desktop: Standard layout */}
+            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-3">
+              {/* Origin */}
+              <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
+                <span className="text-xl sm:text-3xl">{route.originFlag}</span>
+                <div className="sm:text-center">
+                  <h2 className="text-sm sm:text-xl font-semibold leading-tight">{route.originCity}</h2>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{route.originCode}</p>
                 </div>
               </div>
               
-              <div className="text-center md:text-left">
-                <span className="text-2xl md:text-3xl mb-1 block">{route.destinationFlag}</span>
-                <h2 className="text-lg md:text-xl font-semibold">{route.destinationCity}</h2>
-                <p className="text-xs text-muted-foreground">{route.destinationCode}</p>
+              {/* Flight Icon & Duration */}
+              <div className="flex items-center gap-1 sm:flex-col sm:px-4">
+                <Plane className="h-4 w-4 sm:h-6 sm:w-6 text-primary" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{route.estimatedDuration}</span>
+              </div>
+              
+              {/* Destination */}
+              <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
+                <span className="text-xl sm:text-3xl">{route.destinationFlag}</span>
+                <div className="sm:text-center">
+                  <h2 className="text-sm sm:text-xl font-semibold leading-tight">{route.destinationCity}</h2>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{route.destinationCode}</p>
+                </div>
               </div>
             </div>
             
-            <h1 className="text-xl md:text-3xl font-bold text-center mb-1">
+            <h1 className="text-lg sm:text-xl md:text-3xl font-bold text-center mb-1">
               {route.originCity} - {route.destinationCity} Uçak Bileti
             </h1>
-            <p className="text-center text-muted-foreground text-sm max-w-2xl mx-auto">
+            <p className="text-center text-muted-foreground text-xs sm:text-sm max-w-2xl mx-auto line-clamp-2 sm:line-clamp-none">
               {route.description}
             </p>
           </div>
