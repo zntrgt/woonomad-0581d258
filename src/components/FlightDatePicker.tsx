@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar as CalendarIcon, Plane, ArrowRight, ChevronDown } from 'lucide-react';
+import { Calendar as CalendarIcon, Plane, ArrowRight, ChevronDown, TrendingDown } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore, isSameDay, startOfMonth, endOfMonth, addMonths } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { PriceCalendar } from './PriceCalendar';
 
 interface FlightDatePickerProps {
   departDate: Date | undefined;
@@ -27,6 +35,9 @@ interface FlightDatePickerProps {
   isFlexible: boolean;
   onFlexibleChange: (flexible: boolean) => void;
   isOneWay?: boolean;
+  originCode?: string;
+  destinationCode?: string;
+  currency?: string;
 }
 
 export function FlightDatePicker({
@@ -37,8 +48,12 @@ export function FlightDatePicker({
   isFlexible,
   onFlexibleChange,
   isOneWay = false,
+  originCode,
+  destinationCode,
+  currency = 'TRY',
 }: FlightDatePickerProps) {
   const [activeCalendar, setActiveCalendar] = useState<'depart' | 'return' | null>(null);
+  const [priceCalendarOpen, setPriceCalendarOpen] = useState(false);
 
   const today = startOfToday();
 
@@ -350,6 +365,41 @@ export function FlightDatePicker({
 
         {/* Divider */}
         <div className="h-4 w-px bg-border mx-1 hidden sm:block" />
+
+        {/* Price Calendar Button */}
+        <Dialog open={priceCalendarOpen} onOpenChange={setPriceCalendarOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium gap-1"
+            >
+              <TrendingDown className="h-3 w-3" />
+              <span className="hidden sm:inline">Fiyat</span> Takvimi
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <TrendingDown className="h-5 w-5 text-primary" />
+                Fiyat Takvimi
+              </DialogTitle>
+            </DialogHeader>
+            <PriceCalendar
+              origin={originCode}
+              destination={destinationCode}
+              selectedDate={departDate}
+              onSelectDate={(date) => {
+                onDepartDateChange(date);
+                if (!isOneWay) {
+                  onReturnDateChange(addDays(date, 1));
+                }
+                setPriceCalendarOpen(false);
+              }}
+              currency={currency}
+            />
+          </DialogContent>
+        </Dialog>
 
         {/* Flexible Toggle - Compact */}
         <button
