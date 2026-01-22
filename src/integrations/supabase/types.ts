@@ -166,6 +166,13 @@ export type Database = {
             referencedRelation: "wifi_speed_tests"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
+            columns: ["speed_test_id"]
+            isOneToOne: false
+            referencedRelation: "wifi_speed_tests_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_favorites: {
@@ -332,7 +339,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      wifi_speed_tests_public: {
+        Row: {
+          city_slug: string | null
+          created_at: string | null
+          download_speed: number | null
+          downvotes: number | null
+          id: string | null
+          is_stable: boolean | null
+          location_name: string | null
+          location_slug: string | null
+          location_type: string | null
+          notes: string | null
+          ping_ms: number | null
+          tested_at: string | null
+          upload_speed: number | null
+          upvotes: number | null
+        }
+        Insert: {
+          city_slug?: string | null
+          created_at?: string | null
+          download_speed?: number | null
+          downvotes?: number | null
+          id?: string | null
+          is_stable?: boolean | null
+          location_name?: string | null
+          location_slug?: string | null
+          location_type?: string | null
+          notes?: string | null
+          ping_ms?: number | null
+          tested_at?: string | null
+          upload_speed?: number | null
+          upvotes?: number | null
+        }
+        Update: {
+          city_slug?: string | null
+          created_at?: string | null
+          download_speed?: number | null
+          downvotes?: number | null
+          id?: string | null
+          is_stable?: boolean | null
+          location_name?: string | null
+          location_slug?: string | null
+          location_type?: string | null
+          notes?: string | null
+          ping_ms?: number | null
+          tested_at?: string | null
+          upload_speed?: number | null
+          upvotes?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {

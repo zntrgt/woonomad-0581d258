@@ -165,8 +165,9 @@ export function CommunitySpeedTests({ citySlug, locationType, limit = 10 }: Comm
   const fetchTests = async () => {
     setIsLoading(true);
     try {
+      // Use public view to avoid exposing user_id
       let query = supabase
-        .from('wifi_speed_tests')
+        .from('wifi_speed_tests_public')
         .select('*')
         .eq('city_slug', citySlug)
         .order('tested_at', { ascending: false })
