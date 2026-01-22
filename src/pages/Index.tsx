@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
-import { Plane, Search, Globe, Shield, Clock, CreditCard, Sparkles, MapPin, TrendingUp, Star } from 'lucide-react';
+import { Plane, Search, Globe, Shield, Clock, CreditCard, Sparkles, MapPin, TrendingUp, Star, Hotel } from 'lucide-react';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { PopularRoutes } from '@/components/PopularRoutes';
+import { PopularHotels } from '@/components/PopularHotels';
+import { HotelSearchForm } from '@/components/HotelSearchForm';
 import { FlightCard } from '@/components/FlightCard';
 import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { Header } from '@/components/Header';
@@ -535,6 +537,14 @@ const Index = () => {
                 ))}
               </div>
             </div>
+          </section>
+
+          {/* Popular Hotels Section */}
+          <PopularHotels limit={8} />
+
+          {/* Hotel Search Form */}
+          <section className="max-w-4xl mx-auto px-4 pb-8">
+            <HotelSearchForm />
           </section>
 
           {/* Banner Ad */}

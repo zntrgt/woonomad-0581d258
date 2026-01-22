@@ -7,31 +7,41 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { HotelSearchForm } from '@/components/HotelSearchForm';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 
-// Trip.com city mappings for affiliate links
-const cityTripcomIds: Record<string, { id: string; name: string }> = {
-  'berlin': { id: '1062', name: 'Berlin' },
-  'paris': { id: '192', name: 'Paris' },
-  'londra': { id: '107', name: 'London' },
-  'amsterdam': { id: '1198', name: 'Amsterdam' },
-  'barcelona': { id: '1459', name: 'Barcelona' },
-  'roma': { id: '303', name: 'Rome' },
-  'dubai': { id: '665', name: 'Dubai' },
-  'tokyo': { id: '317', name: 'Tokyo' },
-  'prag': { id: '1144', name: 'Prague' },
-  'viyana': { id: '1224', name: 'Vienna' },
-  'bangkok': { id: '191', name: 'Bangkok' },
-  'singapur': { id: '188', name: 'Singapore' },
+// Travelpayouts Partner ID
+const HOTELLOOK_PARTNER_ID = "261144";
+
+// Hotellook city mappings
+const cityHotellookIds: Record<string, { iata: string; en: string }> = {
+  'berlin': { iata: 'BER', en: 'Berlin' },
+  'paris': { iata: 'PAR', en: 'Paris' },
+  'londra': { iata: 'LON', en: 'London' },
+  'amsterdam': { iata: 'AMS', en: 'Amsterdam' },
+  'barcelona': { iata: 'BCN', en: 'Barcelona' },
+  'roma': { iata: 'ROM', en: 'Rome' },
+  'dubai': { iata: 'DXB', en: 'Dubai' },
+  'tokyo': { iata: 'TYO', en: 'Tokyo' },
+  'prag': { iata: 'PRG', en: 'Prague' },
+  'viyana': { iata: 'VIE', en: 'Vienna' },
+  'bangkok': { iata: 'BKK', en: 'Bangkok' },
+  'singapur': { iata: 'SIN', en: 'Singapore' },
+  'istanbul': { iata: 'IST', en: 'Istanbul' },
+  'antalya': { iata: 'AYT', en: 'Antalya' },
+  'izmir': { iata: 'ADB', en: 'Izmir' },
+  'bodrum': { iata: 'BJV', en: 'Bodrum' },
+  'milano': { iata: 'MIL', en: 'Milan' },
+  'lizbon': { iata: 'LIS', en: 'Lisbon' },
+  'atina': { iata: 'ATH', en: 'Athens' },
+  'budapeste': { iata: 'BUD', en: 'Budapest' },
 };
 
-const getTripcomUrl = (citySlug: string) => {
-  const mapping = cityTripcomIds[citySlug];
-  if (mapping) {
-    return `https://www.trip.com/hotels/list?city=${mapping.id}&cityName=${encodeURIComponent(mapping.name)}&locale=tr-TR`;
-  }
-  return `https://www.trip.com/hotels/?locale=tr-TR`;
+const getHotellookUrl = (citySlug: string, cityName: string) => {
+  const mapping = cityHotellookIds[citySlug];
+  const destination = mapping?.iata || cityName;
+  return `https://search.hotellook.com/?marker=${HOTELLOOK_PARTNER_ID}&destination=${encodeURIComponent(destination)}&language=tr&currency=TRY`;
 };
 
 const Hotels = () => {
@@ -96,13 +106,21 @@ const Hotels = () => {
           </div>
         </section>
 
+        {/* Hotel Search Form */}
+        <section className="py-6 md:py-8">
+          <div className="container max-w-4xl">
+            <HotelSearchForm />
+          </div>
+        </section>
+
         {/* City Hotels Grid */}
         <section className="py-6 md:py-8">
           <div className="container">
+            <h2 className="text-2xl font-display font-bold mb-6">Tüm Şehirler</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cities.map((city) => {
                 const flag = getCountryFlag(city.countryCode);
-                const tripcomUrl = getTripcomUrl(city.slug);
+                const hotellookUrl = getHotellookUrl(city.slug, city.nameEn || city.name);
                 
                 return (
                   <Card key={city.slug} variant="elevated" className="group overflow-hidden">
@@ -134,7 +152,7 @@ const Hotels = () => {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <MapPin className="w-4 h-4" />
-                        <span>{city.highlights.slice(0, 2).join(', ')}</span>
+                        <span className="line-clamp-1">{city.highlights?.slice(0, 2).join(', ') || city.country}</span>
                       </div>
                       
                       <div className="flex gap-2">
@@ -144,7 +162,7 @@ const Hotels = () => {
                             <ArrowRight className="w-4 h-4" />
                           </Button>
                         </Link>
-                        <a href={tripcomUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={hotellookUrl} target="_blank" rel="noopener noreferrer sponsored">
                           <Button className="gradient-primary gap-2">
                             <ExternalLink className="w-4 h-4" />
                           </Button>
