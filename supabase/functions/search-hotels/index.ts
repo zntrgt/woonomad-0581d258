@@ -498,30 +498,52 @@ serve(async (req) => {
       }
     }
 
-    // Generate sample hotels if no API results
+    // Generate sample hotels with real Unsplash hotel photos if no API results
     if (hotels.length === 0) {
-      console.log("Using sample hotel data");
+      console.log("Using sample hotel data with real photos");
+      
+      // Real hotel-themed Unsplash photo IDs
+      const hotelPhotos = [
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop', // Hotel exterior
+        'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop', // Luxury pool
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop', // Hotel room
+        'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop', // Resort
+        'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&h=600&fit=crop', // Hotel bedroom
+        'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop', // Hotel lobby
+        'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&h=600&fit=crop', // Boutique hotel
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&h=600&fit=crop', // Modern hotel
+        'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&h=600&fit=crop', // Beach resort
+        'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&h=600&fit=crop', // Mountain hotel
+        'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&h=600&fit=crop', // Grand hotel
+        'https://images.unsplash.com/photo-1549294413-26f195200c16?w=800&h=600&fit=crop', // City hotel
+      ];
+      
       const hotelTypes = [
-        { suffix: 'Grand Hotel', stars: 5, basePrice: 2500 },
-        { suffix: 'Boutique Stay', stars: 4, basePrice: 1800 },
-        { suffix: 'Business Hotel', stars: 4, basePrice: 1500 },
-        { suffix: 'Budget Inn', stars: 3, basePrice: 800 },
-        { suffix: 'Central Suites', stars: 4, basePrice: 1600 },
-        { suffix: 'Luxury Palace', stars: 5, basePrice: 3500 },
-        { suffix: 'City Center Hotel', stars: 4, basePrice: 1400 },
-        { suffix: 'Comfort Inn', stars: 3, basePrice: 900 },
+        { suffix: 'Grand Hotel', stars: 5, basePrice: 2500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast', 'parking'] },
+        { suffix: 'Boutique Stay', stars: 4, basePrice: 1800, amenities: ['wifi', 'breakfast', 'spa'] },
+        { suffix: 'Business Hotel', stars: 4, basePrice: 1500, amenities: ['wifi', 'gym', 'parking', 'breakfast'] },
+        { suffix: 'Budget Inn', stars: 3, basePrice: 800, amenities: ['wifi', 'parking'] },
+        { suffix: 'Central Suites', stars: 4, basePrice: 1600, amenities: ['wifi', 'breakfast', 'gym'] },
+        { suffix: 'Luxury Palace', stars: 5, basePrice: 3500, amenities: ['pool', 'spa', 'gym', 'wifi', 'breakfast', 'parking'] },
+        { suffix: 'City Center Hotel', stars: 4, basePrice: 1400, amenities: ['wifi', 'breakfast', 'parking'] },
+        { suffix: 'Comfort Inn', stars: 3, basePrice: 900, amenities: ['wifi', 'parking', 'breakfast'] },
+        { suffix: 'Seaside Resort', stars: 5, basePrice: 2800, amenities: ['pool', 'spa', 'wifi', 'breakfast'] },
+        { suffix: 'Urban Loft', stars: 4, basePrice: 1700, amenities: ['wifi', 'gym', 'breakfast'] },
+        { suffix: 'Heritage Hotel', stars: 4, basePrice: 1900, amenities: ['wifi', 'breakfast', 'spa'] },
+        { suffix: 'Express Hotel', stars: 3, basePrice: 750, amenities: ['wifi', 'parking'] },
       ];
       
       hotels = hotelTypes.slice(0, limit).map((type, index) => ({
         id: String(index + 1),
         name: `${cityInfo.en} ${type.suffix}`,
         stars: type.stars,
-        priceFrom: type.basePrice,
-        priceAvg: type.basePrice * 1.2,
-        rating: 4.2 + (Math.random() * 0.6),
-        reviews: 200 + Math.floor(Math.random() * 1000),
+        priceFrom: type.basePrice + Math.floor(Math.random() * 300),
+        priceAvg: Math.floor(type.basePrice * 1.2),
+        rating: 4.0 + (Math.random() * 0.9),
+        reviews: 150 + Math.floor(Math.random() * 1200),
         location: { lat: 0, lon: 0 },
-        photo: `https://images.unsplash.com/photo-${1566073771259 + index}-6a8506099945?w=400&h=300&fit=crop`,
+        photo: hotelPhotos[index % hotelPhotos.length],
+        amenities: type.amenities,
         link: affiliateLink,
       }));
     }
