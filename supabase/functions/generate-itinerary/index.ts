@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -41,6 +42,33 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication check - require logged in user
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Please log in to generate itineraries' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: authError } = await supabase.auth.getClaims(token);
+    
+    if (authError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Please log in to generate itineraries' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
     const { city, cityEn, country, interests, travelerType, days } = await req.json();
 
     // Input validation
@@ -84,6 +112,8 @@ serve(async (req) => {
     const interestText = interests.map((i: string) => INTEREST_LABELS[i] || i).join(', ');
     const travelerText = TRAVELER_LABELS[travelerType] || travelerType;
     const currency = COUNTRY_CURRENCIES[country] || 'EUR';
+
+    console.log(`User ${userId} generating itinerary for ${city}`);
 
     const systemPrompt = `Sen deneyimli bir seyahat planlayıcısısın. Kullanıcının tercihlerine göre detaylı ve gerçekçi gezi rotaları oluşturuyorsun. Her öneride gerçek mekanlar, pratik bilgiler ve MUTLAKA tahmini maliyetler veriyorsun.
 
