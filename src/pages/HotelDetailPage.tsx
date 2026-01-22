@@ -271,7 +271,7 @@ const HotelDetailPage = () => {
                 </div>
               </div>
 
-              {/* Quick Facts */}
+              {/* Quick Facts with Live Price */}
               <Card>
                 <CardContent className="p-4 grid grid-cols-2 gap-4">
                   <div className="space-y-1">
@@ -282,20 +282,30 @@ const HotelDetailPage = () => {
                     <div className="text-xs text-muted-foreground">Bölge</div>
                     <div className="font-medium">{hotel.neighborhood || city.name}</div>
                   </div>
-                  {hotel.priceRange && (
-                    <>
-                      <div className="space-y-1">
-                        <div className="text-xs text-muted-foreground">Fiyat Aralığı</div>
-                        <div className="font-medium text-primary">
-                          ₺{hotel.priceRange.min.toLocaleString('tr-TR')} - ₺{hotel.priceRange.max.toLocaleString('tr-TR')}
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs text-muted-foreground">Son Güncelleme</div>
-                        <div className="font-medium">{lastUpdated}</div>
-                      </div>
-                    </>
-                  )}
+                  
+                  {/* Live API Price */}
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground flex items-center gap-1">
+                      Güncel Fiyat
+                      {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                    </div>
+                    <div className="font-medium text-primary">
+                      {isLoading ? (
+                        <span className="text-muted-foreground">Yükleniyor...</span>
+                      ) : apiHotels.length > 0 && apiHotels[0].priceFrom ? (
+                        <>₺{apiHotels[0].priceFrom.toLocaleString('tr-TR')}/gece</>
+                      ) : hotel.priceRange ? (
+                        <>₺{hotel.priceRange.min.toLocaleString('tr-TR')}+</>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Son Güncelleme</div>
+                    <div className="font-medium">{lastUpdated}</div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -418,24 +428,71 @@ const HotelDetailPage = () => {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Price Card */}
-              {hotel.priceRange && (
-                <Card className="sticky top-4">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-sm text-muted-foreground mb-1">Gecelik fiyatlar</div>
-                    <div className="text-3xl font-display font-bold text-primary mb-4">
-                      ₺{hotel.priceRange.min.toLocaleString('tr-TR')}+
+              {/* Price Card with Live Data */}
+              <Card className="sticky top-4">
+                <CardContent className="p-6 text-center">
+                  <div className="text-sm text-muted-foreground mb-1">
+                    {isLoading ? 'Fiyat kontrol ediliyor...' : 'Güncel gecelik fiyat'}
+                  </div>
+                  
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
+                  ) : (
+                    <div className="text-3xl font-display font-bold text-primary mb-2">
+                      {apiHotels.length > 0 && apiHotels[0].priceFrom ? (
+                        <>₺{apiHotels[0].priceFrom.toLocaleString('tr-TR')}</>
+                      ) : hotel.priceRange ? (
+                        <>₺{hotel.priceRange.min.toLocaleString('tr-TR')}+</>
+                      ) : (
+                        <span className="text-lg">Fiyat bilgisi yok</span>
+                      )}
+                    </div>
+                  )}
+                  
+                  {apiHotels.length > 0 && apiHotels[0].link ? (
+                    <a 
+                      href={apiHotels[0].link}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="block"
+                    >
+                      <Button className="w-full gradient-primary mb-3">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Hotellook'ta Gör
+                      </Button>
+                    </a>
+                  ) : (
                     <Button className="w-full gradient-primary mb-3">
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Rezervasyon Yap
                     </Button>
-                    <p className="text-xs text-muted-foreground">
-                      Fiyatlar sezona göre değişebilir
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+                  )}
+                  
+                  <p className="text-xs text-muted-foreground">
+                    {apiHotels.length > 0 ? (
+                      <>Hotellook üzerinden canlı fiyat</>
+                    ) : (
+                      <>Fiyatlar sezona göre değişebilir</>
+                    )}
+                  </p>
+                  
+                  {apiHotels.length > 0 && apiHotels[0].rating > 0 && (
+                    <div className="mt-3 pt-3 border-t">
+                      <div className="flex items-center justify-center gap-2">
+                        <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
+                        <span className="font-semibold">{apiHotels[0].rating.toFixed(1)}</span>
+                        {apiHotels[0].reviews > 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            ({apiHotels[0].reviews} yorum)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
               {/* Related Links */}
               <Card>

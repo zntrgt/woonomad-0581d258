@@ -6,13 +6,91 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Static cities list
+// Complete cities list matching cities.ts
 const cities = [
-  "berlin", "lisbon", "barcelona", "amsterdam", "paris", "london", "dublin", "prague",
-  "budapest", "vienna", "milan", "rome", "madrid", "porto", "bangkok", "bali", "chiang-mai",
-  "ho-chi-minh", "kuala-lumpur", "singapore", "tokyo", "seoul", "taipei", "istanbul",
-  "antalya", "izmir", "tbilisi", "dubai", "tel-aviv", "cape-town", "medellin", "mexico-city",
-  "buenos-aires", "playa-del-carmen", "tulum"
+  // Türkiye
+  "istanbul", "antalya", "izmir", "bodrum", "kapadokya",
+  // Germany
+  "berlin", "munih", "frankfurt",
+  // France
+  "paris",
+  // UK
+  "londra",
+  // Netherlands
+  "amsterdam",
+  // Spain
+  "barcelona", "madrid",
+  // Italy
+  "roma", "milano", "venedik", "floransa",
+  // Portugal
+  "lizbon", "porto",
+  // Greece
+  "atina",
+  // Central Europe
+  "prag", "viyana", "budapeste",
+  // Scandinavia
+  "kopenhag", "stockholm",
+  // Middle East & Caucasus
+  "dubai", "amman", "tiflis", "baku",
+  // Asia
+  "tokyo", "bangkok", "singapur", "bali", "seul",
+  // Americas
+  "newyork",
+  // Balkans
+  "belgrad", "sarajevo",
+  // Other
+  "marakes", "zanzibar"
+];
+
+// Static hotel data for sitemap (from hotels.ts)
+const hotelData = [
+  { citySlug: "istanbul", slug: "four-seasons-sultanahmet" },
+  { citySlug: "istanbul", slug: "ciragan-palace-kempinski" },
+  { citySlug: "istanbul", slug: "raffles-istanbul" },
+  { citySlug: "istanbul", slug: "the-ritz-carlton-istanbul" },
+  { citySlug: "antalya", slug: "regnum-carya" },
+  { citySlug: "antalya", slug: "titanic-mardan-palace" },
+  { citySlug: "antalya", slug: "maxx-royal-belek" },
+  { citySlug: "izmir", slug: "swissotel-buyuk-efes" },
+  { citySlug: "izmir", slug: "movenpick-hotel-izmir" },
+  { citySlug: "bodrum", slug: "mandarin-oriental-bodrum" },
+  { citySlug: "bodrum", slug: "the-bodrum-edition" },
+  { citySlug: "berlin", slug: "hotel-adlon-kempinski" },
+  { citySlug: "berlin", slug: "the-ritz-carlton-berlin" },
+  { citySlug: "lizbon", slug: "four-seasons-ritz-lisbon" },
+  { citySlug: "lizbon", slug: "pestana-palace-lisboa" },
+  { citySlug: "barcelona", slug: "hotel-arts-barcelona" },
+  { citySlug: "barcelona", slug: "w-barcelona" },
+  { citySlug: "amsterdam", slug: "waldorf-astoria-amsterdam" },
+  { citySlug: "amsterdam", slug: "conservatorium-hotel" },
+  { citySlug: "paris", slug: "le-bristol-paris" },
+  { citySlug: "paris", slug: "four-seasons-george-v" },
+  { citySlug: "prag", slug: "four-seasons-prague" },
+  { citySlug: "prag", slug: "mandarin-oriental-prague" },
+  { citySlug: "viyana", slug: "hotel-sacher-wien" },
+  { citySlug: "viyana", slug: "park-hyatt-vienna" },
+  { citySlug: "budapeste", slug: "four-seasons-gresham-palace" },
+  { citySlug: "budapeste", slug: "aria-hotel-budapest" },
+  { citySlug: "roma", slug: "hotel-hassler-roma" },
+  { citySlug: "roma", slug: "hotel-de-russie" },
+  { citySlug: "milano", slug: "armani-hotel-milano" },
+  { citySlug: "milano", slug: "park-hyatt-milan" },
+  { citySlug: "dubai", slug: "burj-al-arab" },
+  { citySlug: "dubai", slug: "atlantis-the-palm" },
+  { citySlug: "tokyo", slug: "aman-tokyo" },
+  { citySlug: "tokyo", slug: "park-hyatt-tokyo" },
+  { citySlug: "bali", slug: "como-shambhala" },
+  { citySlug: "bali", slug: "four-seasons-jimbaran" },
+];
+
+// Flight routes for sitemap
+const flightRoutes = [
+  "istanbul-paris", "istanbul-londra", "istanbul-barcelona", "istanbul-amsterdam",
+  "istanbul-roma", "istanbul-berlin", "istanbul-viyana", "istanbul-prag",
+  "istanbul-dubai", "istanbul-tokyo", "istanbul-bali", "istanbul-bangkok",
+  "ankara-istanbul", "ankara-londra", "ankara-paris", "ankara-berlin",
+  "izmir-istanbul", "izmir-londra", "izmir-paris", "izmir-amsterdam",
+  "antalya-istanbul", "antalya-moskova", "antalya-berlin", "antalya-londra"
 ];
 
 serve(async (req) => {
@@ -41,7 +119,7 @@ serve(async (req) => {
       console.error("Error fetching blog posts:", error);
     }
 
-    const baseUrl = "https://woonomad.lovable.app";
+    const baseUrl = "https://woonomad.co";
     const today = new Date().toISOString().split("T")[0];
 
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -52,6 +130,14 @@ serve(async (req) => {
     <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  
+  <!-- Cities Index -->
+  <url>
+    <loc>${baseUrl}/sehirler</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   
   <!-- Blog Index -->
@@ -85,9 +171,35 @@ serve(async (req) => {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>${baseUrl}/gizlilik-politikasi</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/kullanim-kosullari</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/kvkk</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/cerez-politikasi</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 `;
 
-    // Add city pages
+    // Add city pages with all sub-routes
     for (const city of cities) {
       sitemap += `
   <!-- ${city} City Hub -->
@@ -100,19 +212,53 @@ serve(async (req) => {
   <url>
     <loc>${baseUrl}/sehir/${city}/oteller</loc>
     <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/sehir/${city}/ucuslar</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/sehir/${city}/ucak-bileti</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>${baseUrl}/sehir/${city}/nomad</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>${baseUrl}/sehir/${city}/ucak-bileti</loc>
+    <loc>${baseUrl}/sehir/${city}/coworking</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+    }
+
+    // Add hotel detail pages
+    for (const hotel of hotelData) {
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/sehir/${hotel.citySlug}/otel/${hotel.slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+    }
+
+    // Add flight route pages
+    for (const route of flightRoutes) {
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/ucus/${route}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>`;
     }
@@ -137,7 +283,8 @@ serve(async (req) => {
     sitemap += `
 </urlset>`;
 
-    console.log(`Sitemap generated with ${cities.length} cities and ${blogPosts?.length || 0} blog posts`);
+    const totalUrls = cities.length * 6 + hotelData.length + flightRoutes.length + (blogPosts?.length || 0) + 10;
+    console.log(`Sitemap generated with ${totalUrls} URLs: ${cities.length} cities, ${hotelData.length} hotels, ${flightRoutes.length} routes, ${blogPosts?.length || 0} blog posts`);
 
     return new Response(sitemap, {
       headers: {
