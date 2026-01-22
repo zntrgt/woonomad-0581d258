@@ -344,7 +344,7 @@ const City = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[320px] overflow-hidden">
+      <section className="relative h-[35vh] min-h-[280px] overflow-hidden">
         <img 
           src={city.image} 
           alt={`${city.name}, ${city.country} şehir manzarası - seyahat rehberi`}
@@ -417,7 +417,7 @@ const City = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-8">
+      <section className="py-6">
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Main Content */}

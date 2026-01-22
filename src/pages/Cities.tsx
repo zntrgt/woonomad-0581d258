@@ -49,7 +49,7 @@ const Cities = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-12 gradient-hero text-white">
+      <section className="py-8 md:py-10 gradient-hero text-white">
         <div className="container">
           <Breadcrumb items={breadcrumbItems} className="text-white/70 mb-4" />
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -63,7 +63,7 @@ const Cities = () => {
       </section>
 
       {/* Cities Grid */}
-      <section className="py-12">
+      <section className="py-6 md:py-8">
         <div className="container">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {cities.map((city) => {
