@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart, Map, List } from 'lucide-react';
+import { Hotel, Star, Wifi, Coffee, Car, Dumbbell, Calendar, Users, ExternalLink, Loader2, ChevronRight, Waves, Heart, Map, List, Scale } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -13,7 +13,8 @@ import { getCountryFlag } from '@/lib/destinations';
 import { useHotelSearch, Hotel as HotelType } from '@/hooks/useHotelSearch';
 import { HotelData, getHotelsByCity } from '@/lib/hotels';
 import { HotelFilters, HotelFilterOptions, SortSelector, SortOption } from '@/components/HotelFilters';
-import { HotelMap } from '@/components/HotelMap';
+import { HotelMapClustered } from '@/components/HotelMapClustered';
+import { HotelComparison, HotelSelectButton } from '@/components/HotelComparison';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
@@ -201,6 +202,102 @@ function HotelCard({ hotel, index }: { hotel: HotelType; index: number }) {
   );
 }
 
+interface HotelCardWithComparisonProps {
+  hotel: HotelType;
+  index: number;
+  isSelected: boolean;
+  onToggle: (id: string) => void;
+  disabled: boolean;
+}
+
+function HotelCardWithComparison({ hotel, index, isSelected, onToggle, disabled }: HotelCardWithComparisonProps) {
+  const isPopular = index === 0;
+  const isDeal = hotel.priceFrom < 1000;
+  
+  return (
+    <Card className="card-modern overflow-hidden group">
+      <div className="relative aspect-video overflow-hidden">
+        <img
+          src={hotel.photo || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop'}
+          alt={hotel.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        
+        <div className="absolute top-3 left-3 flex gap-2">
+          {isPopular && <Badge variant="popular">Popüler</Badge>}
+          {isDeal && <Badge variant="deal">Fırsat</Badge>}
+        </div>
+        
+        <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
+          {Array.from({ length: hotel.stars }).map((_, i) => (
+            <Star key={i} className="h-3 w-3 fill-travel-gold text-travel-gold" />
+          ))}
+        </div>
+        
+        <div className="absolute bottom-3 right-3">
+          <div className="bg-card/95 backdrop-blur-sm rounded-lg px-3 py-2 text-right">
+            <div className="text-xs text-muted-foreground">Gecelik</div>
+            <div className="text-xl font-display font-bold text-primary">
+              ₺{hotel.priceFrom.toLocaleString('tr-TR')}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <CardContent className="p-4">
+        <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1">
+          {hotel.name}
+        </h3>
+        
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
+            <span className="font-semibold text-foreground">{hotel.rating.toFixed(1)}</span>
+            <span>({hotel.reviews} yorum)</span>
+          </div>
+        </div>
+        
+        {/* Amenities */}
+        {hotel.amenities && hotel.amenities.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {hotel.amenities.slice(0, 4).map((amenity) => {
+              const Icon = amenityIcons[amenity] || Wifi;
+              return (
+                <Badge key={amenity} variant="outline" className="text-[10px] px-2 py-0.5 gap-1">
+                  <Icon className="h-3 w-3" />
+                  <span className="hidden sm:inline capitalize">{amenity}</span>
+                </Badge>
+              );
+            })}
+            {hotel.amenities.length > 4 && (
+              <Badge variant="outline" className="text-[10px] px-2 py-0.5">
+                +{hotel.amenities.length - 4}
+              </Badge>
+            )}
+          </div>
+        )}
+        
+        <div className="flex gap-2">
+          <a href={hotel.link} target="_blank" rel="noopener noreferrer sponsored" className="flex-1">
+            <Button className="w-full gradient-primary hover:opacity-90">
+              <span>Rezervasyon</span>
+              <ExternalLink className="h-4 w-4 ml-2" />
+            </Button>
+          </a>
+          <HotelSelectButton
+            hotelId={hotel.id}
+            isSelected={isSelected}
+            onToggle={onToggle}
+            disabled={disabled}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
@@ -216,6 +313,21 @@ const CityHotels = () => {
   });
   const [sortBy, setSortBy] = useState<SortOption>('popular');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [selectedForComparison, setSelectedForComparison] = useState<string[]>([]);
+  
+  const handleToggleComparison = (hotelId: string) => {
+    setSelectedForComparison(prev => {
+      if (prev.includes(hotelId)) {
+        return prev.filter(id => id !== hotelId);
+      }
+      if (prev.length >= 3) return prev; // Max 3 hotels
+      return [...prev, hotelId];
+    });
+  };
+  
+  const handleClearComparison = () => {
+    setSelectedForComparison([]);
+  };
   
   // Default dates
   const checkIn = format(addDays(new Date(), 7), 'yyyy-MM-dd');
@@ -467,13 +579,13 @@ const CityHotels = () => {
             </div>
           ) : viewMode === 'map' ? (
             <section className="mb-8">
-              <HotelMap 
+              <HotelMapClustered 
                 hotels={filteredAndSortedHotels} 
                 cityName={city.name}
               />
               {/* Small hotel list below map */}
               <div className="mt-4 grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-                {filteredAndSortedHotels.slice(0, 8).map((hotel, index) => (
+                {filteredAndSortedHotels.slice(0, 8).map((hotel) => (
                   <div key={hotel.id} className="p-3 border rounded-lg hover:border-primary/50 transition-colors">
                     <div className="flex items-center gap-2">
                       {hotel.photo && (
@@ -490,6 +602,12 @@ const CityHotels = () => {
                           </span>
                         </div>
                       </div>
+                      <HotelSelectButton
+                        hotelId={hotel.id}
+                        isSelected={selectedForComparison.includes(hotel.id)}
+                        onToggle={handleToggleComparison}
+                        disabled={selectedForComparison.length >= 3}
+                      />
                     </div>
                   </div>
                 ))}
@@ -503,11 +621,25 @@ const CityHotels = () => {
                   className="animate-fade-in-up"
                   style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}
                 >
-                  <HotelCard hotel={hotel} index={index} />
+                  <HotelCardWithComparison 
+                    hotel={hotel} 
+                    index={index}
+                    isSelected={selectedForComparison.includes(hotel.id)}
+                    onToggle={handleToggleComparison}
+                    disabled={selectedForComparison.length >= 3}
+                  />
                 </div>
               ))}
             </section>
           )}
+          
+          {/* Hotel Comparison Bar */}
+          <HotelComparison
+            hotels={filteredAndSortedHotels}
+            selectedHotels={selectedForComparison}
+            onToggleHotel={handleToggleComparison}
+            onClearSelection={handleClearComparison}
+          />
           
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
