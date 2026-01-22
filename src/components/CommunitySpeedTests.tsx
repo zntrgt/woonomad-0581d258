@@ -22,7 +22,7 @@ interface SpeedTest {
   upvotes: number;
   downvotes: number;
   tested_at: string;
-  user_id: string;
+  // user_id removed from public view for privacy
 }
 
 interface CommunitySpeedTestsProps {
