@@ -136,6 +136,38 @@ export type Database = {
         }
         Relationships: []
       }
+      speed_test_votes: {
+        Row: {
+          created_at: string
+          id: string
+          speed_test_id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          speed_test_id: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          speed_test_id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
+            columns: ["speed_test_id"]
+            isOneToOne: false
+            referencedRelation: "wifi_speed_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_favorites: {
         Row: {
           created_at: string
@@ -186,6 +218,114 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      visa_applications: {
+        Row: {
+          application_date: string | null
+          country_code: string
+          country_name: string
+          created_at: string
+          decision_date: string | null
+          documents_checklist: Json | null
+          expiry_date: string | null
+          id: string
+          notes: string | null
+          reminders: Json | null
+          status: string
+          updated_at: string
+          user_id: string
+          visa_program_id: string
+          visa_type: string
+        }
+        Insert: {
+          application_date?: string | null
+          country_code: string
+          country_name: string
+          created_at?: string
+          decision_date?: string | null
+          documents_checklist?: Json | null
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          reminders?: Json | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          visa_program_id: string
+          visa_type: string
+        }
+        Update: {
+          application_date?: string | null
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          decision_date?: string | null
+          documents_checklist?: Json | null
+          expiry_date?: string | null
+          id?: string
+          notes?: string | null
+          reminders?: Json | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          visa_program_id?: string
+          visa_type?: string
+        }
+        Relationships: []
+      }
+      wifi_speed_tests: {
+        Row: {
+          city_slug: string
+          created_at: string
+          download_speed: number
+          downvotes: number
+          id: string
+          is_stable: boolean | null
+          location_name: string
+          location_slug: string
+          location_type: string
+          notes: string | null
+          ping_ms: number | null
+          tested_at: string
+          upload_speed: number | null
+          upvotes: number
+          user_id: string
+        }
+        Insert: {
+          city_slug: string
+          created_at?: string
+          download_speed: number
+          downvotes?: number
+          id?: string
+          is_stable?: boolean | null
+          location_name: string
+          location_slug: string
+          location_type: string
+          notes?: string | null
+          ping_ms?: number | null
+          tested_at?: string
+          upload_speed?: number | null
+          upvotes?: number
+          user_id: string
+        }
+        Update: {
+          city_slug?: string
+          created_at?: string
+          download_speed?: number
+          downvotes?: number
+          id?: string
+          is_stable?: boolean | null
+          location_name?: string
+          location_slug?: string
+          location_type?: string
+          notes?: string | null
+          ping_ms?: number | null
+          tested_at?: string
+          upload_speed?: number | null
+          upvotes?: number
           user_id?: string
         }
         Relationships: []
