@@ -13,10 +13,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { blogPosts as staticBlogPosts, BlogPost as StaticBlogPost } from "@/lib/blog";
 
 interface BlogPost {
   id: string;
@@ -52,9 +54,11 @@ const BlogAdmin = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [staticPosts, setStaticPosts] = useState<StaticBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [editingStaticPost, setEditingStaticPost] = useState<StaticBlogPost | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -64,6 +68,7 @@ const BlogAdmin = () => {
   const [seoResult, setSeoResult] = useState<SEOImproveResult | null>(null);
   const [showSeoModal, setShowSeoModal] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
+  const [importingPost, setImportingPost] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -88,13 +93,22 @@ const BlogAdmin = () => {
     }
   }, [user, isAdmin]);
 
-  // Handle edit query param
+  // Handle edit query param - check both DB and static posts
   useEffect(() => {
     const editSlug = searchParams.get('edit');
-    if (editSlug && posts.length > 0) {
-      const postToEdit = posts.find(p => p.slug === editSlug);
-      if (postToEdit) {
-        handleEdit(postToEdit);
+    if (editSlug) {
+      // First check DB posts
+      if (posts.length > 0) {
+        const postToEdit = posts.find(p => p.slug === editSlug);
+        if (postToEdit) {
+          handleEdit(postToEdit);
+          return;
+        }
+      }
+      // Then check static posts
+      const staticPost = staticBlogPosts.find(p => p.slug === editSlug);
+      if (staticPost) {
+        handleEditStatic(staticPost);
       }
     }
   }, [searchParams, posts]);
@@ -114,8 +128,74 @@ const BlogAdmin = () => {
       });
     } else {
       setPosts(data || []);
+      
+      // Filter static posts that are NOT in DB (by slug)
+      const dbSlugs = new Set((data || []).map(p => p.slug));
+      const notInDb = staticBlogPosts.filter(sp => !dbSlugs.has(sp.slug));
+      setStaticPosts(notInDb);
     }
     setLoading(false);
+  };
+
+  // Handle editing a static post - first import to DB
+  const handleEditStatic = (staticPost: StaticBlogPost) => {
+    setEditingStaticPost(staticPost);
+    setFormData({
+      title: staticPost.title,
+      slug: staticPost.slug,
+      excerpt: staticPost.excerpt || "",
+      content: staticPost.content.trim(),
+      category: staticPost.category || "",
+      city: staticPost.citySlug || "",
+      image_url: staticPost.coverImage || "",
+      published: true,
+    });
+    setIsCreating(true);
+  };
+
+  // Import static post to database
+  const importStaticPost = async (staticPost: StaticBlogPost) => {
+    setImportingPost(staticPost.slug);
+    
+    try {
+      const { error } = await supabase.from("blog_posts").insert({
+        title: staticPost.title,
+        slug: staticPost.slug,
+        excerpt: staticPost.excerpt || null,
+        content: staticPost.content.trim(),
+        category: staticPost.category || null,
+        city: staticPost.citySlug || null,
+        image_url: staticPost.coverImage || null,
+        published: true,
+        author_id: user?.id,
+      });
+
+      if (error) {
+        if (error.code === '23505') {
+          toast({
+            title: "Uyarı",
+            description: "Bu yazı zaten veritabanında mevcut.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: "İçe Aktarıldı",
+          description: `"${staticPost.title}" veritabanına aktarıldı.`,
+        });
+        fetchPosts();
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: error instanceof Error ? error.message : "İçe aktarma başarısız.",
+        variant: "destructive",
+      });
+    } finally {
+      setImportingPost(null);
+    }
   };
 
   const resetForm = () => {
@@ -130,6 +210,7 @@ const BlogAdmin = () => {
       published: false,
     });
     setEditingPost(null);
+    setEditingStaticPost(null);
     setIsCreating(false);
     setShowPreview(false);
   };
@@ -1019,54 +1100,143 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {posts.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center text-muted-foreground">
-                  Henüz blog yazısı yok. Yeni bir yazı oluşturmak için "Yeni Yazı" butonuna tıklayın.
-                </CardContent>
-              </Card>
-            ) : (
-              posts.map((post) => (
-                <Card key={post.id}>
-                  <CardContent className="py-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        {post.image_url && (
-                          <img 
-                            src={post.image_url} 
-                            alt="" 
-                            className="w-16 h-12 object-cover rounded"
-                          />
-                        )}
-                        <div>
-                          <h3 className="font-semibold">{post.title}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            /{post.slug} • {post.category || "Kategori yok"}
-                            {post.city && ` • ${post.city}`}
-                            {post.published ? " • 🟢 Yayında" : " • 🟡 Taslak"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(post)}>
-                          Düzenle
-                        </Button>
-                        <Button variant="destructive" size="sm" onClick={() => handleDelete(post.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+          <div className="space-y-6">
+            {/* Database Posts Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Database className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-semibold">Veritabanındaki Yazılar ({posts.length})</h2>
+              </div>
+              
+              {posts.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    Henüz veritabanında blog yazısı yok.
                   </CardContent>
                 </Card>
-              ))
+              ) : (
+                <div className="space-y-3">
+                  {posts.map((post) => (
+                    <Card key={post.id}>
+                      <CardContent className="py-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            {post.image_url && (
+                              <img 
+                                src={post.image_url} 
+                                alt="" 
+                                className="w-16 h-12 object-cover rounded"
+                              />
+                            )}
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold">{post.title}</h3>
+                                <Badge variant="outline" className="text-xs">DB</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                /{post.slug} • {post.category || "Kategori yok"}
+                                {post.city && ` • ${post.city}`}
+                                {post.published ? " • 🟢 Yayında" : " • 🟡 Taslak"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(post)}>
+                              Düzenle
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDelete(post.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Static Posts Section (not yet in DB) */}
+            {staticPosts.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText className="w-5 h-5 text-orange-500" />
+                  <h2 className="text-lg font-semibold">Statik Yazılar ({staticPosts.length})</h2>
+                  <Badge variant="secondary" className="text-xs">Kod İçinde</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Bu yazılar henüz veritabanında değil. "İçe Aktar" butonuyla veritabanına aktarabilir ve düzenleyebilirsiniz.
+                </p>
+                
+                <div className="space-y-3">
+                  {staticPosts.map((post) => (
+                    <Card key={post.id} className="border-orange-200 dark:border-orange-900/50">
+                      <CardContent className="py-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            {post.coverImage && (
+                              <img 
+                                src={post.coverImage} 
+                                alt="" 
+                                className="w-16 h-12 object-cover rounded"
+                              />
+                            )}
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold">{post.title}</h3>
+                                <Badge variant="outline" className="text-xs text-orange-600 border-orange-300">Statik</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                /{post.slug} • {post.category || "Kategori yok"}
+                                {post.citySlug && ` • ${post.citySlug}`}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => importStaticPost(post)}
+                              disabled={importingPost === post.slug}
+                              className="border-primary text-primary hover:bg-primary/10"
+                            >
+                              {importingPost === post.slug ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <Download className="w-4 h-4 mr-1" />
+                                  İçe Aktar
+                                </>
+                              )}
+                            </Button>
+                            <Button 
+                              variant="default" 
+                              size="sm" 
+                              onClick={() => handleEditStatic(post)}
+                            >
+                              İçe Aktar & Düzenle
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         )}
