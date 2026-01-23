@@ -172,18 +172,23 @@ const Index = () => {
     '@type': 'Organization',
     name: 'WooNomad',
     url: BASE_URL,
-    logo: `${BASE_URL}/woonomad-logo.png`,
+    logo: `${BASE_URL}/pwa-512x512.png`,
     description: 'Türkiye\'nin en kapsamlı uçak bileti karşılaştırma platformu. 500\'den fazla havayolunun biletlerini karşılaştırın.',
     foundingDate: '2024',
     areaServed: {
       '@type': 'Country',
       name: 'Türkiye',
     },
-    sameAs: [],
+    sameAs: [
+      'https://twitter.com/woonomad',
+      'https://www.instagram.com/woonomad',
+      'https://www.facebook.com/woonomad',
+      'https://www.linkedin.com/company/woonomad'
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      availableLanguage: ['Turkish', 'English'],
+      availableLanguage: ['Turkish', 'English', 'German', 'French', 'Spanish', 'Arabic'],
     },
   };
 
