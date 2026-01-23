@@ -6,6 +6,7 @@ const ar = {
     cities: 'المدن',
     hotels: 'الفنادق',
     nomadHub: 'مركز البدو',
+    esim: 'eSIM',
     blog: 'المدونة',
     login: 'تسجيل الدخول',
     signup: 'إنشاء حساب',

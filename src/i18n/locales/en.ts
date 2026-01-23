@@ -6,6 +6,7 @@ const en = {
     cities: 'Cities',
     hotels: 'Hotels',
     nomadHub: 'Nomad Hub',
+    esim: 'eSIM',
     blog: 'Blog',
     login: 'Login',
     signup: 'Sign Up',
@@ -122,6 +123,7 @@ const en = {
     options: 'Options',
     cabinClass: 'Cabin Class',
     visaFilter: 'Visa Status',
+    popularRoutes: 'Popular Routes',
   },
 
   // Flight results

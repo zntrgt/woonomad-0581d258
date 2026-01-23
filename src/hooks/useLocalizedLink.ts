@@ -13,6 +13,7 @@ const routeConfig = {
   hotels: { tr: '/oteller', en: '/hotels', de: '/hotels', fr: '/hotels', es: '/hoteles', ar: '/hotels' },
   flights: { tr: '/ucuslar', en: '/flights', de: '/fluege', fr: '/vols', es: '/vuelos', ar: '/flights' },
   nomadHub: { tr: '/dijital-gocebe', en: '/digital-nomad', de: '/digitale-nomaden', fr: '/nomade-numerique', es: '/nomada-digital', ar: '/digital-nomad' },
+  esim: { tr: '/esim', en: '/esim', de: '/esim', fr: '/esim', es: '/esim', ar: '/esim' },
   blog: { tr: '/blog', en: '/blog', de: '/blog', fr: '/blog', es: '/blog', ar: '/blog' },
   blogAdmin: { tr: '/admin/blog', en: '/admin/blog', de: '/admin/blog', fr: '/admin/blog', es: '/admin/blog', ar: '/admin/blog' },
   account: { tr: '/hesabim', en: '/account', de: '/konto', fr: '/compte', es: '/cuenta', ar: '/account' },

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plane, Mail, MapPin } from 'lucide-react';
+import { Plane, Mail, MapPin, Smartphone, Compass } from 'lucide-react';
 
 export function Footer() {
   const { t } = useTranslation();
@@ -52,6 +52,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/esim" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Smartphone className="w-3 h-3" /> {t('nav.esim')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.blog')}
                 </Link>
@@ -84,8 +89,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/bangkok" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Bangkok
+                <Link to="/sehir/barcelona" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Compass className="w-3 h-3" /> Barcelona
                 </Link>
               </li>
             </ul>

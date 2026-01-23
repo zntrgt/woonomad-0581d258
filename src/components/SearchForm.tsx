@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle, useMemo } from 'react';
+import { useState, forwardRef, useImperativeHandle, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ArrowRightLeft, Plane, Sparkles, Settings2, Plus, X, MapPin } from 'lucide-react';
 import { format, addDays, startOfWeek, startOfToday, isBefore } from 'date-fns';
@@ -13,10 +13,12 @@ import { CabinClassSelector } from './CabinClassSelector';
 import { VisaSelector } from './VisaSelector';
 import { FlightDatePicker } from './FlightDatePicker';
 import { PassengerSelector } from './PassengerSelector';
+import { PopularRouteChips } from './PopularRouteChips';
 import { Airport, SearchParams, CabinClass, VisaOption } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/contexts/SettingsContext';
 import { Badge } from '@/components/ui/badge';
+import { useUserLocation } from '@/hooks/useUserLocation';
 
 export interface SearchFormRef {
   setAirports: (origin: Airport | undefined, destination: Airport) => void;
@@ -55,6 +57,7 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
   ({ onSearch, isLoading }, ref) => {
     const { t } = useTranslation();
     const { currency } = useSettings();
+    const { originAirport } = useUserLocation();
     
     // Trip type state
     const [tripType, setTripType] = useState<TripType>('roundtrip');
@@ -81,6 +84,26 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
     const isAnywhereSearch = destination?.code === '';
     const isOneWay = tripType === 'oneway';
     const isMultiCity = tripType === 'multicity';
+
+    // Handle popular route selection
+    const handlePopularRouteSelect = useCallback((destinationCode: string) => {
+      // Set origin based on user's location if not already set
+      if (!origin) {
+        setOrigin({
+          code: originAirport,
+          name: originAirport,
+          city: originAirport === 'IST' ? 'İstanbul' : originAirport,
+          country: 'Türkiye',
+        });
+      }
+      // Set destination
+      setDestination({
+        code: destinationCode,
+        name: destinationCode,
+        city: destinationCode,
+        country: '',
+      });
+    }, [origin, originAirport]);
 
     useImperativeHandle(ref, () => ({
       setAirports: (newOrigin: Airport | undefined, newDestination: Airport) => {
@@ -442,6 +465,14 @@ export const SearchForm = forwardRef<SearchFormRef, SearchFormProps>(
             )}
           </Button>
         </div>
+
+        {/* Popular Route Chips - Show when no destination selected */}
+        {!isMultiCity && !destination && (
+          <PopularRouteChips 
+            onSelect={handlePopularRouteSelect}
+            className="pt-2"
+          />
+        )}
       </div>
     );
   }

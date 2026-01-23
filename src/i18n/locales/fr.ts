@@ -6,6 +6,7 @@ const fr = {
     cities: 'Villes',
     hotels: 'Hôtels',
     nomadHub: 'Nomad Hub',
+    esim: 'eSIM',
     blog: 'Blog',
     login: 'Connexion',
     signup: 'Inscription',

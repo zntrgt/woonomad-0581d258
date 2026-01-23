@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings, Laptop, User } from 'lucide-react';
+import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings, Laptop, User, Smartphone } from 'lucide-react';
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
 import { SiteSearch } from './SiteSearch';
@@ -18,7 +18,7 @@ import { useLocalizedRoutes } from '@/hooks/useLocalizedLink';
 
 interface NavItem {
   labelKey: string;
-  routeKey: 'home' | 'cities' | 'nomadHub' | 'flights' | 'hotels' | 'blog';
+  routeKey: 'home' | 'cities' | 'nomadHub' | 'flights' | 'hotels' | 'blog' | 'esim';
   icon: React.ReactNode;
 }
 
@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
   { labelKey: 'nav.nomadHub', routeKey: 'nomadHub', icon: <Laptop className="h-4 w-4" /> },
   { labelKey: 'nav.flights', routeKey: 'flights', icon: <Plane className="h-4 w-4" /> },
   { labelKey: 'nav.hotels', routeKey: 'hotels', icon: <Hotel className="h-4 w-4" /> },
+  { labelKey: 'nav.esim', routeKey: 'esim', icon: <Smartphone className="h-4 w-4" /> },
   { labelKey: 'nav.blog', routeKey: 'blog', icon: <BookOpen className="h-4 w-4" /> },
 ];
 
