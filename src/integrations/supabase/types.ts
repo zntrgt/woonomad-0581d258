@@ -100,6 +100,75 @@ export type Database = {
           },
         ]
       }
+      price_alerts: {
+        Row: {
+          alert_type: string
+          city_slug: string | null
+          created_at: string
+          current_price: number | null
+          destination_code: string | null
+          id: string
+          is_active: boolean | null
+          last_checked_at: string | null
+          origin_code: string | null
+          target_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          city_slug?: string | null
+          created_at?: string
+          current_price?: number | null
+          destination_code?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_checked_at?: string | null
+          origin_code?: string | null
+          target_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          city_slug?: string | null
+          created_at?: string
+          current_price?: number | null
+          destination_code?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_checked_at?: string | null
+          origin_code?: string | null
+          target_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_history: {
+        Row: {
+          checked_at: string
+          currency: string | null
+          id: string
+          price: number
+          route_key: string
+        }
+        Insert: {
+          checked_at?: string
+          currency?: string | null
+          id?: string
+          price: number
+          route_key: string
+        }
+        Update: {
+          checked_at?: string
+          currency?: string | null
+          id?: string
+          price?: number
+          route_key?: string
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth: string

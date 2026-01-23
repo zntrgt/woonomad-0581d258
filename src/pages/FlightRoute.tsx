@@ -15,6 +15,7 @@ import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
 import { SearchStatus, FlightResultsSkeleton, StickyScrollButton } from '@/components/SearchStatus';
 import { PriceTrendChart } from '@/components/PriceTrendChart';
+import { PriceAlertButton } from '@/components/PriceAlertButton';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -368,9 +369,16 @@ export default function FlightRoute() {
                 </Badge>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mt-3">
-              * Tahmini fiyat aralığı: <strong>{formatPrice(route.priceRange.min)}</strong> - <strong>{formatPrice(route.priceRange.max)}</strong> (tek yön, ekonomi sınıfı)
-            </p>
+            <div className="flex items-center justify-between mt-3">
+              <p className="text-sm text-muted-foreground">
+                * Tahmini fiyat aralığı: <strong>{formatPrice(route.priceRange.min)}</strong> - <strong>{formatPrice(route.priceRange.max)}</strong> (tek yön, ekonomi sınıfı)
+              </p>
+              <PriceAlertButton 
+                originCode={route.originCode}
+                destinationCode={route.destinationCode}
+                currentPrice={route.priceRange.min}
+              />
+            </div>
           </section>
 
           {/* Search Form */}
