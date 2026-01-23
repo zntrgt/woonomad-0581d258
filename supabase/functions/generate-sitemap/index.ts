@@ -294,14 +294,46 @@ const hotelData = [
   { citySlug: "bali", slug: "hanging-gardens-bali" },
 ];
 
-// Flight routes
+// Flight routes - corrected slugs (no "i-stanbul", use "istanbul")
 const flightRoutes = [
-  "istanbul-paris", "istanbul-londra", "istanbul-barcelona", "istanbul-amsterdam",
-  "istanbul-roma", "istanbul-berlin", "istanbul-viyana", "istanbul-prag",
-  "istanbul-dubai", "istanbul-tokyo", "istanbul-bali", "istanbul-bangkok",
-  "ankara-istanbul", "ankara-londra", "ankara-paris", "ankara-berlin",
-  "izmir-istanbul", "izmir-londra", "izmir-paris", "izmir-amsterdam",
-  "antalya-istanbul", "antalya-moskova", "antalya-berlin", "antalya-londra"
+  // Istanbul hub routes - Europe
+  "istanbul-paris", "istanbul-londra", "istanbul-roma", "istanbul-barcelona", 
+  "istanbul-amsterdam", "istanbul-berlin", "istanbul-munih", "istanbul-frankfurt", 
+  "istanbul-viyana", "istanbul-prag", "istanbul-budapeste", "istanbul-atina", 
+  "istanbul-madrid", "istanbul-lizbon", "istanbul-milano", "istanbul-zurih",
+  "istanbul-kopenhag", "istanbul-stockholm", "istanbul-bruksel", "istanbul-cenevre",
+  "istanbul-varsova", "istanbul-bukres", "istanbul-sofya", "istanbul-venedik",
+  "istanbul-napoli", "istanbul-helsinki", "istanbul-oslo", "istanbul-dublin",
+  // Istanbul hub routes - Balkans & Caucasus
+  "istanbul-tiflis", "istanbul-baku", "istanbul-belgrad", "istanbul-uskup", 
+  "istanbul-tiran", "istanbul-saraybosna", "istanbul-podgorica", "istanbul-pristine",
+  // Istanbul hub routes - Middle East
+  "istanbul-dubai", "istanbul-doha", "istanbul-amman", "istanbul-beyrut", 
+  "istanbul-abu-dabi", "istanbul-bahreyn", "istanbul-maskat", "istanbul-kuveyt",
+  // Istanbul hub routes - Asia
+  "istanbul-singapur", "istanbul-bangkok", "istanbul-kuala-lumpur", "istanbul-hong-kong", 
+  "istanbul-tokyo", "istanbul-seul", "istanbul-delhi", "istanbul-mumbai", 
+  "istanbul-pekin", "istanbul-sanghay", "istanbul-cakarta", "istanbul-bali", 
+  "istanbul-manila", "istanbul-taipei", "istanbul-katmandu",
+  // Istanbul hub routes - Africa
+  "istanbul-tunus", "istanbul-kazablanka", "istanbul-marakes", "istanbul-cape-town", 
+  "istanbul-johannesburg", "istanbul-nairobi", "istanbul-darusselam", "istanbul-zanzibar",
+  // Istanbul hub routes - Americas
+  "istanbul-new-york", "istanbul-los-angeles", "istanbul-chicago", "istanbul-miami", 
+  "istanbul-san-francisco", "istanbul-toronto", "istanbul-vancouver", 
+  "istanbul-sao-paulo", "istanbul-buenos-aires",
+  // Istanbul hub routes - Central Asia
+  "istanbul-almati", "istanbul-astana", "istanbul-taskent", "istanbul-biskek",
+  // Other Turkish cities
+  "ankara-istanbul", "ankara-londra", "ankara-paris", "ankara-berlin", "ankara-tiflis",
+  "izmir-istanbul", "izmir-atina", "izmir-paris", "izmir-amsterdam", "izmir-dubai",
+  "antalya-istanbul", "antalya-berlin", "antalya-munih", "antalya-amsterdam", "antalya-londra",
+  // European cross-routes
+  "paris-londra", "paris-roma", "paris-barcelona", "paris-amsterdam", "paris-berlin",
+  "londra-roma", "londra-barcelona", "londra-amsterdam", "londra-madrid",
+  "amsterdam-roma", "amsterdam-barcelona", "amsterdam-madrid",
+  // Middle East cross-routes
+  "amman-dubai", "amman-doha", "dubai-doha"
 ];
 
 serve(async (req) => {
