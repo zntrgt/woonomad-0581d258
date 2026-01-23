@@ -23,6 +23,7 @@ const routeTranslations: Record<Language, {
   activities: string;
   blog: string;
   esim: string;
+  install: string;
   'nomad-hub': string;
   'privacy-policy': string;
   'terms-of-service': string;
@@ -41,6 +42,7 @@ const routeTranslations: Record<Language, {
     activities: 'aktiviteler',
     blog: 'blog',
     esim: 'esim',
+    install: 'yukle',
     'nomad-hub': 'dijital-gocebe',
     'privacy-policy': 'gizlilik-politikasi',
     'terms-of-service': 'kullanim-kosullari',
@@ -59,6 +61,7 @@ const routeTranslations: Record<Language, {
     activities: 'activities',
     blog: 'blog',
     esim: 'esim',
+    install: 'install',
     'nomad-hub': 'digital-nomad',
     'privacy-policy': 'privacy-policy',
     'terms-of-service': 'terms-of-service',
@@ -77,6 +80,7 @@ const routeTranslations: Record<Language, {
     activities: 'aktivitaeten',
     blog: 'blog',
     esim: 'esim',
+    install: 'installieren',
     'nomad-hub': 'digitale-nomaden',
     'privacy-policy': 'datenschutz',
     'terms-of-service': 'nutzungsbedingungen',
@@ -95,6 +99,7 @@ const routeTranslations: Record<Language, {
     activities: 'activites',
     blog: 'blog',
     esim: 'esim',
+    install: 'installer',
     'nomad-hub': 'nomade-numerique',
     'privacy-policy': 'politique-de-confidentialite',
     'terms-of-service': 'conditions-utilisation',
@@ -113,6 +118,7 @@ const routeTranslations: Record<Language, {
     activities: 'actividades',
     blog: 'blog',
     esim: 'esim',
+    install: 'instalar',
     'nomad-hub': 'nomada-digital',
     'privacy-policy': 'politica-privacidad',
     'terms-of-service': 'terminos-servicio',
@@ -131,6 +137,7 @@ const routeTranslations: Record<Language, {
     activities: 'activities',
     blog: 'blog',
     esim: 'esim',
+    install: 'install',
     'nomad-hub': 'digital-nomad',
     'privacy-policy': 'privacy-policy',
     'terms-of-service': 'terms-of-service',
@@ -396,6 +403,12 @@ ${generateXhtmlLinks(baseUrl, path, allPaths)}
     addMultilingualUrl(
       (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang].esim,
       '0.7', 'weekly'
+    );
+
+    // Install / PWA Page
+    addMultilingualUrl(
+      (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang].install,
+      '0.5', 'monthly'
     );
 
     // Legal Pages

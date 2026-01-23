@@ -513,6 +513,28 @@ const en = {
     yourNationality: 'Your Nationality',
     yourLocation: 'Your Location',
   },
+
+  // Install / PWA
+  install: {
+    title: 'Install App',
+    metaDesc: 'Install WooNomad app on your phone and find the cheapest flights instantly.',
+    heroTitle: 'Add WooNomad to Your Phone',
+    heroDesc: 'Add our app to your home screen for instant access to the cheapest flights. No App Store or Play Store download required!',
+    alreadyInstalled: 'App Already Installed!',
+    alreadyInstalledDesc: 'WooNomad is ready to access from your home screen.',
+    installNow: 'Install Now',
+    noAppStore: 'No App Store or Play Store required',
+    whyInstall: 'Why Install?',
+    feature1: 'Instant Access',
+    feature1Desc: 'Open with one tap from home screen',
+    feature2: 'Offline Support',
+    feature2Desc: 'Works without internet',
+    feature3: 'Notifications',
+    feature3Desc: 'Get notified about price drops',
+    feature4: 'Fast Loading',
+    feature4Desc: '2x faster than browser',
+    pwaInfo: 'WooNomad is a Progressive Web App (PWA). You can install it directly from your browser and enjoy a real app experience without downloading from an app store.',
+  },
 };
 
 export default en;

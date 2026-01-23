@@ -28,6 +28,7 @@ import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -72,6 +73,8 @@ const routeConfig = {
   // Auth
   auth: { tr: '/auth', en: '/auth', de: '/auth', fr: '/auth', es: '/auth', ar: '/auth' },
   account: { tr: '/hesabim', en: '/account', de: '/konto', fr: '/compte', es: '/cuenta', ar: '/account' },
+  // Install (PWA)
+  install: { tr: '/yukle', en: '/install', de: '/installieren', fr: '/installer', es: '/instalar', ar: '/install' },
   // Legal
   privacy: { tr: '/gizlilik-politikasi', en: '/privacy-policy', de: '/datenschutz', fr: '/politique-de-confidentialite', es: '/politica-privacidad', ar: '/privacy-policy' },
   terms: { tr: '/kullanim-kosullari', en: '/terms-of-service', de: '/nutzungsbedingungen', fr: '/conditions-utilisation', es: '/terminos-servicio', ar: '/terms-of-service' },
@@ -112,6 +115,8 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       {/* Auth */}
       <Route path={`${prefix}${routeConfig.auth[lang]}`} element={<Auth />} />
       <Route path={`${prefix}${routeConfig.account[lang]}`} element={<Account />} />
+      {/* Install */}
+      <Route path={`${prefix}${routeConfig.install[lang]}`} element={<Install />} />
       {/* Legal */}
       <Route path={`${prefix}${routeConfig.privacy[lang]}`} element={<PrivacyPolicy />} />
       <Route path={`${prefix}${routeConfig.terms[lang]}`} element={<TermsOfService />} />
