@@ -495,6 +495,18 @@ const en = {
     advantage4: 'Store multiple eSIM profiles',
     advantage5: 'Easily manage online',
   },
+
+  // Destinations
+  destinations: {
+    popular: 'Popular Destinations',
+    domestic: 'Domestic',
+    visaFree: 'Visa-Free',
+    visaRequired: 'Visa',
+    fromLocation: 'From {{location}}',
+    changeLocation: 'Change Location',
+    yourNationality: 'Your Nationality',
+    yourLocation: 'Your Location',
+  },
 };
 
 export default en;

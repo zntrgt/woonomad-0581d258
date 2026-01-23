@@ -420,6 +420,18 @@ const ar = {
     discoverAll: 'اكتشف جميع الأنشطة',
     discoverAllDesc: 'مئات الأنشطة والجولات في {{city}}',
   },
+
+  // Destinations
+  destinations: {
+    popular: 'الوجهات الشائعة',
+    domestic: 'محلي',
+    visaFree: 'بدون تأشيرة',
+    visaRequired: 'تأشيرة',
+    fromLocation: 'من {{location}}',
+    changeLocation: 'تغيير الموقع',
+    yourNationality: 'جنسيتك',
+    yourLocation: 'موقعك',
+  },
 };
 
 export default ar;

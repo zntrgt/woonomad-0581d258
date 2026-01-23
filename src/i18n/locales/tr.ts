@@ -495,6 +495,18 @@ const tr = {
     advantage4: 'Birden fazla eSIM profili saklayabilirsiniz',
     advantage5: 'Çevrimiçi olarak kolayca yönetin',
   },
+
+  // Destinations
+  destinations: {
+    popular: 'Popüler Destinasyonlar',
+    domestic: 'Yurt İçi',
+    visaFree: 'Vizesiz',
+    visaRequired: 'Vize',
+    fromLocation: '{{location}} çıkışlı',
+    changeLocation: 'Konum Değiştir',
+    yourNationality: 'Vatandaşlığınız',
+    yourLocation: 'Bulunduğunuz Konum',
+  },
 };
 
 export default tr;
