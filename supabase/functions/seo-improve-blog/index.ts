@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,6 +15,15 @@ interface SEOImproveRequest {
   category?: string;
   city?: string;
   heroImageUrl?: string;
+  generateImages?: boolean;
+}
+
+interface ImageSuggestion {
+  position: string; // "after:heading-id" or "section:intro"
+  prompt: string;
+  altText: string;
+  caption?: string;
+  purpose: string; // "illustration" | "infographic" | "comparison" | "hero"
 }
 
 interface SEOImproveResponse {
@@ -27,9 +37,24 @@ interface SEOImproveResponse {
   internalLinkSuggestions: Array<{ anchor: string; href: string; reason: string }>;
   schemaJsonLd: object;
   changeSummary: string[];
+  // New LLM visibility fields
+  llmOptimizations: {
+    entityMarkup: Array<{ entity: string; type: string; description: string }>;
+    semanticSections: Array<{ id: string; purpose: string; keyTopics: string[] }>;
+    conversationalQueries: string[];
+    featuredSnippetTargets: Array<{ query: string; answer: string }>;
+    speakableContent: string[];
+  };
+  imageSuggestions: ImageSuggestion[];
+  generatedImages?: Array<{
+    position: string;
+    imageUrl: string;
+    altText: string;
+    caption?: string;
+  }>;
 }
 
-const SYSTEM_PROMPT = `Sen bir SEO ve içerik iyileştirme uzmanısın. Blog yazılarını SEO açısından optimize ediyorsun.
+const SYSTEM_PROMPT = `Sen bir SEO, içerik iyileştirme ve LLM görünürlük (AI search optimization) uzmanısın. Blog yazılarını hem geleneksel SEO hem de AI asistanları (ChatGPT, Perplexity, Gemini, Copilot) için optimize ediyorsun.
 
 KURALLAR (KESİNLİKLE UYULMALI):
 1. Kullanıcıya hiçbir şey sorma.
@@ -38,7 +63,8 @@ KURALLAR (KESİNLİKLE UYULMALI):
 4. Dil: mevcut içerik hangi dildense o dilde devam et.
 5. Çıktı SADECE JSON formatında olsun, başka açıklama yazma.
 
-SEO HEDEFLERİ:
+=== GELENEKSEL SEO HEDEFLERİ ===
+
 1) Title & Meta:
 - Title 55-60 karakter hedef; ana keyword başa yakın
 - Meta description 150-160 karakter; net vaat; clickworthy ama abartısız
@@ -68,6 +94,45 @@ SEO HEDEFLERİ:
 - FAQ varsa FAQPage
 - JSON-LD geçerli JSON olmalı
 
+=== LLM GÖRÜNÜRlÜK OPTİMİZASYONLARI (AI SEARCH) ===
+
+7) Entity Markup:
+- İçerikteki önemli varlıkları (kişi, yer, organizasyon, kavram, ürün) tespit et
+- Her entity için: isim, tür, kısa açıklama
+
+8) Semantic Sections:
+- Her bölümün amacını belirle (tanım, karşılaştırma, nasıl yapılır, öneri listesi, vb.)
+- Her bölümün anahtar konularını listele (LLM'lerin bağlam anlaması için)
+
+9) Conversational Queries:
+- İçeriğin cevaplayabileceği doğal dil sorularını üret (8-12 adet)
+- Bunlar AI asistanlarının bu içeriği kaynak olarak kullanmasını sağlar
+- Örnek: "Dijital göçebe için en iyi şehir hangisi?", "Tiflis'te coworking maliyeti ne kadar?"
+
+10) Featured Snippet Targets:
+- Google featured snippet ve AI arama sonuçları için optimize edilmiş soru-cevap çiftleri
+- Kısa, öz, direkt cevaplar (50-80 kelime)
+
+11) Speakable Content:
+- Sesli asistanlar ve TTS için uygun paragrafları belirle
+- Kısa, akıcı, kolay anlaşılır cümleler
+
+=== GÖRSEL ÖNERİLERİ ===
+
+12) Image Suggestions:
+- İçeriğin akışına göre 2-4 görsel önerisi üret
+- Her öneri için:
+  - position: görselin nereye ekleneceği (örn: "after:dijital-gocebe-nedir", "section:maliyet-karsilastirma")
+  - prompt: AI görsel oluşturmak için detaylı prompt (İngilizce, 50-100 kelime)
+  - altText: SEO için alt text (içerik dilinde)
+  - caption: varsa başlık (içerik dilinde)
+  - purpose: "illustration" | "infographic" | "comparison" | "hero" | "mood"
+- Promptlar şunları içermeli:
+  - Görsel tarzı (flat illustration, realistic photo, isometric, watercolor, vb.)
+  - Ana öğeler ve kompozisyon
+  - Renk paleti veya atmosfer
+  - "High quality, professional, suitable for travel blog" ekle
+
 ÇIKTI FORMATI (SADECE BU JSON):
 {
   "title": "...",
@@ -79,7 +144,23 @@ SEO HEDEFLERİ:
   "faqs": [{"q":"...","a":"..."}],
   "internalLinkSuggestions": [{"anchor":"...","href":"...","reason":"..."}],
   "schemaJsonLd": {...},
-  "changeSummary": ["...","..."]
+  "changeSummary": ["...","..."],
+  "llmOptimizations": {
+    "entityMarkup": [{"entity":"...", "type":"...", "description":"..."}],
+    "semanticSections": [{"id":"...", "purpose":"...", "keyTopics":["..."]}],
+    "conversationalQueries": ["..."],
+    "featuredSnippetTargets": [{"query":"...", "answer":"..."}],
+    "speakableContent": ["..."]
+  },
+  "imageSuggestions": [
+    {
+      "position": "after:section-id",
+      "prompt": "...",
+      "altText": "...",
+      "caption": "...",
+      "purpose": "illustration"
+    }
+  ]
 }`;
 
 serve(async (req) => {
@@ -127,7 +208,7 @@ serve(async (req) => {
     }
 
     const body: SEOImproveRequest = await req.json();
-    const { title, slug, content, category, city, heroImageUrl } = body;
+    const { title, slug, content, category, city, heroImageUrl, generateImages = false } = body;
 
     if (!title || !content) {
       return new Response(
@@ -151,7 +232,7 @@ serve(async (req) => {
       day: 'numeric' 
     });
 
-    const userPrompt = `Aşağıdaki blog yazısını SEO açısından iyileştir.
+    const userPrompt = `Aşağıdaki blog yazısını SEO ve LLM görünürlüğü açısından iyileştir.
 
 MEVCUT İÇERİK:
 Başlık: ${title}
@@ -166,9 +247,16 @@ ${content}
 ---
 Bugünün tarihi: ${today}
 
+ÖNEMLİ NOTLAR:
+1. İçeriği hem Google SEO hem de AI asistanlar (ChatGPT, Perplexity, Gemini) için optimize et
+2. Conversational queries bölümünde gerçek kullanıcıların sorabileceği doğal sorular yaz
+3. Featured snippet targets bölümünde kısa, direkt cevaplar ver
+4. Entity markup ile içerikteki önemli kavramları işaretle
+5. Görsel önerileri için detaylı, AI image generation'a uygun promptlar yaz
+
 Lütfen yukarıdaki kurallara göre iyileştirilmiş versiyonu JSON formatında döndür.`;
 
-    console.log(`Admin ${userId} improving SEO for post: ${slug}`);
+    console.log(`Admin ${userId} improving SEO+LLM for post: ${slug}`);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -177,13 +265,13 @@ Lütfen yukarıdaki kurallara göre iyileştirilmiş versiyonu JSON formatında 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-3-pro-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: userPrompt },
         ],
         temperature: 0.7,
-        max_tokens: 8000,
+        max_tokens: 12000,
       }),
     });
 
@@ -240,7 +328,81 @@ Lütfen yukarıdaki kurallara göre iyileştirilmiş versiyonu JSON formatında 
       );
     }
 
-    console.log("SEO improvement successful");
+    // If generateImages is true, generate the suggested images
+    if (generateImages && result.imageSuggestions && result.imageSuggestions.length > 0) {
+      console.log(`Generating ${result.imageSuggestions.length} images for post: ${slug}`);
+      
+      const generatedImages: Array<{
+        position: string;
+        imageUrl: string;
+        altText: string;
+        caption?: string;
+      }> = [];
+
+      // Generate images one by one (to avoid rate limits)
+      for (const suggestion of result.imageSuggestions.slice(0, 3)) { // Max 3 images
+        try {
+          const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.5-flash-image-preview",
+              messages: [
+                {
+                  role: "user",
+                  content: `Generate a professional blog image: ${suggestion.prompt}. Style: Modern, clean, suitable for a travel/digital nomad blog. Dimensions: 16:9 aspect ratio, high quality.`
+                }
+              ],
+              modalities: ["image", "text"]
+            }),
+          });
+
+          if (imageResponse.ok) {
+            const imageData = await imageResponse.json();
+            const imageBase64 = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+            if (imageBase64) {
+              // Upload to Supabase storage
+              const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+              const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+              
+              const fileName = `seo-${slug}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`;
+              const filePath = `generated/${fileName}`;
+
+              const { error: uploadError } = await supabase.storage
+                .from('blog-images')
+                .upload(filePath, imageBuffer, {
+                  contentType: 'image/png',
+                  cacheControl: '31536000'
+                });
+
+              if (!uploadError) {
+                const { data: urlData } = supabase.storage
+                  .from('blog-images')
+                  .getPublicUrl(filePath);
+
+                generatedImages.push({
+                  position: suggestion.position,
+                  imageUrl: urlData.publicUrl,
+                  altText: suggestion.altText,
+                  caption: suggestion.caption
+                });
+              }
+            }
+          }
+        } catch (imgError) {
+          console.error("Image generation error:", imgError);
+          // Continue with other images
+        }
+      }
+
+      result.generatedImages = generatedImages;
+    }
+
+    console.log("SEO+LLM improvement successful");
     
     return new Response(
       JSON.stringify(result),
