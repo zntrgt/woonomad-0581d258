@@ -21,6 +21,7 @@ import CoworkingDetail from "./pages/CoworkingDetail";
 import CityActivities from "./pages/CityActivities";
 import HotelDetailPage from "./pages/HotelDetailPage";
 import Hotels from "./pages/Hotels";
+import Esim from "./pages/Esim";
 import NomadHub from "./pages/NomadHub";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -55,6 +56,8 @@ const routeConfig = {
   // Hotels
   hotels: { tr: '/oteller', en: '/hotels', de: '/hotels', fr: '/hotels', es: '/hoteles', ar: '/hotels' },
   hotelDetail: { tr: '/otel/:slug', en: '/hotel/:slug', de: '/hotel/:slug', fr: '/hotel/:slug', es: '/hotel/:slug', ar: '/hotel/:slug' },
+  // eSIM
+  esim: { tr: '/esim', en: '/esim', de: '/esim', fr: '/esim', es: '/esim', ar: '/esim' },
   // Flights
   flights: { tr: '/ucuslar', en: '/flights', de: '/fluege', fr: '/vols', es: '/vuelos', ar: '/flights' },
   flightRoute: { tr: '/ucus/:slug', en: '/flight/:slug', de: '/flug/:slug', fr: '/vol/:slug', es: '/vuelo/:slug', ar: '/flight/:slug' },
@@ -93,6 +96,8 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       {/* Hotels */}
       <Route path={`${prefix}${routeConfig.hotels[lang]}`} element={<Hotels />} />
       <Route path={`${prefix}${routeConfig.hotelDetail[lang]}`} element={<HotelDetailPage />} />
+      {/* eSIM */}
+      <Route path={`${prefix}${routeConfig.esim[lang]}`} element={<Esim />} />
       {/* Flights */}
       <Route path={`${prefix}${routeConfig.flights[lang]}`} element={<FlightRoutes />} />
       <Route path={`${prefix}${routeConfig.flightRoute[lang]}`} element={<FlightRoute />} />

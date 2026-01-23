@@ -11,25 +11,8 @@ interface CityHotelsWidgetProps {
   cityNameEn?: string;
 }
 
-// City slug to Hotellook location ID mapping
-const cityLocationIds: Record<string, string> = {
-  'istanbul': '12153',
-  'antalya': '12168',
-  'izmir': '12193',
-  'bodrum': '12175',
-  'paris': '418',
-  'london': '100',
-  'rome': '303',
-  'barcelona': '562',
-  'amsterdam': '93',
-  'berlin': '12153',
-  'dubai': '614',
-  'tokyo': '58',
-  'bali': '264',
-  'athens': '342',
-  'tbilisi': '887',
-  'skopje': '2510',
-};
+// Travelpayouts Agoda Affiliate CID
+const AGODA_CID = "1844104";
 
 export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsWidgetProps) {
   const { t, i18n } = useTranslation();
@@ -40,8 +23,8 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
   
   const searchCity = cityNameEn || cityName;
   
-  // Direct Booking.com affiliate search link (Hotellook discontinued Oct 2025)
-  const affiliateLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(searchCity)}&checkin=${checkIn}&checkout=${checkOut}&group_adults=2&no_rooms=1&aid=2311236&label=woonomad-261144`;
+  // Direct Agoda affiliate search link
+  const affiliateLink = `https://www.agoda.com/search?city=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}`;
 
   return (
     <Card>

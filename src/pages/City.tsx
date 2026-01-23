@@ -40,6 +40,7 @@ import { getCountryFlag } from '@/lib/destinations';
 import { nomadMetrics, coworkingSpaces } from '@/lib/nomad';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
+import { EsimWidget } from '@/components/EsimWidget';
 
 // Helper to check if city has sufficient data
 const hasSufficientData = (city: CityInfo): boolean => {
@@ -843,6 +844,13 @@ const City = () => {
                 citySlug={city.slug}
                 cityName={city.name}
                 cityNameEn={city.nameEn}
+              />
+
+              {/* eSIM Widget */}
+              <EsimWidget 
+                countryCode={city.countryCode}
+                countryName={city.country}
+                cityName={city.name}
               />
 
               {/* Travel Tips */}
