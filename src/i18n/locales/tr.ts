@@ -6,6 +6,7 @@ const tr = {
     cities: 'Şehirler',
     hotels: 'Oteller',
     nomadHub: 'Nomad Hub',
+    esim: 'eSIM',
     blog: 'Blog',
     login: 'Giriş Yap',
     signup: 'Kayıt Ol',
@@ -122,6 +123,7 @@ const tr = {
     options: 'Seçenekler',
     cabinClass: 'Kabin Sınıfı',
     visaFilter: 'Vize Durumu',
+    popularRoutes: 'Popüler Rotalar',
   },
 
   // Flight results

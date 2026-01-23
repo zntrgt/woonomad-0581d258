@@ -6,6 +6,7 @@ const de = {
     cities: 'Städte',
     hotels: 'Hotels',
     nomadHub: 'Nomad Hub',
+    esim: 'eSIM',
     blog: 'Blog',
     login: 'Anmelden',
     signup: 'Registrieren',
