@@ -1,10 +1,9 @@
+/* WooNomad - Modern Seyahat Platformu */
+/* Note: Georama font is loaded via index.html link tag for proper CSS order */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Georama:wght@300;400;500;600;700;800&display=swap');
-
-/* WooNomad - Modern Seyahat Platformu */
 
 @layer base {
   :root {

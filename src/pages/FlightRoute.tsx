@@ -127,7 +127,26 @@ export default function FlightRoute() {
     provider: {
       '@type': 'Organization',
       name: 'WooNomad',
+      url: 'https://woonomad.co',
+      logo: 'https://woonomad.co/pwa-512x512.png',
     },
+    estimatedFlightDuration: route.estimatedDuration,
+    flightDistance: {
+      '@type': 'Distance',
+      name: route.distance,
+    },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'TRY',
+      lowPrice: route.priceRange.min,
+      highPrice: route.priceRange.max,
+      availability: 'https://schema.org/InStock',
+      validFrom: new Date().toISOString().split('T')[0],
+      seller: {
+        '@type': 'Organization',
+        name: 'WooNomad'
+      }
+    }
   };
 
   const breadcrumbSchema = {
