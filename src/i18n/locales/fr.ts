@@ -420,6 +420,18 @@ const fr = {
     discoverAll: 'Découvrir toutes les activités',
     discoverAllDesc: 'Des centaines d\'activités et de visites à {{city}}',
   },
+
+  // Destinations
+  destinations: {
+    popular: 'Destinations Populaires',
+    domestic: 'Domestique',
+    visaFree: 'Sans Visa',
+    visaRequired: 'Visa',
+    fromLocation: 'Depuis {{location}}',
+    changeLocation: 'Changer de lieu',
+    yourNationality: 'Votre Nationalité',
+    yourLocation: 'Votre Emplacement',
+  },
 };
 
 export default fr;

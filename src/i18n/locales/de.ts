@@ -420,6 +420,18 @@ const de = {
     discoverAll: 'Alle Aktivitäten entdecken',
     discoverAllDesc: 'Hunderte von Aktivitäten und Touren in {{city}}',
   },
+
+  // Destinations
+  destinations: {
+    popular: 'Beliebte Reiseziele',
+    domestic: 'Inland',
+    visaFree: 'Visafrei',
+    visaRequired: 'Visum',
+    fromLocation: 'Ab {{location}}',
+    changeLocation: 'Standort ändern',
+    yourNationality: 'Ihre Staatsangehörigkeit',
+    yourLocation: 'Ihr Standort',
+  },
 };
 
 export default de;

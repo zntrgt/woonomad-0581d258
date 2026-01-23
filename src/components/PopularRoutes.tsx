@@ -1,6 +1,8 @@
 import { PopularRoute } from '@/lib/types';
-import { useState } from 'react';
-import { MapPin, Sparkles } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { MapPin, Sparkles, MapPinned } from 'lucide-react';
+import { useUserLocation, AIRPORT_TO_COUNTRY } from '@/hooks/useUserLocation';
+import { useTranslation } from 'react-i18next';
 
 // Import local city images
 import antalyaImg from '@/assets/cities/antalya.jpg';
@@ -35,37 +37,64 @@ interface DestinationCard {
   city: string;
   country: string;
   emoji: string;
-  category: 'domestic' | 'visa-free' | 'visa-required';
+  countryCode: string; // For visa check
 }
 
+// Static destination list (visa status will be computed dynamically)
 const destinations: DestinationCard[] = [
-  // Yurt İçi (3)
-  { code: 'AYT', city: 'Antalya', country: 'Türkiye', emoji: '🏖️', category: 'domestic' },
-  { code: 'ADB', city: 'İzmir', country: 'Türkiye', emoji: '🌊', category: 'domestic' },
-  { code: 'BJV', city: 'Bodrum', country: 'Türkiye', emoji: '⛵', category: 'domestic' },
+  // Turkey
+  { code: 'AYT', city: 'Antalya', country: 'Türkiye', emoji: '🏖️', countryCode: 'TR' },
+  { code: 'ADB', city: 'İzmir', country: 'Türkiye', emoji: '🌊', countryCode: 'TR' },
+  { code: 'BJV', city: 'Bodrum', country: 'Türkiye', emoji: '⛵', countryCode: 'TR' },
   
-  // Vizesiz Yurtdışı (3)
-  { code: 'ATH', city: 'Atina', country: 'Yunanistan', emoji: '🇬🇷', category: 'visa-free' },
-  { code: 'TBS', city: 'Tiflis', country: 'Gürcistan', emoji: '🇬🇪', category: 'visa-free' },
-  { code: 'SKP', city: 'Üsküp', country: 'K. Makedonya', emoji: '🇲🇰', category: 'visa-free' },
+  // Balkans
+  { code: 'ATH', city: 'Atina', country: 'Yunanistan', emoji: '🇬🇷', countryCode: 'GR' },
+  { code: 'TBS', city: 'Tiflis', country: 'Gürcistan', emoji: '🇬🇪', countryCode: 'GE' },
+  { code: 'SKP', city: 'Üsküp', country: 'K. Makedonya', emoji: '🇲🇰', countryCode: 'MK' },
   
-  // Vizeli Yurtdışı (3)
-  { code: 'CDG', city: 'Paris', country: 'Fransa', emoji: '🗼', category: 'visa-required' },
-  { code: 'FCO', city: 'Roma', country: 'İtalya', emoji: '🇮🇹', category: 'visa-required' },
-  { code: 'BCN', city: 'Barselona', country: 'İspanya', emoji: '🇪🇸', category: 'visa-required' },
+  // Europe
+  { code: 'CDG', city: 'Paris', country: 'Fransa', emoji: '🗼', countryCode: 'FR' },
+  { code: 'FCO', city: 'Roma', country: 'İtalya', emoji: '🇮🇹', countryCode: 'IT' },
+  { code: 'BCN', city: 'Barselona', country: 'İspanya', emoji: '🇪🇸', countryCode: 'ES' },
 ];
 
 function DestinationCardItem({ 
   destination, 
+  visaStatus,
   onClick,
-  index
+  index,
+  t,
 }: { 
   destination: DestinationCard; 
+  visaStatus: 'domestic' | 'visa-free' | 'visa-required';
   onClick: () => void;
   index: number;
+  t: (key: string) => string;
 }) {
   const [imageError, setImageError] = useState(false);
   const imageUrl = cityImages[destination.city] || null;
+
+  const getBadgeStyle = () => {
+    switch (visaStatus) {
+      case 'domestic':
+        return 'bg-primary/90 text-primary-foreground';
+      case 'visa-free':
+        return 'bg-success/90 text-success-foreground';
+      default:
+        return 'bg-white/20 text-white';
+    }
+  };
+
+  const getBadgeText = () => {
+    switch (visaStatus) {
+      case 'domestic':
+        return `🏠 ${t('destinations.domestic')}`;
+      case 'visa-free':
+        return `✓ ${t('destinations.visaFree')}`;
+      default:
+        return `📋 ${t('destinations.visaRequired')}`;
+    }
+  };
 
   return (
     <button
@@ -94,15 +123,8 @@ function DestinationCardItem({
       <div className="absolute inset-0 flex flex-col justify-between p-3 md:p-4">
         {/* Category badge */}
         <div className="flex justify-end">
-          <span className={`text-[10px] md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm ${
-            destination.category === 'domestic' 
-              ? 'bg-primary/90 text-primary-foreground' 
-              : destination.category === 'visa-free'
-              ? 'bg-success/90 text-success-foreground'
-              : 'bg-white/20 text-white'
-          }`}>
-            {destination.category === 'domestic' ? '🏠 Yurt İçi' : 
-             destination.category === 'visa-free' ? '✓ Vizesiz' : '📋 Vize'}
+          <span className={`text-[10px] md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm ${getBadgeStyle()}`}>
+            {getBadgeText()}
           </span>
         </div>
         
@@ -125,20 +147,57 @@ function DestinationCardItem({
 }
 
 export function PopularRoutes({ onRouteSelect }: PopularRoutesProps) {
+  const { t } = useTranslation();
+  const { originAirport, nationality, getVisaStatus, isLoading } = useUserLocation();
+
+  // Compute visa status for each destination based on user's nationality
+  const destinationsWithVisaStatus = useMemo(() => {
+    return destinations.map(dest => ({
+      ...dest,
+      visaStatus: getVisaStatus(dest.countryCode),
+    }));
+  }, [nationality, getVisaStatus]);
+
+  // Get origin display name
+  const getOriginLabel = () => {
+    const airportLabels: Record<string, string> = {
+      'IST': 'İstanbul',
+      'FRA': 'Frankfurt',
+      'LHR': 'Londra',
+      'CDG': 'Paris',
+      'AMS': 'Amsterdam',
+      'DXB': 'Dubai',
+      'JFK': 'New York',
+    };
+    return airportLabels[originAirport] || originAirport;
+  };
+
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center gap-2 mb-6">
-        <Sparkles className="h-4 w-4 text-primary" />
-        <h3 className="text-sm md:text-base font-display font-semibold text-foreground">Popüler Destinasyonlar</h3>
-        <Sparkles className="h-4 w-4 text-primary" />
+      <div className="flex flex-col items-center gap-2 mb-6">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <h3 className="text-sm md:text-base font-display font-semibold text-foreground">
+            {t('destinations.popular')}
+          </h3>
+          <Sparkles className="h-4 w-4 text-primary" />
+        </div>
+        {!isLoading && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPinned className="h-3 w-3" />
+            <span>{t('destinations.fromLocation', { location: getOriginLabel() })}</span>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-3 gap-3 md:gap-4">
-        {destinations.map((dest, index) => (
+        {destinationsWithVisaStatus.map((dest, index) => (
           <DestinationCardItem
             key={dest.code}
             destination={dest}
-            onClick={() => onRouteSelect('IST', dest.code)}
+            visaStatus={dest.visaStatus}
+            onClick={() => onRouteSelect(originAirport, dest.code)}
             index={index}
+            t={t}
           />
         ))}
       </div>
