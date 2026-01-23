@@ -149,6 +149,10 @@ const en = {
     bookNow: 'Book Now',
     outbound: 'Outbound',
     inbound: 'Return',
+    priceCalendar: 'Price Calendar',
+    average: 'Average',
+    expensive: 'Most Expensive',
+    cheapestDays: 'Cheapest days',
   },
 
   // Cities

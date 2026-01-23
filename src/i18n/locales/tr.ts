@@ -149,6 +149,10 @@ const tr = {
     bookNow: 'Şimdi Rezerve Et',
     outbound: 'Gidiş',
     inbound: 'Dönüş',
+    priceCalendar: 'Fiyat Takvimi',
+    average: 'Ortalama',
+    expensive: 'En Pahalı',
+    cheapestDays: 'En uygun günler',
   },
 
   // Cities

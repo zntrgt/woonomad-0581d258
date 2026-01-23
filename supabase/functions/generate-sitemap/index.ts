@@ -20,7 +20,9 @@ const routeTranslations: Record<Language, {
   flight: string;
   nomad: string;
   coworking: string;
+  activities: string;
   blog: string;
+  esim: string;
   'nomad-hub': string;
   'privacy-policy': string;
   'terms-of-service': string;
@@ -36,7 +38,9 @@ const routeTranslations: Record<Language, {
     flight: 'ucus',
     nomad: 'nomad',
     coworking: 'coworking',
+    activities: 'aktiviteler',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'dijital-gocebe',
     'privacy-policy': 'gizlilik-politikasi',
     'terms-of-service': 'kullanim-kosullari',
@@ -52,7 +56,9 @@ const routeTranslations: Record<Language, {
     flight: 'flight',
     nomad: 'nomad',
     coworking: 'coworking',
+    activities: 'activities',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'digital-nomad',
     'privacy-policy': 'privacy-policy',
     'terms-of-service': 'terms-of-service',
@@ -68,7 +74,9 @@ const routeTranslations: Record<Language, {
     flight: 'flug',
     nomad: 'nomad',
     coworking: 'coworking',
+    activities: 'aktivitaeten',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'digitale-nomaden',
     'privacy-policy': 'datenschutz',
     'terms-of-service': 'nutzungsbedingungen',
@@ -84,7 +92,9 @@ const routeTranslations: Record<Language, {
     flight: 'vol',
     nomad: 'nomade',
     coworking: 'coworking',
+    activities: 'activites',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'nomade-numerique',
     'privacy-policy': 'politique-de-confidentialite',
     'terms-of-service': 'conditions-utilisation',
@@ -100,7 +110,9 @@ const routeTranslations: Record<Language, {
     flight: 'vuelo',
     nomad: 'nomada',
     coworking: 'coworking',
+    activities: 'actividades',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'nomada-digital',
     'privacy-policy': 'politica-privacidad',
     'terms-of-service': 'terminos-servicio',
@@ -116,7 +128,9 @@ const routeTranslations: Record<Language, {
     flight: 'flight',
     nomad: 'nomad',
     coworking: 'coworking',
+    activities: 'activities',
     blog: 'blog',
+    esim: 'esim',
     'nomad-hub': 'digital-nomad',
     'privacy-policy': 'privacy-policy',
     'terms-of-service': 'terms-of-service',
@@ -378,6 +392,12 @@ ${generateXhtmlLinks(baseUrl, path, allPaths)}
       '0.8', 'weekly'
     );
 
+    // eSIM Page
+    addMultilingualUrl(
+      (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang].esim,
+      '0.7', 'weekly'
+    );
+
     // Legal Pages
     addMultilingualUrl(
       (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang]['privacy-policy'],
@@ -425,6 +445,12 @@ ${generateXhtmlLinks(baseUrl, path, allPaths)}
       // City coworking
       addMultilingualUrl(
         (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang].city + '/' + city + '/' + routeTranslations[lang].coworking,
+        '0.6', 'weekly'
+      );
+      
+      // City activities
+      addMultilingualUrl(
+        (lang) => getLangPrefix(lang) + '/' + routeTranslations[lang].city + '/' + city + '/' + routeTranslations[lang].activities,
         '0.6', 'weekly'
       );
     }
