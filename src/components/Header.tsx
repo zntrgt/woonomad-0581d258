@@ -4,6 +4,7 @@ import { Home, Plane, Menu, Building2, BookOpen, Hotel, Settings, Laptop, User, 
 import { Logo } from './Logo';
 import { SettingsDropdown } from './SettingsDropdown';
 import { SiteSearch } from './SiteSearch';
+import { NotificationBell } from './NotificationBell';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -94,6 +95,8 @@ export function Header() {
           {/* Site Search */}
           <SiteSearch />
           
+          {/* Notification Bell */}
+          <NotificationBell />
           {/* Account Link */}
           {user && (
             <Button variant="ghost" size="icon" asChild className="hidden md:flex">

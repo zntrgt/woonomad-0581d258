@@ -523,3 +523,291 @@ export function CityGuideSchema({
     </Helmet>
   );
 }
+
+// Blog Post Schema
+interface BlogPostSchemaProps {
+  title: string;
+  description: string;
+  url: string;
+  image?: string;
+  datePublished: string;
+  dateModified?: string;
+  author: {
+    name: string;
+    bio?: string;
+  };
+  category?: string;
+  wordCount?: number;
+  city?: {
+    name: string;
+    country: string;
+  };
+}
+
+export function BlogPostSchema({
+  title,
+  description,
+  url,
+  image,
+  datePublished,
+  dateModified,
+  author,
+  category,
+  wordCount,
+  city
+}: BlogPostSchemaProps) {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "description": description,
+    "url": url,
+    "datePublished": datePublished,
+    "dateModified": dateModified || datePublished,
+    "author": {
+      "@type": "Person",
+      "name": author.name,
+      ...(author.bio && { "description": author.bio })
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WooNomad",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://woonomad.co/pwa-512x512.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": url
+    },
+    "inLanguage": "tr-TR"
+  };
+
+  if (image) {
+    schema.image = image;
+  }
+
+  if (category) {
+    schema.articleSection = category;
+  }
+
+  if (wordCount) {
+    schema.wordCount = wordCount;
+  }
+
+  if (city) {
+    schema.about = {
+      "@type": "City",
+      "name": city.name,
+      "containedInPlace": {
+        "@type": "Country",
+        "name": city.country
+      }
+    };
+  }
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  );
+}
+
+// Local Business Schema (for coworking spaces)
+interface LocalBusinessSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  address: {
+    streetAddress?: string;
+    addressLocality: string;
+    addressCountry: string;
+  };
+  priceRange?: string;
+  openingHours?: string[];
+  amenities?: string[];
+  rating?: number;
+  reviewCount?: number;
+}
+
+export function LocalBusinessSchema({
+  name,
+  description,
+  url,
+  image,
+  address,
+  priceRange,
+  openingHours,
+  amenities,
+  rating,
+  reviewCount
+}: LocalBusinessSchemaProps) {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": name,
+    "description": description,
+    "url": url,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": address.addressLocality,
+      "addressCountry": address.addressCountry,
+      ...(address.streetAddress && { "streetAddress": address.streetAddress })
+    }
+  };
+
+  if (image) {
+    schema.image = image;
+  }
+
+  if (priceRange) {
+    schema.priceRange = priceRange;
+  }
+
+  if (openingHours && openingHours.length > 0) {
+    schema.openingHours = openingHours;
+  }
+
+  if (amenities && amenities.length > 0) {
+    schema.amenityFeature = amenities.map(amenity => ({
+      "@type": "LocationFeatureSpecification",
+      "name": amenity
+    }));
+  }
+
+  if (rating !== undefined && reviewCount !== undefined) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": rating,
+      "reviewCount": reviewCount,
+      "bestRating": 5,
+      "worstRating": 1
+    };
+  }
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  );
+}
+
+// Event Schema
+interface EventSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  startDate: string;
+  endDate?: string;
+  location: {
+    name: string;
+    address: string;
+  };
+  organizer?: string;
+  price?: number;
+  priceCurrency?: string;
+}
+
+export function EventSchema({
+  name,
+  description,
+  url,
+  image,
+  startDate,
+  endDate,
+  location,
+  organizer = "WooNomad",
+  price,
+  priceCurrency = "TRY"
+}: EventSchemaProps) {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": name,
+    "description": description,
+    "url": url,
+    "startDate": startDate,
+    "location": {
+      "@type": "Place",
+      "name": location.name,
+      "address": {
+        "@type": "PostalAddress",
+        "name": location.address
+      }
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": organizer
+    }
+  };
+
+  if (image) {
+    schema.image = image;
+  }
+
+  if (endDate) {
+    schema.endDate = endDate;
+  }
+
+  if (price !== undefined) {
+    schema.offers = {
+      "@type": "Offer",
+      "price": price,
+      "priceCurrency": priceCurrency,
+      "availability": "https://schema.org/InStock"
+    };
+  }
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  );
+}
+
+// ItemList Schema for city pages
+interface ItemListSchemaProps {
+  name: string;
+  description: string;
+  items: Array<{
+    name: string;
+    url: string;
+    position?: number;
+  }>;
+}
+
+export function ItemListSchema({
+  name,
+  description,
+  items
+}: ItemListSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": name,
+    "description": description,
+    "itemListElement": items.map((item, index) => ({
+      "@type": "ListItem",
+      "position": item.position || index + 1,
+      "name": item.name,
+      "url": item.url
+    }))
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  );
+}
