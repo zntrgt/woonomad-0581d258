@@ -113,38 +113,86 @@ export function getAirlinesForRoute(originCode: string, destCode: string): strin
   return allAirlines.slice(0, 5); // Max 5 airlines
 }
 
+// Normalize Turkish characters for URL-friendly slug
+function normalizeTurkish(text: string): string {
+  return text
+    // Replace Turkish characters BEFORE lowercasing to handle İ correctly
+    .replace(/İ/g, 'i')
+    .replace(/I/g, 'i')
+    .replace(/Ş/g, 's')
+    .replace(/Ğ/g, 'g')
+    .replace(/Ü/g, 'u')
+    .replace(/Ö/g, 'o')
+    .replace(/Ç/g, 'c')
+    .toLowerCase()
+    .replace(/\s*\(.*?\)\s*/g, '')
+    .replace(/ş/g, 's')
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/ı/g, 'i')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // Create URL-friendly slug
 function createRouteSlug(originCity: string, destinationCity: string): string {
-  const cleanOrigin = originCity
-    .toLowerCase()
-    .replace(/\s*\(.*?\)\s*/g, '')
-    .replace(/ş/g, 's')
-    .replace(/ğ/g, 'g')
-    .replace(/ü/g, 'u')
-    .replace(/ö/g, 'o')
-    .replace(/ç/g, 'c')
-    .replace(/ı/g, 'i')
-    .replace(/İ/g, 'i')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-
-  const cleanDest = destinationCity
-    .toLowerCase()
-    .replace(/\s*\(.*?\)\s*/g, '')
-    .replace(/ş/g, 's')
-    .replace(/ğ/g, 'g')
-    .replace(/ü/g, 'u')
-    .replace(/ö/g, 'o')
-    .replace(/ç/g, 'c')
-    .replace(/ı/g, 'i')
-    .replace(/İ/g, 'i')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-
+  const cleanOrigin = normalizeTurkish(originCity);
+  const cleanDest = normalizeTurkish(destinationCity);
   return `${cleanOrigin}-${cleanDest}`;
 }
+
+// Map of old malformed slugs to correct slugs for redirects
+export const ROUTE_REDIRECTS: Record<string, string> = {
+  'i-stanbul-paris': 'istanbul-paris',
+  'i-stanbul-londra': 'istanbul-londra',
+  'i-stanbul-roma': 'istanbul-roma',
+  'i-stanbul-barselona': 'istanbul-barselona',
+  'i-stanbul-amsterdam': 'istanbul-amsterdam',
+  'i-stanbul-berlin': 'istanbul-berlin',
+  'i-stanbul-munih': 'istanbul-munih',
+  'i-stanbul-frankfurt': 'istanbul-frankfurt',
+  'i-stanbul-viyana': 'istanbul-viyana',
+  'i-stanbul-prag': 'istanbul-prag',
+  'i-stanbul-budapeste': 'istanbul-budapeste',
+  'i-stanbul-atina': 'istanbul-atina',
+  'i-stanbul-madrid': 'istanbul-madrid',
+  'i-stanbul-lizbon': 'istanbul-lizbon',
+  'i-stanbul-milano': 'istanbul-milano',
+  'i-stanbul-zurih': 'istanbul-zurih',
+  'i-stanbul-kopenhag': 'istanbul-kopenhag',
+  'i-stanbul-stockholm': 'istanbul-stockholm',
+  'i-stanbul-bruksel': 'istanbul-bruksel',
+  'i-stanbul-cenevre': 'istanbul-cenevre',
+  'i-stanbul-varsova': 'istanbul-varsova',
+  'i-stanbul-bukres': 'istanbul-bukres',
+  'i-stanbul-sofya': 'istanbul-sofya',
+  'i-stanbul-dubai': 'istanbul-dubai',
+  'i-stanbul-doha': 'istanbul-doha',
+  'i-stanbul-amman': 'istanbul-amman',
+  'i-stanbul-beyrut': 'istanbul-beyrut',
+  'i-stanbul-singapur': 'istanbul-singapur',
+  'i-stanbul-bangkok': 'istanbul-bangkok',
+  'i-stanbul-tokyo': 'istanbul-tokyo',
+  'i-stanbul-seul': 'istanbul-seul',
+  'i-stanbul-new-york': 'istanbul-new-york',
+  'i-stanbul-los-angeles': 'istanbul-los-angeles',
+  'i-stanbul-tiflis': 'istanbul-tiflis',
+  'i-stanbul-baku': 'istanbul-baku',
+  'i-stanbul-belgrad': 'istanbul-belgrad',
+  'i-stanbul-uskup': 'istanbul-uskup',
+  'i-zmir-atina': 'izmir-atina',
+  'i-zmir-paris': 'izmir-paris',
+  'i-zmir-amsterdam': 'izmir-amsterdam',
+  'i-zmir-amman': 'izmir-amman',
+  'i-zmir-dubai': 'izmir-dubai',
+  'i-stanbul-sabiha-amman': 'istanbul-sabiha-amman',
+  'i-stanbul-sabiha-dubai': 'istanbul-sabiha-dubai',
+  'i-stanbul-sabiha-tiflis': 'istanbul-sabiha-tiflis',
+  'i-stanbul-sabiha-baku': 'istanbul-sabiha-baku',
+};
 
 // Estimated flight durations between major cities (in minutes)
 export const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
