@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import woonomadLogo from '@/assets/woonomad-logo.png';
+import woonomadLogo from '@/assets/woonomad-logo-new.png';
 
 interface LogoProps {
   showText?: boolean;
