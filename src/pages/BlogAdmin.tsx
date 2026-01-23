@@ -33,6 +33,29 @@ interface BlogPost {
   created_at: string;
 }
 
+interface ImageSuggestion {
+  position: string;
+  prompt: string;
+  altText: string;
+  caption?: string;
+  purpose: string;
+}
+
+interface GeneratedImage {
+  position: string;
+  imageUrl: string;
+  altText: string;
+  caption?: string;
+}
+
+interface LLMOptimizations {
+  entityMarkup: Array<{ entity: string; type: string; description: string }>;
+  semanticSections: Array<{ id: string; purpose: string; keyTopics: string[] }>;
+  conversationalQueries: string[];
+  featuredSnippetTargets: Array<{ query: string; answer: string }>;
+  speakableContent: string[];
+}
+
 interface SEOImproveResult {
   title: string;
   metaDescription: string;
@@ -44,6 +67,9 @@ interface SEOImproveResult {
   internalLinkSuggestions: Array<{ anchor: string; href: string; reason: string }>;
   schemaJsonLd: object;
   changeSummary: string[];
+  llmOptimizations?: LLMOptimizations;
+  imageSuggestions?: ImageSuggestion[];
+  generatedImages?: GeneratedImage[];
 }
 
 const BlogAdmin = () => {
@@ -68,6 +94,7 @@ const BlogAdmin = () => {
   const [seoResult, setSeoResult] = useState<SEOImproveResult | null>(null);
   const [showSeoModal, setShowSeoModal] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
+  const [generatingSeoImages, setGeneratingSeoImages] = useState(false);
   const [importingPost, setImportingPost] = useState<string | null>(null);
   const [listQuery, setListQuery] = useState("");
   const [sitemapUpdating, setSitemapUpdating] = useState(false);
@@ -606,16 +633,120 @@ const BlogAdmin = () => {
     }
   };
 
-  const applySEOImprovements = (result: SEOImproveResult) => {
-    setFormData(prev => ({
-      ...prev,
-      title: result.title,
-      excerpt: result.metaDescription,
-      content: result.content,
-    }));
+  const applySEOImprovements = async (result: SEOImproveResult, generateImages: boolean = false) => {
+    // If user wants to generate images and there are suggestions
+    if (generateImages && result.imageSuggestions && result.imageSuggestions.length > 0) {
+      setGeneratingSeoImages(true);
+      
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData?.session?.access_token;
+        
+        if (!accessToken) {
+          toast({ title: "Hata", description: "Oturum süresi dolmuş.", variant: "destructive" });
+          setGeneratingSeoImages(false);
+          return;
+        }
+
+        // Generate images one by one
+        const generatedImages: GeneratedImage[] = [];
+        
+        for (const suggestion of result.imageSuggestions.slice(0, 3)) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-image`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                prompt: suggestion.prompt,
+                context: `Blog section: ${suggestion.position}`,
+                slug: formData.slug || 'seo-image',
+                generateAltText: false,
+              }),
+            });
+
+            if (response.ok) {
+              const imgResult = await response.json();
+              if (imgResult.imageUrl) {
+                generatedImages.push({
+                  position: suggestion.position,
+                  imageUrl: imgResult.imageUrl,
+                  altText: suggestion.altText,
+                  caption: suggestion.caption
+                });
+              }
+            }
+          } catch (imgError) {
+            console.error("Image generation error:", imgError);
+          }
+        }
+
+        // Insert generated images into content
+        let updatedContent = result.content;
+        for (const img of generatedImages) {
+          const imageMarkdown = `\n\n![${img.altText}](${img.imageUrl})${img.caption ? `\n*${img.caption}*` : ''}\n\n`;
+          
+          // Try to find the position in content
+          if (img.position.startsWith('after:')) {
+            const sectionId = img.position.replace('after:', '');
+            // Try to find heading with this id
+            const headingRegex = new RegExp(`(##+ .*?${sectionId}.*?\n)`, 'i');
+            if (headingRegex.test(updatedContent)) {
+              updatedContent = updatedContent.replace(headingRegex, `$1${imageMarkdown}`);
+            } else {
+              // Append at the end of the first paragraph after a heading
+              updatedContent += imageMarkdown;
+            }
+          } else if (img.position.startsWith('section:')) {
+            // Just append after the content
+            updatedContent += imageMarkdown;
+          } else {
+            updatedContent += imageMarkdown;
+          }
+        }
+
+        setFormData(prev => ({
+          ...prev,
+          title: result.title,
+          excerpt: result.metaDescription,
+          content: updatedContent,
+        }));
+
+        toast({ 
+          title: "Uygulandı", 
+          description: `SEO iyileştirmeleri ve ${generatedImages.length} görsel eklendi` 
+        });
+      } catch (error) {
+        console.error("SEO image generation error:", error);
+        // Still apply text changes even if image generation fails
+        setFormData(prev => ({
+          ...prev,
+          title: result.title,
+          excerpt: result.metaDescription,
+          content: result.content,
+        }));
+        toast({ 
+          title: "Kısmi Başarı", 
+          description: "SEO iyileştirmeleri uygulandı, ancak görseller oluşturulamadı" 
+        });
+      } finally {
+        setGeneratingSeoImages(false);
+      }
+    } else {
+      // Just apply text changes
+      setFormData(prev => ({
+        ...prev,
+        title: result.title,
+        excerpt: result.metaDescription,
+        content: result.content,
+      }));
+      toast({ title: "Uygulandı", description: "SEO iyileştirmeleri başarıyla uygulandı" });
+    }
+    
     setShowSeoModal(false);
     setSeoResult(null);
-    toast({ title: "Uygulandı", description: "SEO iyileştirmeleri başarıyla uygulandı" });
   };
 
   // Generate AI image for blog
@@ -1350,13 +1481,14 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
       <SEOComparisonModal
         isOpen={showSeoModal}
         onClose={() => setShowSeoModal(false)}
-        onApply={applySEOImprovements}
+        onApply={(result, generateImages) => applySEOImprovements(result, generateImages)}
         currentData={{
           title: formData.title,
           excerpt: formData.excerpt,
           content: formData.content,
         }}
         improvedData={seoResult}
+        isGeneratingImages={generatingSeoImages}
       />
     </div>
   );

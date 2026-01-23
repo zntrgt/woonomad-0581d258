@@ -4,7 +4,32 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Check, X, ArrowRight, FileText, Table2, ListChecks, HelpCircle, Link2 } from 'lucide-react';
+import { Check, X, ArrowRight, FileText, Table2, ListChecks, HelpCircle, Link2, Brain, Image, MessageCircle, Zap, Loader2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+
+interface ImageSuggestion {
+  position: string;
+  prompt: string;
+  altText: string;
+  caption?: string;
+  purpose: string;
+}
+
+interface GeneratedImage {
+  position: string;
+  imageUrl: string;
+  altText: string;
+  caption?: string;
+}
+
+interface LLMOptimizations {
+  entityMarkup: Array<{ entity: string; type: string; description: string }>;
+  semanticSections: Array<{ id: string; purpose: string; keyTopics: string[] }>;
+  conversationalQueries: string[];
+  featuredSnippetTargets: Array<{ query: string; answer: string }>;
+  speakableContent: string[];
+}
 
 interface SEOImproveResult {
   title: string;
@@ -17,18 +42,22 @@ interface SEOImproveResult {
   internalLinkSuggestions: Array<{ anchor: string; href: string; reason: string }>;
   schemaJsonLd: object;
   changeSummary: string[];
+  llmOptimizations?: LLMOptimizations;
+  imageSuggestions?: ImageSuggestion[];
+  generatedImages?: GeneratedImage[];
 }
 
 interface SEOComparisonModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApply: (result: SEOImproveResult) => void;
+  onApply: (result: SEOImproveResult, generateImages: boolean) => void;
   currentData: {
     title: string;
     excerpt: string;
     content: string;
   };
   improvedData: SEOImproveResult | null;
+  isGeneratingImages?: boolean;
 }
 
 export function SEOComparisonModal({
@@ -37,8 +66,10 @@ export function SEOComparisonModal({
   onApply,
   currentData,
   improvedData,
+  isGeneratingImages = false,
 }: SEOComparisonModalProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [shouldGenerateImages, setShouldGenerateImages] = useState(true);
 
   if (!improvedData) return null;
 
@@ -65,23 +96,39 @@ export function SEOComparisonModal({
     </div>
   );
 
+  const hasLLMOptimizations = improvedData.llmOptimizations && (
+    improvedData.llmOptimizations.entityMarkup?.length > 0 ||
+    improvedData.llmOptimizations.conversationalQueries?.length > 0 ||
+    improvedData.llmOptimizations.featuredSnippetTargets?.length > 0
+  );
+
+  const hasImageSuggestions = improvedData.imageSuggestions && improvedData.imageSuggestions.length > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
-            SEO İyileştirme Önizleme
+            SEO & LLM Görünürlük İyileştirme
           </DialogTitle>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 overflow-hidden flex flex-col">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Özet</TabsTrigger>
             <TabsTrigger value="content">İçerik</TabsTrigger>
             <TabsTrigger value="structure">Yapı</TabsTrigger>
             <TabsTrigger value="faq">FAQ</TabsTrigger>
             <TabsTrigger value="links">Linkler</TabsTrigger>
+            <TabsTrigger value="llm" className="flex items-center gap-1">
+              <Brain className="h-3 w-3" />
+              LLM
+            </TabsTrigger>
+            <TabsTrigger value="images" className="flex items-center gap-1">
+              <Image className="h-3 w-3" />
+              Görseller
+            </TabsTrigger>
           </TabsList>
 
           <ScrollArea className="flex-1 mt-4">
@@ -115,24 +162,56 @@ export function SEOComparisonModal({
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="p-3 bg-muted/50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-primary">{improvedData.tables.length}</div>
+                  <div className="text-2xl font-bold text-primary">{improvedData.tables?.length || 0}</div>
                   <div className="text-xs text-muted-foreground">Tablo</div>
                 </div>
                 <div className="p-3 bg-muted/50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-primary">{improvedData.checklists.length}</div>
+                  <div className="text-2xl font-bold text-primary">{improvedData.checklists?.length || 0}</div>
                   <div className="text-xs text-muted-foreground">Checklist</div>
                 </div>
                 <div className="p-3 bg-muted/50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-primary">{improvedData.faqs.length}</div>
+                  <div className="text-2xl font-bold text-primary">{improvedData.faqs?.length || 0}</div>
                   <div className="text-xs text-muted-foreground">FAQ</div>
                 </div>
                 <div className="p-3 bg-muted/50 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-primary">{improvedData.internalLinkSuggestions.length}</div>
+                  <div className="text-2xl font-bold text-primary">{improvedData.internalLinkSuggestions?.length || 0}</div>
                   <div className="text-xs text-muted-foreground">İç Link</div>
                 </div>
+                <div className="p-3 bg-muted/50 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-primary">{improvedData.imageSuggestions?.length || 0}</div>
+                  <div className="text-xs text-muted-foreground">Görsel</div>
+                </div>
               </div>
+
+              {/* LLM Stats */}
+              {hasLLMOptimizations && (
+                <div className="p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg border border-purple-500/20">
+                  <h4 className="font-semibold flex items-center gap-2 mb-3">
+                    <Brain className="h-4 w-4 text-purple-500" />
+                    LLM Görünürlük Optimizasyonları
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-purple-600">{improvedData.llmOptimizations?.entityMarkup?.length || 0}</div>
+                      <div className="text-xs text-muted-foreground">Entity</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-purple-600">{improvedData.llmOptimizations?.conversationalQueries?.length || 0}</div>
+                      <div className="text-xs text-muted-foreground">AI Sorgusu</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-purple-600">{improvedData.llmOptimizations?.featuredSnippetTargets?.length || 0}</div>
+                      <div className="text-xs text-muted-foreground">Snippet</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-purple-600">{improvedData.llmOptimizations?.speakableContent?.length || 0}</div>
+                      <div className="text-xs text-muted-foreground">Speakable</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="content" className="mt-0">
@@ -170,7 +249,7 @@ export function SEOComparisonModal({
                   İçindekiler (TOC)
                 </h3>
                 <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                  {improvedData.toc.map((item, i) => (
+                  {improvedData.toc?.map((item, i) => (
                     <div 
                       key={i} 
                       className="text-sm"
@@ -183,7 +262,7 @@ export function SEOComparisonModal({
               </div>
 
               {/* Tables */}
-              {improvedData.tables.length > 0 && (
+              {improvedData.tables && improvedData.tables.length > 0 && (
                 <div className="space-y-3">
                   <h3 className="font-semibold flex items-center gap-2">
                     <Table2 className="h-4 w-4" />
@@ -199,7 +278,7 @@ export function SEOComparisonModal({
               )}
 
               {/* Checklists */}
-              {improvedData.checklists.length > 0 && (
+              {improvedData.checklists && improvedData.checklists.length > 0 && (
                 <div className="space-y-3">
                   <h3 className="font-semibold flex items-center gap-2">
                     <ListChecks className="h-4 w-4" />
@@ -227,9 +306,9 @@ export function SEOComparisonModal({
             <TabsContent value="faq" className="space-y-4 mt-0">
               <div className="flex items-center gap-2 mb-4">
                 <HelpCircle className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">Sıkça Sorulan Sorular ({improvedData.faqs.length})</h3>
+                <h3 className="font-semibold">Sıkça Sorulan Sorular ({improvedData.faqs?.length || 0})</h3>
               </div>
-              {improvedData.faqs.map((faq, i) => (
+              {improvedData.faqs?.map((faq, i) => (
                 <div key={i} className="p-4 bg-muted/50 rounded-lg space-y-2">
                   <h4 className="font-medium text-primary">{faq.q}</h4>
                   <p className="text-sm text-muted-foreground">{faq.a}</p>
@@ -240,9 +319,9 @@ export function SEOComparisonModal({
             <TabsContent value="links" className="space-y-4 mt-0">
               <div className="flex items-center gap-2 mb-4">
                 <Link2 className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">İç Link Önerileri ({improvedData.internalLinkSuggestions.length})</h3>
+                <h3 className="font-semibold">İç Link Önerileri ({improvedData.internalLinkSuggestions?.length || 0})</h3>
               </div>
-              {improvedData.internalLinkSuggestions.length === 0 ? (
+              {!improvedData.internalLinkSuggestions || improvedData.internalLinkSuggestions.length === 0 ? (
                 <p className="text-sm text-muted-foreground">İçerikte ilgili şehir veya rota bulunamadı.</p>
               ) : (
                 improvedData.internalLinkSuggestions.map((link, i) => (
@@ -257,18 +336,238 @@ export function SEOComparisonModal({
                 ))
               )}
             </TabsContent>
+
+            <TabsContent value="llm" className="space-y-6 mt-0">
+              {!hasLLMOptimizations ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>LLM optimizasyonları bulunamadı.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Entity Markup */}
+                  {improvedData.llmOptimizations?.entityMarkup && improvedData.llmOptimizations.entityMarkup.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-yellow-500" />
+                        Entity Markup ({improvedData.llmOptimizations.entityMarkup.length})
+                      </h3>
+                      <div className="grid gap-2">
+                        {improvedData.llmOptimizations.entityMarkup.map((entity, i) => (
+                          <div key={i} className="p-3 bg-muted/50 rounded-lg flex items-start gap-3">
+                            <Badge variant="secondary" className="shrink-0">{entity.type}</Badge>
+                            <div>
+                              <span className="font-medium">{entity.entity}</span>
+                              <p className="text-sm text-muted-foreground">{entity.description}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Conversational Queries */}
+                  {improvedData.llmOptimizations?.conversationalQueries && improvedData.llmOptimizations.conversationalQueries.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <MessageCircle className="h-4 w-4 text-blue-500" />
+                        AI Asistan Sorguları ({improvedData.llmOptimizations.conversationalQueries.length})
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Bu içerik, aşağıdaki doğal dil sorularına cevap verebilir:
+                      </p>
+                      <div className="grid gap-2">
+                        {improvedData.llmOptimizations.conversationalQueries.map((query, i) => (
+                          <div key={i} className="p-3 bg-blue-500/10 rounded-lg text-sm border-l-4 border-blue-500">
+                            "{query}"
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Featured Snippet Targets */}
+                  {improvedData.llmOptimizations?.featuredSnippetTargets && improvedData.llmOptimizations.featuredSnippetTargets.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-orange-500" />
+                        Featured Snippet Hedefleri ({improvedData.llmOptimizations.featuredSnippetTargets.length})
+                      </h3>
+                      <div className="grid gap-3">
+                        {improvedData.llmOptimizations.featuredSnippetTargets.map((snippet, i) => (
+                          <div key={i} className="p-4 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                            <div className="font-medium text-orange-700 dark:text-orange-300 mb-2">
+                              Q: {snippet.query}
+                            </div>
+                            <div className="text-sm">
+                              A: {snippet.answer}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Speakable Content */}
+                  {improvedData.llmOptimizations?.speakableContent && improvedData.llmOptimizations.speakableContent.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        🎙️ Sesli İçerik (Speakable) ({improvedData.llmOptimizations.speakableContent.length})
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Bu paragraflar sesli asistanlar ve TTS için optimize edildi:
+                      </p>
+                      <div className="grid gap-2">
+                        {improvedData.llmOptimizations.speakableContent.map((content, i) => (
+                          <div key={i} className="p-3 bg-green-500/10 rounded-lg text-sm border-l-4 border-green-500">
+                            {content}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Semantic Sections */}
+                  {improvedData.llmOptimizations?.semanticSections && improvedData.llmOptimizations.semanticSections.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        📊 Semantik Bölümler ({improvedData.llmOptimizations.semanticSections.length})
+                      </h3>
+                      <div className="grid gap-2">
+                        {improvedData.llmOptimizations.semanticSections.map((section, i) => (
+                          <div key={i} className="p-3 bg-muted/50 rounded-lg">
+                            <div className="flex items-center gap-2 mb-1">
+                              <code className="text-xs bg-primary/10 px-2 py-0.5 rounded">#{section.id}</code>
+                              <Badge variant="outline">{section.purpose}</Badge>
+                            </div>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {section.keyTopics.map((topic, j) => (
+                                <Badge key={j} variant="secondary" className="text-xs">{topic}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="images" className="space-y-6 mt-0">
+              {!hasImageSuggestions ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Image className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Görsel önerisi bulunamadı.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Image className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold">AI Görsel Önerileri ({improvedData.imageSuggestions?.length || 0})</h3>
+                  </div>
+
+                  {/* Generated Images (if any) */}
+                  {improvedData.generatedImages && improvedData.generatedImages.length > 0 && (
+                    <div className="space-y-3 mb-6">
+                      <h4 className="font-medium text-green-600 flex items-center gap-2">
+                        <Check className="h-4 w-4" />
+                        Oluşturulan Görseller
+                      </h4>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {improvedData.generatedImages.map((img, i) => (
+                          <div key={i} className="border rounded-lg overflow-hidden">
+                            <img 
+                              src={img.imageUrl} 
+                              alt={img.altText}
+                              className="w-full h-48 object-cover"
+                            />
+                            <div className="p-3">
+                              <p className="text-sm font-medium">{img.altText}</p>
+                              {img.caption && (
+                                <p className="text-xs text-muted-foreground mt-1">{img.caption}</p>
+                              )}
+                              <code className="text-xs bg-muted px-2 py-0.5 rounded mt-2 inline-block">
+                                {img.position}
+                              </code>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Image Suggestions */}
+                  <div className="grid gap-4">
+                    {improvedData.imageSuggestions?.map((suggestion, i) => (
+                      <div key={i} className="p-4 bg-muted/50 rounded-lg space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{suggestion.purpose}</Badge>
+                            <code className="text-xs bg-primary/10 px-2 py-0.5 rounded">{suggestion.position}</code>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div>
+                            <span className="text-xs font-medium text-muted-foreground">AI Prompt:</span>
+                            <p className="text-sm italic bg-background/50 p-2 rounded mt-1">{suggestion.prompt}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs font-medium text-muted-foreground">Alt Text:</span>
+                            <p className="text-sm">{suggestion.altText}</p>
+                          </div>
+                          {suggestion.caption && (
+                            <div>
+                              <span className="text-xs font-medium text-muted-foreground">Başlık:</span>
+                              <p className="text-sm">{suggestion.caption}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </TabsContent>
           </ScrollArea>
         </Tabs>
 
-        <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose}>
-            <X className="h-4 w-4 mr-2" />
-            İptal
-          </Button>
-          <Button onClick={() => onApply(improvedData)} className="gradient-primary">
-            <Check className="h-4 w-4 mr-2" />
-            Değişiklikleri Uygula
-          </Button>
+        <DialogFooter className="mt-4 flex-col sm:flex-row gap-4">
+          {hasImageSuggestions && (
+            <div className="flex items-center gap-2 mr-auto">
+              <Switch
+                id="generate-images"
+                checked={shouldGenerateImages}
+                onCheckedChange={setShouldGenerateImages}
+              />
+              <Label htmlFor="generate-images" className="text-sm cursor-pointer">
+                Görselleri AI ile oluştur
+              </Label>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onClose} disabled={isGeneratingImages}>
+              <X className="h-4 w-4 mr-2" />
+              İptal
+            </Button>
+            <Button 
+              onClick={() => onApply(improvedData, shouldGenerateImages)} 
+              className="gradient-primary"
+              disabled={isGeneratingImages}
+            >
+              {isGeneratingImages ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Görseller Oluşturuluyor...
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Değişiklikleri Uygula
+                </>
+              )}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
