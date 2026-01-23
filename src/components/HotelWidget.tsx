@@ -10,11 +10,10 @@ interface HotelWidgetProps {
   className?: string;
 }
 
-// Travelpayouts Partner ID for Booking.com (Hotellook discontinued Oct 2025)
-const BOOKING_AID = "2311236";
-const TRAVELPAYOUTS_MARKER = "261144";
+// Travelpayouts Agoda Affiliate CID
+const AGODA_CID = "1844104";
 
-// City name mappings for Booking.com URLs
+// City name mappings for Agoda URLs
 const cityMappings: Record<string, { englishName: string }> = {
   'berlin': { englishName: 'Berlin' },
   'londra': { englishName: 'London' },
@@ -47,11 +46,11 @@ const cityMappings: Record<string, { englishName: string }> = {
   'bodrum': { englishName: 'Bodrum' },
 };
 
-function getBookingUrl(citySlug: string, cityName: string): string {
+function getAgodaUrl(citySlug: string, cityName: string): string {
   const mapping = cityMappings[citySlug.toLowerCase()];
   const destination = mapping?.englishName || cityName;
   
-  return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}&aid=${BOOKING_AID}&label=woonomad-${TRAVELPAYOUTS_MARKER}`;
+  return `https://www.agoda.com/search?city=${encodeURIComponent(destination)}&rooms=1&adults=2&cid=${AGODA_CID}`;
 }
 
 // Sample featured hotels for widget display
@@ -62,12 +61,12 @@ const featuredHotels = [
 ];
 
 export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className }: HotelWidgetProps) {
-  const bookingUrl = getBookingUrl(citySlug, cityName);
+  const agodaUrl = getAgodaUrl(citySlug, cityName);
 
   if (variant === 'compact') {
     return (
       <a
-        href={bookingUrl}
+        href={agodaUrl}
         target="_blank"
         rel="noopener noreferrer sponsored"
         className={cn(
@@ -80,7 +79,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-medium text-sm truncate">{cityName} Otelleri</div>
-          <div className="text-xs text-muted-foreground">Hotellook'ta incele</div>
+          <div className="text-xs text-muted-foreground">Agoda'da incele</div>
         </div>
         <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
       </a>
@@ -114,7 +113,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         </div>
 
         <a
-          href={bookingUrl}
+          href={agodaUrl}
           target="_blank"
           rel="noopener noreferrer sponsored"
         >
@@ -137,7 +136,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         </div>
         <div>
           <h3 className="font-display font-semibold text-sm">{cityName} Otelleri</h3>
-          <p className="text-xs text-muted-foreground">Booking.com Partner</p>
+          <p className="text-xs text-muted-foreground">Agoda Partner</p>
         </div>
       </div>
       
@@ -157,7 +156,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
       </div>
 
       <a
-        href={bookingUrl}
+        href={agodaUrl}
         target="_blank"
         rel="noopener noreferrer sponsored"
       >

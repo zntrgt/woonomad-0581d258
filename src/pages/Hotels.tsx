@@ -11,38 +11,36 @@ import { HotelSearchForm } from '@/components/HotelSearchForm';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 
-// Travelpayouts Partner ID for Booking.com (Hotellook discontinued Oct 2025)
-const BOOKING_AID = "2311236";
-const TRAVELPAYOUTS_MARKER = "261144";
+// Travelpayouts Agoda Affiliate CID
+const AGODA_CID = "1844104";
 
-// City mappings for Booking.com URLs
-const cityBookingIds: Record<string, { dest_id: string; en: string }> = {
-  'berlin': { dest_id: '-1746443', en: 'Berlin' },
-  'paris': { dest_id: '-1456928', en: 'Paris' },
-  'londra': { dest_id: '-2601889', en: 'London' },
-  'amsterdam': { dest_id: '-2140479', en: 'Amsterdam' },
-  'barcelona': { dest_id: '-372490', en: 'Barcelona' },
-  'roma': { dest_id: '-126693', en: 'Rome' },
-  'dubai': { dest_id: '-782831', en: 'Dubai' },
-  'tokyo': { dest_id: '-246227', en: 'Tokyo' },
-  'prag': { dest_id: '-553173', en: 'Prague' },
-  'viyana': { dest_id: '-1995499', en: 'Vienna' },
-  'bangkok': { dest_id: '-3414440', en: 'Bangkok' },
-  'singapur': { dest_id: '-73635', en: 'Singapore' },
-  'istanbul': { dest_id: '-755070', en: 'Istanbul' },
-  'antalya': { dest_id: '-755824', en: 'Antalya' },
-  'izmir': { dest_id: '-749828', en: 'Izmir' },
-  'bodrum': { dest_id: '-754498', en: 'Bodrum' },
-  'milano': { dest_id: '-121726', en: 'Milan' },
-  'lizbon': { dest_id: '-2167973', en: 'Lisbon' },
-  'atina': { dest_id: '-814876', en: 'Athens' },
-  'budapeste': { dest_id: '-850553', en: 'Budapest' },
+// City name mappings for Agoda URLs
+const cityEnglishNames: Record<string, string> = {
+  'berlin': 'Berlin',
+  'paris': 'Paris',
+  'londra': 'London',
+  'amsterdam': 'Amsterdam',
+  'barcelona': 'Barcelona',
+  'roma': 'Rome',
+  'dubai': 'Dubai',
+  'tokyo': 'Tokyo',
+  'prag': 'Prague',
+  'viyana': 'Vienna',
+  'bangkok': 'Bangkok',
+  'singapur': 'Singapore',
+  'istanbul': 'Istanbul',
+  'antalya': 'Antalya',
+  'izmir': 'Izmir',
+  'bodrum': 'Bodrum',
+  'milano': 'Milan',
+  'lizbon': 'Lisbon',
+  'atina': 'Athens',
+  'budapeste': 'Budapest',
 };
 
-const getBookingUrl = (citySlug: string, cityName: string) => {
-  const mapping = cityBookingIds[citySlug];
-  const destination = mapping?.en || cityName;
-  return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}&aid=${BOOKING_AID}&label=woonomad-${TRAVELPAYOUTS_MARKER}`;
+const getAgodaUrl = (citySlug: string, cityName: string) => {
+  const destination = cityEnglishNames[citySlug] || cityName;
+  return `https://www.agoda.com/search?city=${encodeURIComponent(destination)}&rooms=1&adults=2&cid=${AGODA_CID}`;
 };
 
 const Hotels = () => {
@@ -121,7 +119,7 @@ const Hotels = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {cities.map((city) => {
                 const flag = getCountryFlag(city.countryCode);
-                const bookingUrl = getBookingUrl(city.slug, city.nameEn || city.name);
+                const agodaUrl = getAgodaUrl(city.slug, city.nameEn || city.name);
                 
                 return (
                   <Card key={city.slug} variant="elevated" className="group overflow-hidden">
@@ -163,7 +161,7 @@ const Hotels = () => {
                             <ArrowRight className="w-4 h-4" />
                           </Button>
                         </Link>
-                        <a href={bookingUrl} target="_blank" rel="noopener noreferrer sponsored">
+                        <a href={agodaUrl} target="_blank" rel="noopener noreferrer sponsored">
                           <Button className="gradient-primary gap-2">
                             <ExternalLink className="w-4 h-4" />
                           </Button>
