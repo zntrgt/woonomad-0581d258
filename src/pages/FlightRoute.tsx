@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
   Plane, MapPin, Clock, Calendar, ArrowRight, ArrowLeft,
@@ -14,12 +14,14 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { SearchForm, SearchFormRef } from '@/components/SearchForm';
 import { FlightCard } from '@/components/FlightCard';
 import { SearchStatus, FlightResultsSkeleton, StickyScrollButton } from '@/components/SearchStatus';
+import { PriceTrendChart } from '@/components/PriceTrendChart';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useSettings } from '@/contexts/SettingsContext';
 import { getRouteBySlug, generateFlightRoutes, FlightRoute as FlightRouteType } from '@/lib/flightRoutes';
 import { SearchParams, Airport } from '@/lib/types';
+import { format, addMonths, startOfMonth } from 'date-fns';
 import {
   Accordion,
   AccordionContent,
@@ -36,6 +38,14 @@ export default function FlightRoute() {
   const { flights, isLoading, searchState, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { formatPrice } = useSettings();
+  
+  // State for price trend chart
+  const [searchedOrigin, setSearchedOrigin] = useState<string | null>(null);
+  const [searchedDestination, setSearchedDestination] = useState<string | null>(null);
+  const [searchedMonth, setSearchedMonth] = useState<string | null>(null);
+
+  // Calculate current month for default price trend
+  const currentMonth = useMemo(() => format(startOfMonth(new Date()), 'yyyy-MM'), []);
 
   // Auto-populate search form
   useEffect(() => {
@@ -69,6 +79,11 @@ export default function FlightRoute() {
   }, [searchState, scrollToResults]);
 
   const handleSearch = (params: SearchParams) => {
+    // Store search parameters for price trend chart
+    setSearchedOrigin(params.origin);
+    setSearchedDestination(params.destination);
+    setSearchedMonth(params.departDate.substring(0, 7)); // Extract YYYY-MM
+    
     searchFlights(params);
   };
 
@@ -363,6 +378,16 @@ export default function FlightRoute() {
           {/* Flight Results */}
           <div ref={resultsRef}>
             {isLoading && <FlightResultsSkeleton count={3} />}
+            
+            {/* Price Trend Chart - Shows after search */}
+            {(searchedOrigin && searchedDestination && searchedMonth) && (
+              <PriceTrendChart
+                origin={searchedOrigin}
+                destination={searchedDestination}
+                month={searchedMonth}
+                className="mb-6"
+              />
+            )}
             
             {flights.length > 0 && (
               <section className="mb-8">

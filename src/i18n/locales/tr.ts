@@ -513,6 +513,28 @@ const tr = {
     yourNationality: 'Vatandaşlığınız',
     yourLocation: 'Bulunduğunuz Konum',
   },
+
+  // Install / PWA
+  install: {
+    title: 'Uygulamayı Yükle',
+    metaDesc: 'WooNomad uygulamasını telefonunuza yükleyin ve en ucuz uçak biletlerini anında bulun.',
+    heroTitle: 'WooNomad\'ı Telefonunuza Ekleyin',
+    heroDesc: 'Uygulamamızı ana ekranınıza ekleyerek en ucuz uçak biletlerine anında erişin. App Store veya Play Store indirmesi gerektirmez!',
+    alreadyInstalled: 'Uygulama Zaten Yüklü!',
+    alreadyInstalledDesc: 'WooNomad ana ekranınızdan erişime hazır.',
+    installNow: 'Hemen Yükle',
+    noAppStore: 'App Store veya Play Store gerektirmez',
+    whyInstall: 'Neden Yüklemelisiniz?',
+    feature1: 'Anında Erişim',
+    feature1Desc: 'Ana ekrandan tek tıkla açın',
+    feature2: 'Çevrimdışı Destek',
+    feature2Desc: 'İnternet olmadan da çalışır',
+    feature3: 'Bildirimler',
+    feature3Desc: 'Fiyat düşüşlerinden haberdar olun',
+    feature4: 'Hızlı Yükleme',
+    feature4Desc: 'Tarayıcıdan 2x daha hızlı',
+    pwaInfo: 'WooNomad bir Progressive Web App (PWA)\'dır. Tarayıcınızdan doğrudan yükleyebilir, uygulama mağazası indirmesi gerektirmeden gerçek bir uygulama deneyimi yaşayabilirsiniz.',
+  },
 };
 
 export default tr;
