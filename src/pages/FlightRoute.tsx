@@ -20,7 +20,7 @@ import { AdBanner, AdInArticle } from '@/components/AdSense';
 import { useFlightSearch } from '@/hooks/useFlightSearch';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useSettings } from '@/contexts/SettingsContext';
-import { getRouteBySlug, generateFlightRoutes, FlightRoute as FlightRouteType } from '@/lib/flightRoutes';
+import { getRouteBySlug, generateFlightRoutes, FlightRoute as FlightRouteType, ROUTE_REDIRECTS } from '@/lib/flightRoutes';
 import { SearchParams, Airport } from '@/lib/types';
 import { format, addMonths, startOfMonth } from 'date-fns';
 import {
@@ -35,6 +35,14 @@ export default function FlightRoute() {
   const navigate = useNavigate();
   const searchFormRef = useRef<SearchFormRef>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  
+  // Handle old malformed slugs - redirect to correct URL
+  useEffect(() => {
+    if (slug && ROUTE_REDIRECTS[slug]) {
+      navigate(`/ucus/${ROUTE_REDIRECTS[slug]}`, { replace: true });
+    }
+  }, [slug, navigate]);
+  
   const route = slug ? getRouteBySlug(slug) : undefined;
   const { flights, isLoading, searchState, searchFlights } = useFlightSearch();
   const { isFavorite, toggleFavorite } = useFavorites();
