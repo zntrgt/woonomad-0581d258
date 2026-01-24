@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search, Globe } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search, Globe, ScanSearch } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -100,6 +100,7 @@ const BlogAdmin = () => {
   const [listQuery, setListQuery] = useState("");
   const [sitemapUpdating, setSitemapUpdating] = useState(false);
   const [showBatchTranslation, setShowBatchTranslation] = useState(false);
+  const [generatingAltText, setGeneratingAltText] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -822,6 +823,120 @@ const BlogAdmin = () => {
     }
   };
 
+  // Generate alt text for images in content
+  const handleGenerateAltText = async () => {
+    // Find all images without proper alt text in markdown
+    // Pattern: ![](url) or ![alt](url) where alt is empty or generic
+    const imageRegex = /!\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
+    const images: Array<{ fullMatch: string; altText: string; url: string }> = [];
+    let match;
+    
+    while ((match = imageRegex.exec(formData.content)) !== null) {
+      const altText = match[1].trim();
+      const url = match[2];
+      
+      // Check if alt text is missing or generic
+      const needsAltText = !altText || 
+        altText.length < 10 || 
+        /^(image|img|foto|görsel|resim|\d+)$/i.test(altText);
+      
+      if (needsAltText) {
+        images.push({ fullMatch: match[0], altText, url });
+      }
+    }
+
+    if (images.length === 0) {
+      toast({ title: "Bilgi", description: "İçerikte alt text'i eksik görsel bulunamadı." });
+      return;
+    }
+
+    setGeneratingAltText(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+      if (!accessToken) {
+        toast({ title: "Hata", description: "Oturum süresi dolmuş.", variant: "destructive" });
+        return;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-alt-text`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          images: images.map(img => ({
+            imageUrl: img.url,
+            context: formData.title
+          })),
+          blogContext: `${formData.title} - ${formData.category || 'travel'} - ${formData.city || 'destination'}`
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        if (response.status === 429) {
+          throw new Error('Rate limit aşıldı. Lütfen biraz bekleyin.');
+        }
+        if (response.status === 402) {
+          throw new Error('Kredi yetersiz. Lütfen kredi ekleyin.');
+        }
+        throw new Error(err.error || 'Alt text oluşturma hatası');
+      }
+
+      const result = await response.json();
+      
+      if (result.results) {
+        let updatedContent = formData.content;
+        let updatedCount = 0;
+
+        for (let i = 0; i < result.results.length; i++) {
+          const res = result.results[i];
+          const original = images[i];
+          
+          if (res.success && res.altText) {
+            // Replace the old image markdown with new alt text
+            const newMarkdown = `![${res.altText}](${original.url})`;
+            updatedContent = updatedContent.replace(original.fullMatch, newMarkdown);
+            updatedCount++;
+          }
+        }
+
+        setFormData(prev => ({ ...prev, content: updatedContent }));
+        toast({ 
+          title: "Alt Text Oluşturuldu", 
+          description: `${updatedCount}/${images.length} görsel için SEO uyumlu alt text eklendi.` 
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: error instanceof Error ? error.message : "Alt text oluşturma hatası",
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingAltText(false);
+    }
+  };
+
+  // Count images needing alt text
+  const countImagesNeedingAltText = (): number => {
+    const imageRegex = /!\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
+    let count = 0;
+    let match;
+    
+    while ((match = imageRegex.exec(formData.content)) !== null) {
+      const altText = match[1].trim();
+      const needsAltText = !altText || 
+        altText.length < 10 || 
+        /^(image|img|foto|görsel|resim|\d+)$/i.test(altText);
+      if (needsAltText) count++;
+    }
+    return count;
+  };
+
   // Insert markdown snippets
   const insertSnippet = (snippet: string) => {
     setFormData(prev => ({
@@ -1198,6 +1313,24 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                         <Wand2 className="w-4 h-4 mr-1" />
                         İyileştir
                       </Button>
+                      {countImagesNeedingAltText() > 0 && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={handleGenerateAltText}
+                          disabled={generatingAltText}
+                          title={`${countImagesNeedingAltText()} görsel için alt text oluştur`}
+                          className="border-primary text-primary hover:bg-primary/10"
+                        >
+                          {generatingAltText ? (
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          ) : (
+                            <ScanSearch className="w-4 h-4 mr-1" />
+                          )}
+                          Alt Text ({countImagesNeedingAltText()})
+                        </Button>
+                      )}
                       <Button 
                         type="button" 
                         size="sm" 
