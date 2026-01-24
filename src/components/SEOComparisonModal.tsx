@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Check, X, ArrowRight, FileText, Table2, ListChecks, HelpCircle, Link2, Brain, Image, MessageCircle, Zap, Loader2 } from 'lucide-react';
+import { Check, X, ArrowRight, FileText, Table2, ListChecks, HelpCircle, Link2, Brain, Image, MessageCircle, Zap, Loader2, LinkIcon } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageSuggestion {
   position: string;
@@ -68,10 +70,91 @@ export function SEOComparisonModal({
   improvedData,
   isGeneratingImages = false,
 }: SEOComparisonModalProps) {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [shouldGenerateImages, setShouldGenerateImages] = useState(true);
+  const [shouldInsertLinks, setShouldInsertLinks] = useState(true);
+  const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
+  const [linksInserted, setLinksInserted] = useState(false);
+
+  // Initialize selected links when modal opens
+  const initializeSelectedLinks = useCallback(() => {
+    if (improvedData?.internalLinkSuggestions) {
+      setSelectedLinks(improvedData.internalLinkSuggestions.map((_, i) => i));
+    }
+  }, [improvedData]);
+
+  // Reset when modal opens
+  if (improvedData && selectedLinks.length === 0 && improvedData.internalLinkSuggestions?.length > 0) {
+    initializeSelectedLinks();
+  }
 
   if (!improvedData) return null;
+
+  const toggleLinkSelection = (index: number) => {
+    setSelectedLinks(prev =>
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  };
+
+  const selectAllLinks = () => {
+    if (improvedData.internalLinkSuggestions) {
+      if (selectedLinks.length === improvedData.internalLinkSuggestions.length) {
+        setSelectedLinks([]);
+      } else {
+        setSelectedLinks(improvedData.internalLinkSuggestions.map((_, i) => i));
+      }
+    }
+  };
+
+  // Function to insert internal links into content
+  const insertInternalLinks = (content: string, links: Array<{ anchor: string; href: string }>) => {
+    let updatedContent = content;
+    let insertedCount = 0;
+
+    for (const link of links) {
+      // Escape special regex characters in anchor text
+      const escapedAnchor = link.anchor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      // Find the anchor text that's not already a link
+      // Negative lookbehind for [ and negative lookahead for ](
+      const regex = new RegExp(`(?<!\\[)\\b(${escapedAnchor})\\b(?!\\]\\()`, 'gi');
+      
+      // Only replace the first occurrence
+      let replaced = false;
+      updatedContent = updatedContent.replace(regex, (match) => {
+        if (!replaced) {
+          replaced = true;
+          insertedCount++;
+          return `[${match}](${link.href})`;
+        }
+        return match;
+      });
+    }
+
+    return { content: updatedContent, insertedCount };
+  };
+
+  // Modified apply function to include link insertion
+  const handleApply = () => {
+    let modifiedResult = { ...improvedData };
+
+    // Insert internal links if enabled
+    if (shouldInsertLinks && selectedLinks.length > 0 && improvedData.internalLinkSuggestions) {
+      const linksToInsert = selectedLinks.map(i => improvedData.internalLinkSuggestions![i]);
+      const { content: updatedContent, insertedCount } = insertInternalLinks(modifiedResult.content, linksToInsert);
+      modifiedResult.content = updatedContent;
+      
+      if (insertedCount > 0) {
+        toast({
+          title: 'İç Linkler Eklendi',
+          description: `${insertedCount} iç link içeriğe eklendi.`,
+        });
+      }
+    }
+
+    onApply(modifiedResult, shouldGenerateImages);
+  };
 
   const renderDiff = (current: string, improved: string, label: string) => (
     <div className="grid md:grid-cols-2 gap-4">
@@ -317,23 +400,55 @@ export function SEOComparisonModal({
             </TabsContent>
 
             <TabsContent value="links" className="space-y-4 mt-0">
-              <div className="flex items-center gap-2 mb-4">
-                <Link2 className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">İç Link Önerileri ({improvedData.internalLinkSuggestions?.length || 0})</h3>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Link2 className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold">İç Link Önerileri ({improvedData.internalLinkSuggestions?.length || 0})</h3>
+                </div>
+                {improvedData.internalLinkSuggestions && improvedData.internalLinkSuggestions.length > 0 && (
+                  <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="sm" onClick={selectAllLinks}>
+                      {selectedLinks.length === improvedData.internalLinkSuggestions.length ? 'Seçimi Kaldır' : 'Tümünü Seç'}
+                    </Button>
+                    <Badge variant={selectedLinks.length > 0 ? 'default' : 'outline'}>
+                      {selectedLinks.length} seçili
+                    </Badge>
+                  </div>
+                )}
               </div>
               {!improvedData.internalLinkSuggestions || improvedData.internalLinkSuggestions.length === 0 ? (
                 <p className="text-sm text-muted-foreground">İçerikte ilgili şehir veya rota bulunamadı.</p>
               ) : (
-                improvedData.internalLinkSuggestions.map((link, i) => (
-                  <div key={i} className="p-4 bg-muted/50 rounded-lg space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{link.anchor}</Badge>
-                      <ArrowRight className="h-4 w-4" />
-                      <code className="text-xs bg-primary/10 px-2 py-1 rounded">{link.href}</code>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{link.reason}</p>
+                <div className="space-y-3">
+                  <div className="p-3 bg-primary/5 rounded-lg border border-primary/20 flex items-center gap-3">
+                    <LinkIcon className="h-4 w-4 text-primary" />
+                    <p className="text-sm">
+                      Seçili linkleri içeriğe otomatik olarak eklemek için "Değişiklikleri Uygula" butonuna tıklayın.
+                    </p>
                   </div>
-                ))
+                  {improvedData.internalLinkSuggestions.map((link, i) => (
+                    <div 
+                      key={i} 
+                      className={`p-4 rounded-lg space-y-2 cursor-pointer transition-colors ${
+                        selectedLinks.includes(i) 
+                          ? 'bg-primary/10 border-2 border-primary/30' 
+                          : 'bg-muted/50 border-2 border-transparent hover:border-muted'
+                      }`}
+                      onClick={() => toggleLinkSelection(i)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={selectedLinks.includes(i)}
+                          onCheckedChange={() => toggleLinkSelection(i)}
+                        />
+                        <Badge variant="outline">{link.anchor}</Badge>
+                        <ArrowRight className="h-4 w-4" />
+                        <code className="text-xs bg-primary/10 px-2 py-1 rounded">{link.href}</code>
+                      </div>
+                      <p className="text-sm text-muted-foreground ml-7">{link.reason}</p>
+                    </div>
+                  ))}
+                </div>
               )}
             </TabsContent>
 
@@ -533,25 +648,39 @@ export function SEOComparisonModal({
         </Tabs>
 
         <DialogFooter className="mt-4 flex-col sm:flex-row gap-4">
-          {hasImageSuggestions && (
-            <div className="flex items-center gap-2 mr-auto">
-              <Switch
-                id="generate-images"
-                checked={shouldGenerateImages}
-                onCheckedChange={setShouldGenerateImages}
-              />
-              <Label htmlFor="generate-images" className="text-sm cursor-pointer">
-                Görselleri AI ile oluştur
-              </Label>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-4 mr-auto">
+            {hasImageSuggestions && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="generate-images"
+                  checked={shouldGenerateImages}
+                  onCheckedChange={setShouldGenerateImages}
+                />
+                <Label htmlFor="generate-images" className="text-sm cursor-pointer">
+                  Görselleri AI ile oluştur
+                </Label>
+              </div>
+            )}
+            {improvedData.internalLinkSuggestions && improvedData.internalLinkSuggestions.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="insert-links"
+                  checked={shouldInsertLinks}
+                  onCheckedChange={setShouldInsertLinks}
+                />
+                <Label htmlFor="insert-links" className="text-sm cursor-pointer">
+                  İç linkleri ekle ({selectedLinks.length})
+                </Label>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose} disabled={isGeneratingImages}>
               <X className="h-4 w-4 mr-2" />
               İptal
             </Button>
             <Button 
-              onClick={() => onApply(improvedData, shouldGenerateImages)} 
+              onClick={handleApply} 
               className="gradient-primary"
               disabled={isGeneratingImages}
             >
