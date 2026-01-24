@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.generate-deep-work-rota]
 verify_jwt = false
+
+[functions.generate-alt-text]
+verify_jwt = false
