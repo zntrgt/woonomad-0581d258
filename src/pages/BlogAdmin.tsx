@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { SEOScoreWidget } from "@/components/SEOScoreWidget";
 import { SEOComparisonModal } from "@/components/SEOComparisonModal";
+import { BatchTranslationModal } from "@/components/BatchTranslationModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search } from "lucide-react";
+import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -98,6 +99,7 @@ const BlogAdmin = () => {
   const [importingPost, setImportingPost] = useState<string | null>(null);
   const [listQuery, setListQuery] = useState("");
   const [sitemapUpdating, setSitemapUpdating] = useState(false);
+  const [showBatchTranslation, setShowBatchTranslation] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -967,12 +969,22 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
       <main className="container mx-auto px-4 py-8 mb-20 md:mb-0">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Blog Yönetimi</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {!isCreating && (
-              <Button onClick={() => setIsCreating(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Yeni Yazı
-              </Button>
+              <>
+                <Button onClick={() => setIsCreating(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Yeni Yazı
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowBatchTranslation(true)}
+                  disabled={posts.length === 0}
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  Toplu Çeviri
+                </Button>
+              </>
             )}
             <Button
               variant="outline"
@@ -1489,6 +1501,19 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
         }}
         improvedData={seoResult}
         isGeneratingImages={generatingSeoImages}
+      />
+
+      {/* Batch Translation Modal */}
+      <BatchTranslationModal
+        isOpen={showBatchTranslation}
+        onClose={() => setShowBatchTranslation(false)}
+        posts={posts.filter(p => p.published).map(p => ({
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          excerpt: p.excerpt,
+          content: p.content,
+        }))}
       />
     </div>
   );
