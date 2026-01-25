@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CityHotelsDynamicContent } from '@/components/CityHotelsDynamicContent';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { Hotel, ExternalLink, Calendar, Users, MapPin, Star, Building, CreditCard } from 'lucide-react';
@@ -18,20 +19,59 @@ import { useTranslation } from 'react-i18next';
 // Travelpayouts Agoda Affiliate CID
 const AGODA_CID = "1844104";
 
-// Generate Agoda affiliate URL
-const getAgodaUrl = (cityName: string, checkIn: string, checkOut: string, stars?: number) => {
+// City ID mapping for Agoda (ensures correct search results)
+const cityAgodaMapping: Record<string, { cityId: string; lat?: number; lng?: number }> = {
+  'bali': { cityId: '17193', lat: -8.4095, lng: 115.1889 },
+  'istanbul': { cityId: '18482', lat: 41.0082, lng: 28.9784 },
+  'antalya': { cityId: '17067', lat: 36.8969, lng: 30.7133 },
+  'bangkok': { cityId: '2669', lat: 13.7563, lng: 100.5018 },
+  'tokyo': { cityId: '6046', lat: 35.6762, lng: 139.6503 },
+  'paris': { cityId: '7606', lat: 48.8566, lng: 2.3522 },
+  'london': { cityId: '3356', lat: 51.5074, lng: -0.1278 },
+  'dubai': { cityId: '6621', lat: 25.2048, lng: 55.2708 },
+  'singapore': { cityId: '4064', lat: 1.3521, lng: 103.8198 },
+  'roma': { cityId: '6831', lat: 41.9028, lng: 12.4964 },
+  'barcelona': { cityId: '2268', lat: 41.3851, lng: 2.1734 },
+};
+
+// Generate Agoda affiliate URL with proper destination targeting
+const getAgodaUrl = (citySlug: string, cityName: string, checkIn: string, checkOut: string, options?: { stars?: number; priceSort?: 'asc' | 'desc' }) => {
   const baseUrl = 'https://www.agoda.com/search';
+  const mapping = cityAgodaMapping[citySlug.toLowerCase()];
+  
   const params = new URLSearchParams({
-    city: cityName,
+    city: mapping?.cityId || '',
     checkIn: checkIn,
     checkOut: checkOut,
     rooms: '1',
     adults: '2',
     cid: AGODA_CID,
+    searchType: 'city',
+    selectedproperty: '0',
   });
-  if (stars) {
-    params.append('star', stars.toString());
+  
+  // If no city ID, use destination name
+  if (!mapping?.cityId) {
+    params.delete('city');
+    params.set('destination', cityName);
   }
+  
+  // Add coordinates for better matching
+  if (mapping?.lat && mapping?.lng) {
+    params.set('latitude', mapping.lat.toString());
+    params.set('longitude', mapping.lng.toString());
+  }
+  
+  // Add star filter (only for 3-5 stars)
+  if (options?.stars && options.stars >= 3) {
+    params.set('star', options.stars.toString());
+  }
+  
+  // For budget hotels, sort by price ascending
+  if (options?.priceSort === 'asc') {
+    params.set('sort', 'price');
+  }
+  
   return `${baseUrl}?${params.toString()}`;
 };
 
@@ -48,7 +88,8 @@ const CityHotels = () => {
   
   // Generate Agoda affiliate search URL
   const searchCity = city?.nameEn || city?.name || '';
-  const agodaSearchUrl = getAgodaUrl(searchCity, checkIn, checkOut);
+  const citySlug = city?.slug || '';
+  const agodaSearchUrl = getAgodaUrl(citySlug, searchCity, checkIn, checkOut);
   
   if (!city) {
     return (
@@ -201,7 +242,7 @@ const CityHotels = () => {
                       </Button>
                     </a>
                     <a 
-                      href={getAgodaUrl(searchCity, checkIn, checkOut, 5)}
+                      href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: 5 })}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                     >
@@ -229,14 +270,14 @@ const CityHotels = () => {
             <h2 className="text-xl font-display font-bold mb-4">{t('hotels.hotelsByCategory', 'Kategoriye Göre Oteller')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { stars: 5, label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400' },
-                { stars: 4, label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400' },
-                { stars: 3, label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400' },
-                { stars: 0, label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400' },
+                { stars: 5, label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400', priceSort: undefined },
+                { stars: 4, label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400', priceSort: undefined },
+                { stars: 3, label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400', priceSort: undefined },
+                { stars: undefined, label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const },
               ].map((category) => (
                 <a 
-                  key={category.stars}
-                  href={category.stars > 0 ? getAgodaUrl(searchCity, checkIn, checkOut, category.stars) : getAgodaUrl(searchCity, checkIn, checkOut)}
+                  key={category.stars ?? 'budget'}
+                  href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: category.stars, priceSort: category.priceSort })}
                   target="_blank"
                   rel="noopener noreferrer sponsored"
                   className="group"
@@ -244,7 +285,7 @@ const CityHotels = () => {
                   <Card className="overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02]">
                     <div className={`bg-gradient-to-br ${category.color} p-4 text-white`}>
                       <div className="flex items-center gap-1 mb-2">
-                        {category.stars > 0 ? (
+                        {category.stars ? (
                           Array.from({ length: category.stars }).map((_, i) => (
                             <Star key={i} className="h-4 w-4 fill-white" />
                           ))
@@ -264,12 +305,23 @@ const CityHotels = () => {
             </div>
           </section>
           
+          {/* Dynamic Weather & Currency Content */}
+          <section className="mb-8">
+            <CityHotelsDynamicContent
+              cityName={city.name}
+              cityNameEn={city.nameEn}
+              currency={city.currency}
+              countryCode={city.countryCode}
+              bestTimeToVisit={city.bestTimeToVisit}
+            />
+          </section>
+          
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
-            <h2 className="text-xl font-display font-bold mb-4">{city.name} {t('hotels.hotelGuide', 'Otel Rehberi')}</h2>
+            <h2 className="text-xl font-display font-bold mb-4">{city.name} {t('hotels.hotelGuide', 'Otel Rehberi')} {new Date().getFullYear()}</h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
-                {city.name}, {city.country} {t('hotels.hotelGuideIntro', "'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. Şehirde her bütçeye uygun konaklama seçenekleri bulunmaktadır.")}
+                {city.name}, {city.country} {t('hotels.hotelGuideIntro', "'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır.")} {new Date().getFullYear()} {t('hotels.yearUpdated', 'yılı için güncel otel fiyatları ve konaklama seçenekleri sizi bekliyor.')}
               </p>
               
               <h3 className="text-xl font-display font-semibold text-foreground mt-6 mb-3">
@@ -281,6 +333,16 @@ const CityHotels = () => {
                 <li>• {t('hotels.tip3', 'Kahvaltı dahil seçenekleri değerlendirin')}</li>
                 <li>• {t('hotels.tip4', 'Hafta içi konaklamalar genellikle daha uygun')}</li>
                 <li>• <strong>{t('hotels.tip5LongStay', '30+ gün kalacaksanız:')}</strong> {t('hotels.tip5Desc', 'Airbnb veya coliving seçenekleri daha ekonomik')}</li>
+              </ul>
+              
+              <h3 className="text-xl font-display font-semibold text-foreground mt-6 mb-3">
+                {t('hotels.whyBook', 'Neden WooNomad ile Otel Aramalısınız?')}
+              </h3>
+              <ul className="space-y-2">
+                <li>• {t('hotels.whyReason1', 'Agoda üzerinden en güncel fiyat karşılaştırması')}</li>
+                <li>• {t('hotels.whyReason2', 'Ücretsiz iptal seçenekleri olan oteller')}</li>
+                <li>• {t('hotels.whyReason3', 'Gerçek misafir yorumları ve puanları')}</li>
+                <li>• {t('hotels.whyReason4', 'En iyi fiyat garantisi')}</li>
               </ul>
             </div>
           </section>
