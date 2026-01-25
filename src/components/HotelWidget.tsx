@@ -46,11 +46,40 @@ const cityMappings: Record<string, { englishName: string }> = {
   'bodrum': { englishName: 'Bodrum' },
 };
 
+// City ID mapping for better Agoda targeting
+const cityAgodaIds: Record<string, string> = {
+  'bali': '17193',
+  'istanbul': '18482',
+  'antalya': '17067',
+  'bangkok': '2669',
+  'tokyo': '6046',
+  'paris': '7606',
+  'londra': '3356',
+  'dubai': '6621',
+  'singapur': '4064',
+  'roma': '6831',
+  'barcelona': '2268',
+};
+
 function getAgodaUrl(citySlug: string, cityName: string): string {
   const mapping = cityMappings[citySlug.toLowerCase()];
   const destination = mapping?.englishName || cityName;
+  const cityId = cityAgodaIds[citySlug.toLowerCase()];
   
-  return `https://www.agoda.com/search?city=${encodeURIComponent(destination)}&rooms=1&adults=2&cid=${AGODA_CID}`;
+  const params = new URLSearchParams({
+    rooms: '1',
+    adults: '2',
+    cid: AGODA_CID,
+    searchType: 'city',
+  });
+  
+  if (cityId) {
+    params.set('city', cityId);
+  } else {
+    params.set('destination', destination);
+  }
+  
+  return `https://www.agoda.com/search?${params.toString()}`;
 }
 
 // Sample featured hotels for widget display

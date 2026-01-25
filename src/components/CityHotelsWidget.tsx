@@ -23,8 +23,27 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
   
   const searchCity = cityNameEn || cityName;
   
-  // Direct Agoda affiliate search link
-  const affiliateLink = `https://www.agoda.com/search?city=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}`;
+  // City ID mapping for better Agoda targeting
+  const cityAgodaIds: Record<string, string> = {
+    'bali': '17193',
+    'istanbul': '18482',
+    'antalya': '17067',
+    'bangkok': '2669',
+    'tokyo': '6046',
+    'paris': '7606',
+    'londra': '3356',
+    'dubai': '6621',
+    'singapur': '4064',
+    'roma': '6831',
+    'barcelona': '2268',
+  };
+  
+  const cityId = cityAgodaIds[citySlug.toLowerCase()];
+  
+  // Direct Agoda affiliate search link with proper targeting
+  const affiliateLink = cityId 
+    ? `https://www.agoda.com/search?city=${cityId}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}&searchType=city`
+    : `https://www.agoda.com/search?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}`;
 
   return (
     <Card>

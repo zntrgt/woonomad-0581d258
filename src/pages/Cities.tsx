@@ -9,6 +9,36 @@ import { Badge } from '@/components/ui/badge';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 
+// Import local city images for better reliability
+import antalyaImg from '@/assets/cities/antalya.jpg';
+import izmirImg from '@/assets/cities/izmir.jpg';
+import bodrumImg from '@/assets/cities/bodrum.jpg';
+import athensImg from '@/assets/cities/athens.jpg';
+import tbilisiImg from '@/assets/cities/tbilisi.jpg';
+import skopjeImg from '@/assets/cities/skopje.jpg';
+import parisImg from '@/assets/cities/paris.jpg';
+import romeImg from '@/assets/cities/rome.jpg';
+import barcelonaImg from '@/assets/cities/barcelona.jpg';
+import florenceImg from '@/assets/cities/florence.jpg';
+
+// Local image mapping with fallback to remote URL
+const localCityImages: Record<string, string> = {
+  'antalya': antalyaImg,
+  'izmir': izmirImg,
+  'bodrum': bodrumImg,
+  'atina': athensImg,
+  'tiflis': tbilisiImg,
+  'uskup': skopjeImg,
+  'paris': parisImg,
+  'roma': romeImg,
+  'barcelona': barcelonaImg,
+  'floransa': florenceImg,
+};
+
+const getCityImage = (citySlug: string, remoteUrl: string): string => {
+  return localCityImages[citySlug] || remoteUrl;
+};
+
 const Cities = () => {
   const cities = getAllCities();
   const currentYear = new Date().getFullYear();
@@ -73,7 +103,7 @@ const Cities = () => {
                   <Card variant="elevated" className="h-full group cursor-pointer overflow-hidden">
                     <div className="card-image-hover aspect-[4/3]">
                       <img 
-                        src={city.image} 
+                        src={getCityImage(city.slug, city.image)} 
                         alt={`${city.name} şehir manzarası`}
                         className="w-full h-full object-cover"
                         loading="lazy"
