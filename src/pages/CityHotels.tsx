@@ -1,12 +1,13 @@
 import { CityHotelsDynamicContent } from '@/components/CityHotelsDynamicContent';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, ExternalLink, Calendar, Users, MapPin, Star, Building, CreditCard } from 'lucide-react';
+import { Hotel, ExternalLink, Calendar, Users, MapPin, Star, Building, CreditCard, ChevronDown, ChevronUp, Bus, Shield, HelpCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
@@ -15,12 +16,21 @@ import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { getAgodaUrl } from '@/lib/agodaMapping';
+import { getCityNeighborhoods, getHotelFAQItems } from '@/lib/cityNeighborhoods';
+import { useState } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const city = slug ? getCityBySlug(slug) : null;
   const { displayName, displayCountry } = useCityDisplay(city);
+  const [showAllNeighborhoods, setShowAllNeighborhoods] = useState(false);
   
   // Default dates
   const today = new Date();
@@ -31,6 +41,10 @@ const CityHotels = () => {
   const searchCity = city?.nameEn || city?.name || '';
   const citySlug = city?.slug || '';
   const agodaSearchUrl = getAgodaUrl(citySlug, searchCity, checkIn, checkOut);
+  
+  // Get neighborhood data
+  const neighborhoodData = getCityNeighborhoods(citySlug);
+  const faqItems = city ? getHotelFAQItems(city.name, city.country) : [];
   
   if (!city) {
     return (
@@ -56,25 +70,60 @@ const CityHotels = () => {
     { label: t('nav.hotels', 'Oteller') }
   ];
 
+  // Enhanced structured data with FAQPage
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": `${displayName} ${t('nav.hotels', 'Otelleri')}`,
-    "description": `${displayName} ${t('hotels.hotelPricesAndBooking', 'otel fiyatları ve rezervasyon')}`,
-    "numberOfItems": 50,
+    "@graph": [
+      {
+        "@type": "ItemList",
+        "name": `${displayName} ${t('nav.hotels', 'Otelleri')}`,
+        "description": `${displayName} otel fiyatları, bölge rehberi ve en iyi konaklama seçenekleri ${currentYear}`,
+        "numberOfItems": 50,
+        "itemListElement": neighborhoodData?.neighborhoods.slice(0, 5).map((n, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "name": `${n.name} Otelleri`,
+          "description": n.description
+        })) || []
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer
+          }
+        }))
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": breadcrumbItems.map((item, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": item.label,
+          "item": item.href ? `https://woonomad.co${item.href}` : undefined
+        }))
+      }
+    ]
   };
+
+  const displayedNeighborhoods = neighborhoodData?.neighborhoods 
+    ? (showAllNeighborhoods ? neighborhoodData.neighborhoods : neighborhoodData.neighborhoods.slice(0, 4))
+    : [];
 
   return (
     <>
       <Helmet>
-        <title>{`${displayName} ${t('nav.hotels', 'Otelleri')} - ${t('hotels.bestPricesHotelBooking', 'En İyi Fiyatlarla Otel Rezervasyonu')} ${currentYear} | WooNomad`}</title>
+        <title>{`${displayName} Otelleri ${currentYear} | Bölgeler, Fiyatlar, En İyi Konaklama | WooNomad`}</title>
         <meta 
           name="description" 
-          content={`${displayName} ${t('hotels.hotelPricesOnlineBooking', 'otel fiyatları ve online rezervasyon')}. ${displayCountry}'da ${t('hotels.compareBestHotels', "en iyi otelleri karşılaştırın, uygun fiyatlarla rezervasyon yapın")}.`}
+          content={`${displayName}'de nerede kalınır? Bölge bazlı otel önerileri, ${currentYear} güncel fiyatları ve erken rezervasyonla %30'a varan tasarruf fırsatları.`}
         />
         <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/oteller`} />
-        <meta property="og:title" content={`${displayName} ${t('nav.hotels', 'Otelleri')} | WooNomad`} />
-        <meta property="og:description" content={`${displayName} ${t('hotels.hotelPricesAndBooking', 'otel fiyatları ve rezervasyon')}`} />
+        <meta property="og:title" content={`${displayName} Otelleri ${currentYear} | Bölgeler ve Fiyatlar`} />
+        <meta property="og:description" content={`${displayName}'de en iyi konaklama bölgeleri, otel karşılaştırması ve rezervasyon`} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
@@ -93,11 +142,11 @@ const CityHotels = () => {
             </div>
             
             <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3">
-              {flag} {displayName} <span className="text-gradient">{t('nav.hotels', 'Otelleri')}</span>
+              {flag} {displayName} <span className="text-gradient">Otelleri ({currentYear})</span>
             </h1>
             
             <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-              {displayName} {t('hotels.compareHotelPricesFor', 'için en uygun otel fiyatlarını karşılaştırın')}
+              {displayName}'de nerede kalınır? Bölge bazlı otel önerileri, fiyat karşılaştırması ve erken rezervasyonla tasarruf fırsatları.
             </p>
             
             {/* Search Info */}
@@ -145,16 +194,94 @@ const CityHotels = () => {
               <div className="text-sm text-muted-foreground">{t('hotels.avgRating', 'Ortalama Puan')}</div>
             </Card>
             <Card className="text-center p-4">
-              <CreditCard className="h-8 w-8 mx-auto text-green-600 mb-2" />
+              <CreditCard className="h-8 w-8 mx-auto text-primary mb-2" />
               <div className="text-2xl font-bold text-primary">%30</div>
               <div className="text-sm text-muted-foreground">{t('hotels.savingsUpTo', 'Tasarruf')}</div>
             </Card>
             <Card className="text-center p-4">
-              <Building className="h-8 w-8 mx-auto text-blue-600 mb-2" />
+              <Building className="h-8 w-8 mx-auto text-primary mb-2" />
               <div className="text-2xl font-bold text-primary">1-5★</div>
               <div className="text-sm text-muted-foreground">{t('hotels.allCategories', 'Tüm Kategoriler')}</div>
             </Card>
           </section>
+
+          {/* NEIGHBORHOOD GUIDE - NEW SEO SECTION */}
+          {neighborhoodData && (
+            <section className="mb-8">
+              <Card className="overflow-hidden">
+                <CardContent className="p-6">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-2 flex items-center gap-2">
+                    <MapPin className="h-6 w-6 text-primary" />
+                    {displayName}'de Hangi Bölgede Kalınır?
+                  </h2>
+                  <p className="text-muted-foreground mb-6">
+                    Seyahat amacınıza göre en uygun konaklama bölgesini seçin. Her bölge farklı deneyimler sunar.
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    {displayedNeighborhoods.map((neighborhood, idx) => (
+                      <div 
+                        key={idx} 
+                        className="p-4 rounded-xl border border-border hover:border-primary/30 transition-colors"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-display font-semibold text-lg">{neighborhood.name}</h3>
+                          <Badge 
+                            variant={neighborhood.priceLevel === 'lüks' ? 'default' : 'outline'}
+                            className={
+                              neighborhood.priceLevel === 'lüks' ? 'bg-amber-500 hover:bg-amber-600' : 
+                              neighborhood.priceLevel === 'ekonomik' ? 'border-green-500 text-green-600' : ''
+                            }
+                          >
+                            {neighborhood.priceLevel === 'lüks' ? '💎 Lüks' : 
+                             neighborhood.priceLevel === 'ekonomik' ? '💰 Ekonomik' : '⭐ Orta'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">{neighborhood.description}</p>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="px-2 py-1 rounded-full bg-primary/10 text-primary">
+                            {neighborhood.forWhom}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {neighborhoodData.neighborhoods.length > 4 && (
+                    <Button 
+                      variant="ghost" 
+                      className="w-full" 
+                      onClick={() => setShowAllNeighborhoods(!showAllNeighborhoods)}
+                    >
+                      {showAllNeighborhoods ? (
+                        <>Daha Az Göster <ChevronUp className="ml-2 h-4 w-4" /></>
+                      ) : (
+                        <>Tüm Bölgeleri Gör ({neighborhoodData.neighborhoods.length}) <ChevronDown className="ml-2 h-4 w-4" /></>
+                      )}
+                    </Button>
+                  )}
+                  
+                  {/* Transport & Safety Tips */}
+                  <div className="grid md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-border">
+                    <div className="flex gap-3">
+                      <Bus className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium mb-1">Ulaşım İpucu</h4>
+                        <p className="text-sm text-muted-foreground">{neighborhoodData.transportTip}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium mb-1">Güvenlik Notu</h4>
+                        <p className="text-sm text-muted-foreground">{neighborhoodData.safetyNote}</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+          )}
           
           {/* Hotel Search Widget */}
           <section className="mb-8">
@@ -206,15 +333,15 @@ const CityHotels = () => {
             </Card>
           </section>
           
-          {/* Hotel Categories */}
+          {/* Hotel Categories - Budget Based */}
           <section className="mb-8">
-            <h2 className="text-xl font-display font-bold mb-4">{t('hotels.hotelsByCategory', 'Kategoriye Göre Oteller')}</h2>
+            <h2 className="text-xl font-display font-bold mb-4">Bütçeye Göre {displayName} Otelleri</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { stars: 5, label: t('hotels.luxuryHotels', '5 Yıldızlı Lüks'), color: 'from-amber-500 to-yellow-400', priceSort: undefined },
-                { stars: 4, label: t('hotels.premiumHotels', '4 Yıldızlı Premium'), color: 'from-blue-500 to-cyan-400', priceSort: undefined },
-                { stars: 3, label: t('hotels.comfortHotels', '3 Yıldızlı Konfor'), color: 'from-green-500 to-emerald-400', priceSort: undefined },
-                { stars: undefined, label: t('hotels.budgetHotels', 'Bütçe Dostu'), color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const },
+                { stars: 5, label: '5 Yıldızlı Lüks', color: 'from-amber-500 to-yellow-400', priceSort: undefined, priceRange: '150€+' },
+                { stars: 4, label: '4 Yıldızlı Premium', color: 'from-blue-500 to-cyan-400', priceSort: undefined, priceRange: '80-150€' },
+                { stars: 3, label: '3 Yıldızlı Konfor', color: 'from-green-500 to-emerald-400', priceSort: undefined, priceRange: '50-80€' },
+                { stars: undefined, label: 'Bütçe Dostu', color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const, priceRange: '20-50€' },
               ].map((category) => (
                 <a 
                   key={category.stars ?? 'budget'}
@@ -235,6 +362,7 @@ const CityHotels = () => {
                         )}
                       </div>
                       <h3 className="font-semibold">{category.label}</h3>
+                      <p className="text-sm opacity-80">{category.priceRange}/gece</p>
                       <div className="flex items-center gap-1 mt-2 text-sm opacity-80 group-hover:opacity-100">
                         <span>{t('hotels.viewHotels', 'Otelleri Gör')}</span>
                         <ExternalLink className="h-3 w-3" />
@@ -257,33 +385,54 @@ const CityHotels = () => {
             />
           </section>
           
+          {/* FAQ Section - SEO Critical */}
+          <section className="card-modern p-6 mb-8">
+            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+              <HelpCircle className="h-5 w-5 text-primary" />
+              {displayName} Otelleri Sıkça Sorulan Sorular
+            </h2>
+            
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((faq, idx) => (
+                <AccordionItem key={idx} value={`faq-${idx}`}>
+                  <AccordionTrigger className="text-left font-medium">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+          
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
-            <h2 className="text-xl font-display font-bold mb-4">{city.name} {t('hotels.hotelGuide', 'Otel Rehberi')} {new Date().getFullYear()}</h2>
+            <h2 className="text-xl font-display font-bold mb-4">{city.name} Otel Rehberi {currentYear}</h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
-                {city.name}, {city.country} {t('hotels.hotelGuideIntro', "'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır.")} {new Date().getFullYear()} {t('hotels.yearUpdated', 'yılı için güncel otel fiyatları ve konaklama seçenekleri sizi bekliyor.')}
+                {city.name}, {city.country}'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. {currentYear} yılı için güncel otel fiyatları ve konaklama seçenekleri sizi bekliyor.
               </p>
               
               <h3 className="text-xl font-display font-semibold text-foreground mt-6 mb-3">
-                {t('hotels.accommodationTips', 'Konaklama İpuçları')}
+                Konaklama İpuçları
               </h3>
               <ul className="space-y-2">
-                <li>• {t('hotels.tip1', 'Şehir merkezinde konaklamak ulaşım masraflarını azaltır')}</li>
-                <li>• {t('hotels.tip2', 'Erken rezervasyon ile %20-30 tasarruf sağlayabilirsiniz')}</li>
-                <li>• {t('hotels.tip3', 'Kahvaltı dahil seçenekleri değerlendirin')}</li>
-                <li>• {t('hotels.tip4', 'Hafta içi konaklamalar genellikle daha uygun')}</li>
-                <li>• <strong>{t('hotels.tip5LongStay', '30+ gün kalacaksanız:')}</strong> {t('hotels.tip5Desc', 'Airbnb veya coliving seçenekleri daha ekonomik')}</li>
+                <li>• Şehir merkezinde konaklamak ulaşım masraflarını azaltır</li>
+                <li>• <strong>Erken rezervasyonla %20-30 tasarruf</strong> sağlayabilirsiniz</li>
+                <li>• Kahvaltı dahil seçenekleri değerlendirin</li>
+                <li>• Hafta içi konaklamalar genellikle daha uygun</li>
+                <li>• <strong>30+ gün kalacaksanız:</strong> Airbnb veya coliving seçenekleri daha ekonomik</li>
               </ul>
               
               <h3 className="text-xl font-display font-semibold text-foreground mt-6 mb-3">
-                {t('hotels.whyBook', 'Neden WooNomad ile Otel Aramalısınız?')}
+                Neden WooNomad ile Otel Aramalısınız?
               </h3>
               <ul className="space-y-2">
-                <li>• {t('hotels.whyReason1', 'Agoda üzerinden en güncel fiyat karşılaştırması')}</li>
-                <li>• {t('hotels.whyReason2', 'Ücretsiz iptal seçenekleri olan oteller')}</li>
-                <li>• {t('hotels.whyReason3', 'Gerçek misafir yorumları ve puanları')}</li>
-                <li>• {t('hotels.whyReason4', 'En iyi fiyat garantisi')}</li>
+                <li>• Agoda üzerinden en güncel fiyat karşılaştırması</li>
+                <li>• Ücretsiz iptal seçenekleri olan oteller</li>
+                <li>• Gerçek misafir yorumları ve puanları</li>
+                <li>• En iyi fiyat garantisi</li>
               </ul>
             </div>
           </section>
@@ -296,25 +445,25 @@ const CityHotels = () => {
             />
           </section>
           
-          {/* Related Links */}
+          {/* Related Links - Internal Linking */}
           <section className="grid md:grid-cols-3 gap-4">
-            <Link to={`/sehir/${city.slug}/aktiviteler`} className="card-modern p-6 group hover:border-primary/30">
+            <Link to={`/sehir/${city.slug}`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                🎯 {city.name} {t('activities.title', 'Aktiviteleri')}
+                🏙️ {city.name} Şehir Rehberi
               </h3>
-              <p className="text-sm text-muted-foreground">{t('activities.toursAndExperiences', 'Turlar ve deneyimler')}</p>
+              <p className="text-sm text-muted-foreground">Gezilecek yerler ve pratik bilgiler</p>
+            </Link>
+            <Link to={`/sehir/${city.slug}/nomad`} className="card-modern p-6 group hover:border-primary/30">
+              <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
+                💻 {city.name} Dijital Göçebe Rehberi
+              </h3>
+              <p className="text-sm text-muted-foreground">Coworking, internet hızı ve yaşam maliyeti</p>
             </Link>
             <Link to={`/sehir/${city.slug}/ucak-bileti`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                ✈️ {city.name} {t('flights.flightTicket', 'Uçak Bileti')}
+                ✈️ {city.name} Uçak Bileti
               </h3>
-              <p className="text-sm text-muted-foreground">{t('flights.compareFlightPrices', 'En uygun uçuş fiyatlarını karşılaştırın')}</p>
-            </Link>
-            <Link to={`/sehir/${city.slug}`} className="card-modern p-6 group hover:border-primary/30">
-              <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
-                🏙️ {city.name} {t('cities.about', 'Şehir Rehberi')}
-              </h3>
-              <p className="text-sm text-muted-foreground">{t('cities.highlights', 'Gezilecek yerler ve pratik bilgiler')}</p>
+              <p className="text-sm text-muted-foreground">En uygun uçuş fiyatlarını karşılaştırın</p>
             </Link>
           </section>
         </main>
@@ -322,7 +471,7 @@ const CityHotels = () => {
         {/* Footer */}
         <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {currentYear} WooNomad. {t('common.allRightsReserved', 'Tüm hakları saklıdır')}.
+            © {currentYear} WooNomad. Tüm hakları saklıdır.
           </div>
         </footer>
 
