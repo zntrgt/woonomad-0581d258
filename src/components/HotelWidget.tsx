@@ -2,84 +2,13 @@ import { Building, ExternalLink, Star, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { getAgodaUrl } from '@/lib/agodaMapping';
 
 interface HotelWidgetProps {
   cityName: string;
   citySlug: string;
   variant?: 'sidebar' | 'inline' | 'compact';
   className?: string;
-}
-
-// Travelpayouts Agoda Affiliate CID
-const AGODA_CID = "1844104";
-
-// City name mappings for Agoda URLs
-const cityMappings: Record<string, { englishName: string }> = {
-  'berlin': { englishName: 'Berlin' },
-  'londra': { englishName: 'London' },
-  'paris': { englishName: 'Paris' },
-  'amsterdam': { englishName: 'Amsterdam' },
-  'barcelona': { englishName: 'Barcelona' },
-  'roma': { englishName: 'Rome' },
-  'prag': { englishName: 'Prague' },
-  'viyana': { englishName: 'Vienna' },
-  'lisbon': { englishName: 'Lisbon' },
-  'dublin': { englishName: 'Dublin' },
-  'kopenhag': { englishName: 'Copenhagen' },
-  'stockholm': { englishName: 'Stockholm' },
-  'oslo': { englishName: 'Oslo' },
-  'helsinki': { englishName: 'Helsinki' },
-  'budapeşte': { englishName: 'Budapest' },
-  'varsova': { englishName: 'Warsaw' },
-  'atina': { englishName: 'Athens' },
-  'brüksel': { englishName: 'Brussels' },
-  'münih': { englishName: 'Munich' },
-  'milano': { englishName: 'Milan' },
-  'tokyo': { englishName: 'Tokyo' },
-  'new-york': { englishName: 'New York' },
-  'bangkok': { englishName: 'Bangkok' },
-  'singapur': { englishName: 'Singapore' },
-  'dubai': { englishName: 'Dubai' },
-  'istanbul': { englishName: 'Istanbul' },
-  'antalya': { englishName: 'Antalya' },
-  'izmir': { englishName: 'Izmir' },
-  'bodrum': { englishName: 'Bodrum' },
-};
-
-// City ID mapping for better Agoda targeting
-const cityAgodaIds: Record<string, string> = {
-  'bali': '17193',
-  'istanbul': '18482',
-  'antalya': '17067',
-  'bangkok': '2669',
-  'tokyo': '6046',
-  'paris': '7606',
-  'londra': '3356',
-  'dubai': '6621',
-  'singapur': '4064',
-  'roma': '6831',
-  'barcelona': '2268',
-};
-
-function getAgodaUrl(citySlug: string, cityName: string): string {
-  const mapping = cityMappings[citySlug.toLowerCase()];
-  const destination = mapping?.englishName || cityName;
-  const cityId = cityAgodaIds[citySlug.toLowerCase()];
-  
-  const params = new URLSearchParams({
-    rooms: '1',
-    adults: '2',
-    cid: AGODA_CID,
-    searchType: 'city',
-  });
-  
-  if (cityId) {
-    params.set('city', cityId);
-  } else {
-    params.set('destination', destination);
-  }
-  
-  return `https://www.agoda.com/search?${params.toString()}`;
 }
 
 // Sample featured hotels for widget display

@@ -10,38 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { HotelSearchForm } from '@/components/HotelSearchForm';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
-
-// Travelpayouts Agoda Affiliate CID
-const AGODA_CID = "1844104";
-
-// City name mappings for Agoda URLs
-const cityEnglishNames: Record<string, string> = {
-  'berlin': 'Berlin',
-  'paris': 'Paris',
-  'londra': 'London',
-  'amsterdam': 'Amsterdam',
-  'barcelona': 'Barcelona',
-  'roma': 'Rome',
-  'dubai': 'Dubai',
-  'tokyo': 'Tokyo',
-  'prag': 'Prague',
-  'viyana': 'Vienna',
-  'bangkok': 'Bangkok',
-  'singapur': 'Singapore',
-  'istanbul': 'Istanbul',
-  'antalya': 'Antalya',
-  'izmir': 'Izmir',
-  'bodrum': 'Bodrum',
-  'milano': 'Milan',
-  'lizbon': 'Lisbon',
-  'atina': 'Athens',
-  'budapeste': 'Budapest',
-};
-
-const getAgodaUrl = (citySlug: string, cityName: string) => {
-  const destination = cityEnglishNames[citySlug] || cityName;
-  return `https://www.agoda.com/search?city=${encodeURIComponent(destination)}&rooms=1&adults=2&cid=${AGODA_CID}`;
-};
+import { getAgodaUrl } from '@/lib/agodaMapping';
 
 const Hotels = () => {
   const cities = getAllCities();
