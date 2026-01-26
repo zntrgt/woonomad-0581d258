@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format, addDays } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { getAgodaUrl } from '@/lib/agodaMapping';
 
 interface CityHotelsWidgetProps {
   citySlug: string;
@@ -11,11 +12,8 @@ interface CityHotelsWidgetProps {
   cityNameEn?: string;
 }
 
-// Travelpayouts Agoda Affiliate CID
-const AGODA_CID = "1844104";
-
 export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsWidgetProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   
   const today = new Date();
   const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
@@ -23,27 +21,8 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
   
   const searchCity = cityNameEn || cityName;
   
-  // City ID mapping for better Agoda targeting
-  const cityAgodaIds: Record<string, string> = {
-    'bali': '17193',
-    'istanbul': '18482',
-    'antalya': '17067',
-    'bangkok': '2669',
-    'tokyo': '6046',
-    'paris': '7606',
-    'londra': '3356',
-    'dubai': '6621',
-    'singapur': '4064',
-    'roma': '6831',
-    'barcelona': '2268',
-  };
-  
-  const cityId = cityAgodaIds[citySlug.toLowerCase()];
-  
-  // Direct Agoda affiliate search link with proper targeting
-  const affiliateLink = cityId 
-    ? `https://www.agoda.com/search?city=${cityId}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}&searchType=city`
-    : `https://www.agoda.com/search?destination=${encodeURIComponent(searchCity)}&checkIn=${checkIn}&checkOut=${checkOut}&rooms=1&adults=2&cid=${AGODA_CID}`;
+  // Use centralized Agoda URL generator
+  const affiliateLink = getAgodaUrl(citySlug, searchCity, checkIn, checkOut);
 
   return (
     <Card>

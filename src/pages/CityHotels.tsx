@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { CityHotelsDynamicContent } from '@/components/CityHotelsDynamicContent';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -15,65 +14,7 @@ import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-
-// Travelpayouts Agoda Affiliate CID
-const AGODA_CID = "1844104";
-
-// City ID mapping for Agoda (ensures correct search results)
-const cityAgodaMapping: Record<string, { cityId: string; lat?: number; lng?: number }> = {
-  'bali': { cityId: '17193', lat: -8.4095, lng: 115.1889 },
-  'istanbul': { cityId: '18482', lat: 41.0082, lng: 28.9784 },
-  'antalya': { cityId: '17067', lat: 36.8969, lng: 30.7133 },
-  'bangkok': { cityId: '2669', lat: 13.7563, lng: 100.5018 },
-  'tokyo': { cityId: '6046', lat: 35.6762, lng: 139.6503 },
-  'paris': { cityId: '7606', lat: 48.8566, lng: 2.3522 },
-  'london': { cityId: '3356', lat: 51.5074, lng: -0.1278 },
-  'dubai': { cityId: '6621', lat: 25.2048, lng: 55.2708 },
-  'singapore': { cityId: '4064', lat: 1.3521, lng: 103.8198 },
-  'roma': { cityId: '6831', lat: 41.9028, lng: 12.4964 },
-  'barcelona': { cityId: '2268', lat: 41.3851, lng: 2.1734 },
-};
-
-// Generate Agoda affiliate URL with proper destination targeting
-const getAgodaUrl = (citySlug: string, cityName: string, checkIn: string, checkOut: string, options?: { stars?: number; priceSort?: 'asc' | 'desc' }) => {
-  const baseUrl = 'https://www.agoda.com/search';
-  const mapping = cityAgodaMapping[citySlug.toLowerCase()];
-  
-  const params = new URLSearchParams({
-    city: mapping?.cityId || '',
-    checkIn: checkIn,
-    checkOut: checkOut,
-    rooms: '1',
-    adults: '2',
-    cid: AGODA_CID,
-    searchType: 'city',
-    selectedproperty: '0',
-  });
-  
-  // If no city ID, use destination name
-  if (!mapping?.cityId) {
-    params.delete('city');
-    params.set('destination', cityName);
-  }
-  
-  // Add coordinates for better matching
-  if (mapping?.lat && mapping?.lng) {
-    params.set('latitude', mapping.lat.toString());
-    params.set('longitude', mapping.lng.toString());
-  }
-  
-  // Add star filter (only for 3-5 stars)
-  if (options?.stars && options.stars >= 3) {
-    params.set('star', options.stars.toString());
-  }
-  
-  // For budget hotels, sort by price ascending
-  if (options?.priceSort === 'asc') {
-    params.set('sort', 'price');
-  }
-  
-  return `${baseUrl}?${params.toString()}`;
-};
+import { getAgodaUrl } from '@/lib/agodaMapping';
 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
