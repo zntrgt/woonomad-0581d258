@@ -238,6 +238,52 @@ export const cityNeighborhoodsData: Record<string, CityNeighborhoodData> = {
     transportTip: 'Athens Transport kartı ile metro, otobüs, tramvay. Havalimanından metro X95 ile merkeze 1 saat.',
     safetyNote: 'Atina güvenli. Omonia çevresinde gece dikkatli olun.',
   },
+
+  // === YENİ EKLENDİ ===
+  'marakes': {
+    neighborhoods: [
+      { name: 'Medina', nameEn: 'Medina', description: 'UNESCO miras listesi, labirent sokaklar, çarşılar ve efsanevi Djemaa el-Fna meydanı.', forWhom: 'Kültür meraklıları, fotoğrafçılar', priceLevel: 'orta' },
+      { name: 'Gueliz', nameEn: 'Gueliz', description: 'Yeni şehir, Avrupa tarzı kafeler, butik mağazalar ve galeri caddesi.', forWhom: 'Şehir gezginleri, alışveriş', priceLevel: 'orta' },
+      { name: 'Hivernage', nameEn: 'Hivernage', description: 'Lüks oteller, gece kulüpleri ve palmiye ağaçlı bulvarlar.', forWhom: 'Lüks tatilciler, gece hayatı', priceLevel: 'lüks' },
+      { name: 'Kasbah', nameEn: 'Kasbah', description: 'Saadiler Mezarlığı, yerel hayat ve daha az turist.', forWhom: 'Tarihi keşifler, sakin atmosfer', priceLevel: 'ekonomik' },
+      { name: 'Palmeraie', nameEn: 'Palmeraie', description: 'Palmiye ormanı içinde resort ve villa konaklamaları.', forWhom: 'Wellness, ailelr', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Medina içinde yürüyerek ulaşım en pratik. Taksiler pazarlıklı. Havalimanından taksi 15-20 dakika.',
+    safetyNote: 'Marakeş turist dostu. Medinada sokak satıcılarına karşı nazik ama kararlı olun.',
+  },
+  'seul': {
+    neighborhoods: [
+      { name: 'Myeongdong', nameEn: 'Myeongdong', description: 'Alışveriş cenneti, K-beauty mağazaları ve streetfood sokakları.', forWhom: 'Alışveriş tutkunları, ilk kez gelenler', priceLevel: 'orta' },
+      { name: 'Hongdae', nameEn: 'Hongdae', description: 'Üniversite bölgesi, indie müzik, gece hayatı ve sokak sanatçıları.', forWhom: 'Gençler, gece kuşları', priceLevel: 'ekonomik' },
+      { name: 'Gangnam', nameEn: 'Gangnam', description: 'Modern gökdelenler, lüks mağazalar ve K-pop ajansları.', forWhom: 'Lüks alışveriş, K-pop hayranları', priceLevel: 'lüks' },
+      { name: 'Insadong', nameEn: 'Insadong', description: 'Geleneksel sokak, çay evleri, antikalar ve el sanatları.', forWhom: 'Kültür turizmi, hediyelik', priceLevel: 'orta' },
+      { name: 'Itaewon', nameEn: 'Itaewon', description: 'Uluslararası mutfaklar, rooftop barlar ve expat cenneti.', forWhom: 'Uluslararası gezginler, yemek tutkunları', priceLevel: 'orta' },
+    ],
+    transportTip: 'T-money kartı ile metro ve otobüs. Incheon\'dan AREX ile Seul İstasyonu\'na 43 dakika.',
+    safetyNote: 'Seul dünyanın en güvenli başkentlerinden biri. Gece bile her yerde rahat gezebilirsiniz.',
+  },
+  'new-york': {
+    neighborhoods: [
+      { name: 'Midtown Manhattan', nameEn: 'Midtown Manhattan', description: 'Times Square, Empire State ve Broadway tiyatroları.', forWhom: 'İlk kez gelenler, tiyatro severler', priceLevel: 'lüks' },
+      { name: 'Lower Manhattan', nameEn: 'Lower Manhattan', description: 'Wall Street, 9/11 Anıtı ve Özgürlük Heykeli feribotu.', forWhom: 'Tarih meraklıları, iş seyahati', priceLevel: 'lüks' },
+      { name: 'SoHo / Tribeca', nameEn: 'SoHo / Tribeca', description: 'Döküm demir binalar, lüks butikler ve ünlü restoranlar.', forWhom: 'Moda tutkunları, gurme gezginler', priceLevel: 'lüks' },
+      { name: 'Brooklyn (Williamsburg)', nameEn: 'Williamsburg Brooklyn', description: 'Hipster kültürü, bağımsız kafeler ve Smorgasburg.', forWhom: 'Dijital göçebeler, alternatif yaşam', priceLevel: 'orta' },
+      { name: 'Harlem', nameEn: 'Harlem', description: 'Jazz mirası, Gospel brunch ve otantik New York.', forWhom: 'Müzik tutkunları, yerel deneyim', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'MetroCard veya OMNY ile metro 24 saat çalışır. JFK\'den metro veya AirTrain + metro ile Manhattan 1-1.5 saat.',
+    safetyNote: 'New York güvenli, ancak gece metro istasyonlarında ve Central Park\'ta dikkatli olun.',
+  },
+  'rio-de-janeiro': {
+    neighborhoods: [
+      { name: 'Copacabana', nameEn: 'Copacabana', description: 'Efsanevi plaj, oteller ve canlı gece hayatı.', forWhom: 'Plaj sevenler, ilk kez gelenler', priceLevel: 'orta' },
+      { name: 'Ipanema', nameEn: 'Ipanema', description: 'Şık plaj, trendy butikler ve kafeler.', forWhom: 'Moda tutkunları, şık tatil', priceLevel: 'lüks' },
+      { name: 'Leblon', nameEn: 'Leblon', description: 'Ipanema\'nın sakin devamı, aileler ve premium restoranlar.', forWhom: 'Aileler, lüks konaklama', priceLevel: 'lüks' },
+      { name: 'Santa Teresa', nameEn: 'Santa Teresa', description: 'Tepede bohem mahalle, eski tramvay ve sanat galerileri.', forWhom: 'Sanat severler, romantik kaçamak', priceLevel: 'orta' },
+      { name: 'Lapa', nameEn: 'Lapa', description: 'Samba kulüpleri, renkli merdiven ve gece hayatı.', forWhom: 'Gece kuşları, müzik tutkunları', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Metro Zona Sul\'u kapsar. Uber ve 99 (yerel uygulama) güvenilir. Galeão\'dan merkeze Uber yaklaşık 1 saat.',
+    safetyNote: 'Plajlarda değerli eşya bırakmayın. Gece favela çevresinden kaçının. Turistik bölgeler güvenli.',
+  },
 };
 
 // Get neighborhood data for a city

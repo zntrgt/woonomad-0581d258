@@ -79,6 +79,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'jakarta': { cityId: '4805', lat: -6.2088, lng: 106.8456, nameEn: 'Jakarta' },
   'hong-kong': { cityId: '3310', lat: 22.3193, lng: 114.1694, nameEn: 'Hong Kong' },
   'seul': { cityId: '9035', lat: 37.5665, lng: 126.9780, nameEn: 'Seoul' },
+  'seoul': { cityId: '9035', lat: 37.5665, lng: 126.9780, nameEn: 'Seoul' },
   'taipei': { cityId: '9615', lat: 25.0330, lng: 121.5654, nameEn: 'Taipei' },
   'shanghai': { cityId: '9196', lat: 31.2304, lng: 121.4737, nameEn: 'Shanghai' },
   'pekin': { cityId: '2298', lat: 39.9042, lng: 116.4074, nameEn: 'Beijing' },
@@ -106,6 +107,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   
   // === AFRİKA ===
   'marakes': { cityId: '6416', lat: 31.6295, lng: -7.9811, nameEn: 'Marrakech' },
+  'marrakech': { cityId: '6416', lat: 31.6295, lng: -7.9811, nameEn: 'Marrakech' },
   'kazablanka': { cityId: '2571', lat: 33.5731, lng: -7.5898, nameEn: 'Casablanca' },
   'kahire': { cityId: '2555', lat: 30.0444, lng: 31.2357, nameEn: 'Cairo' },
   'cape-town': { cityId: '2564', lat: -33.9249, lng: 18.4241, nameEn: 'Cape Town' },
@@ -124,15 +126,17 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   
   // === AMERİKA ===
   'new-york': { cityId: '6898', lat: 40.7128, lng: -74.0060, nameEn: 'New York' },
+  'newyork': { cityId: '6898', lat: 40.7128, lng: -74.0060, nameEn: 'New York' },
   'los-angeles': { cityId: '6003', lat: 34.0522, lng: -118.2437, nameEn: 'Los Angeles' },
   'miami': { cityId: '6485', lat: 25.7617, lng: -80.1918, nameEn: 'Miami' },
   'las-vegas': { cityId: '5583', lat: 36.1699, lng: -115.1398, nameEn: 'Las Vegas' },
-  'san-francisco': { cityId: '9076', lat: 37.7749, lng: -122.4194, nameEn: 'San Francisco' },
+  'san-francisco': { cityId: '9101', lat: 37.7749, lng: -122.4194, nameEn: 'San Francisco' },
   'chicago': { cityId: '2593', lat: 41.8781, lng: -87.6298, nameEn: 'Chicago' },
   'toronto': { cityId: '9935', lat: 43.6532, lng: -79.3832, nameEn: 'Toronto' },
   'vancouver': { cityId: '10169', lat: 49.2827, lng: -123.1207, nameEn: 'Vancouver' },
   'cancun': { cityId: '2561', lat: 21.1619, lng: -86.8515, nameEn: 'Cancun' },
   'rio-de-janeiro': { cityId: '8431', lat: -22.9068, lng: -43.1729, nameEn: 'Rio de Janeiro' },
+  'rio': { cityId: '8431', lat: -22.9068, lng: -43.1729, nameEn: 'Rio de Janeiro' },
   'buenos-aires': { cityId: '2531', lat: -34.6037, lng: -58.3816, nameEn: 'Buenos Aires' },
   
   // === OKYANUSYA ===
