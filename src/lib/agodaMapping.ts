@@ -147,6 +147,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
 };
 
 // Generate Agoda affiliate URL with proper destination targeting
+// Agoda URL format: https://www.agoda.com/search?city=CITY_ID&checkIn=YYYY-MM-DD&los=N&rooms=1&adults=2&cid=CID
 export function getAgodaUrl(
   citySlug: string, 
   cityName: string, 
@@ -162,40 +163,46 @@ export function getAgodaUrl(
   const baseUrl = 'https://www.agoda.com/search';
   const mapping = cityAgodaMapping[citySlug.toLowerCase()];
   
+  // Calculate length of stay (los) from dates
+  let los = 2; // Default 2 nights
+  if (checkIn && checkOut) {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    los = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+  }
+  
   const params = new URLSearchParams({
-    rooms: (options?.rooms || 1).toString(),
-    adults: (options?.adults || 2).toString(),
     cid: AGODA_CID,
-    searchType: 'city',
-    selectedproperty: '0',
   });
   
   // Always use cityId when available for accurate results
   if (mapping?.cityId) {
     params.set('city', mapping.cityId);
   } else {
-    // Fallback to destination name search
-    params.set('destination', cityName);
+    // Fallback to destination name search - use textToSearch for text-based search
+    params.set('textToSearch', cityName);
   }
   
-  // Add dates if provided
-  if (checkIn) params.set('checkIn', checkIn);
-  if (checkOut) params.set('checkOut', checkOut);
-  
-  // Add coordinates for better matching
-  if (mapping?.lat && mapping?.lng) {
-    params.set('latitude', mapping.lat.toString());
-    params.set('longitude', mapping.lng.toString());
+  // Add dates - Agoda uses checkIn and los (length of stay)
+  if (checkIn) {
+    params.set('checkIn', checkIn);
+    params.set('los', los.toString());
   }
   
-  // Add star filter (only for 3-5 stars)
-  if (options?.stars && options.stars >= 3) {
-    params.set('star', options.stars.toString());
-  }
+  // Add rooms and guests
+  params.set('rooms', (options?.rooms || 1).toString());
+  params.set('adults', (options?.adults || 2).toString());
+  
+  // Star filter - Agoda uses different parameter format
+  // For luxury (5 star): use hotelReviewScore or specific filter
+  // Skip the star parameter as it causes errors - users can filter on Agoda
+  // if (options?.stars && options.stars >= 3) {
+  //   params.set('starRating', options.stars.toString());
+  // }
   
   // For budget hotels, sort by price ascending
   if (options?.priceSort === 'asc') {
-    params.set('sort', 'price');
+    params.set('sort', 'priceLowToHigh');
   }
   
   return `${baseUrl}?${params.toString()}`;
