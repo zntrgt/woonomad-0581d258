@@ -147,7 +147,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
 };
 
 // Generate Agoda affiliate URL with proper destination targeting
-// Agoda URL format: https://www.agoda.com/search?city=CITY_ID&checkIn=YYYY-MM-DD&los=N&rooms=1&adults=2&cid=CID
+// Uses checkIn + checkOut pair (most stable) instead of checkIn + los
 export function getAgodaUrl(
   citySlug: string, 
   cityName: string, 
@@ -163,14 +163,6 @@ export function getAgodaUrl(
   const baseUrl = 'https://www.agoda.com/search';
   const mapping = cityAgodaMapping[citySlug.toLowerCase()];
   
-  // Calculate length of stay (los) from dates
-  let los = 2; // Default 2 nights
-  if (checkIn && checkOut) {
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    los = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-  }
-  
   const params = new URLSearchParams({
     cid: AGODA_CID,
   });
@@ -179,28 +171,28 @@ export function getAgodaUrl(
   if (mapping?.cityId) {
     params.set('city', mapping.cityId);
   } else {
-    // Fallback to destination name search - use textToSearch for text-based search
+    // Fallback to destination name search
     params.set('textToSearch', cityName);
   }
   
-  // Add dates - Agoda uses checkIn and los (length of stay)
-  if (checkIn) {
+  // Add dates - use checkIn + checkOut pair (more reliable than checkIn + los)
+  if (checkIn && checkOut) {
     params.set('checkIn', checkIn);
-    params.set('los', los.toString());
+    params.set('checkOut', checkOut);
+  } else if (checkIn) {
+    // Fallback: only checkIn provided, let Agoda handle default checkout
+    params.set('checkIn', checkIn);
   }
+  // If no dates, let Agoda show default search (most stable)
   
   // Add rooms and guests
   params.set('rooms', (options?.rooms || 1).toString());
   params.set('adults', (options?.adults || 2).toString());
   
-  // Star filter - Agoda uses different parameter format
-  // For luxury (5 star): use hotelReviewScore or specific filter
-  // Skip the star parameter as it causes errors - users can filter on Agoda
-  // if (options?.stars && options.stars >= 3) {
-  //   params.set('starRating', options.stars.toString());
-  // }
+  // Skip star rating filter - it causes "Aramanızı tamamlarken" errors
+  // Users can filter by stars on Agoda directly
   
-  // For budget hotels, sort by price ascending
+  // For budget hotels, sort by price ascending (this parameter is stable)
   if (options?.priceSort === 'asc') {
     params.set('sort', 'priceLowToHigh');
   }

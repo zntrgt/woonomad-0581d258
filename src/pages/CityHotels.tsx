@@ -338,14 +338,14 @@ const CityHotels = () => {
             <h2 className="text-xl font-display font-bold mb-4">Bütçeye Göre {displayName} Otelleri</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { stars: 5, label: '5 Yıldızlı Lüks', color: 'from-amber-500 to-yellow-400', priceSort: undefined, priceRange: '150€+' },
-                { stars: 4, label: '4 Yıldızlı Premium', color: 'from-blue-500 to-cyan-400', priceSort: undefined, priceRange: '80-150€' },
-                { stars: 3, label: '3 Yıldızlı Konfor', color: 'from-green-500 to-emerald-400', priceSort: undefined, priceRange: '50-80€' },
-                { stars: undefined, label: 'Bütçe Dostu', color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const, priceRange: '20-50€' },
+                { id: 'luxury', label: '5 Yıldızlı Lüks', color: 'from-amber-500 to-yellow-400', priceSort: undefined as 'asc' | undefined, priceRange: '150€+', stars: 5 },
+                { id: 'premium', label: '4 Yıldızlı Premium', color: 'from-blue-500 to-cyan-400', priceSort: undefined as 'asc' | undefined, priceRange: '80-150€', stars: 4 },
+                { id: 'comfort', label: '3 Yıldızlı Konfor', color: 'from-green-500 to-emerald-400', priceSort: undefined as 'asc' | undefined, priceRange: '50-80€', stars: 3 },
+                { id: 'budget', label: 'Bütçe Dostu', color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const, priceRange: '20-50€', stars: undefined },
               ].map((category) => (
                 <a 
-                  key={category.stars ?? 'budget'}
-                  href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: category.stars, priceSort: category.priceSort })}
+                  key={category.id}
+                  href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { priceSort: category.priceSort })}
                   target="_blank"
                   rel="noopener noreferrer sponsored"
                   className="group"
