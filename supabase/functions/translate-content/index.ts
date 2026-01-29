@@ -20,12 +20,61 @@ const LANGUAGE_NAMES: Record<string, string> = {
   'ar': 'Arabic',
 };
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function getClientIP(req: Request): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+         req.headers.get('cf-connecting-ip') || 
+         req.headers.get('x-real-ip') || 
+         'unknown';
+}
+
+function getRateLimitInfo(ip: string): { allowed: boolean; remaining: number; resetTime: number } {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    const resetTime = now + RATE_LIMIT_WINDOW_MS;
+    rateLimitStore.set(ip, { count: 1, resetTime });
+    return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - 1, resetTime };
+  }
+  
+  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+    return { allowed: false, remaining: 0, resetTime: record.resetTime };
+  }
+  
+  record.count++;
+  return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - record.count, resetTime: record.resetTime };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Rate limiting check
+    const clientIP = getClientIP(req);
+    const rateLimitInfo = getRateLimitInfo(clientIP);
+    
+    if (!rateLimitInfo.allowed) {
+      console.log(`Rate limit exceeded for IP: ${clientIP}`);
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        { 
+          status: 429, 
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json",
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(rateLimitInfo.resetTime)
+          } 
+        }
+      );
+    }
     const body: TranslateRequest = await req.json();
     const { texts, targetLanguage, sourceLanguage = 'tr' } = body;
 
