@@ -1,7 +1,7 @@
 import { CityHotelsDynamicContent } from '@/components/CityHotelsDynamicContent';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Hotel, ExternalLink, Calendar, Users, MapPin, Star, Building, CreditCard, ChevronDown, ChevronUp, Bus, Shield, HelpCircle } from 'lucide-react';
+import { Hotel, ExternalLink, Calendar as CalendarIcon, Users, MapPin, Star, Building, CreditCard, ChevronDown, ChevronUp, Bus, Shield, HelpCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -24,6 +24,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -32,15 +35,30 @@ const CityHotels = () => {
   const { displayName, displayCountry } = useCityDisplay(city);
   const [showAllNeighborhoods, setShowAllNeighborhoods] = useState(false);
   
-  // Default dates
+  // Interactive date/guest states
   const today = new Date();
-  const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
-  const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
+  const [checkInDate, setCheckInDate] = useState<Date>(addDays(today, 7));
+  const [checkOutDate, setCheckOutDate] = useState<Date>(addDays(today, 9));
+  const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
+  const [isGuestsOpen, setIsGuestsOpen] = useState(false);
+  
+  // Format dates for URL
+  const checkIn = format(checkInDate, 'yyyy-MM-dd');
+  const checkOut = format(checkOutDate, 'yyyy-MM-dd');
   
   // Generate Agoda affiliate search URL
   const searchCity = city?.nameEn || city?.name || '';
   const citySlug = city?.slug || '';
   const agodaSearchUrl = getAgodaUrl(citySlug, searchCity, checkIn, checkOut);
+
+  const updateGuests = (type: 'adults' | 'children' | 'rooms', delta: number) => {
+    setGuests(prev => ({
+      ...prev,
+      [type]: Math.max(type === 'adults' ? 1 : type === 'rooms' ? 1 : 0, prev[type] + delta)
+    }));
+  };
+
+  const guestSummary = `${guests.adults} Yetişkin${guests.children > 0 ? `, ${guests.children} Çocuk` : ''}, ${guests.rooms} Oda`;
   
   // Get neighborhood data
   const neighborhoodData = getCityNeighborhoods(citySlug);
@@ -149,21 +167,168 @@ const CityHotels = () => {
               {displayName}'de nerede kalınır? Bölge bazlı otel önerileri, fiyat karşılaştırması ve erken rezervasyonla tasarruf fırsatları.
             </p>
             
-            {/* Search Info */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground mb-6">
-              <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
-                <Calendar className="h-4 w-4" />
-                <span>
-                  {format(new Date(checkIn), 'd MMM', { locale: tr })} - {format(new Date(checkOut), 'd MMM', { locale: tr })}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
-                <Users className="h-4 w-4" />
-                <span>2 {t('hotels.adults', 'Yetişkin')}</span>
-              </div>
+            {/* Interactive Date/Guest Selectors */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+              {/* Check-in Date */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-start text-left font-normal bg-background/80 backdrop-blur-sm">
+                    <CalendarIcon className="h-4 w-4 mr-2 text-primary" />
+                    <span className="text-sm">
+                      {format(checkInDate, 'd MMM', { locale: tr })}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="center">
+                  <Calendar
+                    mode="single"
+                    selected={checkInDate}
+                    onSelect={(date) => {
+                      if (date) {
+                        setCheckInDate(date);
+                        if (checkOutDate <= date) {
+                          setCheckOutDate(addDays(date, 2));
+                        }
+                      }
+                    }}
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <span className="text-muted-foreground">→</span>
+
+              {/* Check-out Date */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-start text-left font-normal bg-background/80 backdrop-blur-sm">
+                    <CalendarIcon className="h-4 w-4 mr-2 text-primary" />
+                    <span className="text-sm">
+                      {format(checkOutDate, 'd MMM', { locale: tr })}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="center">
+                  <Calendar
+                    mode="single"
+                    selected={checkOutDate}
+                    onSelect={(date) => date && setCheckOutDate(date)}
+                    disabled={(date) => date <= checkInDate}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Guest Selector */}
+              <Popover open={isGuestsOpen} onOpenChange={setIsGuestsOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-start text-left font-normal bg-background/80 backdrop-blur-sm">
+                    <Users className="h-4 w-4 mr-2 text-primary" />
+                    <span className="text-sm truncate max-w-[120px]">{guestSummary}</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64" align="center">
+                  <div className="space-y-4">
+                    {/* Adults */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-sm">{t('hotels.adults', 'Yetişkin')}</div>
+                        <div className="text-xs text-muted-foreground">18+ yaş</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('adults', -1)}
+                          disabled={guests.adults <= 1}
+                        >
+                          -
+                        </Button>
+                        <span className="w-8 text-center">{guests.adults}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('adults', 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Children */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-sm">{t('hotels.children', 'Çocuk')}</div>
+                        <div className="text-xs text-muted-foreground">0-17 yaş</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('children', -1)}
+                          disabled={guests.children <= 0}
+                        >
+                          -
+                        </Button>
+                        <span className="w-8 text-center">{guests.children}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('children', 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Rooms */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-sm">{t('hotels.rooms', 'Oda')}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('rooms', -1)}
+                          disabled={guests.rooms <= 1}
+                        >
+                          -
+                        </Button>
+                        <span className="w-8 text-center">{guests.rooms}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => updateGuests('rooms', 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+
+                    <Button 
+                      className="w-full gradient-primary" 
+                      onClick={() => setIsGuestsOpen(false)}
+                    >
+                      {t('common.apply', 'Uygula')}
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              {/* Country Badge */}
               <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
                 <MapPin className="h-4 w-4" />
-                <span>{displayCountry}</span>
+                <span className="text-sm">{displayCountry}</span>
               </div>
             </div>
             
