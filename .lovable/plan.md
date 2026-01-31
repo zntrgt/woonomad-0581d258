@@ -1,65 +1,169 @@
 
-Kapsam (Sorun Tanımı)
-- /sehir/berlin/oteller sayfasında “5 Yıldızlı / Premium” gibi kategori linkine tıklayınca Agoda’da “Aramanızı tamamlarken bir sorun oluştu.” hatası alınabiliyor.
-- Şu an CityHotels.tsx içinde kategori linkleri `getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: ... })` ile üretiliyor; ancak `getAgodaUrl` içinde “stars” parametresi bilerek kullanılmıyor (yorum satırına alınmış). Bu yüzden “5 yıldız” butonu aslında çoğu zaman “normal arama” ile aynı URL’yi üretiyor; yani hatayı tetikleyen şey büyük olasılıkla yıldız filtresi değil, URL parametre kombinasyonu.
+# Uygulama Planı
 
-Hızlı Teşhis (Neyi Kontrol Ettim)
-- CityHotels.tsx içinde 5 yıldız butonu ve bütçe kartlarının hepsi `getAgodaUrl(...)` ile dışarı yönleniyor.
-- getAgodaUrl son değişiklikte `checkOut` parametresini kaldırıp “checkIn + los (length of stay)” modeline geçti. Agoda tarafında bazı lokasyonlarda / bazı senaryolarda “checkOut yokken” arama endpoint’inin hata verebilme ihtimali var (özellikle affiliate cid ile birleşince).
+Kullanıcının 4 farklı isteği var. Bunları tek tek inceleyelim:
 
-Karar Gerektiren Nokta (Widget konusu)
-- “Widget” iki farklı anlama gelebilir:
-  1) Site içinde kendi “otel arama mini arayüzümüz” (tarih/kişi seç, butona basınca Agoda yeni sekmede açılır) — önerdiğim güvenli seçenek.
-  2) Agoda’nın/3. tarafın gömülebilir iframe/script widget’ı — genelde X-Frame-Options / CSP sebebiyle ya çalışmaz ya da tasarım/performans sorunları çıkarabilir.
+---
 
-Bu nedenle planı iki aşamalı yapıyorum: önce link hatasını kökten düzeltip (minimum risk), ardından isterseniz link yerine “site içi widget UI”ya geçmek.
+## 1. Blog Sayfalarına Yazılan Linkleri Otomatik Algıla
 
-Uygulama Planı (Link Hatasını Düzeltme – Öncelikli)
-1) Sorunu net yeniden üretme ve URL doğrulama
-   - /sehir/berlin/oteller sayfasındaki “5 Yıldızlı Oteller” ve “4 Yıldızlı Premium” butonlarının ürettiği gerçek href’leri alıp kaydedeceğim.
-   - Aynı URL’leri:
-     - (a) normal tarayıcı sekmesinde
-     - (b) farklı şehirlerde (Berlin + İzmir gibi)
-     test ederek hatanın “şehir özelinde mi” yoksa “parametre seti özelinde mi” olduğunu netleştireceğim.
+### Mevcut Durum
+- `BlogPost.tsx` içinde `formatInlineText` fonksiyonu var
+- Bu fonksiyon **bold** ve *italic* formatlarını işliyor
+- Şehir isimlerini otomatik internal link'e çeviriyor
+- Ancak Markdown formatındaki external linkler (`[metin](url)`) algılanmıyor
 
-2) getAgodaUrl parametre setini daha “Agoda-uyumlu ve toleranslı” hale getirme
-   - Şu anki: `checkIn + los` yaklaşımını daha güvenli hale getireceğim:
-     - checkIn ve checkOut veriliyorsa:
-       - URL’ye `checkIn` ve `checkOut` ikisini de ekleyeceğim (Agoda’nın en yaygın desteklediği çift).
-       - los’u istersek opsiyonel olarak ekleriz; ama temel doğrulama için checkOut’a geri dönmek daha güvenli.
-     - checkOut yoksa: sadece city + cid + rooms + adults gönderip tarih seçimini Agoda’ya bırakacağım (fallback).
-   - “stars” gibi hata üretebilecek parametreleri eklemeyeceğim (zaten daha önce sorun oluşturduğu biliniyor). Yıldız kategorilerini UI metni olarak tutup, kullanıcıya Agoda’da filtreletmek conversion açısından genelde daha stabil.
+### Yapılacaklar
+1. **`formatInlineText` fonksiyonunu genişlet**:
+   - Markdown link formatı: `[link metni](https://example.com)` 
+   - Regex ile algıla ve `<a>` tag'ine dönüştür
+   - External linkler için `target="_blank"` ve `rel="noopener noreferrer sponsored"` ekle
+   - Internal linkler için (woonomad.co veya `/` ile başlayanlar) normal `<a>` kullan
 
-3) “Kategori linkleri” stratejisini düzeltme (5 yıldız/premium/konfor/bütçe)
-   - Amaç: Her kategori butonu aynı “boş” aramaya gitmesin; en azından farklı bir davranış göstersin.
-   - Önerilen davranış:
-     - 5/4/3 yıldız butonları: sadece şehir araması + tarih/kişi (yıldız parametresi yok) → hata riskini minimize eder.
-     - “Bütçe Dostu”: `sort=priceLowToHigh` kalır (bu parametre genelde güvenli).
-   - Böylece “Premium linkine tıkladım ama aynı sayfa açılıyor” hissi azalır; asıl hedef olan “hatasız açılma” garantiye yaklaşır.
+2. **DOMPurify ayarlarını güncelle**:
+   - `ALLOWED_ATTR` listesine `target` ve `rel` ekle (zaten var, doğrulama gerekli)
 
-4) Doğrulama (bitince yapılacak testler)
-   - Berlin: “5 Yıldızlı Oteller” ve “4 Yıldızlı Premium” tıklayınca Agoda’da hata çıkmıyor mu?
-   - İzmir: “3 Yıldızlı Konfor” ve “Bütçe Dostu” tıklayınca sonuçlar geliyor mu?
-   - 2-3 farklı şehir daha: Tokyo/Paris gibi mapping’i kuvvetli şehirlerde hızlı kontrol.
+---
 
-Uygulama Planı (Link yerine “Widget UI” – İkinci aşama / opsiyonel)
-5) CityHotels sayfasına “Otel Arama Widget” (site içi)
-   - Sayfanın üst CTA alanında zaten var; bunu daha “widget” gibi hale getireceğim:
-     - tarih seçimi (mevcut date-fns akışına uyumlu)
-     - yetişkin/oda seçimi
-     - “Agoda’da Ara” butonu (getAgodaUrl ile açar)
-   - Kategori kartları (Premium/Konfor vb.) tıklanınca:
-     - ya widget içinde “önerilen ayar” preset’i seçtirir (ör. bütçe: fiyat düşükten)
-     - ya da direkt yeni sekmede arama açar.
-   - Avantaj: linkleri azaltır, kullanıcı niyeti netleşir, hata olasılığı düşer.
-   - Not: Agoda sayfasını iframe ile gömmeye çalışmayacağım; büyük olasılıkla engellenir ve SEO/UX’i bozar.
+## 2. Şehir Sayfalarındaki "En İyi Bölgeler"e Tıklayınca Otel Ara
 
-Kritik Notlar / Riskler
-- Agoda tarafındaki hata bazen anlık/region bazlı da olabiliyor. Bu yüzden:
-  - Parametre setini “en basit, en stabil” noktaya çekmek (checkIn+checkOut ya da tarihsiz) en iyi yaklaşım.
-- “5 yıldız filtresi Agoda’da otomatik seçilsin” hedefi, daha önce sorun çıkaran parametreler yüzünden güvenilir değil. Bunu isterseniz ayrı bir iterasyonda, şehir bazında A/B test ederek ele alalım.
+### Mevcut Durum
+- `City.tsx` içinde `getNeighborhoods()` fonksiyonu var (satır 84-156)
+- Bölgeler sadece statik metin olarak gösteriliyor
+- Tıklanabilir değiller
 
-Kabul Kriterleri (Done)
-- Berlin /sehir/berlin/oteller sayfasında premium/5 yıldız butonları Agoda’da hata vermeden açılıyor.
-- İzmir’de 3 yıldız konfor ve bütçe linkleri “sonuç görülebilen” bir aramaya gidiyor.
-- Linklerin hepsi “rel=noopener noreferrer sponsored” ile kalıyor ve tp-em benzeri interceptor’lar devrede değil.
+### Yapılacaklar
+1. **Bölge kartlarını tıklanabilir yap**:
+   - Her bölge kartına Agoda arama linki ekle
+   - `getAgodaUrl` fonksiyonunu kullan
+   - `textToSearch` parametresine bölge + şehir adını ekle (örn: "Kreuzberg Berlin")
+
+2. **UI güncellemesi**:
+   - Bölge kartlarına "Otel Ara" butonu veya tıklanabilir overlay ekle
+   - Hover state ile kullanıcıya tıklanabilir olduğunu göster
+
+---
+
+## 3. Skyscanner Impact API Araştırması
+
+### Araştırma Sonuçları
+Skyscanner iki tür affiliate program sunuyor:
+
+1. **Affiliate Program (Link Bazlı)**:
+   - impact.com üzerinden yönetiliyor
+   - Komisyon bazlı (77% booking artışı case study'de bahsedilmiş)
+   - API gerektirmiyor, sadece affiliate link'ler
+
+2. **Travel API (Partners Program)**:
+   - partners.skyscanner.net üzerinden başvuru gerekli
+   - Tam API erişimi: uçuş arama, fiyat karşılaştırma
+   - Endpoint: `partners.api.skyscanner.net/apiservices/v3/flights/`
+   - API Key gerekli (`x-api-key` header)
+   - Indicative Prices, Live Prices, Autosuggest endpoint'leri var
+
+### Sonuç
+**Evet, Skyscanner API sağlıyor.** Ancak:
+- Partner başvurusu yapılması gerekiyor
+- Onay süreci var
+- Mevcut Travelpayouts entegrasyonuna alternatif olarak değerlendirilebilir
+
+Bu konuda herhangi bir kod değişikliği yapmıyorum - sadece bilgi verdim. İsterseniz Skyscanner Partner başvurusu yapabilirsiniz.
+
+---
+
+## 4. Anchor ID'leri Çalışır Hale Getir
+
+### Mevcut Durum
+- `BlogPost.tsx` içinde heading'lere ID ekleniyor (satır 600-616)
+- `id={`heading-${index}`}` formatında
+- `scroll-mt-20` class'ı var (sticky header için offset)
+- `TableOfContents` bileşeni anchor linkler oluşturuyor (satır 170: `href={`#${heading.id}`}`)
+
+### Sorun
+- Browser'ın native hash navigation'ı çalışmıyor olabilir
+- React Router hash handling eksik olabilir
+- Sayfa yüklendiğinde hash'e scroll yapılmıyor
+
+### Yapılacaklar
+1. **Hash navigation hook'u ekle**:
+   - Sayfa yüklendiğinde URL'deki hash'i kontrol et
+   - İlgili elemente `scrollIntoView` ile scroll yap
+   - `scroll-margin-top` CSS property'si ile header offset'i ayarla
+
+2. **TOC linklerine smooth scroll ekle**:
+   - Click event handler ile native behavior'u override et
+   - `scrollIntoView({ behavior: 'smooth', block: 'start' })` kullan
+
+---
+
+## Teknik Detaylar
+
+### Dosya Değişiklikleri
+
+| Dosya | Değişiklik |
+|-------|------------|
+| `src/pages/BlogPost.tsx` | Markdown link parsing + anchor hash handling |
+| `src/pages/City.tsx` | Neighborhood kartlarına Agoda link ekleme |
+
+### Kod Örnekleri
+
+**1. Markdown Link Parsing (BlogPost.tsx)**
+```typescript
+// formatInlineText içine eklenecek
+// [link metni](url) formatını algıla
+formatted = formatted.replace(
+  /\[([^\]]+)\]\(([^)]+)\)/g,
+  (match, text, url) => {
+    const isExternal = url.startsWith('http');
+    if (isExternal) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline">${text}</a>`;
+    }
+    return `<a href="${url}" class="text-primary hover:underline">${text}</a>`;
+  }
+);
+```
+
+**2. Neighborhood Link (City.tsx)**
+```typescript
+// Bölge kartlarına eklenecek
+const neighborhoodSearchUrl = getAgodaUrl(
+  city.slug, 
+  `${neighborhood.name} ${city.name}`, 
+  checkIn, 
+  checkOut
+);
+```
+
+**3. Anchor Hash Handling (BlogPost.tsx)**
+```typescript
+useEffect(() => {
+  const hash = window.location.hash;
+  if (hash) {
+    const element = document.querySelector(hash);
+    if (element) {
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
+}, [post]);
+```
+
+---
+
+## Uygulama Sırası
+
+1. **Blog Markdown Link Parsing** - Öncelikli (içerik zenginleştirme)
+2. **Anchor ID'leri Düzeltme** - Blog deneyimini iyileştirir
+3. **Neighborhood Otel Arama** - Conversion artırıcı
+4. **Skyscanner** - Sadece bilgi (kod değişikliği yok)
+
+---
+
+## Kabul Kriterleri
+
+- [ ] Blog içeriğindeki `[metin](url)` formatındaki linkler tıklanabilir olacak
+- [ ] External linkler yeni sekmede açılacak, internal linkler aynı sekmede
+- [ ] Şehir sayfasındaki bölge kartlarına tıklayınca Agoda'da o bölge için otel araması açılacak
+- [ ] Blog TOC'taki anchor linkleri çalışacak ve smooth scroll yapacak
+- [ ] Sayfa URL'sinde hash varsa (#heading-5 gibi) sayfa o başlığa scroll edecek
