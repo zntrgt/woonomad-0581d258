@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Hotel, Calendar, Users, MapPin, Search } from 'lucide-react';
+import { Hotel, Calendar as CalendarIcon, Users, MapPin, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { getAgodaUrl } from '@/lib/agodaMapping';
 
 // Popular hotel destinations
 const popularDestinations = [
-  { name: 'İstanbul', slug: 'istanbul', flag: '🇹🇷' },
-  { name: 'Antalya', slug: 'antalya', flag: '🇹🇷' },
-  { name: 'Paris', slug: 'paris', flag: '🇫🇷' },
-  { name: 'Barcelona', slug: 'barcelona', flag: '🇪🇸' },
-  { name: 'Roma', slug: 'roma', flag: '🇮🇹' },
-  { name: 'Amsterdam', slug: 'amsterdam', flag: '🇳🇱' },
-  { name: 'Dubai', slug: 'dubai', flag: '🇦🇪' },
-  { name: 'Tokyo', slug: 'tokyo', flag: '🇯🇵' },
+  { name: 'İstanbul', slug: 'istanbul', flag: '🇹🇷', nameEn: 'Istanbul' },
+  { name: 'Antalya', slug: 'antalya', flag: '🇹🇷', nameEn: 'Antalya' },
+  { name: 'Paris', slug: 'paris', flag: '🇫🇷', nameEn: 'Paris' },
+  { name: 'Barcelona', slug: 'barcelona', flag: '🇪🇸', nameEn: 'Barcelona' },
+  { name: 'Roma', slug: 'roma', flag: '🇮🇹', nameEn: 'Rome' },
+  { name: 'Amsterdam', slug: 'amsterdam', flag: '🇳🇱', nameEn: 'Amsterdam' },
+  { name: 'Dubai', slug: 'dubai', flag: '🇦🇪', nameEn: 'Dubai' },
+  { name: 'Tokyo', slug: 'tokyo', flag: '🇯🇵', nameEn: 'Tokyo' },
 ];
 
 interface HotelSearchFormProps {
@@ -29,11 +30,19 @@ interface HotelSearchFormProps {
 export function HotelSearchForm({ variant = 'full', className }: HotelSearchFormProps) {
   const navigate = useNavigate();
   const [destination, setDestination] = useState('');
+  const [selectedDest, setSelectedDest] = useState<typeof popularDestinations[0] | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [checkIn, setCheckIn] = useState<Date | undefined>(addDays(new Date(), 7));
-  const [checkOut, setCheckOut] = useState<Date | undefined>(addDays(new Date(), 9));
+  
+  // Interactive date/guest states
+  const today = new Date();
+  const [checkInDate, setCheckInDate] = useState<Date>(addDays(today, 7));
+  const [checkOutDate, setCheckOutDate] = useState<Date>(addDays(today, 9));
   const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
   const [isGuestsOpen, setIsGuestsOpen] = useState(false);
+  
+  // Format dates
+  const checkIn = format(checkInDate, 'yyyy-MM-dd');
+  const checkOut = format(checkOutDate, 'yyyy-MM-dd');
 
   const filteredDestinations = destination.length > 0
     ? popularDestinations.filter(d => 
@@ -43,18 +52,24 @@ export function HotelSearchForm({ variant = 'full', className }: HotelSearchForm
 
   const handleDestinationSelect = (dest: typeof popularDestinations[0]) => {
     setDestination(dest.name);
+    setSelectedDest(dest);
     setShowSuggestions(false);
   };
 
   const handleSearch = () => {
-    const selectedDest = popularDestinations.find(
+    const dest = selectedDest || popularDestinations.find(
       d => d.name.toLowerCase() === destination.toLowerCase()
     );
     
-    if (selectedDest) {
-      navigate(`/sehir/${selectedDest.slug}/oteller`);
+    if (dest) {
+      // Generate Agoda affiliate URL with dates
+      const agodaUrl = getAgodaUrl(dest.slug, dest.nameEn, checkIn, checkOut, {
+        adults: guests.adults,
+        rooms: guests.rooms
+      });
+      window.open(agodaUrl, '_blank', 'noopener,noreferrer');
     } else if (destination) {
-      // Try to find a matching city
+      // Fallback to city page
       const slug = destination.toLowerCase()
         .replace(/ı/g, 'i')
         .replace(/ğ/g, 'g')
@@ -163,18 +178,20 @@ export function HotelSearchForm({ variant = 'full', className }: HotelSearchForm
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-start text-left font-normal">
-                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                {checkIn ? format(checkIn, 'd MMM', { locale: tr }) : 'Tarih seç'}
+                <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                {format(checkInDate, 'd MMM', { locale: tr })}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent
+            <PopoverContent className="w-auto p-0 z-50" align="start">
+              <Calendar
                 mode="single"
-                selected={checkIn}
+                selected={checkInDate}
                 onSelect={(date) => {
-                  setCheckIn(date);
-                  if (date && (!checkOut || checkOut <= date)) {
-                    setCheckOut(addDays(date, 2));
+                  if (date) {
+                    setCheckInDate(date);
+                    if (checkOutDate <= date) {
+                      setCheckOutDate(addDays(date, 2));
+                    }
                   }
                 }}
                 disabled={(date) => date < new Date()}
@@ -190,16 +207,16 @@ export function HotelSearchForm({ variant = 'full', className }: HotelSearchForm
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-start text-left font-normal">
-                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                {checkOut ? format(checkOut, 'd MMM', { locale: tr }) : 'Tarih seç'}
+                <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                {format(checkOutDate, 'd MMM', { locale: tr })}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent
+            <PopoverContent className="w-auto p-0 z-50" align="start">
+              <Calendar
                 mode="single"
-                selected={checkOut}
-                onSelect={setCheckOut}
-                disabled={(date) => date < (checkIn || new Date())}
+                selected={checkOutDate}
+                onSelect={(date) => date && setCheckOutDate(date)}
+                disabled={(date) => date <= checkInDate}
                 initialFocus
               />
             </PopoverContent>
