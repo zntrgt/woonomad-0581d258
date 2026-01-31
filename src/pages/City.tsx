@@ -21,7 +21,8 @@ import {
   Coffee,
   Search,
   AlertTriangle,
-  Compass
+  Compass,
+  ExternalLink
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -41,6 +42,7 @@ import { nomadMetrics, coworkingSpaces } from '@/lib/nomad';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 import { EsimWidget } from '@/components/EsimWidget';
+import { getAgodaUrl, getCityEnglishName } from '@/lib/agodaMapping';
 
 // Helper to check if city has sufficient data
 const hasSufficientData = (city: CityInfo): boolean => {
@@ -548,20 +550,37 @@ const City = () => {
                     {city.name}'de konaklama için en popüler mahalleler ve her birinin sunduğu deneyimler:
                   </p>
                   <div className="space-y-4">
-                    {neighborhoods.map((neighborhood, index) => (
-                      <div 
-                        key={index}
-                        className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <MapPin className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold mb-1">{neighborhood.name}</h3>
-                          <p className="text-sm text-muted-foreground">{neighborhood.description}</p>
-                        </div>
-                      </div>
-                    ))}
+                    {neighborhoods.map((neighborhood, index) => {
+                      // Generate Agoda search URL for this neighborhood
+                      const cityEnName = getCityEnglishName(city.slug) || city.nameEn || city.name;
+                      const searchQuery = `${neighborhood.name} ${cityEnName}`;
+                      const neighborhoodUrl = getAgodaUrl(city.slug, searchQuery);
+                      
+                      return (
+                        <a 
+                          key={index}
+                          href={neighborhoodUrl}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-primary/10 transition-colors group cursor-pointer"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <MapPin className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                              {neighborhood.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">{neighborhood.description}</p>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                            <Hotel className="w-4 h-4" />
+                            <span>Otel Ara</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </div>
+                        </a>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
