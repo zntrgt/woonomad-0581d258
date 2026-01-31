@@ -461,7 +461,7 @@ const City = () => {
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 min-w-0">
               
               {/* H2: About City */}
               <Card variant="elevated">
@@ -733,7 +733,7 @@ const City = () => {
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {neighborhoods.map((neighborhood, index) => {
                       // Generate Agoda search URL for this neighborhood with selected dates
                       const cityEnName = getCityEnglishName(city.slug) || city.nameEn || city.name;
@@ -749,18 +749,18 @@ const City = () => {
                           href={neighborhoodUrl}
                           target="_blank"
                           rel="noopener noreferrer sponsored"
-                          className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-primary/10 transition-colors group cursor-pointer"
+                          className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-muted/50 hover:bg-primary/10 transition-colors group cursor-pointer"
                         >
-                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <MapPin className="w-5 h-5 text-primary" />
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold mb-0.5 sm:mb-1 group-hover:text-primary transition-colors text-sm sm:text-base">
                               {neighborhood.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground">{neighborhood.description}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{neighborhood.description}</p>
                           </div>
-                          <div className="flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                          <div className="hidden sm:flex items-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                             <Hotel className="w-4 h-4" />
                             <span>Otel Ara</span>
                             <ExternalLink className="w-3 h-3" />
@@ -970,9 +970,9 @@ const City = () => {
             </div>
 
             {/* Right Column - Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
               {/* Quick Info Card */}
-              <Card variant="elevated" className="sticky top-20">
+              <Card variant="elevated" className="sticky top-20 overflow-hidden">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-display font-bold mb-4">
                     {city.name} Hızlı Bilgiler
