@@ -147,9 +147,19 @@ function RelatedPostCard({ post }: { post: BlogPostType }) {
   );
 }
 
-// Table of Contents Component
+// Table of Contents Component with smooth scroll
 function TableOfContents({ headings }: { headings: { id: string; text: string; level: number }[] }) {
   if (headings.length === 0) return null;
+  
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update URL hash without jumping
+      window.history.pushState(null, '', `#${id}`);
+    }
+  };
   
   return (
     <nav className="card-modern p-5 mb-8" aria-label="İçindekiler">
@@ -163,11 +173,15 @@ function TableOfContents({ headings }: { headings: { id: string; text: string; l
           <li 
             key={heading.id}
             className={cn(
-              "hover:text-primary transition-colors",
+              "hover:text-primary transition-colors cursor-pointer",
               heading.level === 3 && "ml-4"
             )}
           >
-            <a href={`#${heading.id}`} className="flex items-start gap-2">
+            <a 
+              href={`#${heading.id}`} 
+              onClick={(e) => handleClick(e, heading.id)}
+              className="flex items-start gap-2"
+            >
               <span className="text-muted-foreground">{index + 1}.</span>
               <span>{heading.text}</span>
             </a>
@@ -272,7 +286,6 @@ export default function BlogPost() {
     
     fetchPost();
   }, [slug]);
-  
   // Convert backend post to BlogPostType format
   const post: BlogPostType | undefined = useMemo(() => {
     if (backendPost) {
@@ -320,6 +333,22 @@ export default function BlogPost() {
     }
     return post;
   }, [post, translatedContent, language]);
+  
+  // Handle hash navigation on page load and post change
+  useEffect(() => {
+    if (!post) return;
+    
+    const hash = window.location.hash;
+    if (hash) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
+    }
+  }, [post]);
   
   // Extract headings for TOC
   const headings = useMemo(() => {
@@ -682,13 +711,28 @@ export default function BlogPost() {
     return elements;
   };
 
-  // Format bold text with XSS sanitization and internal linking
+  // Format bold text with XSS sanitization, internal linking, and markdown links
   const formatInlineText = (text: string) => {
-    let formatted = text
+    let formatted = text;
+    
+    // First, parse markdown-style links: [link text](url)
+    formatted = formatted.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (match, linkText, url) => {
+        const isExternal = url.startsWith('http');
+        if (isExternal) {
+          return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline">${linkText}</a>`;
+        }
+        return `<a href="${url}" class="text-primary hover:underline">${linkText}</a>`;
+      }
+    );
+    
+    // Bold and italic formatting
+    formatted = formatted
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-    // Add internal links for city names
+    // Add internal links for city names (but not inside already created links)
     allCities.forEach(city => {
       const regex = new RegExp(`\\b${city.name}\\b(?![^<]*>)`, 'gi');
       formatted = formatted.replace(regex, `<a href="/sehir/${city.slug}" class="text-primary hover:underline">${city.name}</a>`);
