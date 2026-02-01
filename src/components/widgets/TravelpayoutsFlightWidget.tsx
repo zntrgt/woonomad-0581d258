@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, useId } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
-import { WidgetContainer, WidgetFallback } from './WidgetContainer';
 import { format, addDays } from 'date-fns';
+import { Plane, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Travelpayouts partner ID - public affiliate ID, safe to expose
 const PARTNER_ID = '604466';
@@ -14,7 +14,7 @@ interface TravelpayoutsFlightWidgetProps {
   oneWay?: boolean;
 }
 
-// Language mapping for Travelpayouts
+// Language mapping for Aviasales URL
 const langMap: Record<string, string> = {
   tr: 'tr',
   en: 'en',
@@ -24,15 +24,6 @@ const langMap: Record<string, string> = {
   ar: 'ar',
 };
 
-// Currency mapping
-const currencyMap: Record<string, string> = {
-  TRY: 'try',
-  USD: 'usd',
-  EUR: 'eur',
-  GBP: 'gbp',
-  AED: 'aed',
-};
-
 export function TravelpayoutsFlightWidget({
   origin = '',
   destination = '',
@@ -40,95 +31,64 @@ export function TravelpayoutsFlightWidget({
   className,
   oneWay = false,
 }: TravelpayoutsFlightWidgetProps) {
-  const { language, currency } = useSettings();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const widgetId = useId().replace(/:/g, '');
+  const { language } = useSettings();
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  // Calculate dynamic dates (7 days from now for departure, 14 days for return)
+  const today = new Date();
+  const departureDate = format(addDays(today, 7), 'ddMM');
+  const returnDate = oneWay ? '' : format(addDays(today, 14), 'ddMM');
 
-    setIsLoading(true);
-    setHasError(false);
+  // Build Aviasales search URL
+  const searchPath = origin && destination
+    ? `${origin}${departureDate}${destination}${returnDate}1`
+    : '';
 
-    // Clear previous widget
-    container.innerHTML = '';
+  const aviasalesUrl = searchPath
+    ? `https://www.aviasales.${langMap[language] === 'tr' ? 'com.tr' : 'com'}/search/${searchPath}?marker=${PARTNER_ID}.${subId}`
+    : `https://www.aviasales.${langMap[language] === 'tr' ? 'com.tr' : 'com'}/?marker=${PARTNER_ID}.${subId}`;
 
-    // Create widget container div
-    const widgetDiv = document.createElement('div');
-    widgetDiv.id = `tp-widget-${widgetId}`;
-    container.appendChild(widgetDiv);
-
-    // Build widget script URL with parameters
-    const params = new URLSearchParams({
-      marker: PARTNER_ID,
-      host: 'search.aviasales.com',
-      locale: langMap[language] || 'en',
-      currency: currencyMap[currency] || 'try',
-      powered_by: 'true',
-      one_way: oneWay ? 'true' : 'false',
-      ...(origin && { origin }),
-      ...(destination && { destination }),
-      ...(subId && { subId }),
-    });
-
-    // Calculate dynamic dates (7 days from now for departure, 14 days for return)
-    const today = new Date();
-    const departureDate = format(addDays(today, 7), 'yyyy-MM-dd');
-    const returnDate = format(addDays(today, 14), 'yyyy-MM-dd');
-
-    // Load the Travelpayouts widget script with dynamic dates
-    const script = document.createElement('script');
-    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&origin=${origin}&destination=${destination}&one_way=${oneWay}&depart_date=${departureDate}&return_date=${returnDate}&promo_id=4132&campaign_id=100`;
-    script.async = true;
-    script.charset = 'utf-8';
-
-    script.onload = () => {
-      setIsLoading(false);
-    };
-
-    script.onerror = () => {
-      setIsLoading(false);
-      setHasError(true);
-    };
-
-    // Add timeout for loading state
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
-
-    container.appendChild(script);
-
-    return () => {
-      clearTimeout(timeout);
-      if (container) {
-        container.innerHTML = '';
-      }
-    };
-  }, [language, currency, origin, destination, oneWay, subId, widgetId]);
-
-  const fallbackUrl = origin && destination
-    ? `https://www.aviasales.com/search/${origin}${destination}1?marker=${PARTNER_ID}`
-    : `https://www.aviasales.com/?marker=${PARTNER_ID}`;
+  const displayOrigin = origin || 'IST';
+  const displayDestination = destination || 'Tüm Destinasyonlar';
 
   return (
-    <WidgetContainer
-      className={className}
-      isLoading={isLoading}
-      loadingText="Uçuş arama yükleniyor..."
-      minHeight="400px"
-    >
-      <div ref={containerRef} className="w-full min-h-[400px]" />
-      {hasError && (
-        <WidgetFallback
-          title="Widget yüklenemedi"
-          description="Doğrudan arama yapmak için aşağıdaki butonu kullanın"
-          actionUrl={fallbackUrl}
-          actionText="Aviasales'te Ara"
-        />
-      )}
-    </WidgetContainer>
+    <div className={`relative w-full rounded-xl overflow-hidden bg-card border border-border p-6 ${className || ''}`}>
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <Plane className="h-8 w-8 text-primary" />
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-foreground">
+            {origin && destination 
+              ? `${origin} → ${destination} Uçuşları`
+              : 'Ucuz Uçuş Bileti Bul'}
+          </h3>
+          <p className="text-muted-foreground text-sm max-w-md">
+            {origin && destination 
+              ? `${displayOrigin} - ${displayDestination} arası en uygun fiyatlı uçuşları karşılaştırın`
+              : 'Binlerce havayolu ve seyahat acentesinden en iyi fiyatları karşılaştırın'}
+          </p>
+        </div>
+
+        <Button
+          asChild
+          size="lg"
+          className="gap-2"
+        >
+          <a
+            href={aviasalesUrl}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            Aviasales'te Ara
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </Button>
+
+        <p className="text-xs text-muted-foreground">
+          Aviasales ile {origin && destination ? 'bu rota için' : ''} en düşük fiyatları bulun
+        </p>
+      </div>
+    </div>
   );
 }
