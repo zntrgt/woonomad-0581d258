@@ -144,6 +144,47 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'melbourne': { cityId: '6474', lat: -37.8136, lng: 144.9631, nameEn: 'Melbourne' },
   'auckland': { cityId: '2205', lat: -36.8509, lng: 174.7645, nameEn: 'Auckland' },
   'fiji': { cityId: '2933', lat: -17.7134, lng: 177.9999, nameEn: 'Fiji' },
+  
+  // === EK TÜRKİYE ===
+  'dalaman': { cityId: '504856', lat: 36.7110, lng: 28.7925, nameEn: 'Dalaman' },
+  'gaziantep': { cityId: '17880', lat: 37.0662, lng: 37.3833, nameEn: 'Gaziantep' },
+  'konya': { cityId: '17879', lat: 37.8714, lng: 32.4847, nameEn: 'Konya' },
+  'adana': { cityId: '17071', lat: 36.9914, lng: 35.3308, nameEn: 'Adana' },
+  
+  // === EK AVRUPA (yalnızca yeni olanlar) ===
+  'malaga': { cityId: '6386', lat: 36.7213, lng: -4.4216, nameEn: 'Malaga' },
+  'valencia': { cityId: '10165', lat: 39.4699, lng: -0.3763, nameEn: 'Valencia' },
+  'sevilla': { cityId: '9152', lat: 37.3891, lng: -5.9845, nameEn: 'Seville' },
+  'napoli': { cityId: '6664', lat: 40.8518, lng: 14.2681, nameEn: 'Naples' },
+  'lyon': { cityId: '5990', lat: 45.7640, lng: 4.8357, nameEn: 'Lyon' },
+  'bruksel': { cityId: '2525', lat: 50.8503, lng: 4.3517, nameEn: 'Brussels' },
+  'zurich': { cityId: '10497', lat: 47.3769, lng: 8.5417, nameEn: 'Zurich' },
+  'cenevre': { cityId: '3036', lat: 46.2044, lng: 6.1432, nameEn: 'Geneva' },
+  'krakow': { cityId: '5346', lat: 50.0647, lng: 19.9450, nameEn: 'Krakow' },
+  'selanik': { cityId: '9836', lat: 40.6401, lng: 22.9444, nameEn: 'Thessaloniki' },
+  'sofya': { cityId: '9324', lat: 42.6977, lng: 23.3219, nameEn: 'Sofia' },
+  'bukres': { cityId: '2521', lat: 44.4268, lng: 26.1025, nameEn: 'Bucharest' },
+  'riga': { cityId: '8423', lat: 56.9496, lng: 24.1052, nameEn: 'Riga' },
+  'tallinn': { cityId: '9655', lat: 59.4370, lng: 24.7536, nameEn: 'Tallinn' },
+  'vilnius': { cityId: '10262', lat: 54.6872, lng: 25.2797, nameEn: 'Vilnius' },
+  
+  // === EK ASYA (yalnızca yeni sluglar) ===
+  'chiangmai': { cityId: '2588', lat: 18.7883, lng: 98.9853, nameEn: 'Chiang Mai' },
+  'kualalumpur': { cityId: '5379', lat: 3.1390, lng: 101.6869, nameEn: 'Kuala Lumpur' },
+  'hongkong': { cityId: '3310', lat: 22.3193, lng: 114.1694, nameEn: 'Hong Kong' },
+  'hochiminh': { cityId: '3304', lat: 10.8231, lng: 106.6297, nameEn: 'Ho Chi Minh City' },
+  
+  // === EK ORTADOĞU & AFRİKA ===
+  'abudabi': { cityId: '1775', lat: 24.4539, lng: 54.3773, nameEn: 'Abu Dhabi' },
+  'capetown': { cityId: '2564', lat: -33.9249, lng: 18.4241, nameEn: 'Cape Town' },
+  'mauritius': { cityId: '6460', lat: -20.3484, lng: 57.5522, nameEn: 'Mauritius' },
+  'seyseller': { cityId: '9141', lat: -4.6796, lng: 55.4920, nameEn: 'Seychelles' },
+  
+  // === EK AMERİKA (yalnızca yeni sluglar) ===
+  'losangeles': { cityId: '6003', lat: 34.0522, lng: -118.2437, nameEn: 'Los Angeles' },
+  'lasvegas': { cityId: '5583', lat: 36.1699, lng: -115.1398, nameEn: 'Las Vegas' },
+  'sanfrancisco': { cityId: '9101', lat: 37.7749, lng: -122.4194, nameEn: 'San Francisco' },
+  'buenosaires': { cityId: '2531', lat: -34.6037, lng: -58.3816, nameEn: 'Buenos Aires' },
 };
 
 // Generate Agoda affiliate URL with proper destination targeting

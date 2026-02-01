@@ -1,94 +1,42 @@
-import { useSettings } from '@/contexts/SettingsContext';
-import { format, addDays } from 'date-fns';
-import { Plane, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-
-// Travelpayouts partner ID - public affiliate ID, safe to expose
-const PARTNER_ID = '604466';
+import { useEffect, useRef } from 'react';
 
 interface TravelpayoutsFlightWidgetProps {
-  origin?: string; // IATA code (e.g., 'IST')
-  destination?: string; // IATA code (e.g., 'BCN')
-  subId?: string; // Tracking sub ID
+  origin?: string; // IATA code (e.g., 'IST') - preserved for API compatibility
+  destination?: string; // IATA code (e.g., 'BCN') - preserved for API compatibility
+  subId?: string; // Tracking sub ID - preserved for API compatibility
   className?: string;
-  oneWay?: boolean;
 }
 
-// Language mapping for Aviasales URL
-const langMap: Record<string, string> = {
-  tr: 'tr',
-  en: 'en',
-  de: 'de',
-  fr: 'fr',
-  es: 'es',
-  ar: 'ar',
-};
-
 export function TravelpayoutsFlightWidget({
-  origin = '',
-  destination = '',
-  subId = 'homepage',
   className,
-  oneWay = false,
 }: TravelpayoutsFlightWidgetProps) {
-  const { language } = useSettings();
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Calculate dynamic dates (7 days from now for departure, 14 days for return)
-  const today = new Date();
-  const departureDate = format(addDays(today, 7), 'ddMM');
-  const returnDate = oneWay ? '' : format(addDays(today, 14), 'ddMM');
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-  // Build Aviasales search URL
-  const searchPath = origin && destination
-    ? `${origin}${departureDate}${destination}${returnDate}1`
-    : '';
+    // Clear any existing content
+    containerRef.current.innerHTML = '';
 
-  const aviasalesUrl = searchPath
-    ? `https://www.aviasales.${langMap[language] === 'tr' ? 'com.tr' : 'com'}/search/${searchPath}?marker=${PARTNER_ID}.${subId}`
-    : `https://www.aviasales.${langMap[language] === 'tr' ? 'com.tr' : 'com'}/?marker=${PARTNER_ID}.${subId}`;
+    // Create script element with real Travelpayouts widget code
+    const script = document.createElement('script');
+    script.src = 'https://tpemd.com/content?currency=try&trs=485218&shmarker=261144&show_hotels=true&powered_by=true&locale=tr&searchUrl=woonomad.co%2Fflights&primary_override=%2332a8dd&color_button=%2332a8dd&color_icons=%2332a8dd&dark=%23262626&light=%23FFFFFF&secondary=%23FFFFFF&special=%23C4C4C4&color_focused=%2332a8dd&border_radius=0&plain=false&promo_id=7879&campaign_id=100';
+    script.async = true;
+    script.charset = 'utf-8';
 
-  const displayOrigin = origin || 'IST';
-  const displayDestination = destination || 'Tüm Destinasyonlar';
+    containerRef.current.appendChild(script);
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+    };
+  }, []);
 
   return (
-    <div className={`relative w-full rounded-xl overflow-hidden bg-card border border-border p-6 ${className || ''}`}>
-      <div className="flex flex-col items-center justify-center text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-          <Plane className="h-8 w-8 text-primary" />
-        </div>
-        
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-foreground">
-            {origin && destination 
-              ? `${origin} → ${destination} Uçuşları`
-              : 'Ucuz Uçuş Bileti Bul'}
-          </h3>
-          <p className="text-muted-foreground text-sm max-w-md">
-            {origin && destination 
-              ? `${displayOrigin} - ${displayDestination} arası en uygun fiyatlı uçuşları karşılaştırın`
-              : 'Binlerce havayolu ve seyahat acentesinden en iyi fiyatları karşılaştırın'}
-          </p>
-        </div>
-
-        <Button
-          asChild
-          size="lg"
-          className="gap-2"
-        >
-          <a
-            href={aviasalesUrl}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-          >
-            Aviasales'te Ara
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        </Button>
-
-        <p className="text-xs text-muted-foreground">
-          Aviasales ile {origin && destination ? 'bu rota için' : ''} en düşük fiyatları bulun
-        </p>
-      </div>
-    </div>
+    <div 
+      ref={containerRef}
+      className={`w-full min-h-[200px] ${className || ''}`}
+    />
   );
 }
