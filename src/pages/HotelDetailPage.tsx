@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { 
   Hotel, Star, MapPin, Calendar, Users, Wifi, Coffee, Car, Dumbbell, 
   ExternalLink, ChevronRight, Clock, CreditCard, Shield, Check, 
-  Building2, Loader2, ArrowRight
+  Building2, ArrowRight
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { getCityBySlug } from '@/lib/cities';
 import { getHotelBySlug, getRelatedHotels, HotelData } from '@/lib/hotels';
 import { getCountryFlag } from '@/lib/destinations';
-import { useHotelSearch, Hotel as APIHotel } from '@/hooks/useHotelSearch';
+import { Hotel as APIHotel } from '@/lib/hotelTypes';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
@@ -73,25 +73,12 @@ const HotelDetailPage = () => {
   const city = citySlug ? getCityBySlug(citySlug) : null;
   const hotel = hotelSlug ? getHotelBySlug(hotelSlug) : null;
   const relatedHotels = hotel ? getRelatedHotels(hotel.slug, hotel.citySlug, 4) : [];
-  const { hotels: apiHotels, isLoading, searchHotels } = useHotelSearch();
   
   const currentYear = new Date().getFullYear();
   const today = new Date();
   const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
   const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
   const lastUpdated = format(today, 'd MMMM yyyy', { locale: tr });
-
-  useEffect(() => {
-    if (city && hotel) {
-      searchHotels({
-        location: city.nameEn || city.name,
-        checkIn,
-        checkOut,
-        adults: 2,
-        limit: 1,
-      });
-    }
-  }, [city, hotel]);
 
   if (!city || !hotel) {
     return (
@@ -283,18 +270,13 @@ const HotelDetailPage = () => {
                     <div className="font-medium">{hotel.neighborhood || city.name}</div>
                   </div>
                   
-                  {/* Live API Price */}
+                  {/* Price Display */}
                   <div className="space-y-1">
                     <div className="text-xs text-muted-foreground flex items-center gap-1">
-                      Güncel Fiyat
-                      {isLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                      Tahmini Fiyat
                     </div>
                     <div className="font-medium text-primary">
-                      {isLoading ? (
-                        <span className="text-muted-foreground">Yükleniyor...</span>
-                      ) : apiHotels.length > 0 && apiHotels[0].priceFrom ? (
-                        <>₺{apiHotels[0].priceFrom.toLocaleString('tr-TR')}/gece</>
-                      ) : hotel.priceRange ? (
+                      {hotel.priceRange ? (
                         <>₺{hotel.priceRange.min.toLocaleString('tr-TR')}+</>
                       ) : (
                         <span className="text-muted-foreground">—</span>
@@ -428,64 +410,38 @@ const HotelDetailPage = () => {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Price Card with Live Data */}
+              {/* Price Card */}
               <Card className="sticky top-4">
                 <CardContent className="p-6 text-center">
                   <div className="text-sm text-muted-foreground mb-1">
-                    {isLoading ? 'Fiyat kontrol ediliyor...' : 'Güncel gecelik fiyat'}
+                    Tahmini gecelik fiyat
                   </div>
                   
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-2 py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                    </div>
-                  ) : (
-                    <div className="text-3xl font-display font-bold text-primary mb-2">
-                      {apiHotels.length > 0 && apiHotels[0].priceFrom ? (
-                        <>₺{apiHotels[0].priceFrom.toLocaleString('tr-TR')}</>
-                      ) : hotel.priceRange ? (
-                        <>₺{hotel.priceRange.min.toLocaleString('tr-TR')}+</>
-                      ) : (
-                        <span className="text-lg">Fiyat bilgisi yok</span>
-                      )}
-                    </div>
-                  )}
+                  <div className="text-3xl font-display font-bold text-primary mb-2">
+                    {hotel.priceRange ? (
+                      <>₺{hotel.priceRange.min.toLocaleString('tr-TR')}+</>
+                    ) : (
+                      <span className="text-lg">Fiyat bilgisi yok</span>
+                    )}
+                  </div>
                   
-                  {apiHotels.length > 0 && apiHotels[0].link ? (
-                    <a 
-                      href={apiHotels[0].link}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="block"
-                    >
-                      <Button className="w-full gradient-primary mb-3">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Hotellook'ta Gör
-                      </Button>
-                    </a>
-                  ) : (
-                    <Button className="w-full gradient-primary mb-3">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Rezervasyon Yap
-                    </Button>
-                  )}
+                  <Button className="w-full gradient-primary mb-3">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Rezervasyon Yap
+                  </Button>
                   
                   <p className="text-xs text-muted-foreground">
-                    {apiHotels.length > 0 ? (
-                      <>Hotellook üzerinden canlı fiyat</>
-                    ) : (
-                      <>Fiyatlar sezona göre değişebilir</>
-                    )}
+                    Fiyatlar sezona göre değişebilir
                   </p>
                   
-                  {apiHotels.length > 0 && apiHotels[0].rating > 0 && (
+                  {hotel.rating && hotel.rating > 0 && (
                     <div className="mt-3 pt-3 border-t">
                       <div className="flex items-center justify-center gap-2">
                         <Star className="h-4 w-4 fill-travel-gold text-travel-gold" />
-                        <span className="font-semibold">{apiHotels[0].rating.toFixed(1)}</span>
-                        {apiHotels[0].reviews > 0 && (
+                        <span className="font-semibold">{hotel.rating.toFixed(1)}</span>
+                        {hotel.reviewCount && hotel.reviewCount > 0 && (
                           <span className="text-xs text-muted-foreground">
-                            ({apiHotels[0].reviews} yorum)
+                            ({hotel.reviewCount} yorum)
                           </span>
                         )}
                       </div>

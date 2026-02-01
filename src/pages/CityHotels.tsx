@@ -27,6 +27,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { TravelpayoutsHotelWidget } from '@/components/widgets';
 
 const CityHotels = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -344,6 +345,22 @@ const CityHotels = () => {
                 <ExternalLink className="h-4 w-4" />
               </Button>
             </a>
+          </section>
+          
+          {/* Travelpayouts Hotel Widget */}
+          <section className="mb-8">
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <h2 className="text-lg font-display font-semibold mb-4 flex items-center gap-2">
+                  <Hotel className="h-5 w-5 text-primary" />
+                  {displayName} {t('hotels.searchWidget', 'Otel Arama')}
+                </h2>
+                <TravelpayoutsHotelWidget 
+                  cityName={city.nameEn || city.name}
+                  subId={`city-hotels-${citySlug}`}
+                />
+              </CardContent>
+            </Card>
           </section>
           
           {/* Quick Stats */}
