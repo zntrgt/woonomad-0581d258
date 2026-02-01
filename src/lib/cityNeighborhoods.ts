@@ -284,6 +284,250 @@ export const cityNeighborhoodsData: Record<string, CityNeighborhoodData> = {
     transportTip: 'Metro Zona Sul\'u kapsar. Uber ve 99 (yerel uygulama) güvenilir. Galeão\'dan merkeze Uber yaklaşık 1 saat.',
     safetyNote: 'Plajlarda değerli eşya bırakmayın. Gece favela çevresinden kaçının. Turistik bölgeler güvenli.',
   },
+  // === YENİ EKLENDİ - ASYA ===
+  'osaka': {
+    neighborhoods: [
+      { name: 'Namba', nameEn: 'Namba', description: 'Dotonbori neon sokağı, takoyaki ve gece hayatı merkezi.', forWhom: 'Yemek tutkunları, gece kuşları', priceLevel: 'orta' },
+      { name: 'Umeda', nameEn: 'Umeda', description: 'İş merkezi, gökdelenler ve lüks alışveriş.', forWhom: 'İş seyahati, şık oteller', priceLevel: 'lüks' },
+      { name: 'Shinsaibashi', nameEn: 'Shinsaibashi', description: 'Kapalı alışveriş sokağı, moda ve Amerika-mura.', forWhom: 'Alışveriş tutkunları, gençler', priceLevel: 'orta' },
+      { name: 'Tennoji', nameEn: 'Tennoji', description: 'Geleneksel tapınaklar, hayvanat bahçesi ve bütçe oteller.', forWhom: 'Aileler, bütçe bilinçli', priceLevel: 'ekonomik' },
+      { name: 'Shinsekai', nameEn: 'Shinsekai', description: 'Retro atmosfer, kushikatsu ve Tsutenkaku Kulesi.', forWhom: 'Yerel deneyim, street food', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'ICOCA kartı ile metro, tren ve otobüs. Kansai havalimanından Nankai ile Namba\'ya 45 dk.',
+    safetyNote: 'Osaka Tokyo kadar güvenli. Gece bile her yerde rahat gezebilirsiniz.',
+  },
+  'phuket': {
+    neighborhoods: [
+      { name: 'Patong', nameEn: 'Patong Beach', description: 'Canlı gece hayatı, Bangla Road ve geniş kumsal.', forWhom: 'Parti sevenler, gece kuşları', priceLevel: 'orta' },
+      { name: 'Kata', nameEn: 'Kata Beach', description: 'Aileler için sakin plaj, sörf okulu ve rahat atmosfer.', forWhom: 'Aileler, sörf', priceLevel: 'orta' },
+      { name: 'Kamala', nameEn: 'Kamala Beach', description: 'Lüks resortlar, wellness ve sakin günbatımı.', forWhom: 'Çiftler, wellness', priceLevel: 'lüks' },
+      { name: 'Phuket Town', nameEn: 'Phuket Old Town', description: 'Sino-Portekiz mimarisi, yerel yemekler ve pazarlar.', forWhom: 'Kültür meraklıları, fotoğrafçılar', priceLevel: 'ekonomik' },
+      { name: 'Rawai', nameEn: 'Rawai', description: 'Balıkçı köyü, deniz mahsulleri ve yerel yaşam.', forWhom: 'Uzun konaklama, yerel deneyim', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Songthaew (paylaşımlı taksi) veya Grab. Scooter kiralamak popüler ama trafik kurallarına dikkat.',
+    safetyNote: 'Phuket güvenli. Jet ski ve tur satıcılarında pazarlık yapın, yazılı anlaşma isteyin.',
+  },
+  'chiang-mai': {
+    neighborhoods: [
+      { name: 'Old City', nameEn: 'Old City', description: 'Sur içi, tapınaklar ve pazar sokakları.', forWhom: 'İlk kez gelenler, tarih severler', priceLevel: 'ekonomik' },
+      { name: 'Nimman', nameEn: 'Nimman Road', description: 'Hipster kafeler, coworking space\'ler ve butik oteller.', forWhom: 'Dijital göçebeler, moda', priceLevel: 'orta' },
+      { name: 'Night Bazaar', nameEn: 'Night Bazaar', description: 'Gece pazarı, sokak yemekleri ve uygun fiyatlı oteller.', forWhom: 'Alışveriş, bütçe bilinçli', priceLevel: 'ekonomik' },
+      { name: 'Santitham', nameEn: 'Santitham', description: 'Yerel mahalle, vejetaryen restoranlar ve yoga stüdyoları.', forWhom: 'Wellness, uzun konaklama', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Songthaew şehir içi 30 THB. Grab ve scooter yaygın. Havalimanı şehir içinde.',
+    safetyNote: 'Chiang Mai çok güvenli ve misafirperver. Tapınaklarda uygun kıyafet giyin.',
+  },
+  'hong-kong': {
+    neighborhoods: [
+      { name: 'Central', nameEn: 'Central', description: 'Finans merkezi, gökdelenler ve lüks alışveriş.', forWhom: 'İş seyahati, lüks tatil', priceLevel: 'lüks' },
+      { name: 'Tsim Sha Tsui', nameEn: 'Tsim Sha Tsui', description: 'Victoria Harbour manzarası, müzeler ve alışveriş.', forWhom: 'Aileler, ilk kez gelenler', priceLevel: 'lüks' },
+      { name: 'Mong Kok', nameEn: 'Mong Kok', description: 'Kalabalık pazarlar, street food ve yerel yaşam.', forWhom: 'Bütçe bilinçli, alışveriş', priceLevel: 'ekonomik' },
+      { name: 'Causeway Bay', nameEn: 'Causeway Bay', description: 'Alışveriş merkezleri, restoranlar ve gece hayatı.', forWhom: 'Alışveriş tutkunları, gençler', priceLevel: 'orta' },
+      { name: 'Wan Chai', nameEn: 'Wan Chai', description: 'Geleneksel pazarlar, tarihi binalar ve barlar.', forWhom: 'Gece hayatı, kültür', priceLevel: 'orta' },
+    ],
+    transportTip: 'Octopus kartı ile MTR, otobüs, tramvay ve Star Ferry. Havalimanından Airport Express ile Central\'a 24 dk.',
+    safetyNote: 'Hong Kong dünyanın en güvenli şehirlerinden biri. Gece bile her yerde rahat gezin.',
+  },
+  'kuala-lumpur': {
+    neighborhoods: [
+      { name: 'KLCC', nameEn: 'KLCC', description: 'Petronas Kuleleri, lüks alışveriş ve park.', forWhom: 'İlk kez gelenler, lüks tatil', priceLevel: 'lüks' },
+      { name: 'Bukit Bintang', nameEn: 'Bukit Bintang', description: 'Alışveriş caddesi, gece hayatı ve sokak yemekleri.', forWhom: 'Alışveriş, gece kuşları', priceLevel: 'orta' },
+      { name: 'Chinatown', nameEn: 'Chinatown', description: 'Petaling Street, budget oteller ve yerel lezzetler.', forWhom: 'Bütçe bilinçli, yemek tutkunları', priceLevel: 'ekonomik' },
+      { name: 'Bangsar', nameEn: 'Bangsar', description: 'Expat mahallesi, şık kafeler ve gece hayatı.', forWhom: 'Dijital göçebeler, genç çiftler', priceLevel: 'orta' },
+      { name: 'Mont Kiara', nameEn: 'Mont Kiara', description: 'Konut bölgesi, uluslararası restoranlar ve sakin atmosfer.', forWhom: 'Aileler, uzun konaklama', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Touch n Go kartı ile LRT, MRT ve Monorail. KLIA\'dan KLIA Ekspres ile KL Sentral\'a 28 dk.',
+    safetyNote: 'KL güvenli. Trafikte dikkatli olun, yürüyüş mesafeleri aldatıcı olabilir.',
+  },
+  'delhi': {
+    neighborhoods: [
+      { name: 'Connaught Place', nameEn: 'Connaught Place', description: 'Şehir merkezi, kolonyal mimari ve alışveriş.', forWhom: 'İş seyahati, ilk kez gelenler', priceLevel: 'orta' },
+      { name: 'Paharganj', nameEn: 'Paharganj', description: 'Backpacker cenneti, ucuz oteller ve canlı pazarlar.', forWhom: 'Bütçe gezginler, macera', priceLevel: 'ekonomik' },
+      { name: 'South Delhi', nameEn: 'South Delhi', description: 'Şık mahalleler, lüks restoranlar ve butik oteller.', forWhom: 'Lüks konaklama, gurme', priceLevel: 'lüks' },
+      { name: 'Old Delhi', nameEn: 'Old Delhi', description: 'Chandni Chowk, Jama Masjid ve tarihi sokaklar.', forWhom: 'Kültür turizmi, fotoğrafçılar', priceLevel: 'ekonomik' },
+      { name: 'Gurgaon', nameEn: 'Gurgaon', description: 'Modern iş bölgesi, alışveriş merkezleri ve uluslararası oteller.', forWhom: 'İş seyahati, modern konfor', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Delhi Metro kapsamlı ve ucuz. IGI havalimanından Airport Express ile CP\'ye 20 dk.',
+    safetyNote: 'Turistik bölgeler güvenli. Gece taksi yerine Uber/Ola tercih edin. Kadın gezginler için metro kadın vagonları var.',
+  },
+
+  // === YENİ EKLENDİ - AVRUPA ===
+  'milano': {
+    neighborhoods: [
+      { name: 'Duomo', nameEn: 'Duomo', description: 'Katedral merkezi, Galleria Vittorio Emanuele ve lüks butikler.', forWhom: 'İlk kez gelenler, alışveriş', priceLevel: 'lüks' },
+      { name: 'Navigli', nameEn: 'Navigli', description: 'Kanal kenarı barlar, vintage dükkanlar ve aperitivo kültürü.', forWhom: 'Gece hayatı, sanat severler', priceLevel: 'orta' },
+      { name: 'Brera', nameEn: 'Brera', description: 'Sanat galerileri, butik oteller ve bohem atmosfer.', forWhom: 'Sanat tutkunları, romantik', priceLevel: 'lüks' },
+      { name: 'Porta Venezia', nameEn: 'Porta Venezia', description: 'LGBT+ dostu, etnik restoranlar ve parklar.', forWhom: 'Çeşitlilik, uzun konaklama', priceLevel: 'orta' },
+      { name: 'Centrale', nameEn: 'Stazione Centrale', description: 'Tren istasyonu çevresi, ulaşım merkezi ve bütçe oteller.', forWhom: 'Transit, bütçe bilinçli', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'ATM Milano kartı ile metro ve tramvay. Malpensa\'dan Express tren ile Centrale\'ye 52 dk.',
+    safetyNote: 'Milano güvenli. Duomo ve metro çevresinde yankesicilere dikkat.',
+  },
+  'venedik': {
+    neighborhoods: [
+      { name: 'San Marco', nameEn: 'San Marco', description: 'Meydanı, Basilica ve lüks oteller. Turizmin kalbi.', forWhom: 'İlk kez gelenler, romantik', priceLevel: 'lüks' },
+      { name: 'Dorsoduro', nameEn: 'Dorsoduro', description: 'Accademia müzesi, üniversite bölgesi ve yerel barlar.', forWhom: 'Sanat severler, gençler', priceLevel: 'orta' },
+      { name: 'Cannaregio', nameEn: 'Cannaregio', description: 'Yahudi mahallesi, daha az turist ve otantik trattoria.', forWhom: 'Yerel deneyim, bütçe bilinçli', priceLevel: 'orta' },
+      { name: 'Rialto', nameEn: 'Rialto', description: 'İkonik köprü, balık pazarı ve merkezi konum.', forWhom: 'Gurme gezginler, fotoğrafçılar', priceLevel: 'lüks' },
+      { name: 'Mestre', nameEn: 'Mestre', description: 'Anakara, bütçe oteller ve Venedik\'e tren bağlantısı.', forWhom: 'Bütçe bilinçli, pratik', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Vaporetto (su taksi) biletleri pahalı, günlük kart alın. Havalimanından Alilaguna ile Merkez\'e 1 saat.',
+    safetyNote: 'Venedik çok güvenli. Acqua alta (yüksek su) dönemlerinde botlar gerekebilir.',
+  },
+  'viyana': {
+    neighborhoods: [
+      { name: 'Innere Stadt', nameEn: 'Innere Stadt', description: 'Stephansdom, Hofburg ve tarihi kahveler. UNESCO miras.', forWhom: 'İlk kez gelenler, kültür', priceLevel: 'lüks' },
+      { name: 'Leopoldstadt', nameEn: 'Leopoldstadt', description: 'Prater, hipster kafeler ve canlı gece hayatı.', forWhom: 'Gençler, aileler', priceLevel: 'orta' },
+      { name: 'Neubau', nameEn: 'Neubau', description: 'Trendy butikler, tasarım mağazaları ve şık kafeler.', forWhom: 'Moda tutkunları, sanat', priceLevel: 'orta' },
+      { name: 'Mariahilf', nameEn: 'Mariahilf', description: 'Mariahilfer Straße alışverişi, müzeler yakını.', forWhom: 'Alışveriş, merkezi konum', priceLevel: 'orta' },
+      { name: 'Landstraße', nameEn: 'Landstraße', description: 'Belvedere Sarayı, diplomatik bölge ve lüks oteller.', forWhom: 'Müze severler, lüks tatil', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Wiener Linien kartı ile U-Bahn, tramvay ve otobüs. Havalimanından CAT ile Wien Mitte\'ye 16 dk.',
+    safetyNote: 'Viyana dünyanın en yaşanabilir ve güvenli şehirlerinden biri.',
+  },
+  'zurich': {
+    neighborhoods: [
+      { name: 'Altstadt', nameEn: 'Old Town', description: 'Tarihi sokaklar, lüks mağazalar ve Grossmünster.', forWhom: 'İlk kez gelenler, tarih', priceLevel: 'lüks' },
+      { name: 'Zürich West', nameEn: 'Zurich West', description: 'Eski sanayi bölgesi, trendy restoranlar ve gece kulüpleri.', forWhom: 'Gece hayatı, modern', priceLevel: 'lüks' },
+      { name: 'Seefeld', nameEn: 'Seefeld', description: 'Göl kıyısı, yüzme alanları ve şık kafeler.', forWhom: 'Doğa sevenler, aileler', priceLevel: 'lüks' },
+      { name: 'Oerlikon', nameEn: 'Oerlikon', description: 'Fuar bölgesi, iş otelleri ve ulaşım merkezi.', forWhom: 'İş seyahati, pratik', priceLevel: 'orta' },
+    ],
+    transportTip: 'ZVV kartı ile tren, tramvay ve otobüs. Havalimanı şehir merkezine tren ile 10 dk.',
+    safetyNote: 'Zürih Avrupa\'nın en güvenli şehirlerinden. Her şey pahalı, bütçenizi planlayın.',
+  },
+  'kopenhag': {
+    neighborhoods: [
+      { name: 'Indre By', nameEn: 'City Center', description: 'Nyhavn, kraliyet sarayı ve alışveriş caddeleri.', forWhom: 'İlk kez gelenler, romantik', priceLevel: 'lüks' },
+      { name: 'Vesterbro', nameEn: 'Vesterbro', description: 'Meatpacking District, barlar ve hipster kafeler.', forWhom: 'Gece hayatı, gençler', priceLevel: 'orta' },
+      { name: 'Nørrebro', nameEn: 'Norrebro', description: 'Multikulti, vintage dükkanlar ve canlı sokak sahnesi.', forWhom: 'Alternatif, uzun konaklama', priceLevel: 'ekonomik' },
+      { name: 'Frederiksberg', nameEn: 'Frederiksberg', description: 'Yeşil parklar, hayvanat bahçesi ve sakin atmosfer.', forWhom: 'Aileler, huzur arayanlar', priceLevel: 'orta' },
+      { name: 'Christianshavn', nameEn: 'Christianshavn', description: 'Kanallar, Christiania ve alternatif yaşam.', forWhom: 'Alternatif kültür, fotoğrafçılar', priceLevel: 'orta' },
+    ],
+    transportTip: 'Rejsekort ile metro, S-tog ve otobüs. Havalimanından metro ile merkeze 15 dk.',
+    safetyNote: 'Kopenhag çok güvenli. Bisikletlere dikkat, bisiklet yollarına basmayın.',
+  },
+  'stockholm': {
+    neighborhoods: [
+      { name: 'Gamla Stan', nameEn: 'Old Town', description: 'Ortaçağ sokakları, kraliyet sarayı ve Nobel Müzesi.', forWhom: 'İlk kez gelenler, tarih', priceLevel: 'lüks' },
+      { name: 'Södermalm', nameEn: 'Sodermalm', description: 'Hipster mahallesi, vintage mağazalar ve manzara noktaları.', forWhom: 'Gençler, sanat severler', priceLevel: 'orta' },
+      { name: 'Östermalm', nameEn: 'Ostermalm', description: 'Lüks alışveriş, şık restoranlar ve diplomatik bölge.', forWhom: 'Lüks tatil, gurme', priceLevel: 'lüks' },
+      { name: 'Norrmalm', nameEn: 'Norrmalm', description: 'Merkez istasyon, alışveriş ve iş otelleri.', forWhom: 'İş seyahati, merkezi konum', priceLevel: 'lüks' },
+      { name: 'Djurgården', nameEn: 'Djurgarden', description: 'Ada, ABBA müzesi, Skansen ve doğa.', forWhom: 'Aileler, müze severler', priceLevel: 'orta' },
+    ],
+    transportTip: 'SL kartı ile metro (Tunnelbana), otobüs ve feribot. Arlanda\'dan Arlanda Express ile merkeze 20 dk.',
+    safetyNote: 'Stockholm çok güvenli. Kış aylarında erken karanlık olur, güneş gözlüğü yerine vitamin D tavsiye.',
+  },
+  'varsova': {
+    neighborhoods: [
+      { name: 'Old Town', nameEn: 'Old Town', description: 'UNESCO miras, yeniden inşa edilmiş tarihi merkez.', forWhom: 'Tarih meraklıları, fotoğrafçılar', priceLevel: 'orta' },
+      { name: 'Śródmieście', nameEn: 'City Center', description: 'Kültür Sarayı, alışveriş ve modern gökdelenler.', forWhom: 'İş seyahati, şehir gezisi', priceLevel: 'lüks' },
+      { name: 'Praga', nameEn: 'Praga', description: 'Alternatif sanat sahnesi, eski fabrikalar ve barlar.', forWhom: 'Alternatif kültür, sanat', priceLevel: 'ekonomik' },
+      { name: 'Żoliborz', nameEn: 'Zoliborz', description: 'Yeşil ve sakin konut bölgesi, yerel yaşam.', forWhom: 'Uzun konaklama, aileler', priceLevel: 'orta' },
+    ],
+    transportTip: 'Karta Miejska ile metro ve tramvay. Chopin havalimanından S2 tren ile merkeze 25 dk.',
+    safetyNote: 'Varşova güvenli ve misafirperver. İngilizce yaygın olarak konuşuluyor.',
+  },
+  'dublin': {
+    neighborhoods: [
+      { name: 'Temple Bar', nameEn: 'Temple Bar', description: 'Canlı pub\'lar, canlı müzik ve turist merkezi.', forWhom: 'Gece hayatı, ilk kez gelenler', priceLevel: 'orta' },
+      { name: 'Georgian Dublin', nameEn: 'Georgian Dublin', description: 'Merrion Square, müzeler ve şık townhouse\'lar.', forWhom: 'Kültür, tarihi mimari', priceLevel: 'lüks' },
+      { name: 'Docklands', nameEn: 'Docklands', description: 'Silikon Dock, tech şirketleri ve modern oteller.', forWhom: 'İş seyahati, modern', priceLevel: 'lüks' },
+      { name: 'Smithfield', nameEn: 'Smithfield', description: 'Jameson fabrikası, yerel barlar ve sanat.', forWhom: 'Whiskey tutkunları, yerel deneyim', priceLevel: 'orta' },
+      { name: 'Rathmines', nameEn: 'Rathmines', description: 'Öğrenci mahallesi, ucuz yemek ve canlı atmosfer.', forWhom: 'Bütçe bilinçli, gençler', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Leap Card ile DART, Luas ve otobüs. Havalimanından 747 otobüs ile merkeze 30 dk.',
+    safetyNote: 'Dublin güvenli. Pub\'larda canlı müzik geleneğini yaşayın.',
+  },
+  'helsinki': {
+    neighborhoods: [
+      { name: 'Kamppi', nameEn: 'Kamppi', description: 'Alışveriş merkezi, otobüs terminali ve merkezi konum.', forWhom: 'İş seyahati, pratik', priceLevel: 'lüks' },
+      { name: 'Design District', nameEn: 'Design District', description: 'Fin tasarımı, butik mağazalar ve galeriler.', forWhom: 'Tasarım tutkunları, alışveriş', priceLevel: 'lüks' },
+      { name: 'Kallio', nameEn: 'Kallio', description: 'Hipster mahallesi, barlar ve canlı gece hayatı.', forWhom: 'Gençler, alternatif kültür', priceLevel: 'ekonomik' },
+      { name: 'Kruununhaka', nameEn: 'Kruununhaka', description: 'Tarihi binalar, antikacılar ve sakin sokaklar.', forWhom: 'Tarih severler, romantik', priceLevel: 'orta' },
+    ],
+    transportTip: 'HSL kartı ile tramvay, metro ve otobüs. Havalimanından tren ile merkeze 30 dk.',
+    safetyNote: 'Helsinki dünyanın en güvenli başkentlerinden. Kış aylarında saunalar vazgeçilmez.',
+  },
+
+  // === YENİ EKLENDİ - AMERİKA ===
+  'miami': {
+    neighborhoods: [
+      { name: 'South Beach', nameEn: 'South Beach', description: 'Art Deco binalar, beyaz kumsal ve gece hayatı.', forWhom: 'Plaj sevenler, parti', priceLevel: 'lüks' },
+      { name: 'Brickell', nameEn: 'Brickell', description: 'Finans merkezi, gökdelenler ve şık restoranlar.', forWhom: 'İş seyahati, lüks', priceLevel: 'lüks' },
+      { name: 'Wynwood', nameEn: 'Wynwood', description: 'Duvar resimleri, sanat galerileri ve hipster kafeler.', forWhom: 'Sanat severler, Instagram', priceLevel: 'orta' },
+      { name: 'Little Havana', nameEn: 'Little Havana', description: 'Küba kültürü, cigar shop\'lar ve Latin lezzetler.', forWhom: 'Kültür turizmi, yemek', priceLevel: 'ekonomik' },
+      { name: 'Coconut Grove', nameEn: 'Coconut Grove', description: 'Yeşil mahalle, butik mağazalar ve marina.', forWhom: 'Aileler, sakin tatil', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Metromover ücretsiz downtown dolaşım. Uber yaygın. Havalimanından merkeze 20 dk.',
+    safetyNote: 'Turistik bölgeler güvenli. Gece bazı downtown bölgelerinde dikkatli olun.',
+  },
+  'los-angeles': {
+    neighborhoods: [
+      { name: 'Hollywood', nameEn: 'Hollywood', description: 'Walk of Fame, stüdyo turları ve tema parkları.', forWhom: 'İlk kez gelenler, eğlence', priceLevel: 'orta' },
+      { name: 'Santa Monica', nameEn: 'Santa Monica', description: 'İkonik pier, plaj ve Third Street alışveriş.', forWhom: 'Plaj tatili, aileler', priceLevel: 'lüks' },
+      { name: 'Downtown LA', nameEn: 'Downtown LA', description: 'Arts District, Grand Central Market ve modern oteller.', forWhom: 'Sanat, yemek tutkunları', priceLevel: 'orta' },
+      { name: 'Venice', nameEn: 'Venice Beach', description: 'Bohemian plaj, Muscle Beach ve kanal yürüyüşü.', forWhom: 'Alternatif, surf kültürü', priceLevel: 'orta' },
+      { name: 'Beverly Hills', nameEn: 'Beverly Hills', description: 'Rodeo Drive, ünlü malikaneler ve lüks alışveriş.', forWhom: 'Lüks tatil, alışveriş', priceLevel: 'lüks' },
+    ],
+    transportTip: 'Araç kiralamak neredeyse zorunlu. Metro sınırlı ama genişliyor. LAX\'tan merkeze 45-90 dk (trafiğe bağlı).',
+    safetyNote: 'Turistik bölgeler güvenli. Homeless sorunu bazı bölgelerde görünür.',
+  },
+  'chicago': {
+    neighborhoods: [
+      { name: 'The Loop', nameEn: 'The Loop', description: 'İş merkezi, Millennium Park ve Willis Tower.', forWhom: 'İş seyahati, mimari', priceLevel: 'lüks' },
+      { name: 'River North', nameEn: 'River North', description: 'Galeriler, gece kulüpleri ve şık restoranlar.', forWhom: 'Gece hayatı, sanat', priceLevel: 'lüks' },
+      { name: 'Magnificent Mile', nameEn: 'Magnificent Mile', description: 'Alışveriş caddesi, lüks mağazalar ve göl manzarası.', forWhom: 'Alışveriş, turistik', priceLevel: 'lüks' },
+      { name: 'Wicker Park', nameEn: 'Wicker Park', description: 'Hipster mahallesi, vintage dükkanlar ve canlı barlar.', forWhom: 'Alternatif, gençler', priceLevel: 'orta' },
+      { name: 'Hyde Park', nameEn: 'Hyde Park', description: 'Üniversite bölgesi, Obama mirası ve müzeler.', forWhom: 'Akademik, tarih', priceLevel: 'orta' },
+    ],
+    transportTip: 'CTA L treni ve otobüsler yaygın. O\'Hare\'den Blue Line ile merkeze 45 dk.',
+    safetyNote: 'Downtown ve turistik bölgeler güvenli. South Side\'a gitmeden önce araştırın.',
+  },
+  'toronto': {
+    neighborhoods: [
+      { name: 'Downtown', nameEn: 'Downtown', description: 'CN Tower, Rogers Centre ve finans bölgesi.', forWhom: 'İş seyahati, ilk kez gelenler', priceLevel: 'lüks' },
+      { name: 'Yorkville', nameEn: 'Yorkville', description: 'Lüks butikler, galeriler ve şık kafeler.', forWhom: 'Lüks alışveriş, romantik', priceLevel: 'lüks' },
+      { name: 'Queen West', nameEn: 'Queen West', description: 'Sanat, moda ve gece hayatı merkezi.', forWhom: 'Hipster, sanat severler', priceLevel: 'orta' },
+      { name: 'Kensington Market', nameEn: 'Kensington Market', description: 'Vintage, multikulti ve bohemian atmosfer.', forWhom: 'Alternatif, bütçe bilinçli', priceLevel: 'ekonomik' },
+      { name: 'Distillery District', nameEn: 'Distillery District', description: 'Viktoryen endüstriyel miras, galeriler ve restoranlar.', forWhom: 'Fotoğrafçılar, romantik', priceLevel: 'lüks' },
+    ],
+    transportTip: 'TTC Presto kartı ile metro, streetcar ve otobüs. Pearson\'dan UP Express ile Union\'a 25 dk.',
+    safetyNote: 'Toronto çok güvenli ve çok kültürlü. Kış soğuğuna hazırlıklı gelin.',
+  },
+
+  // === YENİ EKLENDİ - ORTA DOĞU / AFRİKA ===
+  'doha': {
+    neighborhoods: [
+      { name: 'West Bay', nameEn: 'West Bay', description: 'Gökdelenler, lüks oteller ve Corniche yürüyüşü.', forWhom: 'İş seyahati, lüks tatil', priceLevel: 'lüks' },
+      { name: 'Souq Waqif', nameEn: 'Souq Waqif', description: 'Geleneksel çarşı, baharatlar ve yerel lezzetler.', forWhom: 'Kültür turizmi, yemek', priceLevel: 'orta' },
+      { name: 'The Pearl', nameEn: 'The Pearl', description: 'Yapay ada, lüks yaşam ve marina restoranları.', forWhom: 'Lüks alışveriş, çiftler', priceLevel: 'lüks' },
+      { name: 'Katara', nameEn: 'Katara Cultural Village', description: 'Plajlar, galeriler ve kültürel etkinlikler.', forWhom: 'Aileler, plaj', priceLevel: 'orta' },
+    ],
+    transportTip: 'Doha Metro modern ve hızlı. Uber/Karwa taksi güvenilir. Havalimanı metro bağlantılı.',
+    safetyNote: 'Katar dünyanın en güvenli ülkelerinden. Alkol sadece lisanslı mekanlarda satılır.',
+  },
+  'cape-town': {
+    neighborhoods: [
+      { name: 'Waterfront', nameEn: 'V&A Waterfront', description: 'Alışveriş, restoranlar ve Table Mountain manzarası.', forWhom: 'Turistik, aileler', priceLevel: 'lüks' },
+      { name: 'Camps Bay', nameEn: 'Camps Bay', description: 'Plaj, palmiyeler ve sunset cocktail barları.', forWhom: 'Plaj tatili, lüks', priceLevel: 'lüks' },
+      { name: 'City Bowl', nameEn: 'City Bowl', description: 'Şehir merkezi, Long Street ve canlı gece hayatı.', forWhom: 'Gece hayatı, backpackers', priceLevel: 'orta' },
+      { name: 'Constantia', nameEn: 'Constantia', description: 'Şarap çiftlikleri, yeşillik ve lüks villalar.', forWhom: 'Şarap turları, huzur', priceLevel: 'lüks' },
+      { name: 'Observatory', nameEn: 'Observatory', description: 'Öğrenci mahallesi, bohemian ve ucuz yemek.', forWhom: 'Bütçe bilinçli, alternatif', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'MyCiti otobüs sistemi Waterfront ve plajları bağlar. Uber güvenilir ve uygun fiyatlı.',
+    safetyNote: 'Turistik bölgeler güvenli. Gece yalnız yürümeyin, Uber tercih edin. Değerli eşyaları göstermeyin.',
+  },
+  'zanzibar': {
+    neighborhoods: [
+      { name: 'Stone Town', nameEn: 'Stone Town', description: 'UNESCO miras, tarihi sokaklar ve Forodhani pazarı.', forWhom: 'Kültür turizmi, tarih', priceLevel: 'orta' },
+      { name: 'Nungwi', nameEn: 'Nungwi', description: 'Kuzey ucunda beyaz kumsal ve canlı beach bar\'lar.', forWhom: 'Plaj tatili, genç çiftler', priceLevel: 'orta' },
+      { name: 'Kendwa', nameEn: 'Kendwa', description: 'Gelgit sorunsuz plaj ve lüks resortlar.', forWhom: 'Balayı, lüks tatil', priceLevel: 'lüks' },
+      { name: 'Paje', nameEn: 'Paje', description: 'Uçurtma sörfü, backpacker hosteller ve bohem.', forWhom: 'Su sporları, bütçe', priceLevel: 'ekonomik' },
+      { name: 'Jambiani', nameEn: 'Jambiani', description: 'Sakin köy yaşamı, deniz yosunu çiftlikleri ve yerel deneyim.', forWhom: 'Huzur arayanlar, otantik', priceLevel: 'ekonomik' },
+    ],
+    transportTip: 'Dala dala (minibüs) ucuz ama kalabalık. Taksi pazarlıklı. Transfer düzenlemeniz önerilir.',
+    safetyNote: 'Zanzibar güvenli ve misafirperver. İslami kültüre saygılı giyim tercih edin.',
+  },
 };
 
 // Get neighborhood data for a city

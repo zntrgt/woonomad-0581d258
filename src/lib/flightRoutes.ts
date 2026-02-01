@@ -216,8 +216,20 @@ export const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
     'ALA': 270, 'NQZ': 240, 'TAS': 240, 'FRU': 270,
     // Other
     'ECN': 75, 'PMI': 210, 'AGP': 240, 'OPO': 255, 'SKG': 55,
-    // Asia destinations
+    // Asia destinations - NEW
     'CGK': 660, 'DPS': 690, 'MNL': 660, 'TPE': 600, 'KTM': 420,
+    'KIX': 720, 'HKT': 570, 'CNX': 540, 'HAN': 510, 'SGN': 540,
+    // New Europe destinations
+    'KRK': 150, 'LYS': 180, 'NCE': 165, 'FLR': 145, 'VLC': 225,
+    'SVQ': 240, 'BLQ': 140, 'EDI': 270, 'MAN': 255, 'GLA': 280,
+    // New Americas destinations  
+    'BOS': 570, 'DFW': 720, 'ATL': 660, 'SEA': 750, 'DEN': 690,
+    'CUN': 750, 'LAS': 780, 'PHX': 780, 'MSP': 660, 'IAH': 720,
+    'PTY': 810, 'SJO': 840, 'MEX': 780, 'HAV': 720,
+    // New Africa destinations
+    'MRU': 540, 'SEZ': 480, 'LOS': 420, 'ACC': 420, 'CAI': 120,
+    // New Central Asia
+    'EVN': 120, 'SKD': 270,
   },
   'SAW': {
     'CDG': 210, 'LHR': 240, 'FCO': 135, 'BCN': 195, 'AMS': 195, 'BER': 150, 'ATH': 80,
@@ -240,32 +252,33 @@ export const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
     'LHR': 75, 'FCO': 120, 'BCN': 105, 'AMS': 75, 'BER': 105, 'MAD': 120, 'LIS': 150,
     'VIE': 120, 'PRG': 90, 'ATH': 195, 'MXP': 90, 'ZRH': 75, 'GVA': 60, 'BRU': 50,
     'JFK': 480, 'LAX': 660, 'DXB': 420, 'SIN': 780, 'BKK': 720, 'NRT': 720,
-    'AMM': 270, 'TBS': 300,
+    'AMM': 270, 'TBS': 300, 'MIA': 600, 'ORD': 540, 'YYZ': 510,
   },
   'LHR': {
     'CDG': 75, 'FCO': 150, 'BCN': 120, 'AMS': 60, 'BER': 105, 'MAD': 150, 'LIS': 165,
     'DXB': 450, 'JFK': 450, 'LAX': 660, 'SIN': 780, 'HKG': 720, 'NRT': 720,
-    'AMM': 300,
+    'AMM': 300, 'MIA': 570, 'ORD': 510, 'YYZ': 480, 'BOS': 420,
   },
   'FRA': {
     'CDG': 75, 'LHR': 90, 'FCO': 105, 'BCN': 120, 'AMS': 60, 'VIE': 90, 'PRG': 60,
     'MAD': 150, 'ATH': 165, 'JFK': 510, 'DXB': 390, 'SIN': 720,
-    'AMM': 240,
+    'AMM': 240, 'NRT': 690, 'KIX': 720, 'ICN': 660,
   },
   'AMS': {
     'CDG': 75, 'LHR': 60, 'FCO': 135, 'BCN': 120, 'BER': 75, 'VIE': 105, 'PRG': 90,
     'JFK': 480, 'ATH': 195,
-    'AMM': 270,
+    'AMM': 270, 'NRT': 690, 'KIX': 720,
   },
   'MAD': {
     'CDG': 120, 'LHR': 150, 'FCO': 135, 'BCN': 75, 'LIS': 60, 'AMS': 150, 'FRA': 150,
+    'MIA': 570, 'MEX': 720, 'BOG': 630,
   },
   'BCN': {
     'CDG': 105, 'LHR': 120, 'FCO': 90, 'AMS': 120, 'MAD': 75, 'LIS': 120,
   },
   'FCO': {
     'CDG': 120, 'LHR': 150, 'BCN': 90, 'AMS': 135, 'ATH': 120, 'MAD': 135,
-    'AMM': 180,
+    'AMM': 180, 'JFK': 570, 'NRT': 720,
   },
   // Middle East hubs
   'AMM': {
@@ -273,6 +286,14 @@ export const FLIGHT_DURATIONS: Record<string, Record<string, number>> = {
   },
   'DXB': {
     'DOH': 60, 'AMM': 180, 'BEY': 210, 'SIN': 420, 'BKK': 360, 'DEL': 180, 'BOM': 150,
+    'KIX': 600, 'NRT': 630, 'HKG': 480, 'KUL': 420, 'MLE': 270, 'CPT': 540,
+  },
+  // New hub durations
+  'KIX': {
+    'NRT': 75, 'ICN': 120, 'HKG': 270, 'BKK': 360, 'SIN': 420, 'TPE': 180,
+  },
+  'HKG': {
+    'NRT': 270, 'ICN': 210, 'SIN': 240, 'BKK': 180, 'KUL': 240, 'TPE': 90,
   },
 };
 
@@ -330,6 +351,9 @@ const POPULAR_ROUTE_PAIRS: [string, string][] = [
   ['IST', 'WAW'], ['IST', 'OTP'], ['IST', 'SOF'], ['IST', 'PMI'], ['IST', 'AGP'],
   ['IST', 'OPO'], ['IST', 'SKG'], ['IST', 'VCE'], ['IST', 'NAP'], ['IST', 'HEL'],
   ['IST', 'OSL'], ['IST', 'DUB'], ['IST', 'RIX'], ['IST', 'VNO'], ['IST', 'TLL'],
+  // NEW: Additional Europe destinations
+  ['IST', 'KRK'], ['IST', 'LYS'], ['IST', 'NCE'], ['IST', 'FLR'], ['IST', 'VLC'],
+  ['IST', 'SVQ'],
   
   // Istanbul hub routes - Balkans (visa-free)
   ['IST', 'TBS'], ['IST', 'GYD'], ['IST', 'BEG'], ['IST', 'SKP'], ['IST', 'TIR'],
@@ -337,34 +361,48 @@ const POPULAR_ROUTE_PAIRS: [string, string][] = [
   
   // Istanbul hub routes - Middle East
   ['IST', 'DXB'], ['IST', 'DOH'], ['IST', 'AMM'], ['IST', 'BEY'], ['IST', 'AUH'],
-  ['IST', 'BAH'], ['IST', 'MCT'], ['IST', 'KWI'],
+  ['IST', 'BAH'], ['IST', 'MCT'], ['IST', 'KWI'], ['IST', 'CAI'],
   
-  // Istanbul hub routes - Asia
+  // Istanbul hub routes - Asia (EXPANDED)
   ['IST', 'SIN'], ['IST', 'BKK'], ['IST', 'KUL'], ['IST', 'HKG'], ['IST', 'NRT'],
   ['IST', 'ICN'], ['IST', 'DEL'], ['IST', 'BOM'], ['IST', 'PEK'], ['IST', 'PVG'],
   ['IST', 'CGK'], ['IST', 'DPS'], ['IST', 'MNL'], ['IST', 'TPE'], ['IST', 'KTM'],
+  // NEW: Osaka, Phuket, Chiang Mai, Vietnam destinations
+  ['IST', 'KIX'], ['IST', 'HKT'], ['IST', 'CNX'], ['IST', 'HAN'], ['IST', 'SGN'],
   
   // Istanbul hub routes - Africa
   ['IST', 'TUN'], ['IST', 'CMN'], ['IST', 'RAK'], ['IST', 'CPT'], ['IST', 'JNB'],
   ['IST', 'NBO'], ['IST', 'DAR'], ['IST', 'ZNZ'],
+  // NEW: Additional Africa destinations
+  ['IST', 'MRU'], ['IST', 'SEZ'],
   
-  // Istanbul hub routes - Americas
+  // Istanbul hub routes - Americas (EXPANDED)
   ['IST', 'JFK'], ['IST', 'LAX'], ['IST', 'ORD'], ['IST', 'MIA'], ['IST', 'SFO'],
   ['IST', 'YYZ'], ['IST', 'YVR'], ['IST', 'GRU'], ['IST', 'GIG'], ['IST', 'EZE'],
   ['IST', 'SCL'], ['IST', 'BOG'], ['IST', 'LIM'],
+  // NEW: Additional Americas destinations
+  ['IST', 'BOS'], ['IST', 'CUN'], ['IST', 'MEX'], ['IST', 'PTY'], ['IST', 'SJO'],
+  ['IST', 'HAV'],
   
   // Istanbul hub routes - Central Asia
   ['IST', 'ALA'], ['IST', 'NQZ'], ['IST', 'TAS'], ['IST', 'FRU'],
+  // NEW: Additional Central Asia
+  ['IST', 'EVN'], ['IST', 'SKD'],
   
   // Istanbul hub routes - Other
   ['IST', 'ECN'], ['IST', 'SYD'], ['IST', 'MEL'],
   
-  // Other Turkish cities
+  // Other Turkish cities - EXPANDED
   ['AYT', 'BER'], ['AYT', 'MUC'], ['AYT', 'FRA'], ['AYT', 'AMS'], ['AYT', 'LHR'],
   ['AYT', 'AMM'], ['AYT', 'DXB'],
   ['ADB', 'ATH'], ['ADB', 'CDG'], ['ADB', 'AMS'], ['ADB', 'AMM'], ['ADB', 'DXB'],
   ['ESB', 'FRA'], ['ESB', 'MUC'], ['ESB', 'VIE'], ['ESB', 'AMM'], ['ESB', 'DXB'], ['ESB', 'TBS'],
   ['SAW', 'AMM'], ['SAW', 'DXB'], ['SAW', 'TBS'], ['SAW', 'GYD'],
+  // NEW: Additional Turkish city routes
+  ['AYT', 'VIE'], ['AYT', 'ZRH'], ['AYT', 'ARN'],
+  ['ADB', 'LHR'], ['ADB', 'BER'],
+  ['GZT', 'AMM'], ['GZT', 'DXB'],
+  ['TZX', 'DXB'], ['TZX', 'DOH'],
   
   // European cross-routes
   ['CDG', 'LHR'], ['CDG', 'FCO'], ['CDG', 'BCN'], ['CDG', 'AMS'], ['CDG', 'BER'],
@@ -374,17 +412,37 @@ const POPULAR_ROUTE_PAIRS: [string, string][] = [
   ['AMS', 'FCO'], ['AMS', 'BCN'], ['AMS', 'MAD'], ['AMS', 'AMM'],
   ['BCN', 'FCO'], ['BCN', 'LIS'], ['MAD', 'LIS'], ['MAD', 'FCO'],
   ['FCO', 'AMM'],
+  // NEW: Additional European cross-routes
+  ['CDG', 'VIE'], ['CDG', 'PRG'], ['CDG', 'ATH'],
+  ['LHR', 'VIE'], ['LHR', 'PRG'], ['LHR', 'BER'],
+  ['FRA', 'ATH'], ['FRA', 'MXP'], ['FRA', 'VIE'],
   
   // Middle East cross-routes
   ['AMM', 'DXB'], ['AMM', 'DOH'], ['AMM', 'BEY'], ['DXB', 'DOH'], ['DXB', 'BEY'],
+  ['AMM', 'CAI'], ['DXB', 'CAI'],
   
-  // Long haul from European hubs
+  // Long haul from European hubs (EXPANDED)
   ['CDG', 'JFK'], ['CDG', 'DXB'], ['CDG', 'SIN'], ['CDG', 'BKK'],
   ['LHR', 'JFK'], ['LHR', 'DXB'], ['LHR', 'SIN'], ['LHR', 'HKG'],
   ['FRA', 'JFK'], ['FRA', 'DXB'], ['FRA', 'SIN'],
+  // NEW: Additional long-haul routes
+  ['CDG', 'MIA'], ['CDG', 'LAX'], ['CDG', 'NRT'], ['CDG', 'KIX'],
+  ['LHR', 'LAX'], ['LHR', 'MIA'], ['LHR', 'NRT'], ['LHR', 'BOS'],
+  ['FRA', 'NRT'], ['FRA', 'KIX'], ['FRA', 'ICN'],
+  ['AMS', 'JFK'], ['AMS', 'NRT'], ['AMS', 'KIX'],
   
   // Middle East to Asia
   ['DXB', 'SIN'], ['DXB', 'BKK'], ['DXB', 'DEL'], ['DXB', 'BOM'],
+  // NEW: Additional ME-Asia routes
+  ['DXB', 'HKG'], ['DXB', 'NRT'], ['DXB', 'KIX'], ['DXB', 'KUL'],
+  ['DOH', 'SIN'], ['DOH', 'BKK'], ['DOH', 'NRT'], ['DOH', 'HKG'],
+  
+  // NEW: Asia internal routes
+  ['NRT', 'SIN'], ['NRT', 'BKK'], ['NRT', 'HKG'], ['NRT', 'ICN'], ['NRT', 'TPE'],
+  ['KIX', 'SIN'], ['KIX', 'BKK'], ['KIX', 'HKG'], ['KIX', 'ICN'], ['KIX', 'TPE'],
+  ['HKG', 'SIN'], ['HKG', 'BKK'], ['HKG', 'ICN'], ['HKG', 'TPE'],
+  ['SIN', 'BKK'], ['SIN', 'KUL'], ['SIN', 'DPS'],
+  ['BKK', 'HKT'], ['BKK', 'CNX'], ['BKK', 'SIN'], ['BKK', 'HAN'], ['BKK', 'SGN'],
 ];
 
 // Generate all routes
