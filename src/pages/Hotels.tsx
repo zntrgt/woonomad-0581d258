@@ -7,7 +7,7 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HotelSearchForm } from '@/components/HotelSearchForm';
+import { TravelpayoutsHotelWidget } from '@/components/widgets';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { getAgodaUrl } from '@/lib/agodaMapping';
@@ -74,10 +74,10 @@ const Hotels = () => {
           </div>
         </section>
 
-        {/* Hotel Search Form */}
+        {/* Hotel Search Widget */}
         <section className="py-6 md:py-8">
           <div className="container max-w-4xl">
-            <HotelSearchForm />
+            <TravelpayoutsHotelWidget subId="hotels-page" />
           </div>
         </section>
 
