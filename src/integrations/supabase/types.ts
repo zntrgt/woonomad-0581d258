@@ -444,6 +444,29 @@ export type Database = {
       }
     }
     Views: {
+      speed_test_vote_counts: {
+        Row: {
+          downvotes: number | null
+          speed_test_id: string | null
+          upvotes: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
+            columns: ["speed_test_id"]
+            isOneToOne: false
+            referencedRelation: "wifi_speed_tests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
+            columns: ["speed_test_id"]
+            isOneToOne: false
+            referencedRelation: "wifi_speed_tests_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wifi_speed_tests_public: {
         Row: {
           city_slug: string | null
