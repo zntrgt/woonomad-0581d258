@@ -749,39 +749,64 @@ export default function BlogPost() {
   };
 
   // Format bold text with XSS sanitization, internal linking, markdown links, and code blocks
+  // SECURITY: Sanitize input FIRST before any regex processing to prevent XSS bypass
   const formatInlineText = (text: string) => {
-    let formatted = text;
+    // Step 1: Pre-sanitize the raw text to neutralize any malicious HTML/scripts
+    // This prevents XSS bypass through carefully crafted markdown that could generate malicious HTML
+    const preSanitized = DOMPurify.sanitize(text, {
+      ALLOWED_TAGS: [], // Strip all HTML tags first
+      ALLOWED_ATTR: []
+    });
     
-    // First, handle inline code blocks: `code`
+    let formatted = preSanitized;
+    
+    // Step 2: Handle inline code blocks: `code`
     formatted = formatted.replace(
       /`([^`]+)`/g,
       '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary">$1</code>'
     );
     
-    // Parse markdown-style links: [link text](url)
+    // Step 3: Parse markdown-style links: [link text](url)
+    // SECURITY: Validate and encode URLs to prevent javascript: protocol attacks
     formatted = formatted.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       (match, linkText, url) => {
-        const isExternal = url.startsWith('http');
-        if (isExternal) {
-          return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline inline-flex items-center gap-1">${linkText}<svg class="h-3 w-3 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>`;
+        // Sanitize linkText and url to prevent injection
+        const sanitizedLinkText = DOMPurify.sanitize(linkText, { ALLOWED_TAGS: [] });
+        const trimmedUrl = url.trim();
+        
+        // Only allow http/https URLs or relative paths starting with /
+        const isValidUrl = trimmedUrl.startsWith('http://') || 
+                          trimmedUrl.startsWith('https://') || 
+                          trimmedUrl.startsWith('/');
+        
+        if (!isValidUrl) {
+          return sanitizedLinkText; // Return plain text for invalid/malicious URLs
         }
-        return `<a href="${url}" class="text-primary hover:underline">${linkText}</a>`;
+        
+        // Encode special characters in URL to prevent attribute injection
+        const safeUrl = encodeURI(trimmedUrl).replace(/"/g, '&quot;');
+        
+        const isExternal = trimmedUrl.startsWith('http');
+        if (isExternal) {
+          return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline inline-flex items-center gap-1">${sanitizedLinkText}<svg class="h-3 w-3 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>`;
+        }
+        return `<a href="${safeUrl}" class="text-primary hover:underline">${sanitizedLinkText}</a>`;
       }
     );
     
-    // Bold and italic formatting
+    // Step 4: Bold and italic formatting
     formatted = formatted
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-    // Add internal links for city names (but not inside already created links)
+    // Step 5: Add internal links for city names (but not inside already created links)
     allCities.forEach(city => {
       const regex = new RegExp(`\\b${city.name}\\b(?![^<]*>)`, 'gi');
       formatted = formatted.replace(regex, `<a href="/sehir/${city.slug}" class="text-primary hover:underline">${city.name}</a>`);
     });
     
-    // Sanitize to prevent XSS attacks
+    // Step 6: Final sanitization to ensure output is safe
     return DOMPurify.sanitize(formatted, {
       ALLOWED_TAGS: ['strong', 'em', 'a', 'code', 'svg', 'path', 'polyline', 'line'],
       ALLOWED_ATTR: ['href', 'class', 'target', 'rel', 'viewBox', 'fill', 'stroke', 'stroke-width', 'd', 'points', 'x1', 'y1', 'x2', 'y2']
