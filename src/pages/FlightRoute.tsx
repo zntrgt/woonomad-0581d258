@@ -1,9 +1,9 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { 
-  Plane, MapPin, Clock, Calendar, ArrowRight, ArrowLeft,
-  Building2, CreditCard, Info, CheckCircle, Users, TrendingUp
+  Plane, MapPin, Clock, ArrowRight,
+  CheckCircle, Users, TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,18 +11,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
-import { SearchForm, SearchFormRef } from '@/components/SearchForm';
-import { FlightCard } from '@/components/FlightCard';
-import { SearchStatus, FlightResultsSkeleton, StickyScrollButton } from '@/components/SearchStatus';
-import { PriceTrendChart } from '@/components/PriceTrendChart';
 import { PriceAlertButton } from '@/components/PriceAlertButton';
 import { AdBanner, AdInArticle } from '@/components/AdSense';
-import { useFlightSearch } from '@/hooks/useFlightSearch';
-import { useFavorites } from '@/hooks/useFavorites';
+import { TravelpayoutsFlightWidget, TravelpayoutsCalendarWidget } from '@/components/widgets';
 import { useSettings } from '@/contexts/SettingsContext';
-import { getRouteBySlug, generateFlightRoutes, FlightRoute as FlightRouteType, ROUTE_REDIRECTS } from '@/lib/flightRoutes';
-import { SearchParams, Airport } from '@/lib/types';
-import { format, addMonths, startOfMonth } from 'date-fns';
+import { getRouteBySlug, generateFlightRoutes, ROUTE_REDIRECTS } from '@/lib/flightRoutes';
 import {
   Accordion,
   AccordionContent,
@@ -33,8 +26,6 @@ import {
 export default function FlightRoute() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const searchFormRef = useRef<SearchFormRef>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
   
   // Handle old malformed slugs - redirect to correct URL
   useEffect(() => {
@@ -44,57 +35,7 @@ export default function FlightRoute() {
   }, [slug, navigate]);
   
   const route = slug ? getRouteBySlug(slug) : undefined;
-  const { flights, isLoading, searchState, searchFlights } = useFlightSearch();
-  const { isFavorite, toggleFavorite } = useFavorites();
   const { formatPrice } = useSettings();
-  
-  // State for price trend chart
-  const [searchedOrigin, setSearchedOrigin] = useState<string | null>(null);
-  const [searchedDestination, setSearchedDestination] = useState<string | null>(null);
-  const [searchedMonth, setSearchedMonth] = useState<string | null>(null);
-
-  // Calculate current month for default price trend
-  const currentMonth = useMemo(() => format(startOfMonth(new Date()), 'yyyy-MM'), []);
-
-  // Auto-populate search form
-  useEffect(() => {
-    if (route && searchFormRef.current) {
-      const originAirport: Airport = {
-        code: route.originCode,
-        name: route.originCity,
-        city: route.originCity,
-        country: route.originCountry,
-      };
-      const destAirport: Airport = {
-        code: route.destinationCode,
-        name: route.destinationCity,
-        city: route.destinationCity,
-        country: route.destinationCountry,
-      };
-      
-      searchFormRef.current.setAirports(originAirport, destAirport);
-    }
-  }, [route]);
-
-  // Auto-scroll to results when search completes
-  const scrollToResults = useCallback(() => {
-    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
-
-  useEffect(() => {
-    if (searchState === 'success' || searchState === 'no-results') {
-      setTimeout(scrollToResults, 300);
-    }
-  }, [searchState, scrollToResults]);
-
-  const handleSearch = (params: SearchParams) => {
-    // Store search parameters for price trend chart
-    setSearchedOrigin(params.origin);
-    setSearchedDestination(params.destination);
-    setSearchedMonth(params.departDate.substring(0, 7)); // Extract YYYY-MM
-    
-    searchFlights(params);
-  };
 
   if (!route) {
     return (
@@ -191,15 +132,7 @@ export default function FlightRoute() {
         name: `${route.originCity} ${route.destinationCity} uçakla kaç saat?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} arası uçakla ${flightHours} sürmektedir. Direkt uçuşlarda uçuş süresi ${route.estimatedDuration} olup, aktarmalı uçuşlarda bu süre aktarma noktasına bağlı olarak 2-6 saat daha uzayabilir. ${route.airlines.slice(0, 3).join(', ')} gibi havayolları bu rotada hizmet vermektedir.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${route.originCity} ${route.destinationCity} uçuş süresi ne kadar?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} arası uçuş süresi ortalama ${route.estimatedDuration}'dir. Mesafe yaklaşık ${route.distance} olup, direkt ve aktarmalı uçuş seçenekleri mevcuttur.`,
+          text: `${route.originCity} - ${route.destinationCity} arası uçakla ${flightHours} sürmektedir.`,
         },
       },
       {
@@ -207,31 +140,7 @@ export default function FlightRoute() {
         name: `${route.originCity} ${route.destinationCity} uçak bileti ne kadar?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} uçak bileti fiyatları ${formatPrice(route.priceRange.min)} ile ${formatPrice(route.priceRange.max)} arasında değişmektedir. En ucuz bilet için erken rezervasyon yapın, hafta içi uçuşları tercih edin ve WooNomad ile tüm havayollarını karşılaştırın.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${route.originCity}'den ${route.destinationCity}'e hangi havayolları uçuyor?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} rotasında ${route.airlines.join(', ')} havayolları hizmet vermektedir. WooNomad ile tüm havayollarının fiyatlarını karşılaştırabilirsiniz.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${route.originCity} ${route.destinationCity} arası kaç km?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${route.originCity} - ${route.destinationCity} arası mesafe ${route.distance}'dir. Bu mesafe uçakla ${route.estimatedDuration} sürede katedilmektedir.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `En ucuz ${route.originCity} ${route.destinationCity} bileti nasıl bulunur?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `En ucuz ${route.originCity} ${route.destinationCity} bileti için: 1) Seyahatinizden 6-8 hafta önce rezervasyon yapın, 2) Salı ve Çarşamba günlerini tercih edin, 3) Esnek tarih araması kullanın, 4) Aktarmalı uçuşları değerlendirin, 5) WooNomad ile tüm havayollarının fiyatlarını anında karşılaştırın.`,
+          text: `${route.originCity} - ${route.destinationCity} uçak bileti fiyatları ${formatPrice(route.priceRange.min)} ile ${formatPrice(route.priceRange.max)} arasında değişmektedir.`,
         },
       },
     ],
@@ -281,12 +190,10 @@ export default function FlightRoute() {
           ]} />
         </div>
 
-        {/* Hero Section - Ultra Compact */}
+        {/* Hero Section */}
         <section className="bg-gradient-to-b from-primary/10 to-background py-3 md:py-6 px-4">
           <div className="max-w-6xl mx-auto">
-            {/* Mobile: Horizontal compact row | Desktop: Standard layout */}
             <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-3">
-              {/* Origin */}
               <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
                 <span className="text-xl sm:text-3xl">{route.originFlag}</span>
                 <div className="sm:text-center">
@@ -295,13 +202,11 @@ export default function FlightRoute() {
                 </div>
               </div>
               
-              {/* Flight Icon & Duration */}
               <div className="flex items-center gap-1 sm:flex-col sm:px-4">
                 <Plane className="h-4 w-4 sm:h-6 sm:w-6 text-primary" />
                 <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{route.estimatedDuration}</span>
               </div>
               
-              {/* Destination */}
               <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
                 <span className="text-xl sm:text-3xl">{route.destinationFlag}</span>
                 <div className="sm:text-center">
@@ -322,7 +227,7 @@ export default function FlightRoute() {
 
         {/* Main Content */}
         <main className="max-w-6xl mx-auto px-4 py-6">
-          {/* Quick Info - Compact */}
+          {/* Quick Info */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <Card>
               <CardContent className="p-3 flex items-center gap-2">
@@ -379,7 +284,7 @@ export default function FlightRoute() {
             </div>
             <div className="flex items-center justify-between mt-3">
               <p className="text-sm text-muted-foreground">
-                * Tahmini fiyat aralığı: <strong>{formatPrice(route.priceRange.min)}</strong> - <strong>{formatPrice(route.priceRange.max)}</strong> (tek yön, ekonomi sınıfı)
+                * Tahmini fiyat aralığı: <strong>{formatPrice(route.priceRange.min)}</strong> - <strong>{formatPrice(route.priceRange.max)}</strong>
               </p>
               <PriceAlertButton 
                 originCode={route.originCode}
@@ -389,68 +294,31 @@ export default function FlightRoute() {
             </div>
           </section>
 
-          {/* Search Form */}
-          <section className="mb-6 bg-card rounded-xl border border-border p-6">
+          {/* Flight Search Widget */}
+          <section className="mb-8">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Plane className="h-5 w-5 text-primary" />
               {route.originCity} - {route.destinationCity} Uçuş Ara
             </h2>
-            <SearchForm
-              ref={searchFormRef}
-              onSearch={handleSearch}
-              isLoading={isLoading}
-            />
-            
-            {/* Search Status */}
-            <SearchStatus 
-              state={searchState}
-              resultsCount={flights.length}
-              onScrollToResults={scrollToResults}
-              className="mt-4"
+            <TravelpayoutsFlightWidget 
+              origin={route.originCode}
+              destination={route.destinationCode}
+              subId={`route-${route.slug}`}
             />
           </section>
 
-          {/* Flight Results */}
-          <div ref={resultsRef}>
-            {isLoading && <FlightResultsSkeleton count={3} />}
-            
-            {/* Price Trend Chart - Shows after search */}
-            {(searchedOrigin && searchedDestination && searchedMonth) && (
-              <PriceTrendChart
-                origin={searchedOrigin}
-                destination={searchedDestination}
-                month={searchedMonth}
-                className="mb-6"
-              />
-            )}
-            
-            {flights.length > 0 && (
-              <section className="mb-8">
-                <h2 className="text-xl font-bold mb-4">
-                  Bulunan Uçuşlar ({flights.length} sonuç)
-                </h2>
-                <div className="space-y-3">
-                  {flights.slice(0, 10).map((flight, index) => (
-                    <FlightCard
-                      key={`${flight.flight_number}-${flight.departure_at}`}
-                      flight={flight}
-                      isFavorite={isFavorite(flight)}
-                      onToggleFavorite={() => toggleFavorite(flight)}
-                      rank={index === 0 ? 'cheapest' : null}
-                    />
-                  ))}
-                </div>
-                
-                {flights.length > 5 && <AdInArticle />}
-              </section>
-            )}
-          </div>
-
-          {/* Sticky Scroll Button */}
-          <StickyScrollButton 
-            visible={searchState === 'success' && flights.length > 0} 
-            onClick={scrollToResults} 
-          />
+          {/* Low Fares Calendar */}
+          <section className="mb-8">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Clock className="h-5 w-5 text-primary" />
+              Fiyat Takvimi
+            </h2>
+            <TravelpayoutsCalendarWidget 
+              origin={route.originCode}
+              destination={route.destinationCode}
+              subId={`calendar-${route.slug}`}
+            />
+          </section>
 
           {/* Tips Section */}
           <section className="mb-6">
@@ -485,16 +353,7 @@ export default function FlightRoute() {
                   {route.originCity} {route.destinationCity} uçakla kaç saat?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  <strong>{route.originCity} - {route.destinationCity} arası uçakla {flightHours} sürmektedir.</strong> Direkt uçuşlarda toplam uçuş süresi {route.estimatedDuration} olup, aktarmalı uçuşlarda bu süre aktarma noktasına bağlı olarak 2-6 saat daha uzayabilir. {route.airlines.slice(0, 3).join(', ')} gibi havayolları bu rotada hizmet vermektedir.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="duration">
-                <AccordionTrigger>
-                  {route.originCity} {route.destinationCity} uçuş süresi ne kadar?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} arası direkt uçuş süresi ortalama <strong>{route.estimatedDuration}</strong>'dir. 
-                  Aktarmalı uçuşlarda bu süre aktarma noktasına göre 2-6 saat uzayabilir. İki şehir arası mesafe yaklaşık {route.distance}'dir.
+                  <strong>{route.originCity} - {route.destinationCity} arası uçakla {flightHours} sürmektedir.</strong> Direkt uçuşlarda toplam uçuş süresi {route.estimatedDuration} olup, aktarmalı uçuşlarda bu süre 2-6 saat daha uzayabilir.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="distance">
@@ -502,8 +361,7 @@ export default function FlightRoute() {
                   {route.originCity} {route.destinationCity} arası kaç km?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} arası mesafe yaklaşık <strong>{route.distance}</strong>'dir. 
-                  Bu mesafe uçakla {route.estimatedDuration} sürede katedilmektedir.
+                  {route.originCity} - {route.destinationCity} arası mesafe yaklaşık <strong>{route.distance}</strong>'dir.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="price">
@@ -511,8 +369,7 @@ export default function FlightRoute() {
                   {route.originCity} {route.destinationCity} uçak bileti ne kadar?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} uçak bileti fiyatları <strong>{formatPrice(route.priceRange.min)}</strong> ile <strong>{formatPrice(route.priceRange.max)}</strong> arasında değişmektedir. 
-                  En ucuz bilet için erken rezervasyon yapmanızı ve hafta içi uçuşları tercih etmenizi öneririz.
+                  {route.originCity} - {route.destinationCity} uçak bileti fiyatları <strong>{formatPrice(route.priceRange.min)}</strong> ile <strong>{formatPrice(route.priceRange.max)}</strong> arasında değişmektedir.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="airlines">
@@ -520,37 +377,28 @@ export default function FlightRoute() {
                   {route.originCity}'den {route.destinationCity}'e hangi havayolları uçuyor?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {route.originCity} - {route.destinationCity} rotasında <strong>{route.airlines.join(', ')}</strong> havayolları hizmet vermektedir. 
-                  WooNomad ile tüm havayollarının fiyatlarını karşılaştırabilirsiniz.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="cheap">
-                <AccordionTrigger>
-                  En ucuz {route.originCity} {route.destinationCity} bileti nasıl bulunur?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  En ucuz bilet için: 1) Seyahatinizden 6-8 hafta önce rezervasyon yapın, 
-                  2) Salı ve Çarşamba günlerini tercih edin, 3) Esnek tarih araması kullanın, 
-                  4) Aktarmalı uçuşları değerlendirin, 5) WooNomad ile tüm havayollarını karşılaştırın.
+                  Bu rotada <strong>{route.airlines.join(', ')}</strong> havayolları hizmet vermektedir.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           </section>
 
-          {/* SEO/LLM Technical Info Section */}
+          {/* In-Article Ad */}
+          <AdInArticle />
+
+          {/* Technical Info */}
           <section className="mb-8 bg-muted/30 rounded-xl p-4 md:p-6">
             <h2 className="text-xl font-bold mb-4">
               {route.originCity} - {route.destinationCity} Teknik Bilgiler
             </h2>
             
-            {/* Key Facts Table for LLM */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
               <div className="bg-background rounded-lg p-3 text-center">
-                <div className="text-xs text-muted-foreground mb-1">{route.originCity} {route.destinationCity} uçuş süresi</div>
+                <div className="text-xs text-muted-foreground mb-1">Uçuş süresi</div>
                 <div className="text-lg font-bold text-primary">{route.estimatedDuration}</div>
               </div>
               <div className="bg-background rounded-lg p-3 text-center">
-                <div className="text-xs text-muted-foreground mb-1">{route.originCity} {route.destinationCity} kaç km</div>
+                <div className="text-xs text-muted-foreground mb-1">Mesafe</div>
                 <div className="text-lg font-bold text-primary">{route.distance}</div>
               </div>
               <div className="bg-background rounded-lg p-3 text-center">
@@ -563,8 +411,7 @@ export default function FlightRoute() {
               </div>
             </div>
             
-            {/* Detailed Flight Info for SEO */}
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-background rounded-lg p-3">
                 <h3 className="font-semibold text-sm mb-2">Kalkış: {route.originCity}</h3>
                 <dl className="space-y-1 text-sm">
@@ -573,7 +420,7 @@ export default function FlightRoute() {
                     <dd className="font-medium">{route.originCountry}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground">IATA Kodu</dt>
+                    <dt className="text-muted-foreground">IATA</dt>
                     <dd className="font-medium">{route.originCode}</dd>
                   </div>
                 </dl>
@@ -586,23 +433,11 @@ export default function FlightRoute() {
                     <dd className="font-medium">{route.destinationCountry}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground">IATA Kodu</dt>
+                    <dt className="text-muted-foreground">IATA</dt>
                     <dd className="font-medium">{route.destinationCode}</dd>
                   </div>
                 </dl>
               </div>
-            </div>
-            
-            {/* LLM Optimized Summary */}
-            <div className="p-3 bg-background rounded-lg text-sm text-muted-foreground">
-              <p className="mb-2">
-                <strong>{route.originCity} {route.destinationCity} uçak bileti</strong> fiyatları {formatPrice(route.priceRange.min)} ile {formatPrice(route.priceRange.max)} arasında değişmektedir. 
-                <strong> {route.originCity} {route.destinationCity} uçuş süresi</strong> ortalama {route.estimatedDuration} olup, iki şehir arası mesafe yaklaşık {route.distance}'dir.
-              </p>
-              <p>
-                <strong>{route.originCity} {route.destinationCity} kaç saat:</strong> Direkt uçuşlarla {route.estimatedDuration}, aktarmalı uçuşlarda ise 4-8 saat arası sürmektedir. 
-                Bu rotada {route.airlines.join(', ')} gibi havayolları hizmet vermektedir.
-              </p>
             </div>
           </section>
 

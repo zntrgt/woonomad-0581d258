@@ -1,152 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
-import { Plane, Search, Globe, Shield, Clock, CreditCard, Sparkles, MapPin, TrendingUp, Star, Hotel } from 'lucide-react';
-import { SearchForm, SearchFormRef } from '@/components/SearchForm';
+import { Plane, Search, Shield, Clock, Sparkles, TrendingUp, Star } from 'lucide-react';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { PopularHotels } from '@/components/PopularHotels';
 import { HotelSearchForm } from '@/components/HotelSearchForm';
-import { FlightCard } from '@/components/FlightCard';
-import { FlightFilters, FilterOptions } from '@/components/FlightFilters';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
-import { AdBanner, AdInArticle } from '@/components/AdSense';
-import { useFlightSearch } from '@/hooks/useFlightSearch';
-import { useFavorites } from '@/hooks/useFavorites';
+import { AdBanner } from '@/components/AdSense';
+import { TravelpayoutsFlightWidget, TravelpayoutsHotelWidget } from '@/components/widgets';
 import { useSettings } from '@/contexts/SettingsContext';
-import { SearchParams, Flight, Airport } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { parseISO, format } from 'date-fns';
-import { tr } from 'date-fns/locale';
-type SortOption = 'price' | 'duration' | 'departure' | 'best';
-
-// Airport lookup for popular routes - includes all destinations
-const airportLookup: Record<string, Airport> = {
-  'IST': { code: 'IST', name: 'İstanbul Havalimanı', city: 'İstanbul', country: 'Türkiye' },
-  'SAW': { code: 'SAW', name: 'Sabiha Gökçen', city: 'İstanbul', country: 'Türkiye' },
-  'ESB': { code: 'ESB', name: 'Esenboğa Havalimanı', city: 'Ankara', country: 'Türkiye' },
-  'AYT': { code: 'AYT', name: 'Antalya Havalimanı', city: 'Antalya', country: 'Türkiye' },
-  'ADB': { code: 'ADB', name: 'Adnan Menderes', city: 'İzmir', country: 'Türkiye' },
-  'BJV': { code: 'BJV', name: 'Milas-Bodrum Havalimanı', city: 'Bodrum', country: 'Türkiye' },
-  'BCN': { code: 'BCN', name: 'El Prat', city: 'Barselona', country: 'İspanya' },
-  'ATH': { code: 'ATH', name: 'Eleftherios Venizelos', city: 'Atina', country: 'Yunanistan' },
-  'CDG': { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'Fransa' },
-  'FCO': { code: 'FCO', name: 'Fiumicino', city: 'Roma', country: 'İtalya' },
-  'DXB': { code: 'DXB', name: 'Dubai', city: 'Dubai', country: 'BAE' },
-  'TBS': { code: 'TBS', name: 'Tiflis Havalimanı', city: 'Tiflis', country: 'Gürcistan' },
-  'SKP': { code: 'SKP', name: 'Üsküp Havalimanı', city: 'Üsküp', country: 'Kuzey Makedonya' },
-  'LHR': { code: 'LHR', name: 'Heathrow', city: 'Londra', country: 'İngiltere' },
-  'AMS': { code: 'AMS', name: 'Schiphol', city: 'Amsterdam', country: 'Hollanda' },
-  'FRA': { code: 'FRA', name: 'Frankfurt', city: 'Frankfurt', country: 'Almanya' },
-  'BER': { code: 'BER', name: 'Berlin Brandenburg', city: 'Berlin', country: 'Almanya' },
-};
 
 const Index = () => {
   const { t } = useTranslation();
-  const { flights, isLoading, error, searchFlights } = useFlightSearch();
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const { formatPrice, language } = useSettings();
-  const searchFormRef = useRef<SearchFormRef>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
-  const didAutoScrollRef = useRef(false);
-  const prevFlightsLengthRef = useRef(0);
-
-  const [sortBy, setSortBy] = useState<SortOption>('best');
-  const [filters, setFilters] = useState<FilterOptions>({
-    priceRange: [0, 100000],
-    maxStops: -1,
-    airlines: [],
-    departureTimeRange: [0, 24],
-  });
-  const [lastSearchParams, setLastSearchParams] = useState<SearchParams | null>(null);
-
-  const hasResultsSection = flights.length > 0 || isLoading || !!error;
+  const { language } = useSettings();
   const currentYear = new Date().getFullYear();
   const BASE_URL = 'https://woonomad.co';
-
-  const handleSearch = (params: SearchParams) => {
-    didAutoScrollRef.current = false;
-    setLastSearchParams(params);
-    searchFlights(params);
-  };
-
-  // Auto-scroll to results when flights are loaded (not during loading)
-  useEffect(() => {
-    const hasNewFlights = flights.length > 0 && !isLoading;
-    const wasEmpty = prevFlightsLengthRef.current === 0;
-    
-    if (hasNewFlights && wasEmpty && !didAutoScrollRef.current) {
-      requestAnimationFrame(() => {
-        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        didAutoScrollRef.current = true;
-      });
-    }
-    
-    prevFlightsLengthRef.current = flights.length;
-  }, [flights.length, isLoading]);
-
-  const handlePopularRouteSelect = (originCode: string, destinationCode: string) => {
-    const origin = airportLookup[originCode];
-    const destination = airportLookup[destinationCode];
-
-    if (origin && destination && searchFormRef.current) {
-      searchFormRef.current.setAirports(origin, destination);
-      setTimeout(() => {
-        searchFormRef.current?.triggerSearch();
-      }, 100);
-    }
-  };
-
-  const availableAirlines = useMemo(() => {
-    return [...new Set(flights.map(f => f.airline))];
-  }, [flights]);
-
-  const maxPrice = useMemo(() => {
-    return Math.max(...flights.map(f => f.price), 10000);
-  }, [flights]);
-
-  const filteredAndSortedFlights = useMemo(() => {
-    let result = flights.filter(flight => {
-      if (flight.price < filters.priceRange[0] || flight.price > filters.priceRange[1]) return false;
-      if (filters.maxStops !== -1 && flight.transfers > filters.maxStops) return false;
-      if (filters.airlines.length > 0 && !filters.airlines.includes(flight.airline)) return false;
-      const departHour = parseISO(flight.departure_at).getHours();
-      if (departHour < filters.departureTimeRange[0] || departHour > filters.departureTimeRange[1]) return false;
-      return true;
-    });
-
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case 'price': return a.price - b.price;
-        case 'duration': return a.duration - b.duration;
-        case 'departure': return new Date(a.departure_at).getTime() - new Date(b.departure_at).getTime();
-        case 'best': return (a.price / 1000 + a.duration / 60) - (b.price / 1000 + b.duration / 60);
-        default: return 0;
-      }
-    });
-
-    return result;
-  }, [flights, filters, sortBy]);
-
-  const priceRange = useMemo(() => {
-    if (filteredAndSortedFlights.length === 0) return null;
-    const prices = filteredAndSortedFlights.map(f => f.price);
-    return {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
-    };
-  }, [filteredAndSortedFlights]);
-
-  const getRank = (flight: Flight, index: number): 'cheapest' | 'fastest' | 'best' | null => {
-    if (flights.length < 3) return null;
-    const cheapest = [...flights].sort((a, b) => a.price - b.price)[0];
-    const fastest = [...flights].sort((a, b) => a.duration - b.duration)[0];
-    if (flight === cheapest) return 'cheapest';
-    if (flight === fastest) return 'fastest';
-    if (index === 0 && sortBy === 'best') return 'best';
-    return null;
-  };
 
   // JSON-LD Structured Data for SEO and LLM
   const websiteSchema = {
@@ -264,7 +134,6 @@ const Index = () => {
     ],
   };
 
-  // Breadcrumb Schema for SEO
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -313,35 +182,10 @@ const Index = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
 
-        {/* Sticky Results Banner */}
-        {flights.length > 0 && !isLoading && (
-          <div className="sticky top-[41px] z-30 gradient-primary text-primary-foreground py-3 px-4 text-center text-sm font-medium shadow-lg animate-fade-in">
-            <span className="inline-flex items-center gap-3 flex-wrap justify-center">
-              <span className="inline-flex items-center gap-2">
-                <Plane className="h-4 w-4 animate-bounce-gentle" aria-hidden="true" />
-                <span className="font-semibold">{t('flights.foundFlights', { count: filteredAndSortedFlights.length })}</span>
-              </span>
-              {priceRange && (
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
-                  {formatPrice(priceRange.min)} - {formatPrice(priceRange.max)}
-                </span>
-              )}
-              {filteredAndSortedFlights.length !== flights.length && (
-                <span className="text-primary-foreground/70 text-xs">
-                  ({flights.length} {t('index.total')})
-                </span>
-              )}
-            </span>
-          </div>
-        )}
-
         <main className="flex-1">
           {/* Hero Section */}
           <section
-            className={cn(
-              "relative flex flex-col items-center px-4 md:px-6",
-              hasResultsSection ? "py-4 md:py-6" : "py-6 md:py-10"
-            )}
+            className="relative flex flex-col items-center px-4 md:px-6 py-6 md:py-10"
             aria-labelledby="hero-title"
           >
             {/* Background decoration */}
@@ -351,10 +195,7 @@ const Index = () => {
             </div>
 
             {/* Hero Content */}
-            <div className={cn(
-              "relative text-center max-w-3xl mx-auto",
-              hasResultsSection ? "mb-3 md:mb-4" : "mb-4 md:mb-6"
-            )}>
+            <div className="relative text-center max-w-3xl mx-auto mb-4 md:mb-6">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-medium mb-4 animate-fade-in">
                 <Sparkles className="h-4 w-4" />
                 <span>{t('index.platformBadge')}</span>
@@ -376,118 +217,39 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Floating Search Form */}
+            {/* Flight Search Widget */}
             <div 
-              className="relative w-full max-w-3xl animate-fade-in-up"
+              className="relative w-full max-w-4xl animate-fade-in-up"
               style={{ animationDelay: '0.3s' }}
             >
-              <div className="search-bar-float p-4 md:p-6">
-                <SearchForm
-                  ref={searchFormRef}
-                  onSearch={handleSearch}
-                  isLoading={isLoading}
-                />
-              </div>
+              <TravelpayoutsFlightWidget 
+                subId="homepage"
+                className="shadow-lg"
+              />
             </div>
 
             {/* Trust Badges */}
-            {!hasResultsSection && (
-              <div 
-                className="flex flex-wrap items-center justify-center gap-4 mt-6 text-xs md:text-sm text-muted-foreground animate-fade-in"
-                style={{ animationDelay: '0.4s' }}
-              >
-                <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-success" />
-                  <span>{t('index.securePayment')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-primary" />
-                  <span>{t('index.bestPriceGuarantee')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4 text-travel-gold" />
-                  <span>{t('index.airlines500')}</span>
-                </div>
+            <div 
+              className="flex flex-wrap items-center justify-center gap-4 mt-6 text-xs md:text-sm text-muted-foreground animate-fade-in"
+              style={{ animationDelay: '0.4s' }}
+            >
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-success" />
+                <span>{t('index.securePayment')}</span>
               </div>
-            )}
-
-            {/* Results Section */}
-            {hasResultsSection && (
-              <div ref={resultsRef} className="w-full max-w-4xl mt-6 md:mt-8 animate-fade-in-up">
-                <div className="card-modern p-4 md:p-6">
-                  {error && (
-                    <div className="bg-destructive/10 text-destructive p-4 rounded-xl mb-6 text-center text-sm font-medium border border-destructive/20">
-                      {error}
-                    </div>
-                  )}
-
-                  {flights.length > 0 && (
-                    <>
-                      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-border/50">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-5 w-5 text-primary" />
-                          <span className="font-semibold text-foreground">
-                            {t('flights.foundFlights', { count: filteredAndSortedFlights.length })}
-                          </span>
-                        </div>
-
-                        <FlightFilters
-                          filters={filters}
-                          onFiltersChange={setFilters}
-                          availableAirlines={availableAirlines}
-                          maxPrice={maxPrice}
-                          sortBy={sortBy}
-                          onSortChange={setSortBy}
-                        />
-                      </div>
-
-                      <div className="space-y-4">
-                        {filteredAndSortedFlights.map((flight, index) => (
-                          <div 
-                            key={`${flight.flight_number}-${flight.departure_at}`}
-                            className="animate-fade-in-up"
-                            style={{ animationDelay: `${index * 0.05}s` }}
-                          >
-                            <FlightCard
-                              flight={flight}
-                              isFavorite={isFavorite(flight)}
-                              onToggleFavorite={() => toggleFavorite(flight)}
-                              rank={getRank(flight, index)}
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      {filteredAndSortedFlights.length === 0 && (
-                        <div className="text-center py-12 text-muted-foreground">
-                          <Search className="h-12 w-12 mx-auto mb-4 opacity-30" />
-                          <p className="font-medium">{t('index.noFilteredFlights')}</p>
-                          <p className="text-sm mt-1">{t('index.tryDifferentFilters')}</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {isLoading && (
-                    <div className="text-center py-16">
-                      <div className="relative inline-block">
-                        <Plane className="h-12 w-12 text-primary animate-bounce-gentle" aria-hidden="true" />
-                        <div className="absolute inset-0 rounded-full animate-pulse-ring border-2 border-primary" />
-                      </div>
-                      <p className="text-muted-foreground mt-4 font-medium">{t('index.searchingFlights')}</p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">{t('index.pleaseWait')}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* In-Article Ad after results */}
-                {flights.length > 5 && <AdInArticle />}
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                <span>{t('index.bestPriceGuarantee')}</span>
               </div>
-            )}
+              <div className="flex items-center gap-2">
+                <Star className="h-4 w-4 text-travel-gold" />
+                <span>{t('index.airlines500')}</span>
+              </div>
+            </div>
 
             {/* Popular Routes */}
-            <div className={cn("w-full max-w-3xl", hasResultsSection ? "mt-8" : "mt-6 md:mt-10")}>
-              <PopularRoutes onRouteSelect={handlePopularRouteSelect} />
+            <div className="w-full max-w-3xl mt-8">
+              <PopularRoutes onRouteSelect={() => {}} />
             </div>
           </section>
 
@@ -547,9 +309,20 @@ const Index = () => {
           {/* Popular Hotels Section */}
           <PopularHotels limit={8} />
 
-          {/* Hotel Search Form */}
-          <section className="max-w-4xl mx-auto px-4 pb-8">
-            <HotelSearchForm />
+          {/* Hotel Search Section */}
+          <section className="max-w-4xl mx-auto px-4 py-8">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
+                {t('hotels.searchTitle', 'Otel Ara')}
+              </h2>
+              <p className="text-muted-foreground">
+                {t('hotels.searchSubtitle', 'En iyi fiyatlarla otel rezervasyonu yapın')}
+              </p>
+            </div>
+            <TravelpayoutsHotelWidget 
+              subId="homepage-hotel"
+              className="shadow-lg"
+            />
           </section>
 
           {/* Banner Ad */}
