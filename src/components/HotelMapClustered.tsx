@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import { Star, ExternalLink } from 'lucide-react';
-import { Hotel } from '@/hooks/useHotelSearch';
+import { Hotel } from '@/lib/hotelTypes';
 import { Button } from '@/components/ui/button';
 import 'leaflet/dist/leaflet.css';
 

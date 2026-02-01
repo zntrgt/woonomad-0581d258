@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useId } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { WidgetContainer, WidgetFallback } from './WidgetContainer';
+import { format, addDays } from 'date-fns';
 
 // Travelpayouts partner ID - public affiliate ID, safe to expose
 const PARTNER_ID = '604466';
@@ -73,9 +74,14 @@ export function TravelpayoutsFlightWidget({
       ...(subId && { subId }),
     });
 
-    // Load the Travelpayouts widget script
+    // Calculate dynamic dates (7 days from now for departure, 14 days for return)
+    const today = new Date();
+    const departureDate = format(addDays(today, 7), 'yyyy-MM-dd');
+    const returnDate = format(addDays(today, 14), 'yyyy-MM-dd');
+
+    // Load the Travelpayouts widget script with dynamic dates
     const script = document.createElement('script');
-    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&origin=${origin}&destination=${destination}&one_way=${oneWay}&promo_id=4132&campaign_id=100`;
+    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&origin=${origin}&destination=${destination}&one_way=${oneWay}&depart_date=${departureDate}&return_date=${returnDate}&promo_id=4132&campaign_id=100`;
     script.async = true;
     script.charset = 'utf-8';
 

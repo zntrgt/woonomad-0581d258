@@ -60,10 +60,15 @@ export function TravelpayoutsHotelWidget({
     widgetDiv.id = `tp-hotel-${widgetId}`;
     container.appendChild(widgetDiv);
 
-    // Hotel search widget - using Hotellook
+    // Calculate dynamic dates for hotel search (7 days from now check-in, 10 days checkout)
+    const today = new Date();
+    const checkInDate = format(addDays(today, 7), 'yyyy-MM-dd');
+    const checkOutDate = format(addDays(today, 10), 'yyyy-MM-dd');
+    
+    // Hotel search widget - using Hotellook with dynamic dates
     const locationParam = cityId || cityName;
     const script = document.createElement('script');
-    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&locationId=${locationParam}&promo_id=4427&campaign_id=100`;
+    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&locationId=${locationParam}&checkIn=${checkInDate}&checkOut=${checkOutDate}&promo_id=4427&campaign_id=100`;
     script.async = true;
     script.charset = 'utf-8';
 
