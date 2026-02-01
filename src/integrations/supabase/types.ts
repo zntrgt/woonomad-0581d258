@@ -476,7 +476,15 @@ export type Database = {
           speed_test_id: string | null
           upvotes: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
+            columns: ["speed_test_id"]
+            isOneToOne: false
+            referencedRelation: "wifi_speed_tests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wifi_speed_tests_public: {
         Row: {
