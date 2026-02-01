@@ -1,5 +1,20 @@
 // City data for hub pages
+// Import local city images for Turkish destinations
 import izmirImage from '@/assets/cities/izmir.jpg';
+import antalyaImage from '@/assets/cities/antalya.jpg';
+import bodrumImage from '@/assets/cities/bodrum.jpg';
+import athensImage from '@/assets/cities/athens.jpg';
+import bangkokImage from '@/assets/cities/bangkok.jpg';
+import barcelonaImage from '@/assets/cities/barcelona.jpg';
+import dubaiImage from '@/assets/cities/dubai.jpg';
+import florenceImage from '@/assets/cities/florence.jpg';
+import parisImage from '@/assets/cities/paris.jpg';
+import romeImage from '@/assets/cities/rome.jpg';
+import singaporeImage from '@/assets/cities/singapore.jpg';
+import stockholmImage from '@/assets/cities/stockholm.jpg';
+import tbilisiImage from '@/assets/cities/tbilisi.jpg';
+import tokyoImage from '@/assets/cities/tokyo.jpg';
+import skopjeImage from '@/assets/cities/skopje.jpg';
 
 export interface CityEvent {
   name: string;
@@ -64,7 +79,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Türk Lirası (TRY)',
     language: 'Türkçe',
     population: '2.5 milyon',
-    image: 'https://images.unsplash.com/photo-1533929736562-6f3dca5d8c4a?q=80&w=1200&h=600&fit=crop', // Antalya coast
+    image: antalyaImage,
     events: [
       { name: 'Antalya Film Festivali', nameEn: 'Antalya Film Festival', date: 'Ekim', description: 'Türkiye\'nin en eski film festivali.' },
       { name: 'Aspendos Opera ve Bale Festivali', nameEn: 'Aspendos Festival', date: 'Haziran-Temmuz', description: 'Antik tiyatroda dünya standartlarında performanslar.' },
@@ -106,7 +121,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Türk Lirası (TRY)',
     language: 'Türkçe',
     population: '180 bin',
-    image: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?q=80&w=1200&h=600&fit=crop', // Bodrum coast marina
+    image: bodrumImage,
     events: [
       { name: 'Bodrum Bale Festivali', nameEn: 'Bodrum Ballet Festival', date: 'Ağustos', description: 'Bodrum Kalesi\'nde bale performansları.' },
       { name: 'Bodrum Caz Festivali', nameEn: 'Bodrum Jazz Festival', date: 'Temmuz', description: 'Uluslararası caz yıldızları.' },
@@ -214,7 +229,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Euro (EUR)',
     language: 'Fransızca',
     population: '2.1 milyon',
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=600&fit=crop',
+    image: parisImage,
     events: [
       { name: 'Bastille Günü', nameEn: 'Bastille Day', date: '14 Temmuz', description: 'Fransa Ulusal Günü, Champs-Élysées\'de askeri geçit töreni ve havai fişek.' },
       { name: 'Paris Fashion Week', nameEn: 'Paris Fashion Week', date: 'Şubat/Mart ve Eylül/Ekim', description: 'Dünyanın en prestijli moda haftalarından biri.' },
@@ -286,7 +301,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Euro (EUR)',
     language: 'İspanyolca, Katalanca',
     population: '1.6 milyon',
-    image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=1200&h=600&fit=crop',
+    image: barcelonaImage,
     events: [
       { name: 'La Mercè', nameEn: 'La Mercè Festival', date: 'Eylül 20-24', description: 'Barselona\'nın en büyük festivali, insan kuleleri ve ateş gösterileri.' },
       { name: 'Sant Jordi Günü', nameEn: 'Saint George\'s Day', date: '23 Nisan', description: 'Kitap ve gül hediye etme geleneği, Katalan Valentine\'ı.' },
@@ -331,7 +346,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Euro (EUR)',
     language: 'İtalyanca',
     population: '2.8 milyon',
-    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=600&fit=crop',
+    image: romeImage,
     events: [
       { name: 'Paskalya (Vatikan)', nameEn: 'Easter at Vatican', date: 'Nisan 20-21', description: 'Papa\'nın Paskalya ayini, St. Peter Meydanı\'nda.' },
       { name: 'Natale di Roma', nameEn: 'Birthday of Rome', date: '21 Nisan', description: 'Roma\'nın kuruluş yıldönümü kutlamaları.' },
@@ -395,7 +410,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Euro (EUR)',
     language: 'İtalyanca',
     population: '380 bin',
-    image: 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?q=80&w=1200&h=600&fit=crop', // Florence Duomo
+    image: florenceImage,
     events: [
       { name: 'Calcio Storico', nameEn: 'Historic Football', date: 'Haziran 24', description: 'Tarihi Floransa futbolu, Rönesans dönemi kıyafetleriyle.' },
       { name: 'Scoppio del Carro', nameEn: 'Explosion of the Cart', date: 'Paskalya Pazar', description: 'Geleneksel Paskalya havai fişek töreni.' },
@@ -462,7 +477,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Euro (EUR)',
     language: 'Yunanca',
     population: '3.1 milyon',
-    image: 'https://images.unsplash.com/photo-1555993539-1732b0258235?w=1200&h=600&fit=crop', // Athens Acropolis
+    image: athensImage,
     events: [
       { name: 'Atina Epidaurus Festivali', nameEn: 'Athens Epidaurus Festival', date: 'Haziran - Ağustos', description: 'Antik tiyatrolarda drama ve müzik performansları.' },
       { name: 'Yunan Paskalyası', nameEn: 'Greek Easter', date: 'Nisan (Ortodoks)', description: 'Yunanistan\'ın en önemli dini bayramı.' },
@@ -573,7 +588,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'İsveç Kronu (SEK)',
     language: 'İsveççe',
     population: '980 bin',
-    image: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?q=80&w=1200&h=600&fit=crop', // Stockholm old town
+    image: stockholmImage,
     events: [
       { name: 'Midsommar', nameEn: 'Midsummer', date: 'Haziran 20-21', description: 'İsveç\'in en önemli geleneksel festivali, yaz gündönümü kutlaması.' },
       { name: 'Nobel Ödül Töreni', nameEn: 'Nobel Prize Ceremony', date: '10 Aralık', description: 'Nobel Ödülleri\'nin verildiği prestijli tören.' },
@@ -596,7 +611,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Dirham (AED)',
     language: 'Arapça, İngilizce',
     population: '3.4 milyon',
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&h=600&fit=crop', // Dubai skyline
+    image: dubaiImage,
     events: [
       { name: 'Dubai Shopping Festival', nameEn: 'Dubai Shopping Festival', date: 'Aralık 15 - Ocak 29', description: 'Büyük indirimler ve etkinliklerle dolu alışveriş festivali.' },
       { name: 'Dubai Expo', nameEn: 'Dubai Expo', date: 'Yıl boyunca', description: 'Expo City Dubai\'de sürekli etkinlikler.' },
@@ -638,7 +653,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Gürcü Larisi (GEL)',
     language: 'Gürcüce',
     population: '1.2 milyon',
-    image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=1200&h=600&fit=crop', // Tbilisi old town
+    image: tbilisiImage,
     events: [
       { name: 'Tbilisoba', nameEn: 'Tbilisoba', date: 'Ekim', description: 'Tiflis\'in yıllık şehir festivali, geleneksel müzik ve yemekler.' },
       { name: 'Art Gene Festival', nameEn: 'Art Gene Festival', date: 'Temmuz', description: 'Açık havada etnik müzik festivali.' },
@@ -682,7 +697,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Yen (JPY)',
     language: 'Japonca',
     population: '14 milyon',
-    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&h=600&fit=crop', // Tokyo cityscape
+    image: tokyoImage,
     events: [
       { name: 'Sakura Sezonu', nameEn: 'Cherry Blossom Season', date: 'Mart sonu - Nisan başı', description: 'Kiraz çiçeği izleme (hanami) festivali.' },
       { name: 'Sanja Matsuri', nameEn: 'Sanja Matsuri', date: 'Mayıs 16-18', description: 'Asakusa\'da Tokyo\'nun en büyük festivali.' },
@@ -704,7 +719,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Baht (THB)',
     language: 'Tayca',
     population: '10 milyon',
-    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579c4e?w=1200&h=600&fit=crop', // Bangkok temples
+    image: bangkokImage,
     events: [
       { name: 'Songkran Su Festivali', nameEn: 'Songkran', date: '13-15 Nisan', description: 'Tay yeni yılı, dünyanın en büyük su savaşı.' },
       { name: 'Loy Krathong', nameEn: 'Loy Krathong', date: 'Kasım (Dolunay)', description: 'Suya mum ve çiçek bırakılan fener festivali.' },
@@ -725,7 +740,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Singapur Doları (SGD)',
     language: 'İngilizce, Mandarin, Malayca, Tamil',
     population: '5.7 milyon',
-    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&h=600&fit=crop',
+    image: singaporeImage,
     events: [
       { name: 'Singapur F1 Gece Yarışı', nameEn: 'Singapore Grand Prix', date: 'Eylül 19-21', description: 'Dünyanın ilk gece F1 yarışı.' },
       { name: 'Çin Yeni Yılı', nameEn: 'Chinese New Year', date: 'Ocak/Şubat', description: 'Chinatown\'da muhteşem kutlamalar.' },
