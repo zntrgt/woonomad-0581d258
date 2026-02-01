@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Wifi, Upload, Clock, Activity, MapPin, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,7 +120,7 @@ export function WifiSpeedTestForm({
             WiFi hız testi paylaşmak için giriş yapın
           </p>
           <Button asChild variant="outline">
-            <a href="/auth">Giriş Yap</a>
+            <Link to="/auth">Giriş Yap</Link>
           </Button>
         </CardContent>
       </Card>
