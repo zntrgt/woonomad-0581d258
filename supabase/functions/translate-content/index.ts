@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface TranslateRequest {
@@ -12,13 +12,14 @@ interface TranslateRequest {
   sourceLanguage?: string;
 }
 
-const LANGUAGE_NAMES: Record<string, string> = {
-  'tr': 'Turkish',
-  'en': 'English', 
-  'de': 'German',
-  'fr': 'French',
-  'es': 'Spanish',
-  'ar': 'Arabic',
+// DeepL language code mapping
+const DEEPL_LANGUAGE_CODES: Record<string, string> = {
+  'tr': 'TR',
+  'en': 'EN',
+  'de': 'DE',
+  'fr': 'FR',
+  'es': 'ES',
+  'ar': 'AR', // Note: DeepL may not support Arabic, will fallback to Lovable AI
 };
 
 // Rate limiting configuration (per user)
@@ -42,6 +43,44 @@ function getRateLimitInfo(userId: string): { allowed: boolean; remaining: number
   
   record.count++;
   return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - record.count, resetTime: record.resetTime };
+}
+
+async function translateWithDeepL(
+  texts: string[],
+  targetLang: string,
+  sourceLang: string,
+  apiKey: string
+): Promise<string[] | null> {
+  try {
+    // DeepL API endpoint (free or pro based on key)
+    const apiUrl = apiKey.endsWith(':fx') 
+      ? 'https://api-free.deepl.com/v2/translate'
+      : 'https://api.deepl.com/v2/translate';
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `DeepL-Auth-Key ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: texts,
+        target_lang: DEEPL_LANGUAGE_CODES[targetLang] || targetLang.toUpperCase(),
+        source_lang: DEEPL_LANGUAGE_CODES[sourceLang] || sourceLang.toUpperCase(),
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('DeepL API error:', response.status, await response.text());
+      return null;
+    }
+
+    const data = await response.json();
+    return data.translations?.map((t: { text: string }) => t.text) || null;
+  } catch (error) {
+    console.error('DeepL translation error:', error);
+    return null;
+  }
 }
 
 serve(async (req) => {
@@ -99,6 +138,7 @@ serve(async (req) => {
         }
       );
     }
+
     const body: TranslateRequest = await req.json();
     const { texts, targetLanguage, sourceLanguage = 'tr' } = body;
 
@@ -117,21 +157,61 @@ serve(async (req) => {
       );
     }
 
+    const textEntries = Object.entries(texts);
+    const textValues = textEntries.map(([, value]) => value);
+    const textKeys = textEntries.map(([key]) => key);
+
+    // Try DeepL first
+    const DEEPL_API_KEY = Deno.env.get("DEEPL_API_KEY");
+    
+    if (DEEPL_API_KEY) {
+      console.log(`Translating ${textEntries.length} texts with DeepL from ${sourceLanguage} to ${targetLanguage}`);
+      
+      const deeplResults = await translateWithDeepL(
+        textValues,
+        targetLanguage,
+        sourceLanguage,
+        DEEPL_API_KEY
+      );
+
+      if (deeplResults && deeplResults.length === textValues.length) {
+        const translations: Record<string, string> = {};
+        textKeys.forEach((key, idx) => {
+          translations[key] = deeplResults[idx];
+        });
+
+        console.log(`DeepL translation successful: ${Object.keys(translations).length} texts`);
+        
+        return new Response(
+          JSON.stringify({ translations, provider: 'deepl' }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      console.log('DeepL translation failed, falling back to Lovable AI');
+    }
+
+    // Fallback to Lovable AI
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
+      console.error("Neither DEEPL_API_KEY nor LOVABLE_API_KEY is configured");
       return new Response(
-        JSON.stringify({ error: "AI service not configured" }),
+        JSON.stringify({ error: "Translation service not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    const LANGUAGE_NAMES: Record<string, string> = {
+      'tr': 'Turkish',
+      'en': 'English', 
+      'de': 'German',
+      'fr': 'French',
+      'es': 'Spanish',
+      'ar': 'Arabic',
+    };
+
     const targetLangName = LANGUAGE_NAMES[targetLanguage] || targetLanguage;
     const sourceLangName = LANGUAGE_NAMES[sourceLanguage] || sourceLanguage;
-
-    // Create a list of texts to translate
-    const textEntries = Object.entries(texts);
-    const textList = textEntries.map(([key, value], idx) => `[${idx}] ${value}`).join('\n');
 
     const systemPrompt = `You are a professional translator. Translate the following texts from ${sourceLangName} to ${targetLangName}.
 Keep the same meaning and tone. Preserve any placeholders like {{name}} or {count}.
@@ -150,7 +230,7 @@ ${textEntries.map(([key, value]) => `"${key}": "${value}"`).join('\n')}
 
 Return: {"translations": {"key1": "...", ...}}`;
 
-    console.log(`Translating ${textEntries.length} texts from ${sourceLanguage} to ${targetLanguage}`);
+    console.log(`Translating ${textEntries.length} texts with Lovable AI from ${sourceLanguage} to ${targetLanguage}`);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -221,10 +301,10 @@ Return: {"translations": {"key1": "...", ...}}`;
       );
     }
 
-    console.log(`Translation successful: ${Object.keys(result.translations || {}).length} texts`);
+    console.log(`Lovable AI translation successful: ${Object.keys(result.translations || {}).length} texts`);
     
     return new Response(
-      JSON.stringify(result),
+      JSON.stringify({ ...result, provider: 'lovable-ai' }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
