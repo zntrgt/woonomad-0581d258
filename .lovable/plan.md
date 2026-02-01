@@ -1,169 +1,214 @@
 
-# Uygulama Planı
+# Travelpayouts Widget Entegrasyonu Planı
 
-Kullanıcının 4 farklı isteği var. Bunları tek tek inceleyelim:
+## Genel Bakış
 
----
-
-## 1. Blog Sayfalarına Yazılan Linkleri Otomatik Algıla
-
-### Mevcut Durum
-- `BlogPost.tsx` içinde `formatInlineText` fonksiyonu var
-- Bu fonksiyon **bold** ve *italic* formatlarını işliyor
-- Şehir isimlerini otomatik internal link'e çeviriyor
-- Ancak Markdown formatındaki external linkler (`[metin](url)`) algılanmıyor
-
-### Yapılacaklar
-1. **`formatInlineText` fonksiyonunu genişlet**:
-   - Markdown link formatı: `[link metni](https://example.com)` 
-   - Regex ile algıla ve `<a>` tag'ine dönüştür
-   - External linkler için `target="_blank"` ve `rel="noopener noreferrer sponsored"` ekle
-   - Internal linkler için (woonomad.co veya `/` ile başlayanlar) normal `<a>` kullan
-
-2. **DOMPurify ayarlarını güncelle**:
-   - `ALLOWED_ATTR` listesine `target` ve `rel` ekle (zaten var, doğrulama gerekli)
+Mevcut özel Edge Function tabanlı uçuş ve otel arama sistemini, doğrudan Travelpayouts'un hazır widget embed kodlarıyla değiştireceğiz. Bu geçiş, bakım maliyetini azaltacak ve daha güvenilir bir arama deneyimi sağlayacak.
 
 ---
 
-## 2. Şehir Sayfalarındaki "En İyi Bölgeler"e Tıklayınca Otel Ara
+## Mevcut Durum Analizi
 
-### Mevcut Durum
-- `City.tsx` içinde `getNeighborhoods()` fonksiyonu var (satır 84-156)
-- Bölgeler sadece statik metin olarak gösteriliyor
-- Tıklanabilir değiller
+### Şu Anda Ne Var?
+- **Uçuş Araması**: `search-flights` Edge Function (836 satır kod) → Travelpayouts API
+- **Otel Araması**: `search-hotels` Edge Function (693 satır kod) → Hotellook API
+- **Sonuç Gösterimi**: Özel `FlightCard`, `HotelCard` component'leri
+- **Sorunlar**: 
+  - API rate limiting
+  - Arama sonuçlarının tutarsızlığı
+  - Bazı destinasyonlar için boş sonuçlar
+  - Bakım zorluğu
 
-### Yapılacaklar
-1. **Bölge kartlarını tıklanabilir yap**:
-   - Her bölge kartına Agoda arama linki ekle
-   - `getAgodaUrl` fonksiyonunu kullan
-   - `textToSearch` parametresine bölge + şehir adını ekle (örn: "Kreuzberg Berlin")
+### Widget Geçişinin Avantajları
+- Travelpayouts tarafından bakım yapılır
+- Her zaman güncel fiyatlar
+- Daha güvenilir arama sonuçları
+- Daha az sunucu maliyeti (Edge Function çağrıları azalır)
+- Otomatik para birimi ve dil desteği
 
-2. **UI güncellemesi**:
-   - Bölge kartlarına "Otel Ara" butonu veya tıklanabilir overlay ekle
-   - Hover state ile kullanıcıya tıklanabilir olduğunu göster
-
----
-
-## 3. Skyscanner Impact API Araştırması
-
-### Araştırma Sonuçları
-Skyscanner iki tür affiliate program sunuyor:
-
-1. **Affiliate Program (Link Bazlı)**:
-   - impact.com üzerinden yönetiliyor
-   - Komisyon bazlı (77% booking artışı case study'de bahsedilmiş)
-   - API gerektirmiyor, sadece affiliate link'ler
-
-2. **Travel API (Partners Program)**:
-   - partners.skyscanner.net üzerinden başvuru gerekli
-   - Tam API erişimi: uçuş arama, fiyat karşılaştırma
-   - Endpoint: `partners.api.skyscanner.net/apiservices/v3/flights/`
-   - API Key gerekli (`x-api-key` header)
-   - Indicative Prices, Live Prices, Autosuggest endpoint'leri var
-
-### Sonuç
-**Evet, Skyscanner API sağlıyor.** Ancak:
-- Partner başvurusu yapılması gerekiyor
-- Onay süreci var
-- Mevcut Travelpayouts entegrasyonuna alternatif olarak değerlendirilebilir
-
-Bu konuda herhangi bir kod değişikliği yapmıyorum - sadece bilgi verdim. İsterseniz Skyscanner Partner başvurusu yapabilirsiniz.
+### Dezavantajları
+- Özelleştirme kısıtlı (renk, boyut dışında)
+- Arama sonuçları site içinde değil, yeni sekmede açılır
+- "Powered by Travelpayouts" etiketi zorunlu
 
 ---
 
-## 4. Anchor ID'leri Çalışır Hale Getir
+## Widget Tipleri
 
-### Mevcut Durum
-- `BlogPost.tsx` içinde heading'lere ID ekleniyor (satır 600-616)
-- `id={`heading-${index}`}` formatında
-- `scroll-mt-20` class'ı var (sticky header için offset)
-- `TableOfContents` bileşeni anchor linkler oluşturuyor (satır 170: `href={`#${heading.id}`}`)
+Travelpayouts'tan kullanacağımız widget'lar:
 
-### Sorun
-- Browser'ın native hash navigation'ı çalışmıyor olabilir
-- React Router hash handling eksik olabilir
-- Sayfa yüklendiğinde hash'e scroll yapılmıyor
+### 1. Flight Search Form Widget
+- Kalkış/varış seçimi
+- Tarih seçimi
+- Yolcu sayısı
+- Arama butonu → Aviasales'e yönlendirme
 
-### Yapılacaklar
-1. **Hash navigation hook'u ekle**:
-   - Sayfa yüklendiğinde URL'deki hash'i kontrol et
-   - İlgili elemente `scrollIntoView` ile scroll yap
-   - `scroll-margin-top` CSS property'si ile header offset'i ayarla
+### 2. Low Fares Calendar Widget
+- Aylık en ucuz fiyatları gösterir
+- Belirli bir rota için ideal
 
-2. **TOC linklerine smooth scroll ekle**:
-   - Click event handler ile native behavior'u override et
-   - `scrollIntoView({ behavior: 'smooth', block: 'start' })` kullan
+### 3. Hotel Search Widget (Agoda)
+- Şehir seçimi
+- Giriş/çıkış tarihleri
+- Misafir sayısı
+- Arama → Agoda'ya yönlendirme
+
+### 4. Popular Destinations Widget
+- Belirli bir şehirden en ucuz destinasyonları gösterir
+
+---
+
+## Uygulama Planı
+
+### Aşama 1: Widget Wrapper Component'leri Oluşturma
+
+#### 1.1 `TravelpayoutsFlightWidget.tsx`
+Uçuş arama widget'ını sarmalayan React component:
+
+```text
+src/components/widgets/
+├── TravelpayoutsFlightWidget.tsx    # Ana uçuş arama formu
+├── TravelpayoutsCalendarWidget.tsx  # Fiyat takvimi widget'ı
+├── TravelpayoutsHotelWidget.tsx     # Otel arama widget'ı
+├── TravelpayoutsMapWidget.tsx       # Harita widget'ı
+└── WidgetContainer.tsx              # Ortak container
+```
+
+Her widget:
+- Partner ID'yi otomatik alır (mevcut secret: `TRAVELPAYOUTS_PARTNER_ID`)
+- Dil ayarını site diline göre belirler
+- Para birimini kullanıcı tercihine göre ayarlar
+- Responsive tasarım sağlar
+
+### Aşama 2: Sayfa Bazlı Değişiklikler
+
+#### 2.1 Ana Sayfa (`src/pages/Index.tsx`)
+**Önce:**
+- `SearchForm` component + `useFlightSearch` hook
+- `FlightCard` ile sonuç listesi
+
+**Sonra:**
+- `TravelpayoutsFlightWidget` (uçuş arama formu)
+- `TravelpayoutsHotelWidget` (otel arama formu)
+- `PopularRoutes` ve `PopularHotels` kalsın (bunlar link tabanlı)
+
+#### 2.2 Uçuş Rotası Sayfası (`src/pages/FlightRoute.tsx`)
+**Önce:**
+- `SearchForm` + `useFlightSearch`
+- `FlightCard` listesi
+- `PriceTrendChart`
+
+**Sonra:**
+- `TravelpayoutsFlightWidget` (rota önceden doldurulmuş)
+- `TravelpayoutsCalendarWidget` (o rota için fiyat takvimi)
+- SEO içerikleri (mevcut FAQ, rota bilgileri) kalır
+
+#### 2.3 Şehir Uçuşları Sayfası (`src/pages/CityFlights.tsx`)
+- `TravelpayoutsFlightWidget` (şehir önceden doldurulmuş)
+- `TravelpayoutsCalendarWidget`
+
+#### 2.4 Şehir Otelleri Sayfası (`src/pages/CityHotels.tsx`)
+- `TravelpayoutsHotelWidget` (şehir önceden doldurulmuş)
+- Neighborhood kartları (mevcut Agoda link sistemi kalabilir)
+
+#### 2.5 Otel Ana Sayfası (`src/pages/Hotels.tsx`)
+- `TravelpayoutsHotelWidget`
+- `PopularHotels` kalır
+
+### Aşama 3: Kaldırılacaklar
+
+#### 3.1 Kullanılmayacak Component'ler
+- `src/components/SearchForm.tsx` → Widget ile değiştirilecek
+- `src/components/FlightCard.tsx` → Sonuçlar harici sitede gösterilecek
+- `src/components/FlightFilters.tsx` → Harici sitede filtreleme yapılacak
+- `src/components/FlightDatePicker.tsx` → Widget içinde mevcut
+- `src/hooks/useFlightSearch.ts` → Artık gerekli değil
+- `src/hooks/useHotelSearch.ts` → Artık gerekli değil
+- `src/components/SearchStatus.tsx` → Widget kendi durumunu yönetir
+
+#### 3.2 Edge Function'lar
+- `supabase/functions/search-flights/` → **Silinebilir** (widget devralacak)
+- `supabase/functions/search-hotels/` → **Silinebilir** (widget devralacak)
+
+#### 3.3 Korunacaklar
+- `supabase/functions/get-monthly-prices/` → PriceCalendar için hala kullanılabilir
+- `supabase/functions/check-price-alerts/` → Fiyat uyarıları için gerekli
+- Mevcut Agoda link sistemi (`getAgodaUrl`) → Neighborhood kartları için
+
+### Aşama 4: Widget Konfigürasyonu
+
+Widget'ları Travelpayouts hesabından özelleştirmek:
+
+1. **Renk Teması**: Site temasına uygun (primary: `#8B5CF6`)
+2. **Dil**: Site diline göre dinamik (tr, en, de, fr, es, ar)
+3. **Para Birimi**: Kullanıcı tercihine göre (TRY, EUR, USD)
+4. **Boyut**: Responsive (mobile/desktop)
+5. **SubID**: Sayfa bazlı tracking (homepage, city-page, route-page)
 
 ---
 
 ## Teknik Detaylar
 
-### Dosya Değişiklikleri
+### Widget Embed Yöntemi
+Travelpayouts widget'ları `<script>` tag'i ile yüklenir:
 
-| Dosya | Değişiklik |
-|-------|------------|
-| `src/pages/BlogPost.tsx` | Markdown link parsing + anchor hash handling |
-| `src/pages/City.tsx` | Neighborhood kartlarına Agoda link ekleme |
-
-### Kod Örnekleri
-
-**1. Markdown Link Parsing (BlogPost.tsx)**
-```typescript
-// formatInlineText içine eklenecek
-// [link metni](url) formatını algıla
-formatted = formatted.replace(
-  /\[([^\]]+)\]\(([^)]+)\)/g,
-  (match, text, url) => {
-    const isExternal = url.startsWith('http');
-    if (isExternal) {
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline">${text}</a>`;
-    }
-    return `<a href="${url}" class="text-primary hover:underline">${text}</a>`;
-  }
-);
+```text
+// Widget div + script yapısı
+<div id="tp-widget-xxx" data-params="..."></div>
+<script src="https://tp.media/xxx/widget.js"></script>
 ```
 
-**2. Neighborhood Link (City.tsx)**
-```typescript
-// Bölge kartlarına eklenecek
-const neighborhoodSearchUrl = getAgodaUrl(
-  city.slug, 
-  `${neighborhood.name} ${city.name}`, 
-  checkIn, 
-  checkOut
-);
-```
+React'ta bu yapıyı güvenli şekilde yönetmek için:
+1. `useEffect` ile script'i dinamik yükle
+2. Component unmount'ta temizle
+3. Props değiştiğinde widget'ı yeniden oluştur
 
-**3. Anchor Hash Handling (BlogPost.tsx)**
-```typescript
-useEffect(() => {
-  const hash = window.location.hash;
-  if (hash) {
-    const element = document.querySelector(hash);
-    if (element) {
-      setTimeout(() => {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  }
-}, [post]);
+### Partner ID Kullanımı
+Mevcut `TRAVELPAYOUTS_PARTNER_ID` secret'ı:
+- Edge Function'larda kullanılıyordu
+- Widget'larda da aynı ID kullanılacak
+- Frontend'de public olarak embed edilebilir (affiliate ID olduğu için güvenli)
+
+### Dil Mapping
+```text
+Site Dili → Widget Dili
+tr → tr
+en → en
+de → de
+fr → fr
+es → es
+ar → ar
 ```
 
 ---
 
-## Uygulama Sırası
+## Zaman Çizelgesi
 
-1. **Blog Markdown Link Parsing** - Öncelikli (içerik zenginleştirme)
-2. **Anchor ID'leri Düzeltme** - Blog deneyimini iyileştirir
-3. **Neighborhood Otel Arama** - Conversion artırıcı
-4. **Skyscanner** - Sadece bilgi (kod değişikliği yok)
+| Aşama | Açıklama | Süre |
+|-------|----------|------|
+| 1 | Widget wrapper component'leri oluştur | 1 mesaj |
+| 2 | Ana sayfa widget entegrasyonu | 1 mesaj |
+| 3 | Rota ve şehir sayfaları entegrasyonu | 1 mesaj |
+| 4 | Eski component ve hook'ları kaldır | 1 mesaj |
+| 5 | Test ve optimizasyon | 1 mesaj |
 
 ---
 
-## Kabul Kriterleri
+## Önemli Notlar
 
-- [ ] Blog içeriğindeki `[metin](url)` formatındaki linkler tıklanabilir olacak
-- [ ] External linkler yeni sekmede açılacak, internal linkler aynı sekmede
-- [ ] Şehir sayfasındaki bölge kartlarına tıklayınca Agoda'da o bölge için otel araması açılacak
-- [ ] Blog TOC'taki anchor linkleri çalışacak ve smooth scroll yapacak
-- [ ] Sayfa URL'sinde hash varsa (#heading-5 gibi) sayfa o başlığa scroll edecek
+### Widget Sınırlamaları
+1. **Arama sonuçları harici sitede açılır** - Kullanıcı Aviasales/Agoda'ya yönlendirilir
+2. **Site içi filtreleme yok** - Filtreleme harici sitede yapılır
+3. **"Powered by" etiketi** - Kaldırılamaz
+
+### Korunacak Özellikler
+1. **SEO İçerikleri** - Tüm rota açıklamaları, FAQ'lar kalır
+2. **PopularRoutes/PopularHotels** - Link tabanlı, widget değil
+3. **Neighborhood Kartları** - Mevcut Agoda link sistemi
+4. **Fiyat Uyarıları** - `check-price-alerts` Edge Function kalır
+5. **Blog İçerikleri** - Hiçbir değişiklik yok
+
+### Fallback Planı
+Widget'lar yüklenmezse:
+- Agoda/Aviasales'e direkt link gösteren fallback UI
+- "Widget yüklenemiyor" mesajı
