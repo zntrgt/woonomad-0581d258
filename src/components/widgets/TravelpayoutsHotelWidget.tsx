@@ -1,127 +1,77 @@
-import { useEffect, useRef, useState, useId } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
-import { WidgetContainer, WidgetFallback } from './WidgetContainer';
 import { getAgodaUrl } from '@/lib/agodaMapping';
 import { format, addDays } from 'date-fns';
-
-// Travelpayouts partner ID
-const PARTNER_ID = '604466';
+import { Hotel, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface TravelpayoutsHotelWidgetProps {
   cityName?: string; // City name for search
-  cityId?: string; // Hotellook city ID
+  citySlug?: string; // City slug for Agoda mapping
   subId?: string;
   className?: string;
 }
 
-// Language mapping
-const langMap: Record<string, string> = {
-  tr: 'tr',
-  en: 'en',
-  de: 'de',
-  fr: 'fr',
-  es: 'es',
-  ar: 'ar',
-};
-
-// Currency mapping
-const currencyMap: Record<string, string> = {
-  TRY: 'try',
-  USD: 'usd',
-  EUR: 'eur',
-  GBP: 'gbp',
-  AED: 'aed',
-};
-
 export function TravelpayoutsHotelWidget({
   cityName = '',
-  cityId = '',
+  citySlug = '',
   subId = 'hotels',
   className,
 }: TravelpayoutsHotelWidgetProps) {
-  const { language, currency } = useSettings();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const widgetId = useId().replace(/:/g, '');
+  const { language } = useSettings();
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    setIsLoading(true);
-    setHasError(false);
-
-    // Clear previous widget
-    container.innerHTML = '';
-
-    // Create widget container
-    const widgetDiv = document.createElement('div');
-    widgetDiv.id = `tp-hotel-${widgetId}`;
-    container.appendChild(widgetDiv);
-
-    // Calculate dynamic dates for hotel search (7 days from now check-in, 10 days checkout)
-    const today = new Date();
-    const checkInDate = format(addDays(today, 7), 'yyyy-MM-dd');
-    const checkOutDate = format(addDays(today, 10), 'yyyy-MM-dd');
-    
-    // Hotel search widget - using Hotellook with dynamic dates
-    const locationParam = cityId || cityName;
-    const script = document.createElement('script');
-    script.src = `https://tp.media/content?trs=329339&shmarker=${PARTNER_ID}&locale=${langMap[language] || 'en'}&currency=${currencyMap[currency] || 'try'}&powered_by=true&locationId=${locationParam}&checkIn=${checkInDate}&checkOut=${checkOutDate}&promo_id=4427&campaign_id=100`;
-    script.async = true;
-    script.charset = 'utf-8';
-
-    script.onload = () => {
-      setIsLoading(false);
-    };
-
-    script.onerror = () => {
-      setIsLoading(false);
-      setHasError(true);
-    };
-
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
-
-    container.appendChild(script);
-
-    return () => {
-      clearTimeout(timeout);
-      if (container) {
-        container.innerHTML = '';
-      }
-    };
-  }, [language, currency, cityName, cityId, subId, widgetId]);
-
-  // Fallback to Agoda
+  // Calculate dynamic dates for hotel search (7 days from now check-in, 10 days checkout)
   const today = new Date();
-  const checkIn = format(addDays(today, 7), 'yyyy-MM-dd');
-  const checkOut = format(addDays(today, 10), 'yyyy-MM-dd');
-  
-  const citySlug = cityName.toLowerCase().replace(/\s+/g, '-');
-  const fallbackUrl = getAgodaUrl(citySlug, cityName, checkIn, checkOut, {
+  const checkInDate = format(addDays(today, 7), 'yyyy-MM-dd');
+  const checkOutDate = format(addDays(today, 10), 'yyyy-MM-dd');
+
+  // Use the existing Agoda URL generator
+  const slug = citySlug || cityName.toLowerCase().replace(/\s+/g, '-');
+  const agodaUrl = getAgodaUrl(slug, cityName, checkInDate, checkOutDate, {
     adults: 2,
     rooms: 1,
   });
 
+  const displayCity = cityName || 'Dünya Geneli';
+
   return (
-    <WidgetContainer
-      className={className}
-      isLoading={isLoading}
-      loadingText="Otel arama yükleniyor..."
-      minHeight="400px"
-    >
-      <div ref={containerRef} className="w-full min-h-[400px]" />
-      {hasError && (
-        <WidgetFallback
-          title="Widget yüklenemedi"
-          description="Doğrudan Agoda'da arama yapabilirsiniz"
-          actionUrl={fallbackUrl}
-          actionText="Agoda'da Ara"
-        />
-      )}
-    </WidgetContainer>
+    <div className={`relative w-full rounded-xl overflow-hidden bg-card border border-border p-6 ${className || ''}`}>
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <Hotel className="h-8 w-8 text-primary" />
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-foreground">
+            {cityName 
+              ? `${cityName} Otelleri`
+              : 'Otel Ara'}
+          </h3>
+          <p className="text-muted-foreground text-sm max-w-md">
+            {cityName 
+              ? `${displayCity} için en iyi otel fırsatlarını keşfedin`
+              : 'Dünya genelinde binlerce otelden en uygun fiyatları bulun'}
+          </p>
+        </div>
+
+        <Button
+          asChild
+          size="lg"
+          className="gap-2"
+        >
+          <a
+            href={agodaUrl}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+          >
+            Agoda'da Ara
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </Button>
+
+        <p className="text-xs text-muted-foreground">
+          Agoda ile {cityName ? `${cityName} için` : ''} en düşük fiyat garantisi
+        </p>
+      </div>
+    </div>
   );
 }
