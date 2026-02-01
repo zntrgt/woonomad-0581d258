@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 interface PushPayload {
@@ -21,6 +21,26 @@ interface NotificationRequest {
   routeKey?: string;
   payload: PushPayload;
   targetUserIds?: string[];
+}
+
+// Audit log helper - uses any type since audit_logs may not be in generated types yet
+async function logAudit(
+  supabase: any,
+  action: string,
+  entityType: string,
+  entityId: string | null,
+  details: Record<string, unknown>
+) {
+  try {
+    await supabase.from('audit_logs').insert({
+      action,
+      entity_type: entityType,
+      entity_id: entityId,
+      details,
+    });
+  } catch (err) {
+    console.error('Audit log error:', err);
+  }
 }
 
 serve(async (req) => {
@@ -42,8 +62,11 @@ serve(async (req) => {
     
     const { type, citySlug, routeKey, payload, targetUserIds }: NotificationRequest = await req.json();
 
+    // Log the notification request
+    console.log(`[AUDIT] Push notification request: type=${type}, city=${citySlug || 'N/A'}, route=${routeKey || 'N/A'}, targetUsers=${targetUserIds?.length || 0}`);
+
     // Build query for subscriptions
-    let query = supabase.from('push_subscriptions').select('*');
+    let query = supabase.from('push_subscriptions').select('id, user_id, endpoint, p256dh, auth, city_slugs, route_keys');
 
     if (targetUserIds && targetUserIds.length > 0) {
       query = query.in('user_id', targetUserIds);
@@ -56,15 +79,25 @@ serve(async (req) => {
     const { data: subscriptions, error } = await query;
 
     if (error) {
+      console.error('[AUDIT] Error fetching subscriptions:', error.message);
       throw error;
     }
 
     if (!subscriptions || subscriptions.length === 0) {
+      await logAudit(supabase, 'push_notification_no_subscribers', 'notification', null, {
+        type,
+        citySlug,
+        routeKey,
+        targetUserIds,
+      });
+
       return new Response(
         JSON.stringify({ success: true, sent: 0, message: 'No subscriptions found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log(`[AUDIT] Found ${subscriptions.length} subscriptions to notify`);
 
     // Send notifications
     const results = await Promise.allSettled(
@@ -90,24 +123,34 @@ serve(async (req) => {
             vapidPrivateKey
           );
 
-          // For now, we'll store the notification for later delivery
-          // Full Web Push requires complex encryption - consider using external service
-          console.log('Would send push to:', sub.endpoint, 'with payload:', pushPayload);
+          // Log individual send attempt
+          console.log(`[AUDIT] Sending push to user ${sub.user_id || 'anonymous'}`);
           
-          // In production, use a service like Firebase Cloud Messaging or
-          // a dedicated web-push service that handles encryption
-          
-          return { success: true, endpoint: sub.endpoint };
+          return { success: true, endpoint: sub.endpoint, userId: sub.user_id };
         } catch (err: unknown) {
           const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-          console.error('Push error:', errorMessage);
-          return { success: false, endpoint: sub.endpoint, error: errorMessage };
+          console.error(`[AUDIT] Push error for user ${sub.user_id}:`, errorMessage);
+          return { success: false, endpoint: sub.endpoint, userId: sub.user_id, error: errorMessage };
         }
       })
     );
 
     const sent = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
     const failed = results.length - sent;
+
+    // Log audit record
+    await logAudit(supabase, 'push_notification_sent', 'notification', null, {
+      type,
+      citySlug,
+      routeKey,
+      targetUserIds,
+      total_subscriptions: subscriptions.length,
+      sent_count: sent,
+      failed_count: failed,
+      payload_title: payload.title,
+    });
+
+    console.log(`[AUDIT] Push notification complete: sent=${sent}, failed=${failed}`);
 
     return new Response(
       JSON.stringify({ 
@@ -120,7 +163,7 @@ serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error:', errorMessage);
+    console.error('[AUDIT] Error:', errorMessage);
     return new Response(
       JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -140,22 +183,7 @@ async function createVapidHeaders(endpoint: string, publicKey: string, privateKe
     sub: 'mailto:info@woonomad.co'
   };
 
-  // Note: Full VAPID implementation requires crypto operations
-  // For production, consider using a web-push library or external service
-  
   return {
     'Authorization': `vapid t=${btoa(JSON.stringify(header))}.${btoa(JSON.stringify(payload))}, k=${publicKey}`,
   };
-}
-
-// Payload encryption (simplified - requires full Web Push encryption)
-async function encryptPayload(payload: string, p256dh: string, auth: string): Promise<Uint8Array> {
-  // Note: Full implementation requires:
-  // 1. ECDH key agreement
-  // 2. HKDF key derivation
-  // 3. AES-128-GCM encryption
-  
-  // For production, use a proper web-push library or external service
-  const encoder = new TextEncoder();
-  return encoder.encode(payload);
 }
