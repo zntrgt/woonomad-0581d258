@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,25 +21,18 @@ const LANGUAGE_NAMES: Record<string, string> = {
   'ar': 'Arabic',
 };
 
-// Rate limiting configuration
+// Rate limiting configuration (per user)
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute
+const MAX_REQUESTS_PER_WINDOW = 30; // 30 requests per minute per user
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-function getClientIP(req: Request): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
-         req.headers.get('cf-connecting-ip') || 
-         req.headers.get('x-real-ip') || 
-         'unknown';
-}
-
-function getRateLimitInfo(ip: string): { allowed: boolean; remaining: number; resetTime: number } {
+function getRateLimitInfo(userId: string): { allowed: boolean; remaining: number; resetTime: number } {
   const now = Date.now();
-  const record = rateLimitStore.get(ip);
+  const record = rateLimitStore.get(userId);
   
   if (!record || now > record.resetTime) {
     const resetTime = now + RATE_LIMIT_WINDOW_MS;
-    rateLimitStore.set(ip, { count: 1, resetTime });
+    rateLimitStore.set(userId, { count: 1, resetTime });
     return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - 1, resetTime };
   }
   
@@ -56,12 +50,42 @@ serve(async (req) => {
   }
 
   try {
-    // Rate limiting check
-    const clientIP = getClientIP(req);
-    const rateLimitInfo = getRateLimitInfo(clientIP);
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.log('Missing or invalid authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.log('Invalid token:', claimsError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub as string;
+    console.log(`Authenticated user: ${userId}`);
+
+    // Rate limiting check (per user)
+    const rateLimitInfo = getRateLimitInfo(userId);
     
     if (!rateLimitInfo.allowed) {
-      console.log(`Rate limit exceeded for IP: ${clientIP}`);
+      console.log(`Rate limit exceeded for user: ${userId}`);
       return new Response(
         JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
         { 
