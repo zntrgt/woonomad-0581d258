@@ -1,4 +1,6 @@
 // City data for hub pages
+import izmirImage from '@/assets/cities/izmir.jpg';
+
 export interface CityEvent {
   name: string;
   nameEn: string;
@@ -83,7 +85,7 @@ export const cityData: Record<string, CityInfo> = {
     currency: 'Türk Lirası (TRY)',
     language: 'Türkçe',
     population: '4.4 milyon',
-    image: 'https://images.unsplash.com/photo-1569582920461-57b50e9ba0df?q=80&w=1200&h=600&fit=crop', // Izmir waterfront
+    image: izmirImage,
     events: [
       { name: 'İzmir Fuarı', nameEn: 'Izmir International Fair', date: 'Eylül', description: 'Türkiye\'nin en eski uluslararası fuarı.' },
       { name: 'Alaçatı Ot Festivali', nameEn: 'Alaçatı Herb Festival', date: 'Nisan', description: 'Ege\'nin otları ve yerel lezzetleri.' },
