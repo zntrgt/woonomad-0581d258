@@ -172,12 +172,62 @@ export const destinationData: Record<string, DestinationInfo> = {
   'SVO': { city: 'Moskova', country: 'Rusya', countryCode: 'RU' },
   'LED': { city: 'St. Petersburg', country: 'Rusya', countryCode: 'RU' },
   
-  // Turkey (origin)
+  // Turkey (origin & destination)
   'IST': { city: 'İstanbul', country: 'Türkiye', countryCode: 'TR' },
   'SAW': { city: 'İstanbul (Sabiha)', country: 'Türkiye', countryCode: 'TR' },
   'ESB': { city: 'Ankara', country: 'Türkiye', countryCode: 'TR' },
   'ADB': { city: 'İzmir', country: 'Türkiye', countryCode: 'TR' },
   'AYT': { city: 'Antalya', country: 'Türkiye', countryCode: 'TR' },
+  'BJV': { city: 'Bodrum', country: 'Türkiye', countryCode: 'TR' },
+  'DLM': { city: 'Dalaman', country: 'Türkiye', countryCode: 'TR' },
+  'TZX': { city: 'Trabzon', country: 'Türkiye', countryCode: 'TR' },
+  'GZT': { city: 'Gaziantep', country: 'Türkiye', countryCode: 'TR' },
+  'KYA': { city: 'Konya', country: 'Türkiye', countryCode: 'TR' },
+  'ADA': { city: 'Adana', country: 'Türkiye', countryCode: 'TR' },
+  'ASR': { city: 'Kayseri', country: 'Türkiye', countryCode: 'TR' },
+  'NAV': { city: 'Nevşehir', country: 'Türkiye', countryCode: 'TR' },
+  
+  // Additional Spain
+  'VLC': { city: 'Valencia', country: 'İspanya', countryCode: 'ES' },
+  'SVQ': { city: 'Sevilla', country: 'İspanya', countryCode: 'ES' },
+  
+  // Additional Italy
+  'FLR': { city: 'Floransa', country: 'İtalya', countryCode: 'IT' },
+  'LIN': { city: 'Milano (Linate)', country: 'İtalya', countryCode: 'IT' },
+  
+  // Additional France
+  'NCE': { city: 'Nice', country: 'Fransa', countryCode: 'FR' },
+  'LYS': { city: 'Lyon', country: 'Fransa', countryCode: 'FR' },
+  
+  // Additional Poland
+  'KRK': { city: 'Krakow', country: 'Polonya', countryCode: 'PL' },
+  
+  // Additional Asia
+  'CNX': { city: 'Chiang Mai', country: 'Tayland', countryCode: 'TH' },
+  'HKT': { city: 'Phuket', country: 'Tayland', countryCode: 'TH' },
+  'HAN': { city: 'Hanoi', country: 'Vietnam', countryCode: 'VN' },
+  'SGN': { city: 'Ho Chi Minh', country: 'Vietnam', countryCode: 'VN' },
+  'REP': { city: 'Siem Reap', country: 'Kamboçya', countryCode: 'KH' },
+  'CEB': { city: 'Cebu', country: 'Filipinler', countryCode: 'PH' },
+  'PNH': { city: 'Phnom Penh', country: 'Kamboçya', countryCode: 'KH' },
+  
+  // Additional Middle East
+  'CAI': { city: 'Kahire', country: 'Mısır', countryCode: 'EG' },
+  
+  // Additional Americas
+  'LAS': { city: 'Las Vegas', country: 'ABD', countryCode: 'US' },
+  'CUN': { city: 'Cancun', country: 'Meksika', countryCode: 'MX' },
+  
+  // Additional Africa
+  'MRU': { city: 'Mauritius', country: 'Mauritius', countryCode: 'MU' },
+  'SEZ': { city: 'Seyşeller', country: 'Seyşeller', countryCode: 'SC' },
+  
+  // Additional Central Asia
+  'SKD': { city: 'Semerkand', country: 'Özbekistan', countryCode: 'UZ' },
+  'EVN': { city: 'Erivan', country: 'Ermenistan', countryCode: 'AM' },
+  
+  // Maldives
+  'MLE': { city: 'Male', country: 'Maldivler', countryCode: 'MV' },
 };
 
 // Get flag emoji from country code

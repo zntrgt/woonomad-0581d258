@@ -887,19 +887,28 @@ export const cityData: Record<string, CityInfo> = {
   },
 };
 
+// Import expanded city data
+import { expandedCityData } from './citiesExpanded';
+
+// Merge all city data
+const allCityData: Record<string, CityInfo> = {
+  ...cityData,
+  ...expandedCityData,
+};
+
 // Get all cities
 export function getAllCities(): CityInfo[] {
-  return Object.values(cityData);
+  return Object.values(allCityData);
 }
 
 // Get city by slug
 export function getCityBySlug(slug: string): CityInfo | null {
-  return cityData[slug] || null;
+  return allCityData[slug] || null;
 }
 
 // Generate city routes from flight routes
 export function getCityFlightRoutes(citySlug: string, flightRoutes: { origin: string; destination: string; slug: string }[]): typeof flightRoutes {
-  const city = cityData[citySlug];
+  const city = allCityData[citySlug];
   if (!city) return [];
   
   return flightRoutes.filter(route => 
