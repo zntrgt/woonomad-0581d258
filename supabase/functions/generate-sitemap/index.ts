@@ -159,20 +159,58 @@ function generateXhtmlLinks(baseUrl: string, path: string, allPaths: Record<Lang
   }).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${allPaths.tr}" />`;
 }
 
-// Complete cities list
+// Complete cities list - expanded with all global destinations
 const cities = [
-  "istanbul", "antalya", "izmir", "bodrum", "kapadokya",
+  // Türkiye
+  "istanbul", "antalya", "izmir", "bodrum", "kapadokya", "ankara", "trabzon", "gaziantep", "konya", "dalaman", "adana",
+  // Almanya
   "berlin", "munih", "frankfurt",
-  "paris", "londra", "amsterdam",
-  "barcelona", "madrid",
-  "roma", "milano", "venedik", "floransa",
-  "lizbon", "porto", "atina",
+  // Fransa
+  "paris", "nice", "lyon",
+  // İngiltere
+  "londra",
+  // Hollanda
+  "amsterdam",
+  // İspanya
+  "barcelona", "madrid", "malaga", "valencia", "sevilla",
+  // İtalya
+  "roma", "milano", "venedik", "floransa", "napoli",
+  // Portekiz
+  "lizbon", "porto",
+  // Yunanistan
+  "atina", "selanik",
+  // Çekya & Avusturya & Macaristan
   "prag", "viyana", "budapeste",
-  "kopenhag", "stockholm",
-  "dubai", "amman", "tiflis", "baku",
-  "tokyo", "bangkok", "singapur", "bali", "seul",
-  "newyork", "belgrad", "sarajevo",
-  "marakes", "zanzibar"
+  // İskandinav
+  "kopenhag", "stockholm", "oslo", "helsinki",
+  // Belçika & İsviçre
+  "bruksel", "zurich", "cenevre",
+  // Polonya
+  "krakow", "varsova",
+  // Baltık
+  "riga", "tallinn", "vilnius",
+  // Balkanlar & Doğu Avrupa
+  "belgrad", "sarajevo", "sofya", "bukres", "uskup", "tiran", "podgorica", "pristine", "zagreb", "split", "dubrovnik",
+  // Kafkasya & Orta Asya
+  "tiflis", "baku", "erivan", "almati", "taskent", "biskek",
+  // Orta Doğu
+  "dubai", "amman", "doha", "abu-dabi", "muscat", "tel-aviv",
+  // Japonya
+  "tokyo", "osaka", "kyoto",
+  // Güneydoğu Asya
+  "bangkok", "singapur", "bali", "phuket", "kuala-lumpur", "ho-chi-minh", "hanoi", "manila", "cakarta",
+  // Doğu Asya
+  "seul", "busan", "hong-kong", "taipei", "pekin", "sanghay",
+  // Hindistan
+  "delhi", "mumbai", "goa", "bangalore",
+  // Avustralya & Yeni Zelanda
+  "sydney", "melbourne", "auckland",
+  // Amerika
+  "newyork", "los-angeles", "miami", "san-francisco", "chicago", "toronto", "vancouver", "mexico-city", "cancun", "sao-paulo", "rio-de-janeiro", "buenos-aires", "bogota", "medellin", "lima",
+  // Afrika
+  "marakes", "zanzibar", "cape-town", "johannesburg", "nairobi", "kahire",
+  // Diğer
+  "reykjavik", "malta", "kıbrıs"
 ];
 
 // Static hotel data - synced with src/lib/hotels.ts and src/lib/hotelsExpanded.ts
@@ -294,7 +332,7 @@ const hotelData = [
   { citySlug: "bali", slug: "hanging-gardens-bali" },
 ];
 
-// Flight routes - corrected slugs (no "i-stanbul", use "istanbul")
+// Flight routes - complete list with all global destinations
 const flightRoutes = [
   // Istanbul hub routes - Europe
   "istanbul-paris", "istanbul-londra", "istanbul-roma", "istanbul-barcelona", 
@@ -304,36 +342,69 @@ const flightRoutes = [
   "istanbul-kopenhag", "istanbul-stockholm", "istanbul-bruksel", "istanbul-cenevre",
   "istanbul-varsova", "istanbul-bukres", "istanbul-sofya", "istanbul-venedik",
   "istanbul-napoli", "istanbul-helsinki", "istanbul-oslo", "istanbul-dublin",
+  "istanbul-nice", "istanbul-lyon", "istanbul-malaga", "istanbul-valencia", "istanbul-sevilla",
+  "istanbul-selanik", "istanbul-krakow", "istanbul-riga", "istanbul-tallinn", "istanbul-vilnius",
+  "istanbul-zagreb", "istanbul-dubrovnik", "istanbul-split", "istanbul-reykjavik",
   // Istanbul hub routes - Balkans & Caucasus
   "istanbul-tiflis", "istanbul-baku", "istanbul-belgrad", "istanbul-uskup", 
   "istanbul-tiran", "istanbul-saraybosna", "istanbul-podgorica", "istanbul-pristine",
+  "istanbul-erivan",
   // Istanbul hub routes - Middle East
   "istanbul-dubai", "istanbul-doha", "istanbul-amman", "istanbul-beyrut", 
   "istanbul-abu-dabi", "istanbul-bahreyn", "istanbul-maskat", "istanbul-kuveyt",
+  "istanbul-tel-aviv", "istanbul-muscat",
   // Istanbul hub routes - Asia
   "istanbul-singapur", "istanbul-bangkok", "istanbul-kuala-lumpur", "istanbul-hong-kong", 
   "istanbul-tokyo", "istanbul-seul", "istanbul-delhi", "istanbul-mumbai", 
   "istanbul-pekin", "istanbul-sanghay", "istanbul-cakarta", "istanbul-bali", 
   "istanbul-manila", "istanbul-taipei", "istanbul-katmandu",
+  "istanbul-osaka", "istanbul-kyoto", "istanbul-phuket", "istanbul-ho-chi-minh", "istanbul-hanoi",
+  "istanbul-busan", "istanbul-goa", "istanbul-bangalore",
+  // Istanbul hub routes - Oceania
+  "istanbul-sydney", "istanbul-melbourne", "istanbul-auckland",
   // Istanbul hub routes - Africa
   "istanbul-tunus", "istanbul-kazablanka", "istanbul-marakes", "istanbul-cape-town", 
   "istanbul-johannesburg", "istanbul-nairobi", "istanbul-darusselam", "istanbul-zanzibar",
+  "istanbul-kahire",
   // Istanbul hub routes - Americas
   "istanbul-new-york", "istanbul-los-angeles", "istanbul-chicago", "istanbul-miami", 
   "istanbul-san-francisco", "istanbul-toronto", "istanbul-vancouver", 
   "istanbul-sao-paulo", "istanbul-buenos-aires",
+  "istanbul-mexico-city", "istanbul-cancun", "istanbul-rio-de-janeiro", "istanbul-bogota", 
+  "istanbul-medellin", "istanbul-lima",
   // Istanbul hub routes - Central Asia
   "istanbul-almati", "istanbul-astana", "istanbul-taskent", "istanbul-biskek",
-  // Other Turkish cities
+  // Other Turkish cities hub routes
   "ankara-istanbul", "ankara-londra", "ankara-paris", "ankara-berlin", "ankara-tiflis",
+  "ankara-dubai", "ankara-amsterdam", "ankara-munih", "ankara-roma",
   "izmir-istanbul", "izmir-atina", "izmir-paris", "izmir-amsterdam", "izmir-dubai",
+  "izmir-londra", "izmir-berlin", "izmir-munih", "izmir-roma",
   "antalya-istanbul", "antalya-berlin", "antalya-munih", "antalya-amsterdam", "antalya-londra",
+  "antalya-paris", "antalya-roma", "antalya-moskova", "antalya-kiev",
+  "bodrum-istanbul", "bodrum-londra", "bodrum-berlin", "bodrum-amsterdam",
+  "dalaman-istanbul", "dalaman-londra", "dalaman-berlin", "dalaman-amsterdam",
   // European cross-routes
   "paris-londra", "paris-roma", "paris-barcelona", "paris-amsterdam", "paris-berlin",
+  "paris-nice", "paris-lyon", "paris-madrid", "paris-lizbon", "paris-milano",
   "londra-roma", "londra-barcelona", "londra-amsterdam", "londra-madrid",
-  "amsterdam-roma", "amsterdam-barcelona", "amsterdam-madrid",
+  "londra-paris", "londra-dublin", "londra-lizbon", "londra-atina",
+  "amsterdam-roma", "amsterdam-barcelona", "amsterdam-madrid", "amsterdam-lizbon",
+  "berlin-roma", "berlin-barcelona", "berlin-prag", "berlin-viyana",
+  "barcelona-roma", "barcelona-milano", "barcelona-lizbon",
+  "roma-milano", "roma-napoli", "roma-floransa", "roma-venedik",
+  // Asia internal routes
+  "tokyo-osaka", "tokyo-seul", "tokyo-singapur", "tokyo-bangkok", "tokyo-hong-kong",
+  "singapur-bangkok", "singapur-bali", "singapur-kuala-lumpur", "singapur-ho-chi-minh",
+  "hong-kong-bangkok", "hong-kong-taipei", "hong-kong-singapur",
+  "bangkok-bali", "bangkok-phuket", "bangkok-kuala-lumpur",
+  "seul-osaka", "seul-tokyo", "seul-taipei",
   // Middle East cross-routes
-  "amman-dubai", "amman-doha", "dubai-doha"
+  "amman-dubai", "amman-doha", "dubai-doha", "dubai-abu-dabi", "dubai-muscat",
+  "doha-abu-dabi", "doha-muscat", "dubai-tel-aviv",
+  // Americas routes
+  "newyork-los-angeles", "newyork-miami", "newyork-san-francisco", "newyork-toronto",
+  "los-angeles-san-francisco", "los-angeles-mexico-city",
+  "miami-cancun", "miami-bogota", "miami-sao-paulo"
 ];
 
 serve(async (req) => {

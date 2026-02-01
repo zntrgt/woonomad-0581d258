@@ -970,10 +970,10 @@ const City = () => {
             </div>
 
             {/* Right Column - Sidebar */}
-            <div className="space-y-6 min-w-0">
+            <div className="space-y-6 min-w-0 overflow-hidden">
               {/* Quick Info Card */}
-              <Card variant="elevated" className="sticky top-20 overflow-hidden">
-                <CardContent className="p-6">
+              <Card variant="elevated" className="sticky top-20">
+                <CardContent className="p-6 overflow-hidden">
                   <h3 className="text-lg font-display font-bold mb-4">
                     {city.name} Hızlı Bilgiler
                   </h3>
