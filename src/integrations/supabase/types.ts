@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_id: string | null
@@ -271,13 +304,6 @@ export type Database = {
             referencedRelation: "wifi_speed_tests"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
-            columns: ["speed_test_id"]
-            isOneToOne: false
-            referencedRelation: "wifi_speed_tests_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       user_favorites: {
@@ -450,22 +476,7 @@ export type Database = {
           speed_test_id: string | null
           upvotes: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
-            columns: ["speed_test_id"]
-            isOneToOne: false
-            referencedRelation: "wifi_speed_tests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "speed_test_votes_speed_test_id_fkey"
-            columns: ["speed_test_id"]
-            isOneToOne: false
-            referencedRelation: "wifi_speed_tests_public"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       wifi_speed_tests_public: {
         Row: {
@@ -484,42 +495,37 @@ export type Database = {
           upload_speed: number | null
           upvotes: number | null
         }
-        Insert: {
-          city_slug?: string | null
-          created_at?: string | null
-          download_speed?: number | null
-          downvotes?: number | null
-          id?: string | null
-          is_stable?: boolean | null
-          location_name?: string | null
-          location_slug?: string | null
-          location_type?: string | null
-          notes?: string | null
-          ping_ms?: number | null
-          tested_at?: string | null
-          upload_speed?: number | null
-          upvotes?: number | null
-        }
-        Update: {
-          city_slug?: string | null
-          created_at?: string | null
-          download_speed?: number | null
-          downvotes?: number | null
-          id?: string | null
-          is_stable?: boolean | null
-          location_name?: string | null
-          location_slug?: string | null
-          location_type?: string | null
-          notes?: string | null
-          ping_ms?: number | null
-          tested_at?: string | null
-          upload_speed?: number | null
-          upvotes?: number | null
-        }
         Relationships: []
       }
     }
     Functions: {
+      get_public_speed_tests: {
+        Args: never
+        Returns: {
+          city_slug: string
+          created_at: string
+          download_speed: number
+          downvotes: number
+          id: string
+          is_stable: boolean
+          location_name: string
+          location_slug: string
+          location_type: string
+          notes: string
+          ping_ms: number
+          tested_at: string
+          upload_speed: number
+          upvotes: number
+        }[]
+      }
+      get_vote_counts: {
+        Args: never
+        Returns: {
+          downvotes: number
+          speed_test_id: string
+          upvotes: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

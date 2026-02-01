@@ -547,6 +547,9 @@ export default function BlogPost() {
     let inTable = false;
     let tableRows: string[][] = [];
     let tableHeaders: string[] = [];
+    let inCodeBlock = false;
+    let codeBlockContent: string[] = [];
+    let codeBlockLanguage = '';
 
     const flushTable = () => {
       if (tableRows.length > 0 || tableHeaders.length > 0) {
@@ -585,6 +588,40 @@ export default function BlogPost() {
     };
 
     lines.forEach((line, index) => {
+      // Handle fenced code blocks (```)
+      if (line.trim().startsWith('```')) {
+        if (!inCodeBlock) {
+          // Start of code block
+          inCodeBlock = true;
+          codeBlockLanguage = line.trim().slice(3).trim() || 'text';
+          codeBlockContent = [];
+        } else {
+          // End of code block
+          elements.push(
+            <div key={`code-${index}`} className="my-6">
+              <div className="bg-muted/50 rounded-t-lg px-4 py-2 text-xs font-mono text-muted-foreground border border-b-0 border-border">
+                {codeBlockLanguage.toUpperCase()}
+              </div>
+              <pre className="bg-muted rounded-b-lg p-4 overflow-x-auto border border-border">
+                <code className="text-sm font-mono text-foreground">
+                  {codeBlockContent.join('\n')}
+                </code>
+              </pre>
+            </div>
+          );
+          inCodeBlock = false;
+          codeBlockContent = [];
+          codeBlockLanguage = '';
+        }
+        return;
+      }
+      
+      // If we're inside a code block, collect lines
+      if (inCodeBlock) {
+        codeBlockContent.push(line);
+        return;
+      }
+
       // Check for table rows (lines containing |)
       if (line.includes('|') && line.trim().startsWith('|')) {
         const cells = line.split('|').filter(cell => cell.trim() !== '');
@@ -711,17 +748,23 @@ export default function BlogPost() {
     return elements;
   };
 
-  // Format bold text with XSS sanitization, internal linking, and markdown links
+  // Format bold text with XSS sanitization, internal linking, markdown links, and code blocks
   const formatInlineText = (text: string) => {
     let formatted = text;
     
-    // First, parse markdown-style links: [link text](url)
+    // First, handle inline code blocks: `code`
+    formatted = formatted.replace(
+      /`([^`]+)`/g,
+      '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary">$1</code>'
+    );
+    
+    // Parse markdown-style links: [link text](url)
     formatted = formatted.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       (match, linkText, url) => {
         const isExternal = url.startsWith('http');
         if (isExternal) {
-          return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline">${linkText}</a>`;
+          return `<a href="${url}" target="_blank" rel="noopener noreferrer sponsored" class="text-primary hover:underline inline-flex items-center gap-1">${linkText}<svg class="h-3 w-3 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>`;
         }
         return `<a href="${url}" class="text-primary hover:underline">${linkText}</a>`;
       }
@@ -740,8 +783,8 @@ export default function BlogPost() {
     
     // Sanitize to prevent XSS attacks
     return DOMPurify.sanitize(formatted, {
-      ALLOWED_TAGS: ['strong', 'em', 'a'],
-      ALLOWED_ATTR: ['href', 'class', 'target', 'rel']
+      ALLOWED_TAGS: ['strong', 'em', 'a', 'code', 'svg', 'path', 'polyline', 'line'],
+      ALLOWED_ATTR: ['href', 'class', 'target', 'rel', 'viewBox', 'fill', 'stroke', 'stroke-width', 'd', 'points', 'x1', 'y1', 'x2', 'y2']
     });
   };
 

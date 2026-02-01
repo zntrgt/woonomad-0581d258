@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 interface PriceAlert {
@@ -17,6 +17,28 @@ interface PriceAlert {
   current_price: number | null;
 }
 
+// Audit log helper - uses any type since audit_logs may not be in generated types yet
+async function logAudit(
+  supabase: any,
+  action: string,
+  entityType: string,
+  entityId: string | null,
+  userId: string | null,
+  details: Record<string, unknown>
+) {
+  try {
+    await supabase.from('audit_logs').insert({
+      action,
+      entity_type: entityType,
+      entity_id: entityId,
+      user_id: userId,
+      details,
+    });
+  } catch (err) {
+    console.error('Audit log error:', err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,10 +48,10 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const travelpayoutsToken = Deno.env.get('TRAVELPAYOUTS_API_TOKEN');
-    const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY');
-    const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    console.log('[AUDIT] Starting price alert check...');
 
     // Get all active alerts
     const { data: alerts, error: alertsError } = await supabase
@@ -37,13 +59,20 @@ serve(async (req) => {
       .select('*')
       .eq('is_active', true);
 
-    if (alertsError) throw alertsError;
+    if (alertsError) {
+      console.error('[AUDIT] Error fetching alerts:', alertsError.message);
+      throw alertsError;
+    }
+
     if (!alerts || alerts.length === 0) {
+      console.log('[AUDIT] No active alerts found');
       return new Response(
         JSON.stringify({ success: true, message: 'No active alerts', checked: 0 }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log(`[AUDIT] Checking ${alerts.length} active alerts`);
 
     const priceDrops: Array<{ alert: PriceAlert; oldPrice: number; newPrice: number }> = [];
     const priceHistory: Array<{ route_key: string; price: number; currency: string }> = [];
@@ -91,6 +120,16 @@ serve(async (req) => {
             // Notify if price dropped more than 5%
             if (dropPercentage >= 5) {
               priceDrops.push({ alert, oldPrice, newPrice });
+              
+              // Log price drop detection
+              console.log(`[AUDIT] Price drop detected: ${routeKey} from ${oldPrice} to ${newPrice} (${dropPercentage.toFixed(1)}%)`);
+              
+              await logAudit(supabase, 'price_drop_detected', 'price_alert', alert.id, alert.user_id, {
+                route_key: routeKey,
+                old_price: oldPrice,
+                new_price: newPrice,
+                drop_percentage: dropPercentage,
+              });
             }
           }
 
@@ -104,7 +143,7 @@ serve(async (req) => {
             .eq('id', alert.id);
         }
       } catch (err) {
-        console.error(`Error checking alert ${alert.id}:`, err);
+        console.error(`[AUDIT] Error checking alert ${alert.id}:`, err);
       }
     }
 
@@ -119,11 +158,13 @@ serve(async (req) => {
         // Get user's push subscription
         const { data: subscriptions } = await supabase
           .from('push_subscriptions')
-          .select('*')
+          .select('id')
           .eq('user_id', drop.alert.user_id);
 
         if (subscriptions && subscriptions.length > 0) {
           const dropPercentage = Math.round(((drop.oldPrice - drop.newPrice) / drop.oldPrice) * 100);
+          
+          console.log(`[AUDIT] Sending price drop notification to user ${drop.alert.user_id}`);
           
           // Call send-push-notification function
           await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
@@ -149,9 +190,18 @@ serve(async (req) => {
           });
         }
       } catch (err) {
-        console.error('Error sending notification:', err);
+        console.error('[AUDIT] Error sending notification:', err);
       }
     }
+
+    // Log summary
+    await logAudit(supabase, 'price_check_completed', 'system', null, null, {
+      alerts_checked: alerts.length,
+      price_drops_found: priceDrops.length,
+      history_records: priceHistory.length,
+    });
+
+    console.log(`[AUDIT] Price check complete: checked=${alerts.length}, drops=${priceDrops.length}`);
 
     return new Response(
       JSON.stringify({ 
@@ -164,7 +214,7 @@ serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error:', errorMessage);
+    console.error('[AUDIT] Error:', errorMessage);
     return new Response(
       JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
