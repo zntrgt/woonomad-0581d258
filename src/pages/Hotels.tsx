@@ -91,7 +91,7 @@ const Hotels = () => {
                 const agodaUrl = getAgodaUrl(city.slug, city.nameEn || city.name);
                 
                 return (
-                  <Card key={city.slug} variant="elevated" className="group overflow-hidden">
+                  <Card key={city.slug} variant="interactive" className="group overflow-hidden">
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <img 
                         src={city.image} 
@@ -101,7 +101,7 @@ const Hotels = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <div className="absolute top-3 left-3">
-                        <Badge variant="secondary" className="bg-white/90 text-foreground">
+                        <Badge variant="secondary" className="bg-white/90 text-foreground shadow-sm">
                           <Hotel className="w-3 h-3 mr-1" />
                           Oteller
                         </Badge>
@@ -125,13 +125,13 @@ const Hotels = () => {
                       
                       <div className="flex gap-2">
                         <Link to={`/sehir/${city.slug}/oteller`} className="flex-1">
-                          <Button variant="outline" className="w-full gap-2">
+                          <Button variant="outline" className="w-full gap-2 group-hover:border-primary/30 transition-colors">
                             Detaylar
-                            <ArrowRight className="w-4 h-4" />
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                           </Button>
                         </Link>
                         <a href={agodaUrl} target="_blank" rel="noopener noreferrer sponsored">
-                          <Button className="gradient-primary gap-2">
+                          <Button className="gradient-primary gap-2 shadow-md hover:shadow-lg transition-shadow">
                             <ExternalLink className="w-4 h-4" />
                           </Button>
                         </a>
