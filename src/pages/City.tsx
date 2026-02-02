@@ -13,6 +13,7 @@ import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
 import { CityHotelsWidget } from '@/components/CityHotelsWidget';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
 import { EsimWidget } from '@/components/EsimWidget';
+import { ExchangeRateWidget } from '@/components/ExchangeRateWidget';
 import { getCityBySlug, getAllCities, CityInfo } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { nomadMetrics, coworkingSpaces } from '@/lib/nomad';
@@ -398,7 +399,13 @@ const City = () => {
               </Card>
 
               {/* Weather */}
-              <WeatherWidget cityName={city.name} />
+              <WeatherWidget cityName={city.name} citySlug={city.slug} />
+
+              {/* Exchange Rate */}
+              <ExchangeRateWidget 
+                countryCode={city.countryCode} 
+                currencyName={city.currency} 
+              />
 
               {/* Klook Activities */}
               <KlookActivitiesWidget 
@@ -479,7 +486,8 @@ const City = () => {
       {/* Mobile Sidebar Widgets */}
       <section className="lg:hidden py-4 space-y-4">
         <div className="container space-y-4">
-          <WeatherWidget cityName={city.name} />
+          <WeatherWidget cityName={city.name} citySlug={city.slug} />
+          <ExchangeRateWidget countryCode={city.countryCode} currencyName={city.currency} />
           <KlookActivitiesWidget citySlug={city.slug} cityName={city.name} />
           <CityHotelsWidget citySlug={city.slug} cityName={city.name} cityNameEn={city.nameEn} />
           <EsimWidget countryCode={city.countryCode} countryName={city.country} cityName={city.name} />
