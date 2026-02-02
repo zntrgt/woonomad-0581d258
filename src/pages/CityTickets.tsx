@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Plane, Calendar, Clock, Users, ArrowRight, TrendingDown } from 'lucide-react';
+import { Plane, Calendar, Clock, Users, TrendingDown, MapPin, Info, CheckCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -52,18 +52,59 @@ const CityTickets = () => {
   const priceRange = mainRoute ? getEstimatedPriceRange(mainRoute.originCode, mainRoute.destinationCode) : null;
   const airlines = mainRoute ? getAirlinesForRoute(mainRoute.originCode, mainRoute.destinationCode) : [];
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": `${city.name} Uçak Bileti`,
-    "description": `${city.name} uçak bileti fiyatları ve sefer bilgileri`,
-    "offers": priceRange ? {
-      "@type": "AggregateOffer",
-      "lowPrice": priceRange.min,
-      "highPrice": priceRange.max,
-      "priceCurrency": "TRY"
-    } : undefined
-  };
+  const faqItems = [
+    {
+      question: `${city.name} uçak bileti ne kadar?`,
+      answer: priceRange 
+        ? `${city.name} uçak bileti fiyatları ${priceRange.min}₺'den başlamaktadır. Fiyatlar sezona ve havayolu şirketine göre ${priceRange.max}₺'ye kadar çıkabilir.`
+        : `${city.name} uçak bileti fiyatları sezona ve havayolu şirketine göre değişmektedir.`
+    },
+    {
+      question: `${city.name}'e hangi havayolları uçuyor?`,
+      answer: airlines.length > 0 
+        ? `${city.name}'e ${airlines.join(', ')} gibi havayolu şirketleri seferler düzenlemektedir.`
+        : `${city.name}'e Turkish Airlines, Pegasus ve diğer havayolu şirketleri seferler düzenlemektedir.`
+    },
+    {
+      question: `${city.name} havalimanı kodu nedir?`,
+      answer: `${city.name} havalimanının IATA kodu ${city.airportCodes.join(' ve ')}'dir.`
+    },
+    {
+      question: `${city.name}'e en ucuz uçuş ne zaman?`,
+      answer: `${city.name}'e en ucuz uçuşlar genellikle Ocak-Mart ve Kasım aylarındadır. Hafta içi günler daha uygun fiyatlar sunar.`
+    },
+    {
+      question: `${city.name} uçuş süresi ne kadar?`,
+      answer: `${city.name}'e uçuş süresi kalkış noktanıza göre değişmektedir. İstanbul'dan direkt uçuşlar ortalama 1-4 saat arasında sürmektedir.`
+    }
+  ];
+
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": `${city.name} Uçak Bileti`,
+      "description": `${city.name} uçak bileti fiyatları ve sefer bilgileri`,
+      "offers": priceRange ? {
+        "@type": "AggregateOffer",
+        "lowPrice": priceRange.min,
+        "highPrice": priceRange.max,
+        "priceCurrency": "TRY"
+      } : undefined
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqItems.map(item => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    }
+  ];
 
   // Get destination IATA code for widget
   const destinationCode = city.airportCodes[0] || '';
@@ -76,8 +117,10 @@ const CityTickets = () => {
           name="description" 
           content={`${city.name} uçak bileti fiyatları ${priceRange ? `${priceRange.min}₺'den başlayan fiyatlarla` : ''}. ${city.country} ${city.name} ucuz uçak bileti karşılaştırma.`}
         />
-        <link rel="canonical" href={`https://woonomad.com/sehir/${city.slug}/ucak-bileti`} />
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/ucak-bileti`} />
+        {structuredData.map((data, index) => (
+          <script key={index} type="application/ld+json">{JSON.stringify(data)}</script>
+        ))}
       </Helmet>
 
       <Header />
@@ -176,90 +219,96 @@ const CityTickets = () => {
         </section>
       )}
 
-      {/* Flight Options */}
+      {/* Airport & Flight Info */}
       <section className="py-6 md:py-8">
         <div className="container">
-          <h2 className="text-xl font-display font-bold mb-4">
-            Türkiye'den {city.name} Uçuşları
-          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Airport Info */}
+            <Card variant="elevated">
+              <CardContent className="p-6">
+                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  {city.name} Havalimanı Bilgileri
+                </h2>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b border-border">
+                    <span className="text-muted-foreground">Havalimanı Kodu</span>
+                    <span className="font-bold text-primary">{city.airportCodes.join(', ')}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-border">
+                    <span className="text-muted-foreground">Ülke</span>
+                    <span className="font-medium">{flag} {city.country}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-border">
+                    <span className="text-muted-foreground">Saat Dilimi</span>
+                    <span className="font-medium">{city.timezone}</span>
+                  </div>
+                  {priceRange && (
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-muted-foreground">Ortalama Bilet Fiyatı</span>
+                      <span className="font-bold text-success">{priceRange.min}₺ - {priceRange.max}₺</span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {istanbulRoutes.length > 0 ? (
-              istanbulRoutes.map((route) => {
-                const duration = FLIGHT_DURATIONS[route.originCode]?.[route.destinationCode];
-                const routeAirlines = getAirlinesForRoute(route.originCode, route.destinationCode);
-                const routePrice = getEstimatedPriceRange(route.originCode, route.destinationCode);
-
-                return (
-                  <Link key={route.slug} to={`/ucus/${route.slug}`}>
-                    <Card variant="elevated" className="h-full group cursor-pointer">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                              <Plane className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-bold text-lg">{route.originCode}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {route.originCode === 'IST' ? 'İstanbul' : 'Sabiha Gökçen'}
-                              </p>
-                            </div>
-                          </div>
-                          <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                          <div className="text-right">
-                            <p className="font-bold text-lg text-primary">{route.destinationCode}</p>
-                            <p className="text-sm text-muted-foreground">{city.name}</p>
-                          </div>
-                        </div>
-
-                        {duration && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                            <Clock className="w-4 h-4" />
-                            Uçuş Süresi: {Math.floor(duration / 60)}s {duration % 60}dk
-                          </div>
-                        )}
-
-                        {routeAirlines.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-4">
-                            {routeAirlines.slice(0, 3).map((airline) => (
-                              <Badge key={airline} variant="secondary" className="text-xs">
-                                {airline}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-
-                        {routePrice && (
-                          <div className="flex items-center justify-between pt-4 border-t border-border">
-                            <span className="text-sm text-muted-foreground">Başlangıç fiyatı</span>
-                            <span className="text-2xl font-bold text-primary">{routePrice.min}₺</span>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Link>
-                );
-              })
-            ) : (
-              <Card variant="elevated" className="md:col-span-2 lg:col-span-3">
-                <CardContent className="p-8 text-center">
-                  <Plane className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-display font-bold mb-2">
-                    Direkt uçuş bilgisi bulunamadı
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    {city.name}'e aktarmalı uçuş seçenekleri için arama yapabilirsiniz.
-                  </p>
-                  <Button asChild>
-                    <Link to="/">Uçuş Ara</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+            {/* Best Time to Fly */}
+            <Card variant="elevated">
+              <CardContent className="p-6">
+                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  En Uygun Uçuş Zamanları
+                </h2>
+                <div className="space-y-3">
+                  <div className="p-3 rounded-xl bg-success/10 border border-success/20">
+                    <p className="font-semibold text-success mb-1">En Ucuz Dönem</p>
+                    <p className="text-sm text-muted-foreground">
+                      Ocak - Mart arası ve Kasım ayları genellikle en uygun fiyatlı dönemlerdir.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-warning/10 border border-warning/20">
+                    <p className="font-semibold text-warning mb-1">Orta Sezon</p>
+                    <p className="text-sm text-muted-foreground">
+                      Nisan, Mayıs ve Ekim ayları dengeli fiyatlar sunar.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+                    <p className="font-semibold text-destructive mb-1">Yoğun Sezon</p>
+                    <p className="text-sm text-muted-foreground">
+                      Haziran - Eylül ve bayram dönemleri en pahalı zamanlardır.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
+
+      {/* Popular Airlines */}
+      {airlines.length > 0 && (
+        <section className="py-6 md:py-8 bg-muted/30">
+          <div className="container">
+            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+              <Plane className="w-5 h-5 text-primary" />
+              {city.name}'e Uçan Havayolları
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {airlines.map((airline) => (
+                <Card key={airline} variant="elevated">
+                  <CardContent className="p-4 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                      <Plane className="w-6 h-6 text-primary" />
+                    </div>
+                    <p className="font-medium">{airline}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Booking Tips */}
       <section className="py-6 md:py-8 section-routes">
@@ -329,10 +378,17 @@ const CityTickets = () => {
         <div className="container">
           <Card variant="elevated">
             <CardContent className="p-6">
-              <h2 className="text-xl font-display font-bold mb-3">
-                {city.name} Uçak Bileti Fiyatları Hakkında
+              <h2 className="text-xl font-display font-bold mb-4">
+                {city.name} Uçak Bileti Rehberi {currentYear}
               </h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground">
+              <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+                <p>
+                  {city.name}, {city.country}'nın en popüler destinasyonlarından biridir. 
+                  {city.airportCodes.length > 1 
+                    ? `${city.airportCodes.join(' ve ')} havalimanları`
+                    : `${city.airportCodes[0]} havalimanı`
+                  } üzerinden yılda milyonlarca yolcuya hizmet vermektedir.
+                </p>
                 <p>
                   {city.name} uçak bileti fiyatları sezona, havayolu şirketine ve rezervasyon 
                   zamanına göre değişiklik göstermektedir. {priceRange && `Şu anda ${priceRange.min}₺'den 
@@ -341,11 +397,106 @@ const CityTickets = () => {
                 <p>
                   {city.name}'e uçuş yapan başlıca havayolu şirketleri arasında 
                   {airlines.length > 0 ? ` ${airlines.join(', ')}` : ' Turkish Airlines, Pegasus'} 
-                  bulunmaktadır.
+                  bulunmaktadır. Direkt uçuşların yanı sıra aktarmalı seçenekler de mevcuttur.
+                </p>
+                <p>
+                  En uygun {city.name} uçak biletini bulmak için yukarıdaki arama formunu kullanabilirsiniz. 
+                  Kalkış noktanızı seçtikten sonra tüm havayolu şirketlerinin fiyatlarını karşılaştırabilirsiniz.
                 </p>
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-6 md:py-8 bg-muted/30">
+        <div className="container">
+          <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <Info className="w-5 h-5 text-primary" />
+            Sık Sorulan Sorular
+          </h2>
+          <div className="space-y-4">
+            <Card variant="elevated">
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-2">{city.name} uçak bileti ne kadar?</h3>
+                <p className="text-muted-foreground">
+                  {priceRange 
+                    ? `${city.name} uçak bileti fiyatları ${priceRange.min}₺'den başlamaktadır. Fiyatlar sezona ve havayolu şirketine göre ${priceRange.max}₺'ye kadar çıkabilir.`
+                    : `${city.name} uçak bileti fiyatları sezona ve havayolu şirketine göre değişmektedir. En güncel fiyatlar için arama yapabilirsiniz.`
+                  }
+                </p>
+              </CardContent>
+            </Card>
+            <Card variant="elevated">
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-2">{city.name}'e hangi havayolları uçuyor?</h3>
+                <p className="text-muted-foreground">
+                  {airlines.length > 0 
+                    ? `${city.name}'e ${airlines.join(', ')} gibi havayolu şirketleri direkt ve aktarmalı seferler düzenlemektedir.`
+                    : `${city.name}'e Turkish Airlines, Pegasus ve diğer havayolu şirketleri seferler düzenlemektedir.`
+                  }
+                </p>
+              </CardContent>
+            </Card>
+            <Card variant="elevated">
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-2">{city.name} havalimanı kodu nedir?</h3>
+                <p className="text-muted-foreground">
+                  {city.name} havalimanının IATA kodu {city.airportCodes.join(' ve ')}'dir. 
+                  Bu kod uçak bileti aramalarında ve bagaj etiketlerinde kullanılır.
+                </p>
+              </CardContent>
+            </Card>
+            <Card variant="elevated">
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-2">{city.name}'e en ucuz uçuş ne zaman?</h3>
+                <p className="text-muted-foreground">
+                  {city.name}'e en ucuz uçuşlar genellikle düşük sezon olan Ocak-Mart ve Kasım aylarındadır. 
+                  Ayrıca hafta içi, özellikle Salı ve Çarşamba günleri daha uygun fiyatlar bulabilirsiniz.
+                </p>
+              </CardContent>
+            </Card>
+            <Card variant="elevated">
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-2">{city.name} uçuş süresi ne kadar?</h3>
+                <p className="text-muted-foreground">
+                  {city.name}'e uçuş süresi kalkış noktanıza göre değişmektedir. 
+                  İstanbul'dan direkt uçuşlar ortalama 1-4 saat arasında sürmektedir.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Pages */}
+      <section className="py-6 md:py-8">
+        <div className="container">
+          <h2 className="text-lg font-display font-bold mb-4">İlgili Sayfalar</h2>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/sehir/${city.slug}`}>
+                <CheckCircle className="w-4 h-4 mr-1" />
+                {city.name} Şehir Rehberi
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/sehir/${city.slug}/oteller`}>
+                {city.name} Otelleri
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/sehir/${city.slug}/ucuslar`}>
+                {city.name} Uçuş Rotaları
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/sehir/${city.slug}/aktiviteler`}>
+                {city.name} Aktiviteleri
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
