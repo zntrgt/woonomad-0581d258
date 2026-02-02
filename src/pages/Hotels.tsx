@@ -1,18 +1,23 @@
+import { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Hotel, Star, ArrowRight, MapPin, ExternalLink } from 'lucide-react';
+import { Hotel, ArrowRight, MapPin, ExternalLink } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PullToRefresh } from '@/components/PullToRefresh';
+import { PageEnter } from '@/components/PageTransition';
+import { SkeletonGrid } from '@/components/ui/skeleton-card';
 import { TravelpayoutsHotelWidget } from '@/components/widgets';
 import { getAllCities } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { getAgodaUrl } from '@/lib/agodaMapping';
 
 const Hotels = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const cities = getAllCities();
   const currentYear = new Date().getFullYear();
 
@@ -38,8 +43,14 @@ const Hotels = () => {
     }))
   };
 
+  const handleRefresh = useCallback(async () => {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsLoading(false);
+  }, []);
+
   return (
-    <>
+    <PullToRefresh onRefresh={handleRefresh}>
       <Helmet>
         <title>{`Popüler Şehirlerde Oteller ${currentYear} | En Uygun Fiyatlarla Otel Rezervasyonu`}</title>
         <meta 
@@ -82,67 +93,73 @@ const Hotels = () => {
         </section>
 
         {/* City Hotels Grid */}
-        <section className="py-6 md:py-8">
-          <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6">Tüm Şehirler</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {cities.map((city) => {
-                const flag = getCountryFlag(city.countryCode);
-                const agodaUrl = getAgodaUrl(city.slug, city.nameEn || city.name);
-                
-                return (
-                  <Card key={city.slug} variant="interactive" className="group overflow-hidden">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img 
-                        src={city.image} 
-                        alt={`${city.name} otelleri`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                      <div className="absolute top-3 left-3">
-                        <Badge variant="secondary" className="bg-white/90 text-foreground shadow-sm">
-                          <Hotel className="w-3 h-3 mr-1" />
-                          Oteller
-                        </Badge>
-                      </div>
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <div className="flex items-center gap-2 text-white">
-                          <span className="text-2xl">{flag}</span>
-                          <div>
-                            <h3 className="font-display font-bold text-lg">{city.name}</h3>
-                            <p className="text-white/80 text-sm">{city.country}</p>
+        <PageEnter>
+          <section className="py-6 md:py-8">
+            <div className="container">
+              <h2 className="text-2xl font-display font-bold mb-6">Tüm Şehirler</h2>
+              {isLoading ? (
+                <SkeletonGrid count={8} variant="hotel" />
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {cities.map((city) => {
+                    const flag = getCountryFlag(city.countryCode);
+                    const agodaUrl = getAgodaUrl(city.slug, city.nameEn || city.name);
+                    
+                    return (
+                      <Card key={city.slug} variant="interactive" className="group overflow-hidden">
+                        <div className="relative aspect-[4/3] overflow-hidden">
+                          <img 
+                            src={city.image} 
+                            alt={`${city.name} otelleri`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                          <div className="absolute top-3 left-3">
+                            <Badge variant="secondary" className="bg-white/90 text-foreground shadow-sm">
+                              <Hotel className="w-3 h-3 mr-1" />
+                              Oteller
+                            </Badge>
+                          </div>
+                          <div className="absolute bottom-3 left-3 right-3">
+                            <div className="flex items-center gap-2 text-white">
+                              <span className="text-2xl">{flag}</span>
+                              <div>
+                                <h3 className="font-display font-bold text-lg">{city.name}</h3>
+                                <p className="text-white/80 text-sm">{city.country}</p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        <span className="line-clamp-1">{city.highlights?.slice(0, 2).join(', ') || city.country}</span>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <Link to={`/sehir/${city.slug}/oteller`} className="flex-1">
-                          <Button variant="outline" className="w-full gap-2 group-hover:border-primary/30 transition-colors">
-                            Detaylar
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                          </Button>
-                        </Link>
-                        <a href={agodaUrl} target="_blank" rel="noopener noreferrer sponsored">
-                          <Button className="gradient-primary gap-2 shadow-md hover:shadow-lg transition-shadow">
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
-                        </a>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                        
+                        <CardContent className="p-4 space-y-3">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="w-4 h-4" />
+                            <span className="line-clamp-1">{city.highlights?.slice(0, 2).join(', ') || city.country}</span>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Link to={`/sehir/${city.slug}/oteller`} className="flex-1">
+                              <Button variant="outline" className="w-full gap-2 group-hover:border-primary/30 transition-colors">
+                                Detaylar
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                              </Button>
+                            </Link>
+                            <a href={agodaUrl} target="_blank" rel="noopener noreferrer sponsored">
+                              <Button className="gradient-primary gap-2 shadow-md hover:shadow-lg transition-shadow">
+                                <ExternalLink className="w-4 h-4" />
+                              </Button>
+                            </a>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </div>
-        </section>
+          </section>
+        </PageEnter>
 
         {/* SEO Content */}
         <section className="py-6 md:py-8 section-routes">
@@ -187,7 +204,7 @@ const Hotels = () => {
 
         <MobileBottomNav />
       </div>
-    </>
+    </PullToRefresh>
   );
 };
 
