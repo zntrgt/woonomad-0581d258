@@ -320,6 +320,8 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
 
 // Generate Agoda affiliate URL with proper destination targeting
 // Uses checkIn + checkOut pair (most stable) instead of checkIn + los
+// NOTE: GTM may have Travelpayouts LinkSwitcher active which can intercept these links.
+// To prevent this, use openAgodaUrl() function or add data-tp-ignore attribute to links.
 export function getAgodaUrl(
   citySlug: string, 
   cityName: string, 
@@ -370,6 +372,39 @@ export function getAgodaUrl(
   }
   
   return `${baseUrl}?${params.toString()}`;
+}
+
+// Open Agoda URL bypassing Travelpayouts LinkSwitcher interception
+// This function directly assigns the URL to avoid pop-up blockers
+// and uses a small delay to prevent script interception
+export function openAgodaUrl(
+  citySlug: string, 
+  cityName: string, 
+  checkIn?: string, 
+  checkOut?: string, 
+  options?: { 
+    stars?: number; 
+    priceSort?: 'asc' | 'desc';
+    adults?: number;
+    rooms?: number;
+  }
+): void {
+  const url = getAgodaUrl(citySlug, cityName, checkIn, checkOut, options);
+  
+  // Create a temporary anchor element and trigger click
+  // This avoids tp-em interception since the element is not in DOM when script runs
+  const tempAnchor = document.createElement('a');
+  tempAnchor.href = url;
+  tempAnchor.target = '_blank';
+  tempAnchor.rel = 'noopener noreferrer sponsored';
+  tempAnchor.style.display = 'none';
+  document.body.appendChild(tempAnchor);
+  
+  // Small timeout to avoid synchronous script interception
+  setTimeout(() => {
+    tempAnchor.click();
+    document.body.removeChild(tempAnchor);
+  }, 10);
 }
 
 // Get English name for a city

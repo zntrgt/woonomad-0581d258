@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
-import { getAgodaUrl, getCityEnglishName } from '@/lib/agodaMapping';
+import { getAgodaUrl, getCityEnglishName, openAgodaUrl } from '@/lib/agodaMapping';
 
 interface Neighborhood {
   name: string;
@@ -147,12 +147,13 @@ export const CityNeighborhoods = ({
           });
 
           return (
-            <a
+            <button
               key={index}
-              href={neighborhoodUrl}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-primary/10 transition-colors group"
+              onClick={() => openAgodaUrl(citySlug, searchQuery, checkIn, checkOut, {
+                adults: guests.adults,
+                rooms: guests.rooms
+              })}
+              className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-primary/10 transition-colors group w-full text-left"
             >
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-4 h-4 text-primary" />
@@ -169,7 +170,7 @@ export const CityNeighborhoods = ({
                 <Hotel className="w-3 h-3" />
                 <ExternalLink className="w-3 h-3" />
               </div>
-            </a>
+            </button>
           );
         })}
       </div>
