@@ -11,10 +11,12 @@ import { TravelpayoutsFlightWidget, TravelpayoutsCalendarWidget } from '@/compon
 import { getCityBySlug } from '@/lib/cities';
 import { generateFlightRoutes, FLIGHT_DURATIONS, getAirlinesForRoute, getEstimatedPriceRange } from '@/lib/flightRoutes';
 import { getCountryFlag } from '@/lib/destinations';
+import { useUserLocation } from '@/hooks/useUserLocation';
 
 const CityTickets = () => {
   const { slug } = useParams<{ slug: string }>();
   const city = slug ? getCityBySlug(slug) : null;
+  const { originAirport, isLoading: isLocationLoading } = useUserLocation();
   const allFlightRoutes = generateFlightRoutes();
   
   if (!city) {
@@ -199,25 +201,30 @@ const CityTickets = () => {
       </section>
 
       {/* Price Calendar */}
-      {mainRoute && (
-        <section className="py-6">
-          <div className="container">
-            <Card className="border-border">
-              <CardContent className="p-4 md:p-6">
-                <h2 className="text-lg font-display font-bold mb-3 flex items-center gap-2">
+      <section className="py-6">
+        <div className="container">
+          <Card className="border-border">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-display font-bold flex items-center gap-2">
                   <Clock className="w-5 h-5 text-primary" />
                   Fiyat Takvimi
                 </h2>
-                <TravelpayoutsCalendarWidget 
-                  origin="IST"
-                  destination={destinationCode}
-                  subId={`calendar-${city.slug}`}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-      )}
+                {!isLocationLoading && (
+                  <Badge variant="secondary" className="text-xs">
+                    {originAirport} → {destinationCode}
+                  </Badge>
+                )}
+              </div>
+              <TravelpayoutsCalendarWidget 
+                origin={originAirport}
+                destination={destinationCode}
+                subId={`calendar-${city.slug}`}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </section>
 
       {/* Airport & Flight Info */}
       <section className="py-6 md:py-8">
