@@ -393,7 +393,7 @@ const City = () => {
                   <h3 className="text-lg font-display font-bold mb-3">
                     Hızlı Bilgiler
                   </h3>
-                  <CityQuickStats city={city} />
+                  <CityQuickStats city={city} layout="list" />
                 </CardContent>
               </Card>
 
