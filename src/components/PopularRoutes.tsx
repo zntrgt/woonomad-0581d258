@@ -99,20 +99,20 @@ function DestinationCardItem({
   return (
     <button
       onClick={onClick}
-      className="group relative overflow-hidden rounded-2xl aspect-[4/3] bg-muted card-image-hover animate-fade-in-up"
+      className="group relative overflow-hidden rounded-2xl aspect-[4/3] bg-muted card-image-hover animate-fade-in-up tap-highlight focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
       style={{ animationDelay: `${index * 0.05}s` }}
     >
       {imageUrl && !imageError ? (
         <img
           src={imageUrl}
           alt={destination.city}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-100"
           onError={() => setImageError(true)}
           loading="lazy"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-travel-coral/20 flex items-center justify-center">
-          <span className="text-4xl md:text-5xl group-hover:scale-110 transition-transform duration-300">{destination.emoji}</span>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20 flex items-center justify-center">
+          <span className="text-4xl md:text-5xl group-hover:scale-110 group-active:scale-100 transition-transform duration-300">{destination.emoji}</span>
         </div>
       )}
       
@@ -123,14 +123,14 @@ function DestinationCardItem({
       <div className="absolute inset-0 flex flex-col justify-between p-3 md:p-4">
         {/* Category badge */}
         <div className="flex justify-end">
-          <span className={`text-[10px] md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm ${getBadgeStyle()}`}>
+          <span className={`text-[10px] md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm shadow-sm ${getBadgeStyle()}`}>
             {getBadgeText()}
           </span>
         </div>
         
         {/* City info */}
         <div className="text-left">
-          <div className="text-white font-display font-semibold text-sm md:text-base group-hover:translate-x-1 transition-transform duration-300">
+          <div className="text-white font-display font-semibold text-sm md:text-base group-hover:translate-x-1 group-active:translate-x-0 transition-transform duration-300">
             {destination.city}
           </div>
           <div className="text-white/70 text-xs md:text-sm flex items-center gap-1">
@@ -140,8 +140,11 @@ function DestinationCardItem({
         </div>
       </div>
       
-      {/* Hover effect */}
-      <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 rounded-2xl transition-colors duration-300" />
+      {/* Hover/focus border effect */}
+      <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 group-focus:border-primary/50 rounded-2xl transition-colors duration-200" />
+      
+      {/* Active press feedback */}
+      <div className="absolute inset-0 bg-black/0 group-active:bg-black/10 transition-colors duration-100 rounded-2xl" />
     </button>
   );
 }

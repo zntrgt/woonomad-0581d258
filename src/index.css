@@ -195,6 +195,24 @@
     transform: translateY(-2px);
   }
 
+  /* Interactive card with better mobile touch feedback */
+  .card-interactive {
+    @apply bg-card rounded-2xl border border-border/50 transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-interactive:active {
+    transform: scale(0.98);
+  }
+
+  @media (hover: hover) {
+    .card-interactive:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+      border-color: hsl(var(--primary) / 0.3);
+    }
+  }
+
   /* Image hover effect */
   .card-image-hover {
     @apply overflow-hidden rounded-xl;
@@ -214,19 +232,19 @@
     box-shadow: var(--shadow-float);
   }
 
-  /* Badge Styles */
+  /* Enhanced Badge Styles */
   .badge-popular {
-    @apply bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-full;
+    @apply bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm;
   }
 
   .badge-deal {
     background: hsl(var(--secondary));
-    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full;
+    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm;
   }
 
   .badge-new {
     background: hsl(var(--badge-new));
-    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full;
+    @apply text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm;
   }
 
   /* Button micro-interactions */
@@ -251,10 +269,10 @@
     @apply w-4 h-4 text-amber-400 fill-current;
   }
 
-  /* Mobile Bottom Navigation */
+  /* Enhanced Mobile Bottom Navigation */
   .mobile-nav-sticky {
-    @apply fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border/50 z-50;
-    box-shadow: 0 -4px 20px -4px rgb(0 0 0 / 0.1);
+    @apply fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border/50 z-50;
+    box-shadow: 0 -4px 24px -4px rgb(0 0 0 / 0.12);
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -279,6 +297,43 @@
     @apply min-h-[44px] min-w-[44px];
   }
 
+  /* Input focus states */
+  .input-enhanced {
+    @apply transition-all duration-200 border-2 border-transparent;
+  }
+
+  .input-enhanced:focus {
+    @apply border-primary/50 ring-4 ring-primary/10;
+  }
+
+  /* Skeleton loading animation */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted-foreground) / 0.1) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Page transition wrapper */
+  .page-enter {
+    animation: page-fade-in 0.3s ease-out;
+  }
+
+  @keyframes page-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Mobile card improvements */
   @media (max-width: 640px) {
     .card-modern {
@@ -289,6 +344,19 @@
       @apply rounded-xl;
       box-shadow: var(--shadow-lg);
     }
+  }
+
+  /* Enhanced list item hover */
+  .list-item-hover {
+    @apply transition-colors duration-150;
+  }
+
+  .list-item-hover:hover {
+    @apply bg-muted/50;
+  }
+
+  .list-item-hover:active {
+    @apply bg-muted;
   }
 }
 
@@ -395,6 +463,21 @@
   .mobile-py {
     @apply py-4 sm:py-6 lg:py-8;
   }
+
+  /* Tap highlight for touch devices */
+  .tap-highlight {
+    -webkit-tap-highlight-color: hsl(var(--primary) / 0.1);
+  }
+
+  /* Smooth fade transition */
+  .fade-transition {
+    @apply transition-opacity duration-200;
+  }
+
+  /* Content visibility for performance */
+  .content-visibility-auto {
+    content-visibility: auto;
+  }
 }
 
 @keyframes float {
@@ -412,6 +495,15 @@
   }
   50% {
     opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 

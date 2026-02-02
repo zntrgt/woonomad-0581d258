@@ -34,27 +34,37 @@ export function MobileBottomNav() {
       className="mobile-nav-sticky md:hidden"
       aria-label={t('nav.home')}
     >
-      <div className="flex items-center justify-around py-1.5 px-1">
+      <div className="flex items-center justify-around py-2 px-2">
         {navItems.map((item) => {
           const href = getRoute(item.routeKey);
+          const active = isActive(item.routeKey);
           return (
             <Link
               key={item.routeKey}
               to={href}
               className={cn(
-                "flex flex-col items-center gap-0.5 py-2 px-2 rounded-xl transition-all touch-target",
-                isActive(item.routeKey)
+                "relative flex flex-col items-center gap-1 py-2 px-3 rounded-2xl transition-all duration-200 touch-target tap-highlight",
+                active
                   ? "text-primary"
-                  : "text-muted-foreground active:text-foreground"
+                  : "text-muted-foreground active:text-foreground active:scale-95"
               )}
             >
+              {/* Active indicator dot */}
+              {active && (
+                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary animate-scale-in" />
+              )}
               <div className={cn(
-                "p-1.5 rounded-xl transition-all",
-                isActive(item.routeKey) && "bg-primary/10"
+                "p-2 rounded-xl transition-all duration-200",
+                active 
+                  ? "bg-primary/10 shadow-sm" 
+                  : "group-active:bg-muted"
               )}>
                 {item.icon}
               </div>
-              <span className="text-[9px] font-semibold leading-none">
+              <span className={cn(
+                "text-[10px] font-semibold leading-none transition-colors",
+                active && "text-primary"
+              )}>
                 {t(item.labelKey)}
               </span>
             </Link>

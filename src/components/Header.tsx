@@ -45,31 +45,36 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50">
-      <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/40 shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
         {/* Logo */}
-        <Link to={getRoute('home')} className="flex items-center">
+        <Link to={getRoute('home')} className="flex items-center transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
           <Logo size="sm" showText={true} className="hidden sm:flex" />
           <Logo size="sm" showText={false} className="sm:hidden" />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1" aria-label={t('nav.home')}>
+        <nav className="hidden md:flex items-center gap-0.5" aria-label={t('nav.home')}>
           {navItems.map((item) => {
             const href = getRoute(item.routeKey);
+            const active = isActive(href);
             return (
               <Link
                 key={item.routeKey}
                 to={href}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-                  isActive(href)
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  "relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
+                  active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 )}
               >
                 {item.icon}
                 {t(item.labelKey)}
+                {/* Active underline indicator */}
+                {active && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary animate-scale-in" />
+                )}
               </Link>
             );
           })}
@@ -78,9 +83,9 @@ export function Header() {
             <Link
               to={getRoute('blogAdmin')}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                "flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
                 isActive('/admin/blog')
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400"
                   : "text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950"
               )}
             >

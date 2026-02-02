@@ -100,12 +100,12 @@ const Cities = () => {
               const flag = getCountryFlag(city.countryCode);
               return (
                 <Link key={city.slug} to={`/sehir/${city.slug}`}>
-                  <Card variant="elevated" className="h-full group cursor-pointer overflow-hidden">
+                  <Card variant="interactive" className="h-full group overflow-hidden">
                     <div className="card-image-hover aspect-[4/3]">
                       <img 
                         src={getCityImage(city.slug, city.image)} 
                         alt={`${city.name} şehir manzarası`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
                     </div>
@@ -113,7 +113,7 @@ const Cities = () => {
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-2xl">{flag}</span>
                         <div>
-                          <h3 className="font-display font-bold text-lg group-hover:text-primary transition-colors">
+                          <h3 className="font-display font-bold text-lg group-hover:text-primary transition-colors duration-200">
                             {city.name}
                           </h3>
                           <p className="text-sm text-muted-foreground">{city.country}</p>
@@ -127,7 +127,7 @@ const Cities = () => {
                             </Badge>
                           ))}
                         </div>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
                       </div>
                     </CardContent>
                   </Card>
