@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format, addDays } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { getAgodaUrl } from '@/lib/agodaMapping';
+import { openAgodaUrl } from '@/lib/agodaMapping';
 
 interface CityHotelsWidgetProps {
   citySlug: string;
@@ -20,9 +20,6 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
   const checkOut = format(addDays(today, 9), 'yyyy-MM-dd');
   
   const searchCity = cityNameEn || cityName;
-  
-  // Use centralized Agoda URL generator
-  const affiliateLink = getAgodaUrl(citySlug, searchCity, checkIn, checkOut);
 
   return (
     <Card>
@@ -50,18 +47,15 @@ export function CityHotelsWidget({ citySlug, cityName, cityNameEn }: CityHotelsW
             {t('hotels.compareHotelPrices', 'Binlerce oteli karşılaştır, en uygun fiyatı bul')}
           </p>
           
-          <a 
-            href={affiliateLink}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            className="block"
+          <Button 
+            className="w-full gap-2" 
+            size="sm"
+            onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { adults: 2, rooms: 1 })}
           >
-            <Button className="w-full gap-2" size="sm">
-              <Hotel className="h-4 w-4" />
-              {t('hotels.searchHotels', 'Otel Ara')}
-              <ExternalLink className="h-3 w-3" />
-            </Button>
-          </a>
+            <Hotel className="h-4 w-4" />
+            {t('hotels.searchHotels', 'Otel Ara')}
+            <ExternalLink className="h-3 w-3" />
+          </Button>
         </div>
 
         {/* Quick info */}

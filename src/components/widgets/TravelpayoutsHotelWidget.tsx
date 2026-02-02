@@ -1,5 +1,5 @@
 import { useSettings } from '@/contexts/SettingsContext';
-import { getAgodaUrl } from '@/lib/agodaMapping';
+import { openAgodaUrl } from '@/lib/agodaMapping';
 import { format, addDays } from 'date-fns';
 import { Hotel, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,10 +26,6 @@ export function TravelpayoutsHotelWidget({
 
   // Use the existing Agoda URL generator
   const slug = citySlug || cityName.toLowerCase().replace(/\s+/g, '-');
-  const agodaUrl = getAgodaUrl(slug, cityName, checkInDate, checkOutDate, {
-    adults: 2,
-    rooms: 1,
-  });
 
   const displayCity = cityName || 'Dünya Geneli';
 
@@ -54,18 +50,12 @@ export function TravelpayoutsHotelWidget({
         </div>
 
         <Button
-          asChild
           size="lg"
           className="gap-2"
+          onClick={() => openAgodaUrl(slug, cityName, checkInDate, checkOutDate, { adults: 2, rooms: 1 })}
         >
-          <a
-            href={agodaUrl}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-          >
-            Agoda'da Ara
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          Agoda'da Ara
+          <ExternalLink className="h-4 w-4" />
         </Button>
 
         <p className="text-xs text-muted-foreground">

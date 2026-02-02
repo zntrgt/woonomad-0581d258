@@ -15,7 +15,7 @@ import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-import { getAgodaUrl } from '@/lib/agodaMapping';
+import { getAgodaUrl, openAgodaUrl } from '@/lib/agodaMapping';
 import { getCityNeighborhoods, getHotelFAQItems } from '@/lib/cityNeighborhoods';
 import { useState } from 'react';
 import {
@@ -334,17 +334,15 @@ const CityHotels = () => {
             </div>
             
             {/* Main CTA */}
-            <a 
-              href={agodaSearchUrl}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
+            <Button 
+              size="lg" 
+              className="gradient-primary hover:opacity-90 gap-2"
+              onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { adults: guests.adults, rooms: guests.rooms })}
             >
-              <Button size="lg" className="gradient-primary hover:opacity-90 gap-2">
-                <Hotel className="h-5 w-5" />
-                {t('hotels.searchHotels', 'Otel Ara')}
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            </a>
+              <Hotel className="h-5 w-5" />
+              {t('hotels.searchHotels', 'Otel Ara')}
+              <ExternalLink className="h-4 w-4" />
+            </Button>
           </section>
           
           {/* Travelpayouts Hotel Widget */}
@@ -480,27 +478,24 @@ const CityHotels = () => {
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a 
-                      href={agodaSearchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
+                    <Button 
+                      size="lg" 
+                      className="gradient-primary hover:opacity-90 w-full sm:w-auto gap-2"
+                      onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { adults: guests.adults, rooms: guests.rooms })}
                     >
-                      <Button size="lg" className="gradient-primary hover:opacity-90 w-full sm:w-auto gap-2">
-                        <Hotel className="h-5 w-5" />
-                        {t('hotels.searchAllHotels', 'Tüm Otelleri Ara')}
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </a>
-                    <a 
-                      href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: 5 })}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
+                      <Hotel className="h-5 w-5" />
+                      {t('hotels.searchAllHotels', 'Tüm Otelleri Ara')}
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full sm:w-auto gap-2"
+                      onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { adults: guests.adults, rooms: guests.rooms })}
                     >
-                      <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2">
-                        <Star className="h-5 w-5 text-travel-gold" />
-                        {t('hotels.luxuryHotels', '5 Yıldızlı Oteller')}
-                      </Button>
-                    </a>
+                      <Star className="h-5 w-5 text-travel-gold" />
+                      {t('hotels.luxuryHotels', '5 Yıldızlı Oteller')}
+                    </Button>
                   </div>
                   
                   {/* Trust badges */}
@@ -525,12 +520,10 @@ const CityHotels = () => {
                 { id: 'comfort', label: '3 Yıldızlı Konfor', color: 'from-green-500 to-emerald-400', priceSort: undefined as 'asc' | undefined, priceRange: '50-80€', stars: 3 },
                 { id: 'budget', label: 'Bütçe Dostu', color: 'from-purple-500 to-pink-400', priceSort: 'asc' as const, priceRange: '20-50€', stars: undefined },
               ].map((category) => (
-                <a 
+                <button 
                   key={category.id}
-                  href={getAgodaUrl(citySlug, searchCity, checkIn, checkOut, { priceSort: category.priceSort })}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="group"
+                  onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { priceSort: category.priceSort, adults: guests.adults, rooms: guests.rooms })}
+                  className="group text-left"
                 >
                   <Card className="overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02]">
                     <div className={`bg-gradient-to-br ${category.color} p-4 text-white`}>
@@ -551,7 +544,7 @@ const CityHotels = () => {
                       </div>
                     </div>
                   </Card>
-                </a>
+                </button>
               ))}
             </div>
           </section>
