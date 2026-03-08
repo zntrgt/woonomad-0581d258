@@ -2,110 +2,138 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const GEMINI_MODEL = "gemini-2.0-flash";
+
+async function callGemini(
+  apiKey: string,
+  systemPrompt: string,
+  userPrompt: string
+): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      generationConfig: { maxOutputTokens: 8192 },
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    if (response.status === 429) throw new Error("RATE_LIMIT");
+    throw new Error(`Gemini API error ${response.status}: ${errText}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  if (!text) throw new Error("Empty response from Gemini");
+  return text;
+}
+
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Authentication check
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get("authorization");
     if (!authHeader) {
       return new Response(
-        JSON.stringify({ error: 'Giriş yapmanız gerekiyor' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Giriş yapmanız gerekiyor" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+      global: { headers: { Authorization: authHeader } },
     });
 
-    const token = authHeader.replace('Bearer ', '');
+    const token = authHeader.replace("Bearer ", "");
     const { data: claimsData, error: authError } = await supabase.auth.getClaims(token);
-    
+
     if (authError || !claimsData?.claims) {
       return new Response(
-        JSON.stringify({ error: 'Giriş yapmanız gerekiyor' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Giriş yapmanız gerekiyor" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const userId = claimsData.claims.sub;
 
-    const { 
-      city, 
+    const {
+      city,
       citySlug,
-      country, 
-      userTimezone, 
+      country,
+      userTimezone,
       destinationTimezone,
       workHoursStart,
       workHoursEnd,
       workStyle,
       days,
       nomadMetrics,
-      coworkingSpaces
+      coworkingSpaces,
     } = await req.json();
 
-    // Validation
-    if (!city || typeof city !== 'string' || city.length > 100) {
+    if (!city || typeof city !== "string" || city.length > 100) {
       return new Response(
-        JSON.stringify({ error: 'Geçersiz şehir adı' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Geçersiz şehir adı" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
     if (!userTimezone || !destinationTimezone) {
       return new Response(
-        JSON.stringify({ error: 'Saat dilimi bilgisi eksik' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Saat dilimi bilgisi eksik" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (!days || typeof days !== "number" || days < 1 || days > 14) {
+      return new Response(
+        JSON.stringify({ error: "Geçersiz gün sayısı" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    if (!days || typeof days !== 'number' || days < 1 || days > 14) {
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'Geçersiz gün sayısı' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.error('LOVABLE_API_KEY is not configured');
-      return new Response(
-        JSON.stringify({ error: 'AI servisi yapılandırılmamış' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "AI servisi yapılandırılmamış" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     console.log(`User ${userId} generating deep work rota for ${city}`);
 
     const workStyleDescriptions: Record<string, string> = {
-      morning: 'Sabah erken saatlerde 5-6 saat yoğun çalışma bloğu, öğleden sonra keşif ve sosyal aktiviteler',
-      split: 'Sabah 3-4 saat deep work, öğlen mola ve keşif, akşam 2-3 saat toplantı/hafif çalışma',
-      afternoon: 'Sabah geç uyanma ve keşif, öğleden sonra ve akşam saatlerinde yoğun çalışma',
+      morning: "Sabah erken saatlerde 5-6 saat yoğun çalışma bloğu, öğleden sonra keşif ve sosyal aktiviteler",
+      split: "Sabah 3-4 saat deep work, öğlen mola ve keşif, akşam 2-3 saat toplantı/hafif çalışma",
+      afternoon: "Sabah geç uyanma ve keşif, öğleden sonra ve akşam saatlerinde yoğun çalışma",
       flexible: 'Farklı kafelerde ve coworking alanlarda "kafe hoplamı" tarzı esnek çalışma',
     };
 
-    const coworkingInfo = coworkingSpaces?.length > 0 
-      ? `Şehirdeki coworking alanları: ${coworkingSpaces.map((c: any) => `${c.name} (${c.neighborhood || 'merkez'})`).join(', ')}`
-      : '';
+    const coworkingInfo =
+      coworkingSpaces?.length > 0
+        ? `Şehirdeki coworking alanları: ${coworkingSpaces
+            .map((c: { name: string; neighborhood?: string }) => `${c.name} (${c.neighborhood || "merkez"})`)
+            .join(", ")}`
+        : "";
 
-    const nomadInfo = nomadMetrics 
+    const nomadInfo = nomadMetrics
       ? `Şehir bilgileri: İnternet hızı ${nomadMetrics.internetSpeed}, ${nomadMetrics.coworkingCount} coworking mekan, ${nomadMetrics.cafesWithWifi} wifi kafe`
-      : '';
+      : "";
 
     const systemPrompt = `Sen dijital nomadlar için uzmanlaşmış bir Deep Work ve verimlilik danışmanısın. Kullanıcının saat dilimine ve çalışma tarzına göre detaylı günlük rutinler oluşturuyorsun.
 
 Kullanıcı ${userTimezone} saat diliminde müşterilerle çalışıyor ve ${destinationTimezone} saat dilimindeki ${city}'da bulunuyor.
 Çalışma saatleri (müşteri saat diliminde): ${workHoursStart} - ${workHoursEnd}
-Tercih edilen çalışma tarzı: ${workStyleDescriptions[workStyle] || 'Esnek'}
+Tercih edilen çalışma tarzı: ${workStyleDescriptions[workStyle] || "Esnek"}
 
 ${nomadInfo}
 ${coworkingInfo}
@@ -133,28 +161,12 @@ Yanıtını SADECE JSON formatında ver, başka hiçbir şey yazma. JSON şu yap
           "wifiSpeed": "100 Mbps",
           "task": "Önerilen görev tipi (örn: 'Karmaşık kod yazımı')",
           "tips": "Verimlilik ipucu"
-        },
-        {
-          "time": "10:30",
-          "duration": "30 dakika",
-          "type": "break",
-          "location": "Yakın kafe/park adı",
-          "task": "Kahve molası ve yürüyüş"
-        },
-        {
-          "time": "14:00",
-          "duration": "2 saat",
-          "type": "explore",
-          "location": "Gezilecek yer",
-          "locationDetails": "Açıklama"
         }
       ]
     }
   ],
   "productivityTips": [
-    "Saat dilimi farkına uyum için ipucu",
-    "Jet lag yönetimi",
-    "En verimli saatler için öneri"
+    "Saat dilimi farkına uyum için ipucu"
   ],
   "bestWorkLocations": [
     { "name": "Mekan adı", "wifiSpeed": "100 Mbps", "quietLevel": "Sessiz" }
@@ -187,81 +199,42 @@ Lütfen:
 5. Her gün farklı mahalle/bölge keşfet
 6. Hafta sonu için daha az çalışma, daha çok keşif planla`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-      }),
-    });
+    const content = await callGemini(GEMINI_API_KEY, systemPrompt, userPrompt);
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Çok fazla istek. Lütfen birkaç dakika bekleyin.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI servisi limiti aşıldı.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
-      return new Response(
-        JSON.stringify({ error: 'AI servisi hatası' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-
-    if (!content) {
-      console.error('No content in AI response');
-      return new Response(
-        JSON.stringify({ error: 'AI yanıtı alınamadı' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Parse JSON from response
     let rota;
     try {
       let jsonStr = content.trim();
-      if (jsonStr.startsWith('```json')) {
-        jsonStr = jsonStr.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-      } else if (jsonStr.startsWith('```')) {
-        jsonStr = jsonStr.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      if (jsonStr.startsWith("```json")) {
+        jsonStr = jsonStr.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+      } else if (jsonStr.startsWith("```")) {
+        jsonStr = jsonStr.replace(/^```\s*/, "").replace(/\s*```$/, "");
       }
       rota = JSON.parse(jsonStr);
     } catch (parseError) {
-      console.error('JSON parse error:', parseError, 'Content:', content);
+      console.error("JSON parse error:", parseError, "Content:", content);
       return new Response(
-        JSON.stringify({ error: 'Çalışma rotası işlenemedi' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Çalışma rotası işlenemedi" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     return new Response(
       JSON.stringify({ rota }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-
   } catch (err) {
-    console.error('Generate deep work rota error:', err);
+    console.error("Generate deep work rota error:", err);
+
+    if (err instanceof Error && err.message === "RATE_LIMIT") {
+      return new Response(
+        JSON.stringify({ error: "Çok fazla istek. Lütfen birkaç dakika bekleyin." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     return new Response(
-      JSON.stringify({ error: 'Beklenmeyen bir hata oluştu' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: "Beklenmeyen bir hata oluştu" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

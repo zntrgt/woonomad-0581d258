@@ -35,6 +35,7 @@ import TermsOfService from "./pages/TermsOfService";
 import KVKK from "./pages/KVKK";
 import CookiePolicy from "./pages/CookiePolicy";
 import { CookieBanner } from "./components/CookieBanner";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -111,7 +112,7 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       {/* Blog */}
       <Route path={`${prefix}${routeConfig.blog[lang]}`} element={<Blog />} />
       <Route path={`${prefix}${routeConfig.blogPost[lang]}`} element={<BlogPost />} />
-      <Route path={`${prefix}${routeConfig.blogAdmin[lang]}`} element={<BlogAdmin />} />
+      <Route path={`${prefix}${routeConfig.blogAdmin[lang]}`} element={<ProtectedRoute requireAdmin><BlogAdmin /></ProtectedRoute>} />
       {/* Auth */}
       <Route path={`${prefix}${routeConfig.auth[lang]}`} element={<Auth />} />
       <Route path={`${prefix}${routeConfig.account[lang]}`} element={<Account />} />

@@ -457,12 +457,12 @@ export default function BlogPost() {
       name: 'WooNomad',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://woonomad.lovable.app/woonomad-logo.png'
+        url: 'https://woonomad.co/woonomad-logo.png'
       }
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://woonomad.lovable.app/blog/${post.slug}`
+      '@id': `https://woonomad.co/blog/${post.slug}`
     },
     keywords: post.tags.join(', '),
     articleSection: categoryInfo?.name || 'Seyahat',
@@ -489,19 +489,19 @@ export default function BlogPost() {
         '@type': 'ListItem',
         position: 1,
         name: 'Ana Sayfa',
-        item: 'https://woonomad.lovable.app/'
+        item: 'https://woonomad.co/'
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Blog',
-        item: 'https://woonomad.lovable.app/blog'
+        item: 'https://woonomad.co/blog'
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: post.title,
-        item: `https://woonomad.lovable.app/blog/${post.slug}`
+        item: `https://woonomad.co/blog/${post.slug}`
       }
     ]
   };
@@ -819,13 +819,13 @@ export default function BlogPost() {
         <title>{seoTitle} | WooNomad Blog</title>
         <meta name="description" content={seoDescription} />
         <meta name="keywords" content={post.tags.join(', ')} />
-        <link rel="canonical" href={`https://woonomad.lovable.app/blog/${post.slug}`} />
+        <link rel="canonical" href={`https://woonomad.co/blog/${post.slug}`} />
         
         <meta property="og:title" content={`${post.title} | WooNomad`} />
         <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={post.coverImage} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://woonomad.lovable.app/blog/${post.slug}`} />
+        <meta property="og:url" content={`https://woonomad.co/blog/${post.slug}`} />
         <meta property="og:site_name" content="WooNomad" />
         <meta property="article:published_time" content={post.publishedAt} />
         <meta property="article:modified_time" content={post.updatedAt || post.publishedAt} />
