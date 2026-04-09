@@ -34,6 +34,10 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import KVKK from "./pages/KVKK";
 import CookiePolicy from "./pages/CookiePolicy";
+import AffiliatePage from "./pages/AffiliatePage";
+import MetodolojiPage from "./pages/MetodolojiPage";
+import SoloSeyahatPage from "./pages/SoloSeyahatPage";
+import AileSeyahatiPage from "./pages/AileSeyahatiPage";
 import { CookieBanner } from "./components/CookieBanner";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -81,6 +85,12 @@ const routeConfig = {
   terms: { tr: '/kullanim-kosullari', en: '/terms-of-service', de: '/nutzungsbedingungen', fr: '/conditions-utilisation', es: '/terminos-servicio', ar: '/terms-of-service' },
   kvkk: { tr: '/kvkk', en: '/data-protection', de: '/datenschutz-kvkk', fr: '/protection-donnees', es: '/proteccion-datos', ar: '/data-protection' },
   cookies: { tr: '/cerez-politikasi', en: '/cookie-policy', de: '/cookie-richtlinie', fr: '/politique-cookies', es: '/politica-cookies', ar: '/cookie-policy' },
+  // Segment Hubs
+  soloTravel: { tr: '/solo-seyahat', en: '/solo-travel', de: '/solo-reisen', fr: '/voyage-solo', es: '/viaje-solo', ar: '/solo-travel' },
+  familyTravel: { tr: '/aile-seyahati', en: '/family-travel', de: '/familienreise', fr: '/voyage-famille', es: '/viaje-familia', ar: '/family-travel' },
+  // Additional Legal
+  affiliate: { tr: '/affiliate-aciklama', en: '/affiliate-disclosure', de: '/affiliate-offenlegung', fr: '/divulgation-affiliation', es: '/divulgacion-afiliacion', ar: '/affiliate-disclosure' },
+  metodoloji: { tr: '/metodoloji', en: '/methodology', de: '/methodik', fr: '/methodologie', es: '/metodologia', ar: '/methodology' },
 };
 
 // Generate routes for a specific language
@@ -123,6 +133,12 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       <Route path={`${prefix}${routeConfig.terms[lang]}`} element={<TermsOfService />} />
       <Route path={`${prefix}${routeConfig.kvkk[lang]}`} element={<KVKK />} />
       <Route path={`${prefix}${routeConfig.cookies[lang]}`} element={<CookiePolicy />} />
+      {/* Segment Hubs */}
+      <Route path={`${prefix}${routeConfig.soloTravel[lang]}`} element={<SoloSeyahatPage />} />
+      <Route path={`${prefix}${routeConfig.familyTravel[lang]}`} element={<AileSeyahatiPage />} />
+      {/* Additional Legal */}
+      <Route path={`${prefix}${routeConfig.affiliate[lang]}`} element={<AffiliatePage />} />
+      <Route path={`${prefix}${routeConfig.metodoloji[lang]}`} element={<MetodolojiPage />} />
     </>
   );
 }
