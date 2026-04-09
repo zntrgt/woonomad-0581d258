@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Calendar, Clock, User, ChevronRight, Plane, MapPin, Share2, ArrowLeft, Tag, List, RefreshCcw, BookOpen, Edit, Languages, Loader2 } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
@@ -854,6 +855,7 @@ export default function BlogPost() {
             src={post.coverImage}
             alt={post.title}
             className="w-full h-full object-cover"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
@@ -1056,12 +1058,7 @@ export default function BlogPost() {
           </div>
         </main>
         
-        {/* Footer */}
-        <footer className="border-t border-border py-6 mt-8 mb-20 md:mb-0 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
-          </div>
-        </footer>
+        <Footer />
 
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav />
