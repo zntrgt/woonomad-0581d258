@@ -1,13 +1,13 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plane, Search, Shield, Clock, Sparkles, TrendingUp, Star } from 'lucide-react';
+import { Plane, Search, Shield, Clock, Sparkles, TrendingUp, Star, Building2, Users, Laptop, Baby, MapPin, Smartphone as SmartphoneIcon, ArrowRight } from 'lucide-react';
 import { PopularRoutes } from '@/components/PopularRoutes';
 import { PopularHotels } from '@/components/PopularHotels';
 import { HotelSearchForm } from '@/components/HotelSearchForm';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
-import { AdBanner } from '@/components/AdSense';
 import { TravelpayoutsFlightWidget, TravelpayoutsHotelWidget } from '@/components/widgets';
 import { useSettings } from '@/contexts/SettingsContext';
 import { cn } from '@/lib/utils';
@@ -325,10 +325,93 @@ const Index = () => {
             />
           </section>
 
-          {/* Banner Ad */}
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <AdBanner />
-          </div>
+          {/* Destinations & Segments Section */}
+          <section className="max-w-6xl mx-auto px-4 py-8 md:py-12">
+            {/* Popular Destinations */}
+            <div className="mb-10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                  Popüler Destinasyonlar
+                </h2>
+                <Link to="/sehirler" className="text-sm text-primary font-medium flex items-center gap-1 hover:underline">
+                  Tümünü Gör <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { name: 'İstanbul', slug: 'istanbul', emoji: '🇹🇷' },
+                  { name: 'Barselona', slug: 'barselona', emoji: '🇪🇸' },
+                  { name: 'Berlin', slug: 'berlin', emoji: '🇩🇪' },
+                  { name: 'Lizbon', slug: 'lizbon', emoji: '🇵🇹' },
+                  { name: 'Bali', slug: 'bali', emoji: '🇮🇩' },
+                  { name: 'Cape Town', slug: 'cape-town', emoji: '🇿🇦' },
+                  { name: 'Düsseldorf', slug: 'dusseldorf', emoji: '🇩🇪' },
+                  { name: 'Paris', slug: 'paris', emoji: '🇫🇷' },
+                ].map((city) => (
+                  <Link
+                    key={city.slug}
+                    to={`/sehir/${city.slug}`}
+                    className="card-modern p-4 flex items-center gap-3 hover:border-primary/30 transition-all"
+                  >
+                    <span className="text-2xl">{city.emoji}</span>
+                    <div>
+                      <span className="font-medium text-sm text-foreground">{city.name}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Traveler Segments */}
+            <div className="mb-10">
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6">
+                Gezgin Tipine Göre Keşfet
+              </h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Link to="/solo-seyahat" className="card-modern p-6 group hover:border-emerald-500/30 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Users className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">Solo Seyahat</h3>
+                  <p className="text-sm text-muted-foreground">Güvenlik skorları, hostel önerileri ve solo gezgin ipuçları.</p>
+                </Link>
+                <Link to="/aile-seyahati" className="card-modern p-6 group hover:border-amber-500/30 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Baby className="h-6 w-6 text-amber-600" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">Aile Seyahati</h3>
+                  <p className="text-sm text-muted-foreground">Çocuk dostu aktiviteler, esnek iptal ve güvenli bölgeler.</p>
+                </Link>
+                <Link to="/dijital-gocebe" className="card-modern p-6 group hover:border-violet-500/30 transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Laptop className="h-6 w-6 text-violet-600" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">Dijital Göçebe</h3>
+                  <p className="text-sm text-muted-foreground">Coworking, Wi-Fi, nomad vizeleri ve aylık yaşam maliyeti.</p>
+                </Link>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Link to="/esim" className="card-modern p-4 text-center hover:border-primary/30 transition-all">
+                <SmartphoneIcon className="h-5 w-5 mx-auto mb-2 text-primary" />
+                <span className="text-sm font-medium">eSIM Karşılaştırma</span>
+              </Link>
+              <Link to="/oteller" className="card-modern p-4 text-center hover:border-primary/30 transition-all">
+                <Building2 className="h-5 w-5 mx-auto mb-2 text-primary" />
+                <span className="text-sm font-medium">Oteller</span>
+              </Link>
+              <Link to="/blog" className="card-modern p-4 text-center hover:border-primary/30 transition-all">
+                <MapPin className="h-5 w-5 mx-auto mb-2 text-primary" />
+                <span className="text-sm font-medium">Seyahat Rehberi</span>
+              </Link>
+              <Link to="/ucuslar" className="card-modern p-4 text-center hover:border-primary/30 transition-all">
+                <Plane className="h-5 w-5 mx-auto mb-2 text-primary" />
+                <span className="text-sm font-medium">Uçuş Rotaları</span>
+              </Link>
+            </div>
+          </section>
 
           {/* LLM-Friendly Content */}
           <section className="max-w-4xl mx-auto px-4 py-6 md:py-8 seo-content" aria-labelledby="seo-info">
