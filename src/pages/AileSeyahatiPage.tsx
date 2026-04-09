@@ -44,6 +44,7 @@ const AileSeyahatiPage = () => {
         <title>Aile Seyahati Rehberi 2026 — Çocuk Dostu Şehirler | WooNomad</title>
         <meta name="description" content="Aileler için en uygun şehirler. Esnek iptal, çocuk dostu aktiviteler, güvenli bölgeler ve bütçe ipuçları." />
         <link rel="canonical" href="https://woonomad.co/aile-seyahati" />
+        <link rel="canonical" href="https://woonomad.co/aile-seyahati" />
       </Helmet>
 
       <Header />
