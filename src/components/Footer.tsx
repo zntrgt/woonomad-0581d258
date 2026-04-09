@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plane, Mail, MapPin, Smartphone, Compass } from 'lucide-react';
+import { useLocalizedRoutes } from '@/hooks/useLocalizedLink';
 
 export function Footer() {
   const { t } = useTranslation();
+  const { getRoute } = useLocalizedRoutes();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -32,42 +34,42 @@ export function Footer() {
             <h4 className="font-display font-bold mb-4">{t('common.seeAll')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('home')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.home')}
                 </Link>
               </li>
               <li>
-                <Link to="/ucuslar" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('flights')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.flights')}
                 </Link>
               </li>
               <li>
-                <Link to="/sehirler" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('cities')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.cities')}
                 </Link>
               </li>
               <li>
-                <Link to="/oteller" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('hotels')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.hotels')}
                 </Link>
               </li>
               <li>
-                <Link to="/esim" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Link to={getRoute('esim')} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
                   <Smartphone className="w-3 h-3" /> {t('nav.esim')}
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('blog')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('nav.blog')}
                 </Link>
               </li>
               <li>
-                <Link to="/solo-seyahat" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Link to={getRoute('soloTravel')} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
                   <Compass className="w-3 h-3" /> Solo Seyahat
                 </Link>
               </li>
               <li>
-                <Link to="/aile-seyahati" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Link to={getRoute('familyTravel')} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
                   <Compass className="w-3 h-3" /> Aile Seyahati
                 </Link>
               </li>
@@ -79,28 +81,28 @@ export function Footer() {
             <h4 className="font-display font-bold mb-4">{t('home.popularDestinations')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/sehir/paris" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Paris
+                <Link to={getRoute('city', { slug: 'istanbul' })} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> İstanbul
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/londra" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> London
+                <Link to={getRoute('city', { slug: 'barselona' })} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Barselona
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/tokyo" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> Tokyo
+                <Link to={getRoute('city', { slug: 'berlin' })} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Berlin
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/bali" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Link to={getRoute('city', { slug: 'bali' })} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> Bali
                 </Link>
               </li>
               <li>
-                <Link to="/sehir/barcelona" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <Compass className="w-3 h-3" /> Barcelona
+                <Link to={getRoute('city', { slug: 'lizbon' })} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Compass className="w-3 h-3" /> Lizbon
                 </Link>
               </li>
             </ul>
@@ -111,32 +113,32 @@ export function Footer() {
             <h4 className="font-display font-bold mb-4">{t('footer.terms')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/gizlilik-politikasi" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('privacy')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.privacy')}
                 </Link>
               </li>
               <li>
-                <Link to="/kullanim-kosullari" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('terms')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.terms')}
                 </Link>
               </li>
               <li>
-                <Link to="/kvkk" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('kvkk')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.kvkk')}
                 </Link>
               </li>
               <li>
-                <Link to="/cerez-politikasi" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('cookies')} className="text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.cookies')}
                 </Link>
               </li>
               <li>
-                <Link to="/affiliate-aciklama" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('affiliate')} className="text-muted-foreground hover:text-primary transition-colors">
                   Affiliate Açıklama
                 </Link>
               </li>
               <li>
-                <Link to="/metodoloji" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to={getRoute('metodoloji')} className="text-muted-foreground hover:text-primary transition-colors">
                   Metodoloji
                 </Link>
               </li>
