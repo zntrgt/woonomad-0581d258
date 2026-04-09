@@ -44,6 +44,7 @@ const SoloSeyahatPage = () => {
         <title>Solo Seyahat Rehberi 2026 — En Güvenli Şehirler | WooNomad</title>
         <meta name="description" content="Solo gezginler için en güvenli ve uygun fiyatlı şehirler. Güvenlik skorları, hostel önerileri ve pratik ipuçları." />
         <link rel="canonical" href="https://woonomad.co/solo-seyahat" />
+        <link rel="canonical" href="https://woonomad.co/solo-seyahat" />
       </Helmet>
 
       <Header />
