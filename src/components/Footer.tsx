@@ -61,6 +61,16 @@ export function Footer() {
                   {t('nav.blog')}
                 </Link>
               </li>
+              <li>
+                <Link to="/solo-seyahat" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Compass className="w-3 h-3" /> Solo Seyahat
+                </Link>
+              </li>
+              <li>
+                <Link to="/aile-seyahati" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Compass className="w-3 h-3" /> Aile Seyahati
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -118,6 +128,16 @@ export function Footer() {
               <li>
                 <Link to="/cerez-politikasi" className="text-muted-foreground hover:text-primary transition-colors">
                   {t('footer.cookies')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/affiliate-aciklama" className="text-muted-foreground hover:text-primary transition-colors">
+                  Affiliate Açıklama
+                </Link>
+              </li>
+              <li>
+                <Link to="/metodoloji" className="text-muted-foreground hover:text-primary transition-colors">
+                  Metodoloji
                 </Link>
               </li>
             </ul>
