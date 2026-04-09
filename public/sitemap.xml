@@ -409,4 +409,32 @@
   <!-- ============ BLOG YAZILARI ============ -->
   <!-- Blog yazıları generate-sitemap edge function tarafından dinamik olarak eklenir -->
   
+  <!-- ============ SEGMENT HUB SAYFALARI ============ -->
+  <url>
+    <loc>https://woonomad.co/solo-seyahat</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/aile-seyahati</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ============ EK YASAL SAYFALAR ============ -->
+  <url>
+    <loc>https://woonomad.co/affiliate-aciklama</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://woonomad.co/metodoloji</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
 </urlset>

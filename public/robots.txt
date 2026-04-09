@@ -1,11 +1,17 @@
-# Woonomad - robots.txt
+# WooNomad - robots.txt
 
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth
 Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth
 Crawl-delay: 1
 
 User-agent: Twitterbot
@@ -16,6 +22,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth
 Crawl-delay: 2
 
 # Sitemap
