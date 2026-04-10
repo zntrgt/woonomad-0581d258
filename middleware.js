@@ -21,9 +21,10 @@ export default async function middleware(request) {
   try {
     const apiKey = process.env.LOVABLEHTML_API_KEY;
     if (apiKey) {
-      const r = await fetch(
+          const r = await fetch(
         "https://lovablehtml.com/api/prerender/render?url=" + encodeURIComponent(request.url),
         {
+          signal: AbortSignal.timeout(3000),
           headers: {
             "x-lovablehtml-api-key": apiKey,
             accept: "text/html",
