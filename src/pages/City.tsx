@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Star, ChevronRight, AlertTriangle, Building2, Coffee, Globe, Users, Sun } from 'lucide-react';
+import { Star, ChevronRight, AlertTriangle, Building2, Coffee, Globe, Users, Sun, Calendar, DollarSign, HelpCircle, Info, ShieldCheck } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { cityGeoData } from '@/lib/cityGeoData';
 import { TripPlanner } from '@/components/TripPlanner';
 import { EventCountdownList } from '@/components/EventCountdown';
 import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
@@ -138,6 +139,7 @@ const City = () => {
   const cityCoworkings = coworkingSpaces.filter(c => c.citySlug === city.slug);
   const hasSufficient = hasSufficientData(city);
   const flag = getCountryFlag(city.countryCode);
+  const geo = cityGeoData[city.slug];
 
   const breadcrumbItems = [
     { label: 'Ana Sayfa', href: '/' },
@@ -156,7 +158,7 @@ const City = () => {
 
   const canonicalUrl = `https://woonomad.co/sehir/${city.slug}`;
 
-  const combinedSchema = [
+  const combinedSchema: any[] = [
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
@@ -171,8 +173,28 @@ const City = () => {
       "alternateName": city.nameEn,
       "description": city.description,
       "image": city.image,
-    }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelGuide",
+      "name": `${displayName} Seyahat Rehberi ${currentYear}`,
+      "about": { "@type": "City", "name": city.name },
+      "author": { "@type": "Organization", "name": "WooNomad", "url": "https://woonomad.co" },
+      "dateModified": geo?.lastUpdated ? `2026-04-09` : undefined,
+    },
   ];
+
+  if (geo?.faqs) {
+    combinedSchema.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": geo.faqs.map(f => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+      })),
+    });
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -219,6 +241,25 @@ const City = () => {
       {/* Main Content - Single Column Mobile, 2-Column Desktop */}
       <section className="py-4 md:py-6">
         <div className="container">
+
+          {/* GEO: TL;DR + Last Updated */}
+          {geo && (
+            <div className="mb-6">
+              {geo.lastUpdated && (
+                <p className="text-xs text-muted-foreground mb-2">Son güncelleme: {geo.lastUpdated}</p>
+              )}
+              <Card className="border-l-4 border-l-primary">
+                <CardContent className="p-4 md:p-5">
+                  <div className="flex items-start gap-2 mb-2">
+                    <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="font-semibold text-sm">Kısa Özet</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{geo.tldr}</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
             
             {/* Main Content Column */}
@@ -266,6 +307,102 @@ const City = () => {
                   />
                 </CardContent>
               </Card>
+
+              {/* GEO: Season Table */}
+              {geo?.seasons && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">{city.name} Ne Zaman Gidilir?</h2>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-muted/50">
+                            <th className="text-left py-2.5 px-3 font-semibold">Dönem</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Sıcaklık</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Kalabalık</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Fiyat</th>
+                            <th className="text-left py-2.5 px-3 font-semibold hidden md:table-cell">Not</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {geo.seasons.map((s, i) => (
+                            <tr key={i} className="border-b">
+                              <td className="py-2.5 px-3 font-medium">{s.period}</td>
+                              <td className="py-2.5 px-3">{s.temp}</td>
+                              <td className="py-2.5 px-3">{s.crowd}</td>
+                              <td className="py-2.5 px-3">{s.price}</td>
+                              <td className="py-2.5 px-3 text-muted-foreground hidden md:table-cell">{s.note}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GEO: Cost Table */}
+              {geo?.costs && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">{city.name} Ne Kadar Tutar?</h2>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-muted/50">
+                            <th className="text-left py-2.5 px-3 font-semibold">Kalem</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Bütçe</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Orta</th>
+                            <th className="text-left py-2.5 px-3 font-semibold">Konfor</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {geo.costs.map((c, i) => (
+                            <tr key={i} className={`border-b ${c.item.startsWith('TOPLAM') ? 'font-bold bg-muted/30' : ''}`}>
+                              <td className="py-2.5 px-3">{c.item}</td>
+                              <td className="py-2.5 px-3 text-emerald-600">{c.budget}</td>
+                              <td className="py-2.5 px-3 text-amber-600">{c.mid}</td>
+                              <td className="py-2.5 px-3 text-violet-600">{c.comfort}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GEO: Safety & Visa */}
+              {geo && (geo.safety || geo.visa) && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5 space-y-4">
+                    {geo.safety && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                          <h2 className="text-xl font-display font-bold">Güvenlik</h2>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{geo.safety}</p>
+                      </div>
+                    )}
+                    {geo.visa && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Globe className="h-5 w-5 text-primary" />
+                          <h3 className="text-lg font-display font-bold">Vize Bilgisi</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{geo.visa}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Neighborhoods */}
               <Card variant="elevated">
@@ -455,6 +592,28 @@ const City = () => {
           </div>
         </div>
       </section>
+
+      {/* GEO: FAQ Section */}
+      {geo?.faqs && geo.faqs.length > 0 && (
+        <section className="py-4 md:py-6">
+          <div className="container">
+            <div className="flex items-center gap-2 mb-4">
+              <HelpCircle className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-display font-bold">Sık Sorulan Sorular</h2>
+            </div>
+            <div className="space-y-2 max-w-3xl">
+              {geo.faqs.map((faq, i) => (
+                <Card key={i} variant="elevated">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-sm mb-2">{faq.question}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Popular Searches */}
       <section className="py-4 md:py-6 bg-muted/30">
