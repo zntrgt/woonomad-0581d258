@@ -3,7 +3,7 @@
   <!-- Ana Sayfa -->
   <url>
     <loc>https://woonomad.co/</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,7 +11,7 @@
   <!-- Şehirler Ana Sayfa -->
   <url>
     <loc>https://woonomad.co/sehirler</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -19,7 +19,7 @@
   <!-- Uçuş Rotaları Ana Sayfa -->
   <url>
     <loc>https://woonomad.co/ucuslar</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -27,7 +27,7 @@
   <!-- Oteller Ana Sayfa -->
   <url>
     <loc>https://woonomad.co/oteller</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -35,7 +35,7 @@
   <!-- Nomad Hub -->
   <url>
     <loc>https://woonomad.co/nomad-hub</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -43,7 +43,7 @@
   <!-- Blog -->
   <url>
     <loc>https://woonomad.co/blog</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -51,25 +51,25 @@
   <!-- Legal Sayfalar -->
   <url>
     <loc>https://woonomad.co/gizlilik-politikasi</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://woonomad.co/kullanim-kosullari</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://woonomad.co/kvkk</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://woonomad.co/cerez-politikasi</loc>
-    <lastmod>2026-01-22</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -77,338 +77,357 @@
   <!-- ============ TÜRKİYE ŞEHİRLERİ ============ -->
   
   <!-- İstanbul -->
-  <url><loc>https://woonomad.co/sehir/istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Antalya -->
-  <url><loc>https://woonomad.co/sehir/antalya</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- İzmir -->
-  <url><loc>https://woonomad.co/sehir/izmir</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/izmir/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/izmir/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/izmir/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/izmir/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/izmir/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/izmir/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Bodrum -->
-  <url><loc>https://woonomad.co/sehir/bodrum</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bodrum/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/bodrum/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/bodrum/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/bodrum/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/bodrum/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bodrum/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Kapadokya -->
-  <url><loc>https://woonomad.co/sehir/kapadokya</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/kapadokya/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/kapadokya/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/kapadokya/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kapadokya</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/kapadokya/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kapadokya/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kapadokya/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ AVRUPA ŞEHİRLERİ ============ -->
   
   <!-- Berlin -->
-  <url><loc>https://woonomad.co/sehir/berlin</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Paris -->
-  <url><loc>https://woonomad.co/sehir/paris</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Londra -->
-  <url><loc>https://woonomad.co/sehir/londra</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/londra/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/londra/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/londra/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/londra/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/londra/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/londra/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Amsterdam -->
-  <url><loc>https://woonomad.co/sehir/amsterdam</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/amsterdam/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/amsterdam/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/amsterdam/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/amsterdam/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/amsterdam/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/amsterdam/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Barcelona -->
-  <url><loc>https://woonomad.co/sehir/barcelona</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/barcelona/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/barcelona/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/barcelona/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/barcelona/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/barcelona/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/barcelona/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Madrid -->
-  <url><loc>https://woonomad.co/sehir/madrid</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/madrid/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/madrid/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/madrid/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/madrid/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/madrid/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/madrid/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Roma -->
-  <url><loc>https://woonomad.co/sehir/roma</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/roma/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/roma/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/roma/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/roma/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/roma/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/roma/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Milano -->
-  <url><loc>https://woonomad.co/sehir/milano</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/milano/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/milano/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/milano/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/milano/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/milano/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/milano/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Venedik -->
-  <url><loc>https://woonomad.co/sehir/venedik</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/venedik/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/venedik/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/venedik/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/venedik</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/venedik/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/venedik/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/venedik/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Floransa -->
-  <url><loc>https://woonomad.co/sehir/floransa</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/floransa/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/floransa/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/floransa/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/floransa</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/floransa/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/floransa/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/floransa/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Lizbon -->
-  <url><loc>https://woonomad.co/sehir/lizbon</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/lizbon/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/lizbon/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/lizbon/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/lizbon/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/lizbon/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/lizbon/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Porto -->
-  <url><loc>https://woonomad.co/sehir/porto</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/porto/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/porto/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/porto/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/porto</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/porto/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/porto/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/porto/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Atina -->
-  <url><loc>https://woonomad.co/sehir/atina</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/atina/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/atina/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/atina/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/atina</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/atina/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/atina/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/atina/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Prag -->
-  <url><loc>https://woonomad.co/sehir/prag</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/prag/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/prag/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/prag/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/prag/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/prag/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/prag/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Viyana -->
-  <url><loc>https://woonomad.co/sehir/viyana</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/viyana/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/viyana/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/viyana/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/viyana/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/viyana/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/viyana/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Budapeşte -->
-  <url><loc>https://woonomad.co/sehir/budapeste</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/budapeste/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/budapeste/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/budapeste/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/budapeste/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/budapeste/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/budapeste/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Kopenhag -->
-  <url><loc>https://woonomad.co/sehir/kopenhag</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/kopenhag/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/kopenhag/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/kopenhag/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kopenhag</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/kopenhag/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kopenhag/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/kopenhag/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Stockholm -->
-  <url><loc>https://woonomad.co/sehir/stockholm</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/stockholm/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/stockholm/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/stockholm/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/stockholm</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/stockholm/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/stockholm/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/stockholm/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Münih -->
-  <url><loc>https://woonomad.co/sehir/munih</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/munih/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/munih/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/munih/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/munih</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/munih/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/munih/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/munih/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Frankfurt -->
-  <url><loc>https://woonomad.co/sehir/frankfurt</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/frankfurt/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/frankfurt/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/frankfurt/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/frankfurt</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/frankfurt/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/frankfurt/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/frankfurt/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ ORTADOĞU & KAFKASYA ============ -->
   
   <!-- Dubai -->
-  <url><loc>https://woonomad.co/sehir/dubai</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Tiflis -->
-  <url><loc>https://woonomad.co/sehir/tiflis</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/tiflis/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/tiflis/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/tiflis/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/tiflis/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/tiflis/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/tiflis/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Bakü -->
-  <url><loc>https://woonomad.co/sehir/baku</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/baku/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/baku/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/baku/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/baku</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/baku/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/baku/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/baku/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Amman -->
-  <url><loc>https://woonomad.co/sehir/amman</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/amman/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/amman/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/amman/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/amman</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/amman/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/amman/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/amman/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ ASYA ============ -->
   
   <!-- Tokyo -->
-  <url><loc>https://woonomad.co/sehir/tokyo</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Bangkok -->
-  <url><loc>https://woonomad.co/sehir/bangkok</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/bangkok/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bangkok/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bangkok/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bangkok/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/bangkok/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/bangkok/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Bali -->
-  <url><loc>https://woonomad.co/sehir/bali</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Singapur -->
-  <url><loc>https://woonomad.co/sehir/singapur</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/singapur/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/singapur/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/singapur/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/singapur/nomad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/singapur/coworking</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur/nomad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/singapur/coworking</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Seul -->
-  <url><loc>https://woonomad.co/sehir/seul</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/seul/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/seul/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/seul/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/seul</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/seul/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/seul/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/seul/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ AMERİKA ============ -->
   
   <!-- New York -->
-  <url><loc>https://woonomad.co/sehir/newyork</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://woonomad.co/sehir/newyork/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/newyork/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/newyork/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/newyork</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://woonomad.co/sehir/newyork/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/newyork/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/newyork/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   
   <!-- ============ BALKANLAR ============ -->
   
   <!-- Belgrad -->
-  <url><loc>https://woonomad.co/sehir/belgrad</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/belgrad/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/belgrad/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/belgrad/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/belgrad</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/belgrad/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/belgrad/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/belgrad/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- Saraybosna -->
-  <url><loc>https://woonomad.co/sehir/sarajevo</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://woonomad.co/sehir/sarajevo/oteller</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/sarajevo/ucuslar</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/sehir/sarajevo/ucak-bileti</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/sarajevo</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/sarajevo/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/sarajevo/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/sarajevo/ucak-bileti</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ OTEL DETAY SAYFALARI ============ -->
   
   <!-- İstanbul Otelleri -->
-  <url><loc>https://woonomad.co/sehir/istanbul/otel/four-seasons-sultanahmet</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/otel/ciragan-palace-kempinski</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/otel/raffles-istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/istanbul/otel/the-ritz-carlton-istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/otel/four-seasons-sultanahmet</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/otel/ciragan-palace-kempinski</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/otel/raffles-istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/istanbul/otel/the-ritz-carlton-istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Antalya Otelleri -->
-  <url><loc>https://woonomad.co/sehir/antalya/otel/regnum-carya</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/otel/titanic-mardan-palace</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/antalya/otel/maxx-royal-belek</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/otel/regnum-carya</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/otel/titanic-mardan-palace</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/antalya/otel/maxx-royal-belek</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Berlin Otelleri -->
-  <url><loc>https://woonomad.co/sehir/berlin/otel/hotel-adlon-kempinski</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/berlin/otel/the-ritz-carlton-berlin</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/otel/hotel-adlon-kempinski</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/berlin/otel/the-ritz-carlton-berlin</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Paris Otelleri -->
-  <url><loc>https://woonomad.co/sehir/paris/otel/le-bristol-paris</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/paris/otel/four-seasons-george-v</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/otel/le-bristol-paris</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/paris/otel/four-seasons-george-v</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Dubai Otelleri -->
-  <url><loc>https://woonomad.co/sehir/dubai/otel/burj-al-arab</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/dubai/otel/atlantis-the-palm</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/otel/burj-al-arab</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/dubai/otel/atlantis-the-palm</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Tokyo Otelleri -->
-  <url><loc>https://woonomad.co/sehir/tokyo/otel/aman-tokyo</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/tokyo/otel/park-hyatt-tokyo</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/otel/aman-tokyo</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/tokyo/otel/park-hyatt-tokyo</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- Bali Otelleri -->
-  <url><loc>https://woonomad.co/sehir/bali/otel/como-shambhala</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://woonomad.co/sehir/bali/otel/four-seasons-jimbaran</loc><lastmod>2026-01-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/otel/como-shambhala</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://woonomad.co/sehir/bali/otel/four-seasons-jimbaran</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   
   <!-- ============ UÇUŞ ROTALARI ============ -->
   
-  <url><loc>https://woonomad.co/ucus/istanbul-paris</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-londra</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-barcelona</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-amsterdam</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-roma</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-berlin</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-viyana</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-prag</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-dubai</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-tokyo</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-bali</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/istanbul-bangkok</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/ankara-istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/ankara-londra</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/izmir-istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/izmir-londra</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/antalya-istanbul</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://woonomad.co/ucus/antalya-berlin</loc><lastmod>2026-01-22</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-paris</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-londra</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-barcelona</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-amsterdam</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-roma</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-berlin</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-viyana</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-prag</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-dubai</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-tokyo</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-bali</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/istanbul-bangkok</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/ankara-istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/ankara-londra</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/izmir-istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/izmir-londra</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/antalya-istanbul</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/ucus/antalya-berlin</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   
   <!-- ============ BLOG YAZILARI ============ -->
   <!-- Blog yazıları generate-sitemap edge function tarafından dinamik olarak eklenir -->
   
+  <!-- Cape Town -->
+  <url><loc>https://woonomad.co/sehir/cape-town</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/cape-town/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/cape-town/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  
+  <!-- Düsseldorf -->
+  <url><loc>https://woonomad.co/sehir/dusseldorf</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://woonomad.co/sehir/dusseldorf/oteller</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://woonomad.co/sehir/dusseldorf/ucuslar</loc><lastmod>2026-04-10</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  
+  <!-- Barselona (admin slug) -->
+  <url><loc>https://woonomad.co/sehir/barselona</loc><lastmod>2026-04-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  
+  <!-- eSIM -->
+  <url><loc>https://woonomad.co/esim</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  
+  <!-- Dijital Göçebe Hub -->
+  <url><loc>https://woonomad.co/dijital-gocebe</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
   <!-- ============ SEGMENT HUB SAYFALARI ============ -->
   <url>
     <loc>https://woonomad.co/solo-seyahat</loc>
