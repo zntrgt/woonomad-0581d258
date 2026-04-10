@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Save, Trash2, Loader2, LogOut, Sparkles, Wand2, Upload, Image, Eye, X, Table2, ListChecks, HelpCircle, Code, FileText, ImagePlus, Download, Database, RefreshCw, Search, Globe, ScanSearch } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { BulkJsonImport } from "@/components/BulkJsonImport";
 import { supabase } from "@/integrations/supabase/client";
 import { blogPosts as staticBlogPosts, BlogPost as StaticBlogPost } from "@/lib/blog";
 
@@ -1066,7 +1067,13 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
             Bu sayfaya erişim yetkiniz bulunmamaktadır.
           </p>
           <Button onClick={() => navigate("/")}>Ana Sayfaya Dön</Button>
-        </main>
+          {/* Toplu JSON İçe Aktarma */}
+        {!isCreating && (
+          <div className="mt-8">
+            <BulkJsonImport />
+          </div>
+        )}
+      </main>
         <MobileBottomNav />
       </div>
     );
@@ -1616,6 +1623,12 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
                 </div>
               </div>
             )}
+          </div>
+        )}
+        {/* Toplu JSON İçe Aktarma */}
+        {!isCreating && (
+          <div className="mt-8">
+            <BulkJsonImport />
           </div>
         )}
       </main>
