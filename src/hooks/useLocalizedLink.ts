@@ -18,6 +18,17 @@ const routeConfig = {
   blogAdmin: { tr: '/admin/blog', en: '/admin/blog', de: '/admin/blog', fr: '/admin/blog', es: '/admin/blog', ar: '/admin/blog' },
   account: { tr: '/hesabim', en: '/account', de: '/konto', fr: '/compte', es: '/cuenta', ar: '/account' },
   install: { tr: '/yukle', en: '/install', de: '/installieren', fr: '/installer', es: '/instalar', ar: '/install' },
+  // Legal
+  privacy: { tr: '/gizlilik-politikasi', en: '/privacy-policy', de: '/datenschutz', fr: '/politique-de-confidentialite', es: '/politica-privacidad', ar: '/privacy-policy' },
+  terms: { tr: '/kullanim-kosullari', en: '/terms-of-service', de: '/nutzungsbedingungen', fr: '/conditions-utilisation', es: '/terminos-servicio', ar: '/terms-of-service' },
+  kvkk: { tr: '/kvkk', en: '/data-protection', de: '/datenschutz-kvkk', fr: '/protection-donnees', es: '/proteccion-datos', ar: '/data-protection' },
+  cookies: { tr: '/cerez-politikasi', en: '/cookie-policy', de: '/cookie-richtlinie', fr: '/politique-cookies', es: '/politica-cookies', ar: '/cookie-policy' },
+  // Segment Hubs
+  soloTravel: { tr: '/solo-seyahat', en: '/solo-travel', de: '/solo-reisen', fr: '/voyage-solo', es: '/viaje-solo', ar: '/solo-travel' },
+  familyTravel: { tr: '/aile-seyahati', en: '/family-travel', de: '/familienreise', fr: '/voyage-famille', es: '/viaje-familia', ar: '/family-travel' },
+  // Additional Legal
+  affiliate: { tr: '/affiliate-aciklama', en: '/affiliate-disclosure', de: '/affiliate-offenlegung', fr: '/divulgation-affiliation', es: '/divulgacion-afiliacion', ar: '/affiliate-disclosure' },
+  metodoloji: { tr: '/metodoloji', en: '/methodology', de: '/methodik', fr: '/methodologie', es: '/metodologia', ar: '/methodology' },
 } as const;
 
 // Hook to generate localized links
