@@ -1,5 +1,8 @@
 /* WooNomad - Modern Seyahat Platformu */
-/* Note: Georama font is loaded via index.html link tag for proper CSS order */
+/* Design System tokens */
+@import "./styles/woonomad-tokens.css";
+
+/* Note: Fonts loaded via index.html link tag */
 
 @tailwind base;
 @tailwind components;

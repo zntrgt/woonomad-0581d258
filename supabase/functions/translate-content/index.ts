@@ -1,12 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAI, corsHeaders as sharedCorsHeaders, MODELS } from "../_shared/openrouter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-const GEMINI_MODEL = "gemini-2.0-flash";
 
 interface TranslateRequest {
   texts: Record<string, string>;
@@ -247,11 +246,22 @@ serve(async (req) => {
     }
 
     console.log(`Translating ${textEntries.length} texts with Gemini: ${sourceLanguage} → ${targetLanguage}`);
-    const translations = await translateWithGemini(GEMINI_API_KEY, textEntries, targetLanguage, sourceLanguage);
+    // Translate each entry via OpenRouter
+    const translations: Record<string, string> = {};
+    for (const [key, text] of Object.entries(textEntries)) {
+      const tr = await callAI({
+        prompt: `Translate to ${targetLanguage}: ${text as string}`,
+        systemPrompt: "You are a professional translator. Return ONLY the translated text, nothing else.",
+        model: MODELS.GEMINI_FLASH,
+        temperature: 0.3,
+        timeoutMs: 30_000,
+      });
+      translations[key] = tr.ok ? tr.text : (text as string);
+    }
 
     console.log(`Gemini translation successful: ${Object.keys(translations).length} texts`);
     return new Response(
-      JSON.stringify({ translations, provider: "gemini" }),
+      JSON.stringify({ translations, provider: "openrouter" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

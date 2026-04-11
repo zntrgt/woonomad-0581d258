@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAI, MODELS } from "../_shared/openrouter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,7 +8,6 @@ const corsHeaders = {
 };
 
 // Use flash for text generation, image generation model for images
-const TEXT_MODEL = "gemini-2.5-flash-preview-05-20";
 const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
 
 interface SEOImproveRequest {
@@ -129,34 +129,6 @@ KURALLAR (KESİNLİKLE UYULMALI):
   ]
 }`;
 
-async function callGeminiText(
-  apiKey: string,
-  systemPrompt: string,
-  userPrompt: string,
-  maxOutputTokens = 12000
-): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens, temperature: 0.7 },
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    if (response.status === 429) throw new Error("RATE_LIMIT");
-    throw new Error(`Gemini API error ${response.status}: ${errText}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-  if (!text) throw new Error("Empty response from Gemini");
-  return text;
-}
 
 async function generateAndUploadImage(
   apiKey: string,
@@ -258,13 +230,8 @@ serve(async (req) => {
       );
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "GEMINI_API_KEY is not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // GEMINI_API_KEY is still needed for image generation (OpenRouter doesn't support it)
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") || "";
 
     // For image uploads we need service role
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -302,7 +269,9 @@ Lütfen yukarıdaki kurallara göre iyileştirilmiş versiyonu JSON formatında 
 
     console.log(`Admin ${userId} improving SEO+LLM for post: ${slug}`);
 
-    const aiContent = await callGeminiText(GEMINI_API_KEY, SYSTEM_PROMPT, userPrompt);
+    const aiResult = await callAI({ prompt: userPrompt, systemPrompt: SYSTEM_PROMPT, model: MODELS.GEMINI_FLASH, maxTokens: 12000, temperature: 0.7, timeoutMs: 90_000 });
+    if (!aiResult.ok) throw new Error(aiResult.error || "AI generation failed");
+    const aiContent = aiResult.text;
 
     let result: SEOImproveResponse;
     try {

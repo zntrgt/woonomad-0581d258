@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { woonomadTheme } from "./src/styles/woonomad-theme";
 
 export default {
   darkMode: ["class"],
@@ -18,8 +19,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Figtree', 'Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'serif'],
+        body: ['Figtree', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -91,11 +94,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // WooNomad Design System palettes
+        ...woonomadTheme.colors,
       },
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
         'safe-bottom': 'env(safe-area-inset-bottom)',
+        // WooNomad semantic spacing
+        ...woonomadTheme.spacing,
       },
       borderRadius: {
         lg: "var(--radius)",

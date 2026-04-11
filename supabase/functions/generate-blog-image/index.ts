@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAI, MODELS } from "../_shared/openrouter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,33 +8,14 @@ const corsHeaders = {
 };
 
 const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
-const TEXT_MODEL = "gemini-2.0-flash";
+// Note: Image generation stays on Gemini direct API (OpenRouter doesn't support image gen)
+// Text generation (alt text) uses OpenRouter via callAI
 
 interface GenerateImageRequest {
   prompt: string;
   context?: string;
   slug?: string;
   generateAltText?: boolean;
-}
-
-async function callGeminiText(
-  apiKey: string,
-  systemPrompt: string,
-  userPrompt: string
-): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens: 150 },
-    }),
-  });
-  if (!response.ok) throw new Error(`Gemini text error ${response.status}`);
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
 }
 
 serve(async (req) => {
@@ -170,17 +152,14 @@ serve(async (req) => {
     let altText = "";
     if (generateAltText) {
       try {
-        altText = await callGeminiText(
-          GEMINI_API_KEY,
-          `You are an SEO and accessibility expert. Analyze the image description and generate a concise, descriptive alt text.
-RULES:
-- Max 125 characters
-- Include relevant keywords naturally
-- Be specific and descriptive
-- Don't start with "Image of" or "Picture of"
-- Output ONLY the alt text, nothing else`,
-          `Generate SEO-friendly alt text for this image. Image prompt: "${prompt}". Context: ${context || "travel blog image"}`
-        );
+        const altResult = await callAI({
+          prompt: `Generate SEO-friendly alt text for this image. Image prompt: "${prompt}". Context: ${context || "travel blog image"}`,
+          systemPrompt: `You are an SEO and accessibility expert. Generate a concise, descriptive alt text.\nRULES:\n- Max 125 characters\n- Include relevant keywords naturally\n- Be specific and descriptive\n- Don't start with "Image of" or "Picture of"\n- Output ONLY the alt text, nothing else`,
+          model: MODELS.GEMINI_FLASH,
+          maxTokens: 150,
+          temperature: 0.3,
+        });
+        altText = altResult.ok ? altResult.text : "";
         altText = altText.replace(/^["']|["']$/g, "").trim();
       } catch (altError) {
         console.error("Alt text generation error:", altError);

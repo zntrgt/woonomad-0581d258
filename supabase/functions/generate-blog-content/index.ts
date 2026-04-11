@@ -1,12 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAI, corsHeaders as sharedCorsHeaders, MODELS } from "../_shared/openrouter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-const GEMINI_MODEL = "gemini-2.0-flash";
 
 interface GenerateRequest {
   type: "full" | "paragraph" | "improve";
@@ -14,39 +13,6 @@ interface GenerateRequest {
   title?: string;
   existingContent?: string;
   language?: string;
-}
-
-async function callGemini(
-  apiKey: string,
-  systemPrompt: string,
-  userPrompt: string,
-  maxOutputTokens = 8192
-): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "x-goog-api-key": apiKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens },
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    if (response.status === 429) throw new Error("RATE_LIMIT");
-    throw new Error(`Gemini API error ${response.status}: ${errText}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("Empty response from Gemini");
-  return text;
 }
 
 serve(async (req) => {
@@ -91,13 +57,7 @@ serve(async (req) => {
       );
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "GEMINI_API_KEY is not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    // API key is handled by the shared openrouter helper
 
     const { type, topic, title, existingContent, language = "tr" } = await req.json() as GenerateRequest;
 
@@ -143,7 +103,9 @@ ${existingContent ? `Mevcut içerik:\n${existingContent.slice(-500)}` : ""}`;
 
     console.log(`Admin ${userId} generating blog content: ${type}`);
 
-    const content = await callGemini(GEMINI_API_KEY, systemPrompt, userPrompt);
+    const aiResult = await callAI({ prompt: userPrompt, systemPrompt: systemPrompt, model: MODELS.GEMINI_FLASH, maxTokens: 8192, temperature: 0.7, timeoutMs: 60_000 });
+    if (!aiResult.ok) throw new Error(aiResult.error || "AI generation failed");
+    const content = aiResult.text;
 
     return new Response(
       JSON.stringify({ content }),

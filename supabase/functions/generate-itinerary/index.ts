@@ -1,12 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAI, corsHeaders as sharedCorsHeaders, MODELS } from "../_shared/openrouter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-const GEMINI_MODEL = "gemini-2.0-flash";
 
 const INTEREST_LABELS: Record<string, string> = {
   history: "tarih ve kültür",
@@ -35,34 +34,6 @@ const COUNTRY_CURRENCIES: Record<string, string> = {
   Japonya: "JPY",
   İsviçre: "CHF",
 };
-
-async function callGemini(
-  apiKey: string,
-  systemPrompt: string,
-  userPrompt: string
-): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens: 8192 },
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    if (response.status === 429) throw new Error("RATE_LIMIT");
-    throw new Error(`Gemini API error ${response.status}: ${errText}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-  if (!text) throw new Error("Empty response from Gemini");
-  return text;
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -189,7 +160,9 @@ Para birimi: ${currency}
 - Yerel ipuçları ekle (bütçe tasarrufu ipuçları da olabilir)
 - Ulaşım süreleri gerçekçi olsun`;
 
-    const content = await callGemini(GEMINI_API_KEY, systemPrompt, userPrompt);
+    const aiResult = await callAI({ prompt: userPrompt, systemPrompt: systemPrompt, model: MODELS.GEMINI_FLASH, maxTokens: 8192, temperature: 0.7, timeoutMs: 60_000 });
+    if (!aiResult.ok) throw new Error(aiResult.error || "AI generation failed");
+    const content = aiResult.text;
 
     let itinerary;
     try {
