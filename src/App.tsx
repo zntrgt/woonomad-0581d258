@@ -17,6 +17,7 @@ import CityFlights from "./pages/CityFlights";
 import CityHotels from "./pages/CityHotels";
 import CityTickets from "./pages/CityTickets";
 import CityNomad from "./pages/CityNomad";
+import CityCoworking from "./pages/CityCoworking";
 import CoworkingDetail from "./pages/CoworkingDetail";
 import CityActivities from "./pages/CityActivities";
 import HotelDetailPage from "./pages/HotelDetailPage";
@@ -107,7 +108,7 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       <Route path={`${prefix}${routeConfig.cityHotelDetail[lang]}`} element={<HotelDetailPage />} />
       <Route path={`${prefix}${routeConfig.cityFlights[lang]}`} element={<CityFlights />} />
       <Route path={`${prefix}${routeConfig.cityNomad[lang]}`} element={<CityNomad />} />
-      <Route path={`${prefix}${routeConfig.cityCoworking[lang]}`} element={<CityNomad />} />
+      <Route path={`${prefix}${routeConfig.cityCoworking[lang]}`} element={<CityCoworking />} />
       <Route path={`${prefix}${routeConfig.cityActivities[lang]}`} element={<CityActivities />} />
       {/* Hotels */}
       <Route path={`${prefix}${routeConfig.hotels[lang]}`} element={<Hotels />} />

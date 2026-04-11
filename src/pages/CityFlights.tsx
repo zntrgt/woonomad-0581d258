@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { Plane, ArrowRight, Clock } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
@@ -255,13 +256,7 @@ const CityFlights = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} WooNomad. Tüm hakları saklıdır.
-        </div>
-      </footer>
-
+      <Footer />
       <MobileBottomNav />
     </div>
   );
