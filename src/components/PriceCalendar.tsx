@@ -149,7 +149,7 @@ export function PriceCalendar({
           {/* Day names header */}
           <div className="grid grid-cols-7 gap-1 mb-1">
             {dayNames.map(day => (
-              <div key={day} className="text-center text-[10px] font-medium text-muted-foreground py-1">
+              <div key={day} className="text-center text-2xs font-medium text-muted-foreground py-1">
                 {day}
               </div>
             ))}
@@ -210,7 +210,7 @@ export function PriceCalendar({
           {/* Legend */}
           {prices.length > 0 && (
             <div className="mt-3 pt-3 border-t border-border">
-              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+              <div className="flex items-center justify-between text-2xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full bg-green-500" />
                   <span>En Ucuz: {minPrice?.toLocaleString('tr-TR')}₺</span>

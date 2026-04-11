@@ -104,7 +104,7 @@ export function ExchangeRateWidget({ countryCode, currencyName }: ExchangeRateWi
             {currencyName}
           </p>
           {rateData.date && (
-            <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+            <span className="text-2xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
               {rateData.date}
             </span>
           )}

@@ -85,7 +85,7 @@ export default function Install() {
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary/10 mb-6">
               <Smartphone className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">
               {t('install.heroTitle', 'WooNomad\'ı Telefonunuza Ekleyin')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -99,7 +99,7 @@ export default function Install() {
               <CardContent className="p-6 flex items-center gap-4">
                 <CheckCircle className="h-12 w-12 text-success" />
                 <div>
-                  <h2 className="text-xl font-semibold text-success">
+                  <h2 className="text-xl md:text-2xl font-display font-bold">
                     {t('install.alreadyInstalled', 'Uygulama Zaten Yüklü!')}
                   </h2>
                   <p className="text-muted-foreground">
@@ -206,7 +206,7 @@ export default function Install() {
 
           {/* Features */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-center mb-6">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
               {t('install.whyInstall', 'Neden Yüklemelisiniz?')}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

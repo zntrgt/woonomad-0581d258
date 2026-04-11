@@ -96,11 +96,11 @@ export function EsimWidget({ countryCode, countryName, cityName, className }: Es
         {/* Quick info */}
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="bg-muted/50 rounded p-2 text-center">
-            <Badge variant="outline" className="text-[10px] mb-1">{t('esim.instant', 'Anında')}</Badge>
+            <Badge variant="outline" className="text-2xs mb-1">{t('esim.instant', 'Anında')}</Badge>
             <p className="text-muted-foreground">{t('esim.instantActivation', 'Aktivasyon')}</p>
           </div>
           <div className="bg-muted/50 rounded p-2 text-center">
-            <Badge variant="outline" className="text-[10px] mb-1">4G/5G</Badge>
+            <Badge variant="outline" className="text-2xs mb-1">4G/5G</Badge>
             <p className="text-muted-foreground">{t('esim.highSpeed', 'Yüksek Hız')}</p>
           </div>
         </div>

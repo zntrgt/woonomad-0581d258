@@ -140,7 +140,7 @@ export default function Account() {
                     <User className="h-8 w-8 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h1 className="text-2xl font-bold">{t('account.title')}</h1>
+                    <h1 className="text-3xl md:text-4xl font-display font-bold">{t('account.title')}</h1>
                     <p className="text-muted-foreground">{user.email}</p>
                   </div>
                   <Button variant="outline" onClick={handleSignOut}>

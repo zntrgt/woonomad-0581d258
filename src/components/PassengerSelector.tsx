@@ -82,7 +82,7 @@ export function PassengerSelector({ value, onChange }: PassengerSelectorProps) {
                 </div>
                 <div>
                   <div className="text-sm font-medium">{label}</div>
-                  <div className="text-[10px] text-muted-foreground">{desc}</div>
+                  <div className="text-2xs text-muted-foreground">{desc}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">

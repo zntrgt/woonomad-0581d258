@@ -97,7 +97,7 @@ export default function CityActivities() {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">{t('cityActivities.cityNotFound', 'Şehir Bulunamadı')}</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('cityActivities.cityNotFound', 'Şehir Bulunamadı')}</h1>
           <Link to="/sehirler" className="text-primary hover:underline">{t('cityActivities.browseCities', 'Tüm Şehirlere Gözat')}</Link>
         </div>
         <Footer />
@@ -305,7 +305,7 @@ export default function CityActivities() {
                     <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
                   </Link>
                   <Link
-                    to={`/sehir/${city.slug}/ucak-bileti`}
+                    to={`/sehir/${city.slug}/ucuslar`}
                     className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group"
                   >
                     <Plane className="h-5 w-5 text-primary" />

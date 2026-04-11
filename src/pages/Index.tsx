@@ -312,7 +312,7 @@ const Index = () => {
           {/* Hotel Search Section */}
           <section className="max-w-4xl mx-auto px-4 py-8">
             <div className="text-center mb-6">
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
+              <h2 className="text-xl md:text-2xl font-display font-bold text-foreground mb-2">
                 {t('hotels.searchTitle', 'Otel Ara')}
               </h2>
               <p className="text-muted-foreground">
@@ -330,7 +330,7 @@ const Index = () => {
             {/* Popular Destinations */}
             <div className="mb-10">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                <h2 className="text-xl md:text-2xl font-display font-bold text-foreground">
                   Popüler Destinasyonlar
                 </h2>
                 <Link to="/sehirler" className="text-sm text-primary font-medium flex items-center gap-1 hover:underline">
@@ -364,7 +364,7 @@ const Index = () => {
 
             {/* Traveler Segments */}
             <div className="mb-10">
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6">
+              <h2 className="text-xl md:text-2xl font-display font-bold text-foreground mb-6">
                 Gezgin Tipine Göre Keşfet
               </h2>
               <div className="grid md:grid-cols-3 gap-4">
@@ -498,7 +498,7 @@ const Index = () => {
 
           {/* FAQ Section */}
           <section className="max-w-4xl mx-auto px-4 pb-16 md:pb-24">
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-10">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-10">
               {t('index.faqTitle')}
             </h2>
             <div className="space-y-4">

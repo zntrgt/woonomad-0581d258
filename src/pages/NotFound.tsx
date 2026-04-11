@@ -43,10 +43,10 @@ const NotFound = () => {
         </div>
 
         {/* Error Message */}
-        <h1 className="text-6xl md:text-8xl font-display font-bold text-primary mb-4">
+        <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">
           404
         </h1>
-        <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
           Rotadan Saptınız! ✈️
         </h2>
         <p className="text-muted-foreground text-lg max-w-md mb-8">

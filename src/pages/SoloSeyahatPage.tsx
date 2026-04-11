@@ -77,7 +77,7 @@ const SoloSeyahatPage = () => {
         </Card>
 
         {/* Top Cities */}
-        <h2 className="text-2xl font-display font-bold mb-6">Solo Gezginler İçin En İyi Şehirler</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-6">Solo Gezginler İçin En İyi Şehirler</h2>
         <div className="space-y-3 mb-12">
           {topCities.map((city, i) => (
             <Link key={city.slug} to={`/sehir/${city.slug}`} className="block">
@@ -98,7 +98,7 @@ const SoloSeyahatPage = () => {
         </div>
 
         {/* Criteria */}
-        <h2 className="text-2xl font-display font-bold mb-4">Karar Kriterleri</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Karar Kriterleri</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12">
           {criteria.map((c) => (
             <Card key={c.label}>
@@ -114,7 +114,7 @@ const SoloSeyahatPage = () => {
         </div>
 
         {/* Tips */}
-        <h2 className="text-2xl font-display font-bold mb-4">Solo Seyahat İpuçları</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Solo Seyahat İpuçları</h2>
         <Card className="mb-12">
           <CardContent className="p-6">
             <ul className="space-y-3">

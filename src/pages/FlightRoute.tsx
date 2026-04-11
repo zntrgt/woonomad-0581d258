@@ -44,7 +44,7 @@ export default function FlightRoute() {
           <title>Sayfa Bulunamadı | WooNomad</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <h1 className="text-2xl font-bold mb-4">Uçuş Rotası Bulunamadı</h1>
+        <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Uçuş Rotası Bulunamadı</h1>
         <p className="text-muted-foreground mb-6">Aradığınız uçuş rotası sayfası mevcut değil.</p>
         <Button asChild>
           <Link to="/">Ana Sayfaya Dön</Link>
@@ -197,26 +197,26 @@ export default function FlightRoute() {
               <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
                 <span className="text-xl sm:text-3xl">{route.originFlag}</span>
                 <div className="sm:text-center">
-                  <h2 className="text-sm sm:text-xl font-semibold leading-tight">{route.originCity}</h2>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">{route.originCode}</p>
+                  <h2 className="text-xl md:text-2xl font-display font-bold">{route.originCity}</h2>
+                  <p className="text-2xs sm:text-xs text-muted-foreground">{route.originCode}</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-1 sm:flex-col sm:px-4">
                 <Plane className="h-4 w-4 sm:h-6 sm:w-6 text-primary" />
-                <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{route.estimatedDuration}</span>
+                <span className="text-2xs sm:text-xs text-muted-foreground whitespace-nowrap">{route.estimatedDuration}</span>
               </div>
               
               <div className="flex items-center gap-1.5 sm:gap-2 sm:flex-col sm:text-center">
                 <span className="text-xl sm:text-3xl">{route.destinationFlag}</span>
                 <div className="sm:text-center">
-                  <h2 className="text-sm sm:text-xl font-semibold leading-tight">{route.destinationCity}</h2>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">{route.destinationCode}</p>
+                  <h2 className="text-xl md:text-2xl font-display font-bold">{route.destinationCity}</h2>
+                  <p className="text-2xs sm:text-xs text-muted-foreground">{route.destinationCode}</p>
                 </div>
               </div>
             </div>
             
-            <h1 className="text-lg sm:text-xl md:text-3xl font-bold text-center mb-1">
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-center mb-1">
               {route.originCity} - {route.destinationCity} Uçak Bileti
             </h1>
             <p className="text-center text-muted-foreground text-xs sm:text-sm max-w-2xl mx-auto line-clamp-2 sm:line-clamp-none">
@@ -271,7 +271,7 @@ export default function FlightRoute() {
 
           {/* Airlines Section */}
           <section className="mb-8 bg-muted/50 rounded-xl p-6">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Plane className="h-5 w-5 text-primary" />
               Bu Rotada Uçan Havayolları
             </h2>
@@ -296,7 +296,7 @@ export default function FlightRoute() {
 
           {/* Flight Search Widget */}
           <section className="mb-8">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Plane className="h-5 w-5 text-primary" />
               {route.originCity} - {route.destinationCity} Uçuş Ara
             </h2>
@@ -309,7 +309,7 @@ export default function FlightRoute() {
 
           {/* Low Fares Calendar */}
           <section className="mb-8">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Clock className="h-5 w-5 text-primary" />
               Fiyat Takvimi
             </h2>
@@ -322,7 +322,7 @@ export default function FlightRoute() {
 
           {/* Tips Section */}
           <section className="mb-6">
-            <h2 className="text-xl font-bold mb-4">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
               {route.originCity} - {route.destinationCity} Uçuş İpuçları
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
@@ -344,7 +344,7 @@ export default function FlightRoute() {
 
           {/* FAQ Section */}
           <section className="mb-6">
-            <h2 className="text-xl font-bold mb-4">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
               {route.originCity} - {route.destinationCity} Sıkça Sorulan Sorular
             </h2>
             <Accordion type="single" collapsible className="w-full">
@@ -388,7 +388,7 @@ export default function FlightRoute() {
 
           {/* Technical Info */}
           <section className="mb-8 bg-muted/30 rounded-xl p-4 md:p-6">
-            <h2 className="text-xl font-bold mb-4">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
               {route.originCity} - {route.destinationCity} Teknik Bilgiler
             </h2>
             
@@ -444,7 +444,7 @@ export default function FlightRoute() {
           {/* Related Routes */}
           {relatedRoutes.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">İlgili Uçuş Rotaları</h2>
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-6">İlgili Uçuş Rotaları</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {relatedRoutes.map((r) => (
                   <Link

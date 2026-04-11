@@ -166,7 +166,7 @@ function TableOfContents({ headings }: { headings: { id: string; text: string; l
     <nav className="card-modern p-5 mb-8" aria-label="İçindekiler">
       <div className="flex items-center gap-2 mb-4">
         <List className="h-5 w-5 text-primary" />
-        <h2 className="font-display font-semibold">İçindekiler</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold">İçindekiler</h2>
       </div>
       
       <ol className="space-y-2 text-sm">
@@ -232,7 +232,7 @@ function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] }) 
   
   return (
     <section className="mt-10 pt-6 border-t border-border">
-      <h2 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
+      <h2 className="text-xl md:text-2xl font-display font-bold mb-6 flex items-center gap-2">
         <BookOpen className="h-5 w-5 text-primary" />
         Sıkça Sorulan Sorular
       </h2>
@@ -946,7 +946,7 @@ export default function BlogPost() {
                     AI Çeviri
                   </Badge>
                 )}
-                <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-6">
+                <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">
                   {displayContent?.title || post.title}
                 </h1>
               </div>
@@ -1069,7 +1069,7 @@ export default function BlogPost() {
             <aside className="lg:hidden space-y-4 mt-6">
               {city && <HotelWidget cityName={city.name} citySlug={city.slug} variant="compact" />}
               {city && (
-                <Link to={`/sehir/${city.slug}/ucak-bileti`} className="block">
+                <Link to={`/sehir/${city.slug}/ucuslar`} className="block">
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
                     <div className="p-2 rounded-lg bg-primary/10">
                       <Plane className="h-5 w-5 text-primary" />

@@ -77,7 +77,7 @@ const AileSeyahatiPage = () => {
         </Card>
 
         {/* Top Cities */}
-        <h2 className="text-2xl font-display font-bold mb-6">Aileler İçin En İyi Şehirler</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-6">Aileler İçin En İyi Şehirler</h2>
         <div className="space-y-3 mb-12">
           {topCities.map((city, i) => (
             <Link key={city.slug} to={`/sehir/${city.slug}`} className="block">
@@ -98,7 +98,7 @@ const AileSeyahatiPage = () => {
         </div>
 
         {/* Criteria */}
-        <h2 className="text-2xl font-display font-bold mb-4">Aile Seyahati Kriterleri</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Aile Seyahati Kriterleri</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-12">
           {criteriaItems.map((c) => (
             <Card key={c.label}>
@@ -114,7 +114,7 @@ const AileSeyahatiPage = () => {
         </div>
 
         {/* Tips */}
-        <h2 className="text-2xl font-display font-bold mb-4">Aile Seyahati İpuçları</h2>
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Aile Seyahati İpuçları</h2>
         <Card className="mb-12">
           <CardContent className="p-6">
             <ul className="space-y-3">

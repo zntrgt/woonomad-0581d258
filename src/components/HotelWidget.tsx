@@ -60,7 +60,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         <div className="grid grid-cols-3 gap-3 mb-4">
           {featuredHotels.map((hotel, idx) => (
             <div key={idx} className="p-3 rounded-xl bg-card border border-border/50 text-center">
-              <Badge variant="outline" className="text-[10px] mb-2">{hotel.type}</Badge>
+              <Badge variant="outline" className="text-2xs mb-2">{hotel.type}</Badge>
               <div className="flex items-center justify-center gap-1 text-xs mb-1">
                 <Star className="h-3 w-3 fill-travel-gold text-travel-gold" />
                 <span className="font-medium">{hotel.rating}</span>
@@ -102,7 +102,7 @@ export function HotelWidget({ cityName, citySlug, variant = 'sidebar', className
         {featuredHotels.slice(0, 2).map((hotel, idx) => (
           <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px]">{hotel.type}</Badge>
+              <Badge variant="outline" className="text-2xs">{hotel.type}</Badge>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Star className="h-3 w-3 fill-travel-gold text-travel-gold" />
                 {hotel.rating}

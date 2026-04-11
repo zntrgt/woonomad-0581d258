@@ -119,7 +119,7 @@ export function HotelFilters({ maxPrice, onFilterChange, resultsCount, totalCoun
           <SlidersHorizontal className="h-4 w-4" />
           <span>Filtreler</span>
           {hasActiveFilters && (
-            <Badge variant="secondary" className="text-[10px]">
+            <Badge variant="secondary" className="text-2xs">
               Aktif
             </Badge>
           )}

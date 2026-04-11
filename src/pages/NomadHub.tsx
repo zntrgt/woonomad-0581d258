@@ -199,7 +199,7 @@ const NomadHub = () => {
               <Laptop className="h-8 w-8 text-primary" />
               <span className="text-sm font-medium text-primary">Dijital Göçebe Merkezi</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4">
               Dijital Göçebe Hub
             </h1>
             <p className="text-sm text-muted-foreground max-w-2xl mb-4">
@@ -273,7 +273,7 @@ const NomadHub = () => {
           {/* Cities Tab */}
           <TabsContent value="cities" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">En İyi Nomad Şehirleri</h2>
+              <h2 className="text-xl md:text-2xl font-display font-bold">En İyi Nomad Şehirleri</h2>
               <Link to="/sehirler">
                 <Button variant="outline" size="sm">
                   Tüm Şehirler <ArrowRight className="ml-2 h-4 w-4" />
@@ -357,7 +357,7 @@ const NomadHub = () => {
             <div className="grid lg:grid-cols-[1fr_380px] gap-6">
               <div>
                 <div className="mb-4">
-                  <h2 className="text-2xl font-bold">Şehir Karşılaştırma Aracı</h2>
+                  <h2 className="text-xl md:text-2xl font-display font-bold">Şehir Karşılaştırma Aracı</h2>
                   <p className="text-muted-foreground mt-1">
                     Dijital göçebe metriklerini yan yana karşılaştırın
                   </p>
@@ -375,7 +375,7 @@ const NomadHub = () => {
           {/* Coworking Tab */}
           <TabsContent value="coworking" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl font-display font-bold flex items-center gap-2">
                 <Building2 className="h-6 w-6 text-primary" />
                 Coworking Alanları
               </h2>
@@ -465,7 +465,7 @@ const NomadHub = () => {
           {/* Guides Tab */}
           <TabsContent value="guides" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Dijital Göçebe Rehberleri</h2>
+              <h2 className="text-xl md:text-2xl font-display font-bold">Dijital Göçebe Rehberleri</h2>
               <Link to="/blog">
                 <Button variant="outline" size="sm">
                   Tüm Yazılar <ArrowRight className="ml-2 h-4 w-4" />
@@ -554,7 +554,7 @@ const NomadHub = () => {
             <div className="grid lg:grid-cols-[1fr_380px] gap-6">
               <div>
                 <div className="mb-4">
-                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <h2 className="text-xl md:text-2xl font-display font-bold flex items-center gap-2">
                     <Brain className="h-6 w-6 text-violet-500" />
                     AI Deep Work Planner
                   </h2>
@@ -647,7 +647,7 @@ const NomadHub = () => {
 
         {/* Featured Cities Comparison */}
         <section className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Şehir Karşılaştırması</h2>
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-6">Şehir Karşılaştırması</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -706,7 +706,7 @@ const NomadHub = () => {
         {/* CTA Section */}
         <section className="mt-16 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 text-center">
           <Laptop className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
             Dijital Göçebe Olmaya Hazır mısınız?
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-6">

@@ -149,9 +149,9 @@ function ComparisonCard({ hotel, isBestPrice, isBestRating, isBestStars, onRemov
         
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-          {isBestPrice && <Badge className="bg-emerald-500 text-white text-[10px]">En Uygun</Badge>}
-          {isBestRating && <Badge className="bg-amber-500 text-white text-[10px]">En Yüksek Puan</Badge>}
-          {isBestStars && <Badge className="bg-purple-500 text-white text-[10px]">En Çok Yıldız</Badge>}
+          {isBestPrice && <Badge className="bg-emerald-500 text-white text-2xs">En Uygun</Badge>}
+          {isBestRating && <Badge className="bg-amber-500 text-white text-2xs">En Yüksek Puan</Badge>}
+          {isBestStars && <Badge className="bg-purple-500 text-white text-2xs">En Çok Yıldız</Badge>}
         </div>
         
         <div className="absolute bottom-2 left-2 right-2">

@@ -61,7 +61,7 @@ const AboutPage = () => {
         {/* Mission */}
         <Card className="mb-8">
           <CardContent className="p-6 md:p-8">
-            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Globe className="h-5 w-5 text-primary" />
               Misyonumuz
             </h2>
@@ -93,7 +93,7 @@ const AboutPage = () => {
         </div>
 
         {/* Team */}
-        <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
           <Users className="h-5 w-5 text-primary" />
           Ekip
         </h2>
@@ -118,7 +118,7 @@ const AboutPage = () => {
         </div>
 
         {/* How we work */}
-        <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-primary" />
           Nasıl Çalışıyoruz
         </h2>

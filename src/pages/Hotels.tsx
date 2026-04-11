@@ -74,7 +74,7 @@ const Hotels = () => {
                 <Hotel className="w-7 h-7" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-display font-bold">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">
                   Popüler Şehirlerde Oteller
                 </h1>
                 <p className="text-lg text-white/80 mt-2">
@@ -96,7 +96,7 @@ const Hotels = () => {
         <PageEnter>
           <section className="py-6 md:py-8">
             <div className="container">
-              <h2 className="text-2xl font-display font-bold mb-6">Tüm Şehirler</h2>
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-6">Tüm Şehirler</h2>
               {isLoading ? (
                 <SkeletonGrid count={8} variant="hotel" />
               ) : (
@@ -166,7 +166,7 @@ const Hotels = () => {
           <div className="container">
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-xl font-display font-bold mb-3">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                   Otel Rezervasyonu Hakkında
                 </h2>
                 <div className="prose prose-lg max-w-none text-muted-foreground">

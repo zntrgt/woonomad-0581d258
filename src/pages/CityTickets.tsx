@@ -24,7 +24,7 @@ const CityTickets = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
           <Link to="/sehirler" className="text-primary hover:underline">
             Tüm Şehirlere Gözat
           </Link>
@@ -119,7 +119,7 @@ const CityTickets = () => {
           name="description" 
           content={`${city.name} uçak bileti fiyatları ${priceRange ? `${priceRange.min}₺'den başlayan fiyatlarla` : ''}. ${city.country} ${city.name} ucuz uçak bileti karşılaştırma.`}
         />
-        <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/ucak-bileti`} />
+        <link rel="canonical" href={`https://woonomad.co/sehir/${city.slug}/ucuslar`} />
         {structuredData.map((data, index) => (
           <script key={index} type="application/ld+json">{JSON.stringify(data)}</script>
         ))}
@@ -134,7 +134,7 @@ const CityTickets = () => {
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl">{flag}</span>
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold">
+              <h1 className="text-3xl md:text-4xl font-display font-bold">
                 {city.name} Uçak Bileti
               </h1>
               <p className="text-white/80 text-sm">
@@ -187,7 +187,7 @@ const CityTickets = () => {
         <div className="container">
           <Card className="border-border">
             <CardContent className="p-4 md:p-6">
-              <h2 className="text-lg font-display font-bold mb-3 flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-3 flex items-center gap-2">
                 <Plane className="w-5 h-5 text-primary" />
                 {city.name} Uçuş Ara
               </h2>
@@ -206,7 +206,7 @@ const CityTickets = () => {
           <Card className="border-border">
             <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-display font-bold flex items-center gap-2">
+                <h2 className="text-xl md:text-2xl font-display font-bold flex items-center gap-2">
                   <Clock className="w-5 h-5 text-primary" />
                   Fiyat Takvimi
                 </h2>
@@ -233,7 +233,7 @@ const CityTickets = () => {
             {/* Airport Info */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-primary" />
                   {city.name} Havalimanı Bilgileri
                 </h2>
@@ -263,7 +263,7 @@ const CityTickets = () => {
             {/* Best Time to Fly */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-primary" />
                   En Uygun Uçuş Zamanları
                 </h2>
@@ -297,7 +297,7 @@ const CityTickets = () => {
       {airlines.length > 0 && (
         <section className="py-6 md:py-8 bg-muted/30">
           <div className="container">
-            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Plane className="w-5 h-5 text-primary" />
               {city.name}'e Uçan Havayolları
             </h2>
@@ -322,7 +322,7 @@ const CityTickets = () => {
         <div className="container">
           <Card variant="elevated">
             <CardContent className="p-6">
-              <h2 className="text-xl font-display font-bold mb-4">
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                 {city.name} Uçak Bileti Alma İpuçları
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -385,7 +385,7 @@ const CityTickets = () => {
         <div className="container">
           <Card variant="elevated">
             <CardContent className="p-6">
-              <h2 className="text-xl font-display font-bold mb-4">
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                 {city.name} Uçak Bileti Rehberi {currentYear}
               </h2>
               <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
@@ -419,7 +419,7 @@ const CityTickets = () => {
       {/* FAQ Section */}
       <section className="py-6 md:py-8 bg-muted/30">
         <div className="container">
-          <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
             <Info className="w-5 h-5 text-primary" />
             Sık Sorulan Sorular
           </h2>
@@ -480,7 +480,7 @@ const CityTickets = () => {
       {/* Related Pages */}
       <section className="py-6 md:py-8">
         <div className="container">
-          <h2 className="text-lg font-display font-bold mb-4">İlgili Sayfalar</h2>
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-4">İlgili Sayfalar</h2>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm">
               <Link to={`/sehir/${city.slug}`}>

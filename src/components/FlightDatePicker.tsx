@@ -144,9 +144,9 @@ export function FlightDatePicker({
                 !departDate && "text-muted-foreground"
               )}
             >
-              <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">Gidiş</span>
+              <span className="text-2xs sm:text-xs text-muted-foreground uppercase tracking-wide">Gidiş</span>
               <span className="text-base sm:text-lg font-bold text-foreground">{formatCompact(departDate)}</span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground">{formatDayName(departDate)}</span>
+              <span className="text-2xs sm:text-xs text-muted-foreground">{formatDayName(departDate)}</span>
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="center" sideOffset={8}>
@@ -171,7 +171,7 @@ export function FlightDatePicker({
                 nav_button_next: "absolute right-1",
                 table: "w-full border-collapse",
                 head_row: "flex",
-                head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-[10px] sm:text-xs",
+                head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-2xs sm:text-xs",
                 row: "flex w-full mt-1",
                 cell: "h-8 w-8 sm:h-9 sm:w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                 day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal text-xs sm:text-sm rounded-md hover:bg-muted aria-selected:opacity-100",
@@ -214,9 +214,9 @@ export function FlightDatePicker({
                   !returnDate && "text-muted-foreground"
                 )}
               >
-                <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">Dönüş</span>
+                <span className="text-2xs sm:text-xs text-muted-foreground uppercase tracking-wide">Dönüş</span>
                 <span className="text-base sm:text-lg font-bold text-foreground">{formatCompact(returnDate)}</span>
-                <span className="text-[10px] sm:text-xs text-muted-foreground">{formatDayName(returnDate)}</span>
+                <span className="text-2xs sm:text-xs text-muted-foreground">{formatDayName(returnDate)}</span>
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="center" sideOffset={8}>
@@ -241,7 +241,7 @@ export function FlightDatePicker({
                   nav_button_next: "absolute right-1",
                   table: "w-full border-collapse",
                   head_row: "flex",
-                  head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-[10px] sm:text-xs",
+                  head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-medium text-2xs sm:text-xs",
                   row: "flex w-full mt-1",
                   cell: "h-8 w-8 sm:h-9 sm:w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                   day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal text-xs sm:text-sm rounded-md hover:bg-muted aria-selected:opacity-100",
@@ -255,7 +255,7 @@ export function FlightDatePicker({
           </Popover>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 rounded-xl border border-dashed border-border/50 bg-muted/20">
-            <span className="text-[10px] sm:text-xs text-muted-foreground">Tek yön</span>
+            <span className="text-2xs sm:text-xs text-muted-foreground">Tek yön</span>
           </div>
         )}
       </div>
@@ -273,7 +273,7 @@ export function FlightDatePicker({
             size="sm"
             onClick={() => selectWeekend(offset)}
             className={cn(
-              "rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium",
+              "rounded-full text-2xs sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium",
               weekendLabel === label && "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
             )}
           >
@@ -287,7 +287,7 @@ export function FlightDatePicker({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium"
+              className="rounded-full text-2xs sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium"
             >
               Daha Fazla
               <ChevronDown className="h-3 w-3 ml-1" />
@@ -371,7 +371,7 @@ export function FlightDatePicker({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium gap-1"
+              className="rounded-full text-2xs sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium gap-1"
             >
               <TrendingDown className="h-3 w-3" />
               <span className="hidden sm:inline">Fiyat</span> Takvimi
@@ -404,7 +404,7 @@ export function FlightDatePicker({
         <button
           onClick={() => onFlexibleChange(!isFlexible)}
           className={cn(
-            "flex items-center gap-1.5 rounded-full text-[10px] sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium border transition-all",
+            "flex items-center gap-1.5 rounded-full text-2xs sm:text-xs h-6 sm:h-7 px-2 sm:px-2.5 font-medium border transition-all",
             isFlexible 
               ? "bg-primary/10 text-primary border-primary/30" 
               : "bg-card text-muted-foreground border-border hover:border-primary/30"

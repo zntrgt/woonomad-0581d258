@@ -29,7 +29,7 @@ const CityCoworking = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
           <Button asChild><Link to="/sehirler">Şehirlere Gözat</Link></Button>
         </div>
         <Footer />
@@ -97,7 +97,7 @@ const CityCoworking = () => {
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl">{flag}</span>
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold">
+              <h1 className="text-3xl md:text-4xl font-display font-bold">
                 {cityName} Coworking Alanları
               </h1>
               <p className="text-white/80 text-sm">
@@ -152,7 +152,7 @@ const CityCoworking = () => {
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
-                                <h2 className="text-lg font-display font-bold group-hover:text-primary transition-colors truncate">
+                                <h2 className="text-xl md:text-2xl font-display font-bold">
                                   {space.name}
                                 </h2>
                                 {space.rating && (
@@ -210,7 +210,7 @@ const CityCoworking = () => {
               <Card variant="elevated">
                 <CardContent className="p-8 text-center">
                   <Monitor className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <h2 className="text-lg font-display font-bold mb-2">Henüz Coworking Alanı Eklenmedi</h2>
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-2">Henüz Coworking Alanı Eklenmedi</h2>
                   <p className="text-muted-foreground text-sm mb-4">
                     {cityName} için coworking alanları yakında eklenecek.
                   </p>
@@ -227,7 +227,7 @@ const CityCoworking = () => {
             {/* SEO Content */}
             <Card variant="elevated">
               <CardContent className="p-4 md:p-5">
-                <h2 className="text-xl font-display font-bold mb-3">{cityName} Coworking Rehberi</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">{cityName} Coworking Rehberi</h2>
                 <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
                   <p>
                     {cityName}, dijital göçebeler ve uzaktan çalışanlar için 
@@ -288,7 +288,7 @@ const CityCoworking = () => {
                 <h3 className="font-display font-bold mb-1">{cityName}&#39;e Uçun</h3>
                 <p className="text-white/80 text-sm mb-3">En uygun biletleri karşılaştırın</p>
                 <Button asChild variant="secondary" size="sm" className="w-full">
-                  <Link to={`/sehir/${city.slug}/ucak-bileti`}>Bilet Ara</Link>
+                  <Link to={`/sehir/${city.slug}/ucuslar`}>Bilet Ara</Link>
                 </Button>
               </CardContent>
             </Card>

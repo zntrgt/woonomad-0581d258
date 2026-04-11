@@ -91,7 +91,7 @@ export default function FlightRoutes() {
             <div className="flex justify-center mb-4">
               <Plane className="h-12 w-12 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4">
               Uçuş Rotaları
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -161,7 +161,7 @@ export default function FlightRoutes() {
                   <span className="text-2xl">{route.destinationFlag}</span>
                 </div>
                 
-                <h2 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                <h2 className="text-xl md:text-2xl font-display font-bold">
                   {route.originCity}
                 </h2>
                 <div className="flex items-center gap-1 text-muted-foreground mb-2">

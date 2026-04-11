@@ -149,7 +149,7 @@ export function PopularHotels({ className, limit = 8 }: PopularHotelsProps) {
                 
                 {/* Price */}
                 <div className="absolute bottom-3 right-3 bg-card/95 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-right">
-                  <div className="text-[10px] text-muted-foreground">gecelik</div>
+                  <div className="text-2xs text-muted-foreground">gecelik</div>
                   <div className="text-lg font-display font-bold text-primary">
                     ₺{dest.priceFrom.toLocaleString('tr-TR')}+
                   </div>

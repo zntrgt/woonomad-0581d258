@@ -49,7 +49,7 @@ const CoworkingDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Çalışma Alanı Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Çalışma Alanı Bulunamadı</h1>
           <p className="text-muted-foreground mb-6">Aradığınız coworking alanı mevcut değil.</p>
           <Button asChild><Link to="/sehirler">Şehirlere Gözat</Link></Button>
         </div>
@@ -143,7 +143,7 @@ const CoworkingDetail = () => {
                 <Monitor className="w-7 h-7" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-display font-bold mb-1">{space.name}</h1>
+                <h1 className="text-3xl md:text-4xl font-display font-bold mb-1">{space.name}</h1>
                 <div className="flex items-center gap-2 text-white/80 text-sm">
                   <MapPin className="w-4 h-4" />
                   <span>{cityName}</span>
@@ -213,7 +213,7 @@ const CoworkingDetail = () => {
             {/* About */}
             <Card variant="elevated">
               <CardContent className="p-4 md:p-5">
-                <h2 className="text-xl font-display font-bold mb-3">{space.name} Hakkında</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">{space.name} Hakkında</h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">{space.summary}</p>
                 {space.highlights && space.highlights.length > 0 && (
                   <div className="mt-5 pt-5 border-t">
@@ -237,7 +237,7 @@ const CoworkingDetail = () => {
                 <CardContent className="p-4 md:p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <CreditCard className="w-5 h-5 text-primary" />
-                    <h2 className="text-xl font-display font-bold">Fiyatlandırma</h2>
+                    <h2 className="text-xl md:text-2xl font-display font-bold">Fiyatlandırma</h2>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     {space.pricing.daily && (
@@ -267,7 +267,7 @@ const CoworkingDetail = () => {
             {/* Amenities */}
             <Card variant="elevated">
               <CardContent className="p-4 md:p-5">
-                <h2 className="text-xl font-display font-bold mb-4">Olanaklar</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Olanaklar</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {space.amenities.map((amenity, i) => {
                     const Icon = getAmenityIcon(amenity);
@@ -288,7 +288,7 @@ const CoworkingDetail = () => {
                 <CardContent className="p-4 md:p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <Laptop className="w-5 h-5 text-primary" />
-                    <h2 className="text-xl font-display font-bold">{cityName} Nomad Bilgileri</h2>
+                    <h2 className="text-xl md:text-2xl font-display font-bold">{cityName} Nomad Bilgileri</h2>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                     {[
@@ -358,7 +358,7 @@ const CoworkingDetail = () => {
                 <Plane className="w-7 h-7 mx-auto mb-2" />
                 <h3 className="font-display font-bold mb-1">{cityName}&#39;e Uçun</h3>
                 <p className="text-white/80 text-sm mb-3">En uygun biletleri karşılaştırın</p>
-                <Button asChild variant="secondary" size="sm" className="w-full"><Link to={`/sehir/${space.citySlug}/ucak-bileti`}>Bilet Ara</Link></Button>
+                <Button asChild variant="secondary" size="sm" className="w-full"><Link to={`/sehir/${space.citySlug}/ucuslar`}>Bilet Ara</Link></Button>
               </CardContent>
             </Card>
 
@@ -376,7 +376,7 @@ const CoworkingDetail = () => {
         {/* Related */}
         {relatedSpaces.length > 0 && (
           <section className="mt-10">
-            <h2 className="text-xl font-display font-bold mb-4">{cityName}&#39;deki Diğer Coworking Alanları</h2>
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">{cityName}&#39;deki Diğer Coworking Alanları</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {relatedSpaces.map((rs) => (
                 <Link key={rs.slug} to={`/coworking/${rs.slug}`} className="group">

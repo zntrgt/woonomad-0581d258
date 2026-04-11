@@ -22,7 +22,7 @@ const HotelDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Otel Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Otel Bulunamadı</h1>
           <Link to="/oteller" className="text-primary hover:underline">Tüm Otellere Gözat</Link>
         </div>
       </div>
@@ -76,7 +76,7 @@ const HotelDetail = () => {
               <Badge variant="secondary">{hotel.rating} ({hotel.reviewCount} yorum)</Badge>
             )}
           </div>
-          <h1 className="text-2xl md:text-3xl font-display font-bold mb-2">{hotel.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-2">{hotel.name}</h1>
           <p className="text-muted-foreground flex items-center gap-1">
             <MapPin className="w-4 h-4" />
             {hotel.neighborhood && `${hotel.neighborhood}, `}{city.name}, {city.country}
@@ -94,7 +94,7 @@ const HotelDetail = () => {
             {/* Summary */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-3">Otel Hakkında</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">Otel Hakkında</h2>
                 <p className="text-muted-foreground">{hotel.summary}</p>
               </CardContent>
             </Card>
@@ -102,7 +102,7 @@ const HotelDetail = () => {
             {/* Reasons to Choose */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4">Bu Oteli Seçmek İçin 3 Neden</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Bu Oteli Seçmek İçin 3 Neden</h2>
                 <div className="space-y-3">
                   {hotel.reasonsToChoose.map((reason, i) => (
                     <div key={i} className="flex items-start gap-3">
@@ -119,7 +119,7 @@ const HotelDetail = () => {
             {/* Suitable For */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-3">Kimler İçin Uygun?</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">Kimler İçin Uygun?</h2>
                 <div className="flex flex-wrap gap-2">
                   {hotel.suitableFor.map(type => (
                     <Badge key={type} variant="secondary">{type}</Badge>
@@ -131,7 +131,7 @@ const HotelDetail = () => {
             {/* Amenities */}
             <Card variant="elevated">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-3">Olanaklar</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">Olanaklar</h2>
                 <div className="flex flex-wrap gap-2">
                   {hotel.amenities.map(amenity => (
                     <Badge key={amenity} variant="outline">{amenity}</Badge>
@@ -175,7 +175,7 @@ const HotelDetail = () => {
                   </div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 </Link>
-                <Link to={`/sehir/${city.slug}/ucak-bileti`} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                <Link to={`/sehir/${city.slug}/ucuslar`} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
                   <div className="flex items-center gap-2">
                     <Plane className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium">{city.name} Uçuşları</span>

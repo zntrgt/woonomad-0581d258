@@ -114,7 +114,7 @@ export function WeatherWidget({ cityName, citySlug }: WeatherWidgetProps) {
             {cityName} Hava Durumu
           </h3>
           {weather.source === 'open-meteo' && (
-            <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+            <span className="text-2xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
               Anlık
             </span>
           )}

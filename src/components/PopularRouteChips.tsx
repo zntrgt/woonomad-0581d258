@@ -74,7 +74,7 @@ export function PopularRouteChips({ onSelect, className }: PopularRouteChipsProp
             <span>{route.emoji}</span>
             <span>{route.city}</span>
             {getStatusIcon(route.countryCode) && (
-              <span className="text-[10px]">{getStatusIcon(route.countryCode)}</span>
+              <span className="text-2xs">{getStatusIcon(route.countryCode)}</span>
             )}
           </button>
         ))}

@@ -57,7 +57,7 @@ export function MobileBottomNav() {
               )}>
                 {item.icon}
               </div>
-              <span className="text-[10px] font-medium">{label}</span>
+              <span className="text-2xs font-medium">{label}</span>
             </Link>
           );
         })}

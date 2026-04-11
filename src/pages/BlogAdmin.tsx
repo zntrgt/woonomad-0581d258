@@ -1062,7 +1062,7 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
         </Helmet>
         <Header />
         <main className="container mx-auto px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold mb-4">Yetkisiz Erişim</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Yetkisiz Erişim</h1>
           <p className="text-muted-foreground mb-4">
             Bu sayfaya erişim yetkiniz bulunmamaktadır.
           </p>
@@ -1090,7 +1090,7 @@ Genel olarak güvenli bir şehirdir. Turistik bölgelerde standart önlemleri al
 
       <main className="container mx-auto px-4 py-8 mb-20 md:mb-0">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Blog Yönetimi</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold">Blog Yönetimi</h1>
           <div className="flex gap-2 flex-wrap">
             {!isCreating && (
               <>

@@ -85,7 +85,7 @@ const HotelDetailPage = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Otel Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Otel Bulunamadı</h1>
           <p className="text-muted-foreground mb-6">Aradığınız otel bulunamadı veya kaldırılmış olabilir.</p>
           <Link to="/oteller">
             <Button>Tüm Otelleri Görüntüle</Button>

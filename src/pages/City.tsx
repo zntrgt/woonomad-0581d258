@@ -239,7 +239,7 @@ const City = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
           <p className="text-muted-foreground mb-4">Aradığınız şehir mevcut değil.</p>
           <Button asChild>
             <Link to="/sehirler">Tüm Şehirlere Gözat</Link>
@@ -437,7 +437,7 @@ const City = () => {
               {/* About City */}
               <Card variant="elevated">
                 <CardContent className="p-4 md:p-5">
-                  <h2 className="text-xl font-display font-bold mb-3">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                     {city.name} Hakkında
                   </h2>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-4">
@@ -459,7 +459,7 @@ const City = () => {
               {/* Digital Nomad Stats */}
               <Card variant="elevated">
                 <CardContent className="p-4 md:p-5">
-                  <h2 className="text-xl font-display font-bold mb-3">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                     Dijital Göçebeler İçin
                   </h2>
                   <CityNomadStats
@@ -476,7 +476,7 @@ const City = () => {
                   <CardContent className="p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <Calendar className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-display font-bold">{city.name} Ne Zaman Gidilir?</h2>
+                      <h2 className="text-xl md:text-2xl font-display font-bold">{city.name} Ne Zaman Gidilir?</h2>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -512,7 +512,7 @@ const City = () => {
                   <CardContent className="p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <DollarSign className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-display font-bold">{city.name} Ne Kadar Tutar?</h2>
+                      <h2 className="text-xl md:text-2xl font-display font-bold">{city.name} Ne Kadar Tutar?</h2>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -548,7 +548,7 @@ const City = () => {
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <ShieldCheck className="h-5 w-5 text-emerald-500" />
-                          <h2 className="text-xl font-display font-bold">Güvenlik</h2>
+                          <h2 className="text-xl md:text-2xl font-display font-bold">Güvenlik</h2>
                         </div>
                         <p className="text-sm text-muted-foreground leading-relaxed">{geo.safety}</p>
                       </div>
@@ -572,7 +572,7 @@ const City = () => {
                   <CardContent className="p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <MapPin className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-display font-bold">{city.name} Gezilecek Yerler</h2>
+                      <h2 className="text-xl md:text-2xl font-display font-bold">{city.name} Gezilecek Yerler</h2>
                     </div>
                     <div className="space-y-3">
                       {geo.topAttractions.map((attraction: { name: string; desc: string; category: string }, i: number) => (
@@ -583,7 +583,7 @@ const City = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
                               <p className="font-medium text-sm">{attraction.name}</p>
-                              <Badge variant="outline" className="text-[10px] py-0 px-1.5">{attraction.category}</Badge>
+                              <Badge variant="outline" className="text-2xs py-0 px-1.5">{attraction.category}</Badge>
                             </div>
                             <p className="text-xs text-muted-foreground leading-relaxed">{attraction.desc}</p>
                           </div>
@@ -600,7 +600,7 @@ const City = () => {
                   <CardContent className="p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-2">
                       <Bus className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-display font-bold">Ulaşım</h2>
+                      <h2 className="text-xl md:text-2xl font-display font-bold">Ulaşım</h2>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">{geo.transport}</p>
                   </CardContent>
@@ -613,7 +613,7 @@ const City = () => {
                   <CardContent className="p-4 md:p-5">
                     <div className="flex items-center gap-2 mb-2">
                       <UtensilsCrossed className="h-5 w-5 text-primary" />
-                      <h2 className="text-xl font-display font-bold">Yeme İçme</h2>
+                      <h2 className="text-xl md:text-2xl font-display font-bold">Yeme İçme</h2>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">{geo.food}</p>
                   </CardContent>
@@ -623,7 +623,7 @@ const City = () => {
               {/* Neighborhoods */}
               <Card variant="elevated">
                 <CardContent className="p-4 md:p-5">
-                  <h2 className="text-xl font-display font-bold mb-3">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                     En İyi Bölgeler
                   </h2>
                   <p className="text-muted-foreground text-sm mb-4">
@@ -642,7 +642,7 @@ const City = () => {
               <Card variant="elevated">
                 <CardContent className="p-4 md:p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-xl font-display font-bold">
+                    <h2 className="text-xl md:text-2xl font-display font-bold">
                       Coworking Alanları
                     </h2>
                     <Button asChild variant="ghost" size="sm" className="gap-1">
@@ -687,7 +687,7 @@ const City = () => {
               <Card variant="elevated">
                 <CardContent className="p-4 md:p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-xl font-display font-bold">
+                    <h2 className="text-xl md:text-2xl font-display font-bold">
                       Nomad Rehberi
                     </h2>
                     <Button asChild variant="ghost" size="sm" className="gap-1">
@@ -719,7 +719,7 @@ const City = () => {
               {city.events && city.events.length > 0 && (
                 <Card variant="elevated">
                   <CardContent className="p-4 md:p-5">
-                    <h2 className="text-xl font-display font-bold mb-3">
+                    <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                       Yaklaşan Etkinlikler
                     </h2>
                     <EventCountdownList 
@@ -798,7 +798,7 @@ const City = () => {
                     En uygun biletleri karşılaştırın
                   </p>
                   <Button asChild variant="secondary" size="sm" className="w-full">
-                    <Link to={`/sehir/${city.slug}/ucak-bileti`}>
+                    <Link to={`/sehir/${city.slug}/ucuslar`}>
                       Bilet Ara
                     </Link>
                   </Button>
@@ -815,7 +815,7 @@ const City = () => {
           <div className="container">
             <div className="flex items-center gap-2 mb-4">
               <HelpCircle className="h-5 w-5 text-primary" />
-              <h2 className="text-xl font-display font-bold">Sık Sorulan Sorular</h2>
+              <h2 className="text-xl md:text-2xl font-display font-bold">Sık Sorulan Sorular</h2>
             </div>
             <div className="space-y-2 max-w-3xl">
               {geo.faqs.map((faq, i) => (
@@ -834,7 +834,7 @@ const City = () => {
       {/* Popular Searches */}
       <section className="py-4 md:py-6 bg-muted/30">
         <div className="container">
-          <h2 className="text-xl font-display font-bold mb-4">
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
             Popüler Aramalar
           </h2>
           <CityPopularSearches citySlug={city.slug} cityName={city.name} />
@@ -846,7 +846,7 @@ const City = () => {
         <section className="py-4 md:py-6">
           <div className="container">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-display font-bold">
+              <h2 className="text-xl md:text-2xl font-display font-bold">
                 Benzer Şehirler
               </h2>
               <Button asChild variant="ghost" size="sm">

@@ -123,7 +123,7 @@ function DestinationCardItem({
       <div className="absolute inset-0 flex flex-col justify-between p-3 md:p-4">
         {/* Category badge */}
         <div className="flex justify-end">
-          <span className={`text-[10px] md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm shadow-sm ${getBadgeStyle()}`}>
+          <span className={`text-2xs md:text-xs font-semibold px-2 md:px-2.5 py-1 rounded-full backdrop-blur-sm shadow-sm ${getBadgeStyle()}`}>
             {getBadgeText()}
           </span>
         </div>

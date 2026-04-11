@@ -48,7 +48,7 @@ export const CityQuickStats = ({ city, layout = 'grid' }: CityQuickStatsProps) =
             <stat.icon className="w-4 h-4 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] text-muted-foreground truncate">{stat.label}</p>
+            <p className="text-2xs text-muted-foreground truncate">{stat.label}</p>
             <p className="text-xs font-medium truncate">{stat.value}</p>
           </div>
         </div>

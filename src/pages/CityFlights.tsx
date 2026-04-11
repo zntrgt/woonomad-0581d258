@@ -24,7 +24,7 @@ const CityFlights = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
           <Link to="/sehirler" className="text-primary hover:underline">
             Tüm Şehirlere Gözat
           </Link>
@@ -94,7 +94,7 @@ const CityFlights = () => {
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl">{flag}</span>
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold">
+              <h1 className="text-3xl md:text-4xl font-display font-bold">
                 {displayName} Uçuşları
               </h1>
               <p className="text-white/80 text-sm">
@@ -121,7 +121,7 @@ const CityFlights = () => {
       {incomingRoutes.length > 0 && (
         <section className="py-6 md:py-8">
           <div className="container">
-            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Plane className="w-5 h-5 text-primary" />
               {city.name}'e Uçuşlar
             </h2>
@@ -174,7 +174,7 @@ const CityFlights = () => {
       {outgoingRoutes.length > 0 && (
         <section className="py-6 md:py-8 section-routes">
           <div className="container">
-            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <Plane className="w-5 h-5 text-primary rotate-45" />
               {city.name}'den Uçuşlar
             </h2>
@@ -228,7 +228,7 @@ const CityFlights = () => {
         <div className="container">
           <Card variant="elevated">
             <CardContent className="p-6">
-              <h2 className="text-xl font-display font-bold mb-3">
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                 {city.name} Uçuş Rehberi
               </h2>
               <div className="prose prose-lg max-w-none text-muted-foreground">
@@ -247,7 +247,7 @@ const CityFlights = () => {
                 <p>
                   En uygun {city.name} uçak biletlerini bulmak için esnek tarih arama 
                   yapmanızı ve erken rezervasyon yapmanızı öneririz. Detaylı bilet 
-                  karşılaştırması için <Link to={`/sehir/${city.slug}/ucak-bileti`} className="text-primary hover:underline">
+                  karşılaştırması için <Link to={`/sehir/${city.slug}/ucuslar`} className="text-primary hover:underline">
                   {city.name} uçak bileti</Link> sayfasını ziyaret edebilirsiniz.
                 </p>
               </div>

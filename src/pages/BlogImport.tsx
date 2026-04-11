@@ -52,20 +52,20 @@ const BlogImport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Toplu JSON İçe Aktarma</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold">Toplu JSON İçe Aktarma</h1>
           <button
             onClick={() => navigate('/admin/blog')}
-            className="text-sm text-gray-500 hover:text-gray-900"
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
             ← Blog Yönetimi
           </button>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Blog JSON yapıştır (tekli veya array):
           </label>
           <textarea

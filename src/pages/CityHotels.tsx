@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { Hotel, ExternalLink, Calendar as CalendarIcon, Users, MapPin, Star, Building, CreditCard, ChevronDown, ChevronUp, Bus, Shield, HelpCircle } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
@@ -70,7 +71,7 @@ const CityHotels = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">{t('cityNotFound', 'Şehir Bulunamadı')}</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">{t('cityNotFound', 'Şehir Bulunamadı')}</h1>
           <Link to="/sehirler" className="text-primary hover:underline">
             {t('browseAllCities', 'Tüm Şehirlere Gözat')}
           </Link>
@@ -160,7 +161,7 @@ const CityHotels = () => {
               <span>{t('hotels.hotelComparison', 'Otel Karşılaştırma')}</span>
             </div>
             
-            <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground mb-3">
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3">
               {flag} {displayName} <span className="text-gradient">Otelleri ({currentYear})</span>
             </h1>
             
@@ -349,7 +350,7 @@ const CityHotels = () => {
           <section className="mb-8">
             <Card>
               <CardContent className="p-4 md:p-6">
-                <h2 className="text-lg font-display font-semibold mb-4 flex items-center gap-2">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
                   <Hotel className="h-5 w-5 text-primary" />
                   {displayName} {t('hotels.searchWidget', 'Otel Arama')}
                 </h2>
@@ -469,7 +470,7 @@ const CityHotels = () => {
               <CardContent className="p-0">
                 <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 p-8 text-center">
                   <Hotel className="h-16 w-16 mx-auto text-primary mb-4" />
-                  <h2 className="text-2xl font-display font-bold mb-3">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                     {displayName} {t('hotels.findBestHotels', 'En İyi Otelleri Keşfet')}
                   </h2>
                   <p className="text-muted-foreground max-w-xl mx-auto mb-6">
@@ -512,7 +513,7 @@ const CityHotels = () => {
           
           {/* Hotel Categories - Budget Based */}
           <section className="mb-8">
-            <h2 className="text-xl font-display font-bold mb-4">Bütçeye Göre {displayName} Otelleri</h2>
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">Bütçeye Göre {displayName} Otelleri</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { id: 'luxury', label: '5 Yıldızlı Lüks', color: 'from-amber-500 to-yellow-400', priceSort: undefined as 'asc' | undefined, priceRange: '150€+', stars: 5 },
@@ -562,7 +563,7 @@ const CityHotels = () => {
           
           {/* FAQ Section - SEO Critical */}
           <section className="card-modern p-6 mb-8">
-            <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-2">
               <HelpCircle className="h-5 w-5 text-primary" />
               {displayName} Otelleri Sıkça Sorulan Sorular
             </h2>
@@ -583,7 +584,7 @@ const CityHotels = () => {
           
           {/* SEO Content */}
           <section className="card-modern p-6 mb-6">
-            <h2 className="text-xl font-display font-bold mb-4">{city.name} Otel Rehberi {currentYear}</h2>
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-4">{city.name} Otel Rehberi {currentYear}</h2>
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p>
                 {city.name}, {city.country}'nın en popüler destinasyonlarından biri olarak her yıl milyonlarca turisti ağırlamaktadır. {currentYear} yılı için güncel otel fiyatları ve konaklama seçenekleri sizi bekliyor.
@@ -634,7 +635,7 @@ const CityHotels = () => {
               </h3>
               <p className="text-sm text-muted-foreground">Coworking, internet hızı ve yaşam maliyeti</p>
             </Link>
-            <Link to={`/sehir/${city.slug}/ucak-bileti`} className="card-modern p-6 group hover:border-primary/30">
+            <Link to={`/sehir/${city.slug}/ucuslar`} className="card-modern p-6 group hover:border-primary/30">
               <h3 className="font-display font-semibold mb-2 group-hover:text-primary transition-colors">
                 ✈️ {city.name} Uçak Bileti
               </h3>
@@ -643,12 +644,7 @@ const CityHotels = () => {
           </section>
         </main>
         
-        {/* Footer */}
-        <footer className="border-t border-border py-8 mb-20 md:mb-0 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground">
-            © {currentYear} WooNomad. Tüm hakları saklıdır.
-          </div>
-        </footer>
+        <Footer />
 
         <MobileBottomNav />
       </div>

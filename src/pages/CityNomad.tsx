@@ -250,7 +250,7 @@ const CityNomad = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
+          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Şehir Bulunamadı</h1>
           <Link to="/sehirler" className="text-primary hover:underline">Tüm Şehirlere Gözat</Link>
         </div>
         <Footer />
@@ -384,7 +384,7 @@ const CityNomad = () => {
           <div className="flex items-start gap-3 mb-3">
             <span className="text-4xl md:text-5xl">{flag}</span>
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold leading-tight">
+              <h1 className="text-3xl md:text-4xl font-display font-bold leading-tight">
                 {city.name} Dijital Göçebe Rehberi ({currentYear})
               </h1>
               <p className="text-white/80 mt-1">
@@ -429,7 +429,7 @@ const CityNomad = () => {
           <aside className="lg:col-span-1">
             <Card variant="elevated" className="sticky top-20">
               <CardContent className="p-4">
-                <h2 className="font-bold text-sm uppercase tracking-wide text-muted-foreground mb-3">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                   İçindekiler
                 </h2>
                 <nav className="space-y-1">
@@ -447,7 +447,7 @@ const CityNomad = () => {
                 {/* Quick CTA */}
                 <div className="mt-6 pt-4 border-t border-border">
                   <Button asChild size="sm" className="w-full">
-                    <Link to={`/sehir/${city.slug}/ucak-bileti`}>
+                    <Link to={`/sehir/${city.slug}/ucuslar`}>
                       <Plane className="w-4 h-4 mr-2" />
                       {city.name}'e Uç
                     </Link>
@@ -491,7 +491,7 @@ const CityNomad = () => {
             <section id="kimler-icin">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
                     {city.name} Kimler İçin Uygun?
                   </h2>
                   <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -580,7 +580,7 @@ const CityNomad = () => {
             <section id="aylik-butce">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     {city.name} Aylık Bütçe Senaryoları
                   </h2>
                   <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -626,7 +626,7 @@ const CityNomad = () => {
             <section id="internet-sim">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     İnternet & SIM/eSIM
                   </h2>
                   <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -725,7 +725,7 @@ const CityNomad = () => {
             <section id="en-iyi-bolgeler">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     {city.name}'de En İyi Bölgeler
                   </h2>
                   <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -775,7 +775,7 @@ const CityNomad = () => {
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl md:text-3xl font-display font-bold">
+                    <h2 className="text-xl md:text-2xl font-display font-bold">
                       Coworking & Cafe Çalışma Kültürü
                     </h2>
                     <Button asChild variant="outline" size="sm">
@@ -865,7 +865,7 @@ const CityNomad = () => {
             <section id="ulasim">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     Şehir İçi Ulaşım
                   </h2>
                   <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -904,7 +904,7 @@ const CityNomad = () => {
             <section id="guvenlik">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     Güvenlik & Dolandırıcılık Riskleri
                   </h2>
                   
@@ -955,13 +955,13 @@ const CityNomad = () => {
             <section id="mevsimler">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     Mevsimler, Hava & Giyim
                   </h2>
                   
                   {metrics && (
                     <div className="flex items-center gap-4 mb-6 p-4 bg-muted/50 rounded-xl">
-                      <ThermometerSun className={`w-12 h-12 ${metrics.weatherScore >= 8 ? 'text-yellow-500' : metrics.weatherScore >= 6 ? 'text-blue-500' : 'text-gray-500'}`} />
+                      <ThermometerSun className={`w-12 h-12 ${metrics.weatherScore >= 8 ? 'text-yellow-500' : metrics.weatherScore >= 6 ? 'text-blue-500' : 'text-muted-foreground'}`} />
                       <div>
                         <p className="font-bold text-lg">Hava Skoru: {metrics.weatherScore}/10</p>
                         <p className="text-muted-foreground">
@@ -1009,13 +1009,13 @@ const CityNomad = () => {
             <section id="topluluk">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                     Topluluk & Etkinlik Bulma
                   </h2>
                   
                   {metrics && (
                     <div className="flex items-center gap-4 mb-6 p-4 bg-muted/50 rounded-xl">
-                      <Users className={`w-12 h-12 ${metrics.communityScore >= 8 ? 'text-green-500' : metrics.communityScore >= 6 ? 'text-yellow-500' : 'text-gray-500'}`} />
+                      <Users className={`w-12 h-12 ${metrics.communityScore >= 8 ? 'text-green-500' : metrics.communityScore >= 6 ? 'text-yellow-500' : 'text-muted-foreground'}`} />
                       <div>
                         <p className="font-bold text-lg">Topluluk Skoru: {metrics.communityScore}/10</p>
                         <p className="text-muted-foreground">
@@ -1063,7 +1063,7 @@ const CityNomad = () => {
             <section id="checklist">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 flex items-center gap-3">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-4 flex items-center gap-3">
                     <ListChecks className="w-8 h-8 text-primary" />
                     7 Günlük "İniş ve Kurulum" Checklist
                   </h2>
@@ -1107,7 +1107,7 @@ const CityNomad = () => {
             <section id="sss">
               <Card variant="elevated">
                 <CardContent className="p-6 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">
+                  <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
                     Sıkça Sorulan Sorular
                   </h2>
                   
@@ -1128,7 +1128,7 @@ const CityNomad = () => {
               <section>
                 <Card variant="elevated">
                   <CardContent className="p-6 md:p-8">
-                    <h2 className="text-2xl font-display font-bold mb-4">
+                    <h2 className="text-xl md:text-2xl font-display font-bold mb-4">
                       Benzer Nomad Şehirleri
                     </h2>
                     <p className="text-muted-foreground mb-6">
@@ -1176,7 +1176,7 @@ const CityNomad = () => {
                 <CardContent className="p-6 md:p-8">
                   <div className="grid md:grid-cols-2 gap-6 items-center">
                     <div>
-                      <h2 className="text-2xl font-display font-bold mb-2">
+                      <h2 className="text-xl md:text-2xl font-display font-bold mb-2">
                         {city.name}'e Hazır mısın?
                       </h2>
                       <p className="text-white/80">
@@ -1185,7 +1185,7 @@ const CityNomad = () => {
                     </div>
                     <div className="flex flex-wrap gap-3">
                       <Button asChild variant="secondary">
-                        <Link to={`/sehir/${city.slug}/ucak-bileti`}>
+                        <Link to={`/sehir/${city.slug}/ucuslar`}>
                           <Plane className="w-4 h-4 mr-2" />
                           Uçuş Ara
                         </Link>

@@ -336,7 +336,7 @@ export default function Blog() {
               <span>{t('blog.travelInspiration')}</span>
             </div>
             
-            <h1 className="text-2xl md:text-5xl font-display font-bold text-foreground mb-3 md:mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-3">
               {t('blog.title')} <span className="text-gradient">{t('blog.subtitle')}</span>
             </h1>
             

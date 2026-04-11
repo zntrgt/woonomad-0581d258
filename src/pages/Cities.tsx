@@ -149,7 +149,7 @@ const Cities = () => {
       <section className="bg-sand-900 text-white py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <Breadcrumb items={breadcrumbItems} className="text-sand-400 mb-5" />
-          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4 leading-tight">
             Nereye Gitmeli?
           </h1>
           {/* TL;DR — GEO optimized, AI-quotable */}
@@ -213,7 +213,7 @@ const Cities = () => {
           <div className="max-w-7xl mx-auto px-4 lg:px-8">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="font-display text-xl md:text-2xl font-bold text-sand-900">Editör Seçimi</h2>
+                <h2 className="text-xl md:text-2xl font-display font-bold">Editör Seçimi</h2>
                 <p className="text-sm text-sand-500 mt-1">Uzun süreli kalış ve keşif için en iyi 6 şehir</p>
               </div>
             </div>
@@ -369,17 +369,17 @@ const Cities = () => {
 
                         <div className="flex flex-wrap gap-1">
                           {nomad && (
-                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-ocean-200 text-ocean-600 bg-ocean-50">
+                            <Badge variant="outline" className="text-2xs px-1.5 py-0 border-ocean-200 text-ocean-600 bg-ocean-50">
                               Nomad
                             </Badge>
                           )}
                           {geo && (
-                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-forest-200 text-forest-600 bg-forest-50">
+                            <Badge variant="outline" className="text-2xs px-1.5 py-0 border-forest-200 text-forest-600 bg-forest-50">
                               Rehber
                             </Badge>
                           )}
                           {city.airportCodes.slice(0, 1).map(code => (
-                            <Badge key={code} variant="outline" className="text-[10px] px-1.5 py-0 border-sand-200 text-sand-500">
+                            <Badge key={code} variant="outline" className="text-2xs px-1.5 py-0 border-sand-200 text-sand-500">
                               {code}
                             </Badge>
                           ))}
@@ -397,7 +397,7 @@ const Cities = () => {
       {/* Segment CTAs */}
       <section className="py-10 md:py-14 bg-sand-100">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <h2 className="font-display text-xl md:text-2xl font-bold text-sand-900 mb-2">Nasıl seyahat ediyorsunuz?</h2>
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-2">Nasıl seyahat ediyorsunuz?</h2>
           <p className="text-sand-500 mb-6">Gezgin tipinize göre filtrelenmiş rehberler ve öneriler.</p>
 
           <div className="grid md:grid-cols-3 gap-4">
@@ -444,7 +444,7 @@ const Cities = () => {
       {/* FAQ — GEO critical */}
       <section className="py-10 md:py-14">
         <div className="max-w-3xl mx-auto px-4 lg:px-8">
-          <h2 className="font-display text-xl md:text-2xl font-bold text-sand-900 mb-6">Sık Sorulan Sorular</h2>
+          <h2 className="text-xl md:text-2xl font-display font-bold mb-6">Sık Sorulan Sorular</h2>
           <div className="space-y-3">
             {[
               {

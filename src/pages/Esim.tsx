@@ -102,7 +102,7 @@ const Esim = () => {
                 <Smartphone className="w-7 h-7" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-display font-bold">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">
                   {t('esim.heroTitle', 'eSIM Paketleri')}
                 </h1>
                 <p className="text-lg text-white/80 mt-2">
@@ -144,7 +144,7 @@ const Esim = () => {
         {/* Regional Packages */}
         <section className="py-6 md:py-8 bg-muted/30">
           <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
               {t('esim.regionalPackages', 'Bölgesel Paketler')}
             </h2>
             <div className="grid md:grid-cols-4 gap-4 mb-8">
@@ -176,7 +176,7 @@ const Esim = () => {
         {/* Popular Countries */}
         <section className="py-6 md:py-8">
           <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
               {t('esim.popularCountries', 'Popüler Ülkeler')}
             </h2>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -230,7 +230,7 @@ const Esim = () => {
         {/* How It Works */}
         <section className="py-6 md:py-8 bg-muted/30">
           <div className="container">
-            <h2 className="text-2xl font-display font-bold mb-6 text-center">
+            <h2 className="text-xl md:text-2xl font-display font-bold mb-6">
               {t('esim.howItWorks', 'Nasıl Çalışır?')}
             </h2>
             <div className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
@@ -271,7 +271,7 @@ const Esim = () => {
           <div className="container">
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-display font-bold mb-3">
+                <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                   {t('esim.seoTitle', 'eSIM Nedir?')}
                 </h2>
                 <div className="prose prose-lg max-w-none text-muted-foreground">

@@ -147,7 +147,7 @@ export function WorkCentricFilters({
             <span>Çalışma Filtreleri</span>
           </div>
           {hasActiveFilters && (
-            <Badge variant="secondary" className="text-[10px] bg-violet-100 text-violet-700">
+            <Badge variant="secondary" className="text-2xs bg-violet-100 text-violet-700">
               {activeFilterCount} Aktif
             </Badge>
           )}
