@@ -202,8 +202,7 @@ export const cityGeoData: Record<string, CityGeoData> = {
     ],
   },
 
-{
-  "monako": {
+  monako: {
     "tldr": "Monaco, 2 km²'lik yüzölçümüyle dünyanın en küçük ikinci ülkesi ve en pahalı destinasyonlarından biri. Günlük bütçe €110–500. Monte Carlo Casino, F1 Grand Prix pisti ve liman manzarası ana çekicilikleri. Nice'ten trenle 30 dakika — günübirlik gezi için ideal. Schengen vizesi gerekli.",
     "quickAnswer": "Monaco'da 1 gün yeterli, günlük €110–250 bütçe ayırın. Nice'te kalıp günübirlik gidin, Nisan–Ekim en iyi dönem.",
     "lastUpdated": "Nisan 2026",
@@ -260,12 +259,8 @@ export const cityGeoData: Record<string, CityGeoData> = {
       { "question": "Marsilya'da toplu taşıma nasıl?", "answer": "2 metro hattı, tramvay ve otobüs ağı var. Tek bilet €2, günlük pas €6. RTM uygulamasından mobil bilet alınabiliyor. Merkez yürünebilir ama tepeli — rahat ayakkabı şart." },
       { "question": "Marsilya'da ücretsiz ne yapılır?", "answer": "Notre-Dame de la Garde Bazilikası (giriş ücretsiz, panoramik manzara), Fort Saint-Jean bahçeleri ve köprüleri (MuCEM yanı), Cathédrale de la Major, Prado plajları ve Parc Borély hepsi ücretsiz." }
     ]
-  }
-}
+  },
 
-
-
-  
   dusseldorf: {
     tldr: "Düsseldorf, Almanya'nın moda ve iş başkenti. Günlük bütçe €50–80. Altstadt (Eski Şehir) 'dünyanın en uzun barı' olarak anılır. Japonya dışındaki en büyük Japon topluluğuna ev sahipliği yapar. En iyi zaman Mayıs–Eylül.",
     quickAnswer: "Düsseldorf'ta 2–3 gün kalın, günlük €50–80 bütçe ayırın, Mayıs–Eylül en ideal dönem.",
