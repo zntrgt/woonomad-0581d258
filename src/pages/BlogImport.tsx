@@ -38,7 +38,7 @@ const BlogImport = () => {
           published_at: post.published ? new Date().toISOString() : null,
         };
 
-        const { error } = await supabase.from('blog_posts').insert(row);
+       const { error } = await supabase.from('blog_posts').upsert(row, { onConflict: 'slug' });
         if (error) throw new Error(`"${post.title}": ${error.message}`);
       }
 
