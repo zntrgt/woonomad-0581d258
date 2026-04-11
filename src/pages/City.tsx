@@ -213,7 +213,7 @@ const getNeighborhoods = (citySlug: string): { name: string; description: string
       { name: 'East Village / LES', description: 'Barlar, restoranlar, sanat, genç enerji.' },
     ],
     'marakes': [
-      { name: 'Medina', description: 'UNESCO mirası, souklar, riad'lar, Jemaa el-Fna.' },
+      { name: 'Medina', description: 'UNESCO mirası, souklar, riad\'lar, Jemaa el-Fna.' },
       { name: 'Gueliz (Ville Nouvelle)', description: 'Modern şehir, Fransız etkisi, kafeler, galeriler.' },
       { name: 'Kasbah', description: 'Saadien Mezarları, el-Badi Sarayı yanı, sakin.' },
       { name: 'Hivernage', description: 'Lüks oteller, barlar, gece hayatı.' },
