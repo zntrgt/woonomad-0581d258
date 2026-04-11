@@ -363,7 +363,12 @@ export function getAgodaUrl(
   
 // Filtered search (stars, price sort) → use search URL with textToSearch
   // Unfiltered → use city page URL for better landing experience
-params.set('textToSearch', mapping?.nameEn || cityName);
+if (mapping?.lat && mapping?.lng) {
+    params.set('latitude', mapping.lat.toString());
+    params.set('longitude', mapping.lng.toString());
+    params.set('radius', '20');
+  }
+  params.set('textToSearch', mapping?.nameEn || cityName);
   return `https://www.agoda.com/search?${params.toString()}`;
 }
 
