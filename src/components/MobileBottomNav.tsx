@@ -1,72 +1,63 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Plane, Building2, Hotel, Smartphone } from 'lucide-react';
+import { Compass, BookOpen, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocalizedRoutes } from '@/hooks/useLocalizedLink';
+import { useAuth } from '@/hooks/useAuth';
 
-interface NavItem {
-  labelKey: string;
-  routeKey: 'home' | 'cities' | 'flights' | 'hotels' | 'esim';
-  icon: React.ReactNode;
-}
-
-const navItems: NavItem[] = [
-  { labelKey: 'nav.home', routeKey: 'home', icon: <Home className="h-5 w-5" /> },
-  { labelKey: 'nav.cities', routeKey: 'cities', icon: <Building2 className="h-5 w-5" /> },
-  { labelKey: 'nav.flights', routeKey: 'flights', icon: <Plane className="h-5 w-5" /> },
-  { labelKey: 'nav.hotels', routeKey: 'hotels', icon: <Hotel className="h-5 w-5" /> },
-  { labelKey: 'nav.esim', routeKey: 'esim', icon: <Smartphone className="h-5 w-5" /> },
+// 3 items only — focused mobile navigation
+const navItems = [
+  { label: 'Keşfet', routeKey: 'cities' as const, icon: <Compass className="h-5 w-5" /> },
+  { labelKey: 'nav.blog', routeKey: 'blog' as const, icon: <BookOpen className="h-5 w-5" /> },
+  { labelKey: 'nav.account', routeKey: 'account' as const, icon: <User className="h-5 w-5" /> },
 ];
 
 export function MobileBottomNav() {
   const location = useLocation();
   const { t } = useTranslation();
   const { getRoute } = useLocalizedRoutes();
+  const { user } = useAuth();
   
   const isActive = (routeKey: string) => {
     const href = getRoute(routeKey as any);
-    if (routeKey === 'home') return location.pathname === '/' || location.pathname.match(/^\/[a-z]{2}\/?$/);
+    if (routeKey === 'cities') {
+      return location.pathname.includes('/sehir') || location.pathname.includes('/cities');
+    }
     return location.pathname.includes(href.replace(/^\/[a-z]{2}/, ''));
   };
 
   return (
     <nav 
       className="mobile-nav-sticky md:hidden"
-      aria-label={t('nav.home')}
+      aria-label="Mobil navigasyon"
     >
-      <div className="flex items-center justify-around py-2 px-2">
+      <div className="flex items-center justify-around py-2 px-4">
         {navItems.map((item) => {
+          // Skip account if not logged in
+          if (item.routeKey === 'account' && !user) return null;
+          
           const href = getRoute(item.routeKey);
           const active = isActive(item.routeKey);
+          const label = 'labelKey' in item && item.labelKey ? t(item.labelKey) : item.label;
+          
           return (
             <Link
               key={item.routeKey}
               to={href}
               className={cn(
-                "relative flex flex-col items-center gap-1 py-2 px-3 rounded-2xl transition-all duration-200 touch-target tap-highlight",
+                "flex flex-col items-center gap-1 py-2 px-4 rounded-2xl transition-all duration-200",
                 active
-                  ? "text-primary"
-                  : "text-muted-foreground active:text-foreground active:scale-95"
+                  ? "text-ocean-600"
+                  : "text-sand-500 active:text-sand-700 active:scale-95"
               )}
             >
-              {/* Active indicator dot */}
-              {active && (
-                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary animate-scale-in" />
-              )}
               <div className={cn(
-                "p-2 rounded-xl transition-all duration-200",
-                active 
-                  ? "bg-primary/10 shadow-sm" 
-                  : "group-active:bg-muted"
+                "p-1.5 rounded-xl transition-all duration-200",
+                active ? "bg-ocean-50" : ""
               )}>
                 {item.icon}
               </div>
-              <span className={cn(
-                "text-[10px] font-semibold leading-none transition-colors",
-                active && "text-primary"
-              )}>
-                {t(item.labelKey)}
-              </span>
+              <span className="text-[10px] font-medium">{label}</span>
             </Link>
           );
         })}
