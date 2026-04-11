@@ -26,6 +26,7 @@ import NomadHub from "./pages/NomadHub";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
+import BlogImport from "./pages/BlogImport";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Install from "./pages/Install";
