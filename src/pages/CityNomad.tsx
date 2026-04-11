@@ -47,6 +47,7 @@ import { WifiSpeedTestForm } from '@/components/WifiSpeedTestForm';
 import { CommunitySpeedTests } from '@/components/CommunitySpeedTests';
 import { LongStayPricing } from '@/components/LongStayPricing';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
+import { TravelpayoutsToursWidget } from '@/components/TravelpayoutsToursWidget';
 
 // Table of Contents sections
 const tocSections = [
@@ -1167,6 +1168,14 @@ const CityNomad = () => {
               <KlookActivitiesWidget 
                 citySlug={city.slug}
                 cityName={city.name}
+              />
+            </section>
+
+            {/* Travelpayouts Tours */}
+            <section>
+              <TravelpayoutsToursWidget
+                citySlug={city.slug}
+                cityNameEn={city.nameEn}
               />
             </section>
 

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { getCityBySlug } from '@/lib/cities';
 import { getCountryFlag } from '@/lib/destinations';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
+import { TravelpayoutsToursWidget } from '@/components/TravelpayoutsToursWidget';
 import { useCityDisplay } from '@/hooks/useCityDisplay';
 import { format, addDays } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -618,6 +619,14 @@ const CityHotels = () => {
             <KlookActivitiesWidget 
               citySlug={city.slug}
               cityName={city.name}
+            />
+          </section>
+
+          {/* Travelpayouts Tours Widget */}
+          <section className="mb-6">
+            <TravelpayoutsToursWidget
+              citySlug={city.slug}
+              cityNameEn={city.nameEn}
             />
           </section>
           

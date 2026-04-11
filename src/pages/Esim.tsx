@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   Smartphone, Signal, Globe, Zap, CreditCard, ExternalLink, 
   Wifi, Shield, ChevronRight, Check, X, Info, Monitor, 
-  HelpCircle, ArrowRight, Star
+  HelpCircle, ArrowRight, Star, AlertTriangle
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -21,12 +21,21 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from 'react-i18next';
 
-// ─── Affiliate Configuration ───────────────────────────────────
-// IMPORTANT: Replace with your actual Impact tracking links from partners.airalo.com
-// The format below is a placeholder — get your real deep links from Impact dashboard.
-// If using Travelpayouts, use their redirect URL format instead.
-const AIRALO_BASE_URL = "https://www.airalo.com";
-const AIRALO_AFFILIATE_PARAM = "ref=woonomad"; // TODO: Replace with Impact tracking parameter
+// ─── Affiliate Configuration (Travelpayouts) ──────────────────
+// Ana affiliate link — Travelpayouts üzerinden Airalo
+const AIRALO_AFFILIATE_LINK = "https://airalo.tpk.ro/8CU9yKIf";
+
+// Ülke bazlı deep link'ler:
+// Travelpayouts Tools > Links bölümünden her ülke için deep link üretebilirsiniz.
+// Destination page alanına "https://www.airalo.com/turkey-esim" gibi URL yapıştırıp
+// Generate butonuna basarak ülke bazlı tracking linkler oluşturabilirsiniz.
+// Aşağıda ülkelerin Airalo URL slug'ları tanımlı — deep link'lerinizi aldığınızda
+// countryDeepLinks objesine ekleyin.
+const countryDeepLinks: Record<string, string> = {
+  // Travelpayouts'tan ülke bazlı deep link ürettiğinizde buraya ekleyin:
+  // 'turkey': 'https://airalo.tpk.ro/XXXXX',
+  // 'germany': 'https://airalo.tpk.ro/YYYYY',
+};
 
 // ─── Data ──────────────────────────────────────────────────────
 
@@ -81,8 +90,8 @@ const providerComparison = [
     minPrice: '~$4.50', 
     appRating: '4.6',
     hotspot: true, 
-    localNumber: 'Bazı planlarda',
     support: '7/24 chat',
+    blockedInTR: true,
     highlight: true,
   },
   { 
@@ -91,8 +100,8 @@ const providerComparison = [
     minPrice: '~$6.00', 
     appRating: '4.4',
     hotspot: false, 
-    localNumber: 'Yok',
     support: '7/24 chat',
+    blockedInTR: true,
     highlight: false,
   },
   { 
@@ -101,8 +110,8 @@ const providerComparison = [
     minPrice: '~$5.00', 
     appRating: '4.5',
     hotspot: true, 
-    localNumber: 'Bazı planlarda',
     support: 'E-posta',
+    blockedInTR: true,
     highlight: false,
   },
   { 
@@ -111,8 +120,8 @@ const providerComparison = [
     minPrice: '~$4.00', 
     appRating: '4.3',
     hotspot: true, 
-    localNumber: 'Yok',
     support: '7/24 chat',
+    blockedInTR: true,
     highlight: false,
   },
 ];
@@ -121,6 +130,10 @@ const faqItems = [
   {
     q: 'eSIM nedir ve nasıl çalışır?',
     a: 'eSIM (embedded SIM), telefonunuzun içine gömülü dijital bir SIM kartıdır. Fiziksel kart takmak yerine QR kod tarayarak veya uygulama üzerinden profil yüklersiniz. Telefonunuzun mevcut SIM kartını çıkarmadan, ikinci hat olarak kullanabilirsiniz.',
+  },
+  {
+    q: 'Türkiye\'den Airalo ve diğer eSIM sitelerine neden giremiyorum?',
+    a: 'Temmuz 2025\'ten itibaren BTK (Bilgi Teknolojileri ve İletişim Kurumu), Airalo, Holafly, Saily, Nomad ve 30\'dan fazla uluslararası eSIM sağlayıcısının site ve uygulamalarına Türkiye\'den erişimi engelledi. Engel sağlayıcı platformlarını hedefliyor, eSIM teknolojisini değil. Çözüm: eSIM\'inizi yurtdışına çıkmadan önce VPN ile veya Wi-Fi üzerinden satın alıp yükleyin. Önceden yüklenen eSIM profilleri yurtdışında sorunsuz çalışır.',
   },
   {
     q: 'Telefonum eSIM destekliyor mu?',
@@ -153,12 +166,12 @@ const faqItems = [
 ];
 
 const getAiraloUrl = (slug: string) => {
-  // TODO: Replace with Impact tracking deep links
-  return `${AIRALO_BASE_URL}/${slug}-esim?${AIRALO_AFFILIATE_PARAM}`;
+  // Ülke bazlı deep link varsa onu kullan, yoksa ana affiliate linke yönlendir
+  return countryDeepLinks[slug] || AIRALO_AFFILIATE_LINK;
 };
 
 const getAiraloHomeUrl = () => {
-  return `${AIRALO_BASE_URL}?${AIRALO_AFFILIATE_PARAM}`;
+  return AIRALO_AFFILIATE_LINK;
 };
 
 // ─── Component ─────────────────────────────────────────────────
@@ -295,6 +308,27 @@ const Esim = () => {
           </div>
         </section>
 
+        {/* ─── BTK Uyarısı ─── */}
+        <section className="py-4 bg-amber-50 dark:bg-amber-950/20 border-b border-amber-200 dark:border-amber-800">
+          <div className="container">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-semibold text-amber-900 dark:text-amber-200">
+                  Türkiye'den Erişim Kısıtlaması
+                </p>
+                <p className="text-amber-800 dark:text-amber-300 mt-1">
+                  Temmuz 2025'ten itibaren BTK, Airalo, Holafly, Saily ve Nomad dahil 30'dan fazla 
+                  uluslararası eSIM sağlayıcısının sitesine Türkiye'den erişimi engelledi. 
+                  <strong> eSIM'inizi yurtdışına çıkmadan önce satın alın ve yükleyin</strong> — 
+                  önceden yüklenen eSIM'ler sorunsuz çalışıyor. Türkiye'deyken satın almak veya 
+                  top-up yapmak için VPN gerekebilir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ─── Quick Stats (replaces generic benefit cards) ─── */}
         <section className="py-6 md:py-8 border-b">
           <div className="container">
@@ -422,9 +456,10 @@ const Esim = () => {
                       <TableRow>
                         <TableHead className="w-[140px]">Sağlayıcı</TableHead>
                         <TableHead>Ülke</TableHead>
-                        <TableHead>Başlangıç Fiyatı</TableHead>
-                        <TableHead>Uygulama Puanı</TableHead>
+                        <TableHead>Fiyat</TableHead>
+                        <TableHead>Puan</TableHead>
                         <TableHead>Hotspot</TableHead>
+                        <TableHead>TR Erişim</TableHead>
                         <TableHead>Destek</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -452,6 +487,16 @@ const Esim = () => {
                               <X className="h-4 w-4 text-red-500" />
                             )}
                           </TableCell>
+                          <TableCell>
+                            {provider.blockedInTR ? (
+                              <span className="flex items-center gap-1 text-xs text-amber-600">
+                                <AlertTriangle className="h-3 w-3" />
+                                Engelli
+                              </span>
+                            ) : (
+                              <Check className="h-4 w-4 text-green-600" />
+                            )}
+                          </TableCell>
                           <TableCell className="text-sm">{provider.support}</TableCell>
                         </TableRow>
                       ))}
@@ -462,7 +507,10 @@ const Esim = () => {
             </Card>
 
             <p className="text-xs text-muted-foreground mt-3">
-              * Fiyatlar ve özellikler değişkenlik gösterebilir. Son bilgi için sağlayıcı sitelerini kontrol edin.
+              * Fiyatlar ve özellikler değişkenlik gösterebilir. 
+              "TR Erişim: Engelli" olan sağlayıcıların siteleri Temmuz 2025'ten itibaren 
+              Türkiye'den BTK kararıyla erişime kapatılmıştır. eSIM'inizi yurtdışına çıkmadan 
+              önce satın alıp yüklerseniz sorunsuz çalışır.
               Son güncelleme: Ocak {currentYear}.
             </p>
           </div>
@@ -721,6 +769,9 @@ const Esim = () => {
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </a>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Türkiye'den erişim engelli — VPN gerekebilir veya yurtdışına çıkmadan önce satın alın.
+                </p>
               </CardContent>
             </Card>
 

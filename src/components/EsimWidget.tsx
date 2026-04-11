@@ -12,10 +12,13 @@ interface EsimWidgetProps {
   className?: string;
 }
 
-// ─── Affiliate Configuration ───────────────────────────────────
-// IMPORTANT: Replace with your actual Impact tracking links
-const AIRALO_BASE_URL = "https://www.airalo.com";
-const AIRALO_AFFILIATE_PARAM = "ref=woonomad"; // TODO: Replace with Impact tracking parameter
+// ─── Affiliate Configuration (Travelpayouts) ──────────────────
+const AIRALO_AFFILIATE_LINK = "https://airalo.tpk.ro/8CU9yKIf";
+
+// Ülke bazlı deep link'ler — Travelpayouts Tools > Links'ten üretin
+const countryDeepLinks: Record<string, string> = {
+  // 'turkey': 'https://airalo.tpk.ro/XXXXX',
+};
 
 // Country code → Airalo destination + network info
 const countryMappings: Record<string, { slug: string; network: string; speed: string }> = {
@@ -53,7 +56,8 @@ const getCountryInfo = (countryCode: string) => {
 
 const getAiraloUrl = (countryCode: string) => {
   const info = getCountryInfo(countryCode);
-  return `${AIRALO_BASE_URL}/${info.slug}-esim?${AIRALO_AFFILIATE_PARAM}`;
+  // Ülke bazlı deep link varsa onu kullan, yoksa ana linke yönlendir
+  return countryDeepLinks[info.slug] || AIRALO_AFFILIATE_LINK;
 };
 
 export function EsimWidget({ countryCode, countryName, cityName, className }: EsimWidgetProps) {
@@ -105,7 +109,7 @@ export function EsimWidget({ countryCode, countryName, cityName, className }: Es
           </a>
 
           <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
-            Airalo · Affiliate bağlantı
+            Airalo · Affiliate bağlantı · TR'den VPN gerekebilir
           </p>
         </div>
 

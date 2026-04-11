@@ -13,6 +13,7 @@ import { EventCountdownList } from '@/components/EventCountdown';
 import { WeatherWidget, TravelTips } from '@/components/WeatherWidget';
 import { CityHotelsWidget } from '@/components/CityHotelsWidget';
 import { KlookActivitiesWidget } from '@/components/KlookActivitiesWidget';
+import { TravelpayoutsToursWidget } from '@/components/TravelpayoutsToursWidget';
 import { EsimWidget } from '@/components/EsimWidget';
 import { ExchangeRateWidget } from '@/components/ExchangeRateWidget';
 import { getCityBySlug, getAllCities, CityInfo } from '@/lib/cities';
@@ -594,6 +595,12 @@ const City = () => {
                 </Card>
               )}
 
+              {/* Travelpayouts Klook Tours Widget */}
+              <TravelpayoutsToursWidget
+                citySlug={city.slug}
+                cityNameEn={city.nameEn}
+              />
+
               {/* GEO: Transport */}
               {geo?.transport && (
                 <Card variant="elevated">
@@ -864,6 +871,7 @@ const City = () => {
           <WeatherWidget cityName={city.name} citySlug={city.slug} />
           <ExchangeRateWidget countryCode={city.countryCode} currencyName={city.currency} />
           <KlookActivitiesWidget citySlug={city.slug} cityName={city.name} />
+          <TravelpayoutsToursWidget citySlug={city.slug} cityNameEn={city.nameEn} />
           <CityHotelsWidget citySlug={city.slug} cityName={city.name} cityNameEn={city.nameEn} />
           <EsimWidget countryCode={city.countryCode} countryName={city.country} cityName={city.name} />
         </div>
