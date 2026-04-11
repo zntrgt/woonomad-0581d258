@@ -397,15 +397,61 @@ export default function BlogPost() {
     return extractedFaqs.slice(0, 8);
   }, [post]);
   
-  // Extract related cities from content
+  // Smart related cities: same region/country > content mentions > exclude primary city
   const relatedCities = useMemo(() => {
     if (!post) return [];
-    
-    const contentLower = post.content.toLowerCase();
-    return allCities.filter(city => 
-      contentLower.includes(city.name.toLowerCase()) ||
-      contentLower.includes(city.slug.toLowerCase())
-    ).slice(0, 5);
+
+    // Region mapping for proximity-based matching
+    const regionMap: Record<string, string> = {
+      TR: 'mediterranean', GR: 'mediterranean', IT: 'mediterranean', ES: 'mediterranean',
+      HR: 'mediterranean', ME: 'mediterranean', PT: 'western-europe',
+      FR: 'western-europe', NL: 'western-europe', BE: 'western-europe', GB: 'western-europe',
+      DE: 'central-europe', AT: 'central-europe', CH: 'central-europe', CZ: 'central-europe', HU: 'central-europe', PL: 'central-europe',
+      SE: 'nordics', DK: 'nordics', NO: 'nordics', FI: 'nordics',
+      RS: 'balkans', BA: 'balkans', MK: 'balkans', BG: 'balkans',
+      GE: 'caucasus', AZ: 'caucasus', AM: 'caucasus',
+      AE: 'middle-east', QA: 'middle-east', JO: 'middle-east', SA: 'middle-east',
+      JP: 'east-asia', KR: 'east-asia', CN: 'east-asia', TW: 'east-asia', HK: 'east-asia',
+      TH: 'southeast-asia', ID: 'southeast-asia', SG: 'southeast-asia', MY: 'southeast-asia', PH: 'southeast-asia', VN: 'southeast-asia',
+      IN: 'south-asia', NP: 'south-asia', LK: 'south-asia',
+      MA: 'north-africa', TN: 'north-africa', EG: 'north-africa',
+      ZA: 'sub-saharan', TZ: 'sub-saharan', KE: 'sub-saharan',
+      US: 'americas', MX: 'americas', BR: 'americas', AR: 'americas',
+    };
+
+    const primarySlug = post.citySlug || '';
+    const primaryCity = primarySlug ? getCityBySlug(primarySlug) : null;
+    const primaryRegion = primaryCity ? regionMap[primaryCity.countryCode] : null;
+
+    // Score each city
+    const scored = allCities
+      .filter(c => c.slug !== primarySlug) // exclude primary city
+      .map(city => {
+        let score = 0;
+        const contentLower = post.content.toLowerCase();
+
+        // Same country as primary city = highest relevance
+        if (primaryCity && city.countryCode === primaryCity.countryCode) score += 30;
+        // Same region = high relevance
+        else if (primaryRegion && regionMap[city.countryCode] === primaryRegion) score += 20;
+
+        // Mentioned in content = relevant
+        if (contentLower.includes(city.name.toLowerCase())) score += 10;
+        if (contentLower.includes(city.slug.toLowerCase())) score += 5;
+
+        // Blog category match bonus (e.g. "dijital-gocebe" category + nomad-friendly city)
+        if (post.category === 'dijital-gocebe' && ['bali', 'lizbon', 'tiflis', 'berlin', 'budapeste', 'bangkok'].includes(city.slug)) {
+          score += 8;
+        }
+
+        return { city, score };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(({ city }) => city);
+
+    return scored;
   }, [post, allCities]);
   
   // Parse countdown from content
