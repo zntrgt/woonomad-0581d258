@@ -17,45 +17,6 @@ export const useAuth = () => {
     isAdmin: false,
   });
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setAuthState(prev => ({
-          ...prev,
-          session,
-          user: session?.user ?? null,
-          loading: false,
-        }));
-
-        // Defer admin check with setTimeout to prevent deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            checkAdminRole(session.user.id);
-          }, 0);
-        } else {
-          setAuthState(prev => ({ ...prev, isAdmin: false }));
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthState(prev => ({
-        ...prev,
-        session,
-        user: session?.user ?? null,
-        loading: false,
-      }));
-
-      if (session?.user) {
-        checkAdminRole(session.user.id);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const checkAdminRole = async (userId: string) => {
     const { data, error } = await supabase
       .from('user_roles')
@@ -64,30 +25,62 @@ export const useAuth = () => {
       .eq('role', 'admin')
       .maybeSingle();
 
-    if (!error && data) {
-      setAuthState(prev => ({ ...prev, isAdmin: true }));
-    }
+    setAuthState(prev => ({
+      ...prev,
+      isAdmin: !error && !!data,
+      loading: false,
+    }));
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setAuthState(prev => ({
+            ...prev,
+            session,
+            user: session.user,
+          }));
+          checkAdminRole(session.user.id);
+        } else {
+          setAuthState({
+            user: null,
+            session: null,
+            loading: false,
+            isAdmin: false,
+          });
+        }
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setAuthState(prev => ({
+          ...prev,
+          session,
+          user: session.user,
+        }));
+        checkAdminRole(session.user.id);
+      } else {
+        setAuthState(prev => ({ ...prev, loading: false }));
+      }
     });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-        },
+        emailRedirectTo: `${window.location.origin}/`,
+        data: { full_name: fullName },
       },
     });
     return { error };
@@ -98,10 +91,5 @@ export const useAuth = () => {
     return { error };
   };
 
-  return {
-    ...authState,
-    signIn,
-    signUp,
-    signOut,
-  };
+  return { ...authState, signIn, signUp, signOut };
 };
