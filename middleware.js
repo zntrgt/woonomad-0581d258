@@ -72,6 +72,21 @@ export default async function middleware(request) {
     return next();
   }
 
+  // ─── SERVER-SIDE 301 REDIRECTS ───
+  // Fix malformed i-stanbul / i-zmir slugs (Turkish İ encoding issue)
+  if (url.pathname.includes("/i-stanbul-") || url.pathname.includes("/i-zmir-")) {
+    const fixedPath = url.pathname
+      .replace(/\/i-stanbul-/g, "/istanbul-")
+      .replace(/\/i-zmir-/g, "/izmir-");
+    return Response.redirect(new URL(fixedPath, request.url), 301);
+  }
+
+  // Redirect /sehir/:slug/ucak-bileti → /sehir/:slug/ucuslar
+  const ucakBiletiMatch = url.pathname.match(/^\/sehir\/([^/]+)\/ucak-bileti$/);
+  if (ucakBiletiMatch) {
+    return Response.redirect(new URL(`/sehir/${ucakBiletiMatch[1]}/ucuslar`, request.url), 301);
+  }
+
   // Sadece GET + HTML isteklerini yakala
   const isHtml = (request.headers.get("accept") || "").includes("text/html");
   if (request.method !== "GET" || !isHtml) {
@@ -92,7 +107,7 @@ export default async function middleware(request) {
     if (prerenderToken) {
       const prerenderUrl = `https://service.prerender.io/${request.url}`;
       const r = await fetch(prerenderUrl, {
-        signal: AbortSignal.timeout(5000), // Bot'lar için 5 saniye OK
+        signal: AbortSignal.timeout(8000), // 8 saniye — prerender bazen yavaş
         headers: {
           "X-Prerender-Token": prerenderToken,
           "User-Agent": userAgent,
@@ -112,12 +127,19 @@ export default async function middleware(request) {
             headers: {
               "content-type": "text/html; charset=utf-8",
               "x-prerendered": "prerender.io",
+              "x-prerender-length": String(html.length),
               // Cache: aynı URL için 1 saat boyunca tekrar prerender etme
               "Cache-Control": "public, max-age=3600, s-maxage=3600",
             },
           });
+        } else {
+          console.warn(`[prerender.io] Short response (${html.length} chars) for: ${url.pathname}`);
         }
+      } else {
+        console.warn(`[prerender.io] Bad response: status=${r.status} for: ${url.pathname}`);
       }
+    } else {
+      console.warn("[prerender.io] PRERENDER_TOKEN not set — bots get SPA fallback");
     }
   } catch (e) {
     // Prerender.io başarısız → fallback'e düş

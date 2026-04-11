@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Figtree', 'Georama', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['Figtree', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         display: ['Fraunces', 'Georgia', 'serif'],
         body: ['Figtree', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
