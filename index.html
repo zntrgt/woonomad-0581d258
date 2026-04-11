@@ -53,7 +53,12 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8614552230353945" crossorigin="anonymous"></script>
     
-    <!-- Travelpayouts LinkSwitcher -->
+    <!-- Travelpayouts LinkSwitcher — DEVRE DIŞI
+         Sebep: Agoda city page URL'lerini search?city=ID formatına çeviriyor,
+         ID'ler yanlış şehirlere yönlendiriyor (Lisbon → Ostfildern, Antalya → hata).
+         Doğrudan Agoda affiliate (CID=1844104) kullanılıyor.
+    -->
+    <!--
     <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
       (function () {
         var script = document.createElement("script");
@@ -62,6 +67,7 @@
         document.head.appendChild(script);
       })();
     </script>
+    -->
   </head>
 
   <body>
