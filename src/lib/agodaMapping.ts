@@ -8,17 +8,19 @@ export interface AgodaCityInfo {
   lat: number;
   lng: number;
   nameEn: string;
+  /** Agoda city page slug e.g. "antalya-tr", "paris-fr" — used in agoda.com/city/SLUG.html */
+  agodaSlug?: string;
 }
 
 // Comprehensive city mapping for Agoda deep linking
 // cityId is Agoda's internal city identifier for accurate search results
 export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   // === TÜRKİYE ===
-  'istanbul': { cityId: '18482', lat: 41.0082, lng: 28.9784, nameEn: 'Istanbul' },
-  'antalya': { cityId: '17067', lat: 36.8969, lng: 30.7133, nameEn: 'Antalya' },
-  'izmir': { cityId: '6140', lat: 38.4192, lng: 27.1287, nameEn: 'Izmir' },
-  'bodrum': { cityId: '14605', lat: 37.0343, lng: 27.4305, nameEn: 'Bodrum' },
-  'kapadokya': { cityId: '17873', lat: 38.6431, lng: 34.8289, nameEn: 'Cappadocia' },
+  'istanbul': { cityId: '18482', agodaSlug: 'istanbul-tr', lat: 41.0082, lng: 28.9784, nameEn: 'Istanbul' },
+  'antalya': { cityId: '17067', agodaSlug: 'antalya-tr', lat: 36.8969, lng: 30.7133, nameEn: 'Antalya' },
+  'izmir': { cityId: '6140', agodaSlug: 'izmir-tr', lat: 38.4192, lng: 27.1287, nameEn: 'Izmir' },
+  'bodrum': { cityId: '14605', agodaSlug: 'bodrum-tr', lat: 37.0343, lng: 27.4305, nameEn: 'Bodrum' },
+  'kapadokya': { cityId: '17873', agodaSlug: 'cappadocia-tr', lat: 38.6431, lng: 34.8289, nameEn: 'Cappadocia' },
   'fethiye': { cityId: '504757', lat: 36.6514, lng: 29.1257, nameEn: 'Fethiye' },
   'marmaris': { cityId: '6136', lat: 36.8550, lng: 28.2741, nameEn: 'Marmaris' },
   'kusadasi': { cityId: '17881', lat: 37.8579, lng: 27.2610, nameEn: 'Kusadasi' },
@@ -28,18 +30,18 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'trabzon': { cityId: '17076', lat: 41.0027, lng: 39.7168, nameEn: 'Trabzon' },
   
   // === AVRUPA ===
-  'paris': { cityId: '7606', lat: 48.8566, lng: 2.3522, nameEn: 'Paris' },
+  'paris': { cityId: '7606', agodaSlug: 'paris-fr', lat: 48.8566, lng: 2.3522, nameEn: 'Paris' },
   'london': { cityId: '3356', lat: 51.5074, lng: -0.1278, nameEn: 'London' },
-  'londra': { cityId: '3356', lat: 51.5074, lng: -0.1278, nameEn: 'London' },
-  'roma': { cityId: '6831', lat: 41.9028, lng: 12.4964, nameEn: 'Rome' },
-  'barcelona': { cityId: '2268', lat: 41.3851, lng: 2.1734, nameEn: 'Barcelona' },
-  'amsterdam': { cityId: '10259', lat: 52.3676, lng: 4.9041, nameEn: 'Amsterdam' },
-  'berlin': { cityId: '5765', lat: 52.5200, lng: 13.4050, nameEn: 'Berlin' },
-  'prag': { cityId: '8074', lat: 50.0755, lng: 14.4378, nameEn: 'Prague' },
-  'viyana': { cityId: '10411', lat: 48.2082, lng: 16.3738, nameEn: 'Vienna' },
+  'londra': { cityId: '3356', agodaSlug: 'london-gb', lat: 51.5074, lng: -0.1278, nameEn: 'London' },
+  'roma': { cityId: '6831', agodaSlug: 'rome-it', lat: 41.9028, lng: 12.4964, nameEn: 'Rome' },
+  'barcelona': { cityId: '2268', agodaSlug: 'barcelona-es', lat: 41.3851, lng: 2.1734, nameEn: 'Barcelona' },
+  'amsterdam': { cityId: '10259', agodaSlug: 'amsterdam-nl', lat: 52.3676, lng: 4.9041, nameEn: 'Amsterdam' },
+  'berlin': { cityId: '5765', agodaSlug: 'berlin-de', lat: 52.5200, lng: 13.4050, nameEn: 'Berlin' },
+  'prag': { cityId: '8074', agodaSlug: 'prague-cz', lat: 50.0755, lng: 14.4378, nameEn: 'Prague' },
+  'viyana': { cityId: '10411', agodaSlug: 'vienna-at', lat: 48.2082, lng: 16.3738, nameEn: 'Vienna' },
   'budapeşte': { cityId: '3379', lat: 47.4979, lng: 19.0402, nameEn: 'Budapest' },
   'budapeste': { cityId: '3379', lat: 47.4979, lng: 19.0402, nameEn: 'Budapest' },
-  'lizbon': { cityId: '7815', lat: 38.7223, lng: -9.1393, nameEn: 'Lisbon' },
+  'lizbon': { cityId: '7815', agodaSlug: 'lisbon-pt', lat: 38.7223, lng: -9.1393, nameEn: 'Lisbon' },
   'milano': { cityId: '6523', lat: 45.4642, lng: 9.1900, nameEn: 'Milan' },
   'venedik': { cityId: '10197', lat: 45.4408, lng: 12.3155, nameEn: 'Venice' },
   'floransa': { cityId: '2957', lat: 43.7696, lng: 11.2558, nameEn: 'Florence' },
@@ -54,7 +56,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'helsinki': { cityId: '3252', lat: 60.1699, lng: 24.9384, nameEn: 'Helsinki' },
   'varşova': { cityId: '10313', lat: 52.2297, lng: 21.0122, nameEn: 'Warsaw' },
   'varsova': { cityId: '10313', lat: 52.2297, lng: 21.0122, nameEn: 'Warsaw' },
-  'madrid': { cityId: '6353', lat: 40.4168, lng: -3.7038, nameEn: 'Madrid' },
+  'madrid': { cityId: '6353', agodaSlug: 'madrid-es', lat: 40.4168, lng: -3.7038, nameEn: 'Madrid' },
   'nice': { cityId: '7019', lat: 43.7102, lng: 7.2620, nameEn: 'Nice' },
   'monaco': { cityId: '6543', lat: 43.7384, lng: 7.4246, nameEn: 'Monaco' },
   'belgrad': { cityId: '2305', lat: 44.7866, lng: 20.4489, nameEn: 'Belgrade' },
@@ -66,16 +68,16 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'pristine': { cityId: '8079', lat: 42.6629, lng: 21.1655, nameEn: 'Pristina' },
   
   // === ASYA ===
-  'tokyo': { cityId: '6046', lat: 35.6762, lng: 139.6503, nameEn: 'Tokyo' },
+  'tokyo': { cityId: '6046', agodaSlug: 'tokyo-jp', lat: 35.6762, lng: 139.6503, nameEn: 'Tokyo' },
   'osaka': { cityId: '7564', lat: 34.6937, lng: 135.5023, nameEn: 'Osaka' },
   'kyoto': { cityId: '5350', lat: 35.0116, lng: 135.7681, nameEn: 'Kyoto' },
-  'bangkok': { cityId: '2669', lat: 13.7563, lng: 100.5018, nameEn: 'Bangkok' },
+  'bangkok': { cityId: '2669', agodaSlug: 'bangkok-th', lat: 13.7563, lng: 100.5018, nameEn: 'Bangkok' },
   'phuket': { cityId: '8109', lat: 7.8804, lng: 98.3923, nameEn: 'Phuket' },
   'chiang-mai': { cityId: '2588', lat: 18.7883, lng: 98.9853, nameEn: 'Chiang Mai' },
   'singapore': { cityId: '4064', lat: 1.3521, lng: 103.8198, nameEn: 'Singapore' },
-  'singapur': { cityId: '4064', lat: 1.3521, lng: 103.8198, nameEn: 'Singapore' },
+  'singapur': { cityId: '4064', agodaSlug: 'singapore-sg', lat: 1.3521, lng: 103.8198, nameEn: 'Singapore' },
   'kuala-lumpur': { cityId: '5379', lat: 3.1390, lng: 101.6869, nameEn: 'Kuala Lumpur' },
-  'bali': { cityId: '17193', lat: -8.4095, lng: 115.1889, nameEn: 'Bali' },
+  'bali': { cityId: '17193', agodaSlug: 'bali-id', lat: -8.4095, lng: 115.1889, nameEn: 'Bali' },
   'jakarta': { cityId: '4805', lat: -6.2088, lng: 106.8456, nameEn: 'Jakarta' },
   'hong-kong': { cityId: '3310', lat: 22.3193, lng: 114.1694, nameEn: 'Hong Kong' },
   'seul': { cityId: '9035', lat: 37.5665, lng: 126.9780, nameEn: 'Seoul' },
@@ -97,7 +99,7 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
   'maldivler': { cityId: '6380', lat: 3.2028, lng: 73.2207, nameEn: 'Maldives' },
   
   // === ORTA DOĞU ===
-  'dubai': { cityId: '6621', lat: 25.2048, lng: 55.2708, nameEn: 'Dubai' },
+  'dubai': { cityId: '6621', agodaSlug: 'dubai-ae', lat: 25.2048, lng: 55.2708, nameEn: 'Dubai' },
   'abu-dabi': { cityId: '1775', lat: 24.4539, lng: 54.3773, nameEn: 'Abu Dhabi' },
   'doha': { cityId: '2768', lat: 25.2854, lng: 51.5310, nameEn: 'Doha' },
   'tel-aviv': { cityId: '9785', lat: 32.0853, lng: 34.7818, nameEn: 'Tel Aviv' },
@@ -331,20 +333,11 @@ export function getAgodaUrl(
     rooms?: number;
   }
 ): string {
-  const baseUrl = 'https://www.agoda.com/search';
   const mapping = cityAgodaMapping[citySlug.toLowerCase()];
   
   const params = new URLSearchParams({
     cid: AGODA_CID,
   });
-  
-  // Always use cityId when available for accurate results
-  if (mapping?.cityId) {
-    params.set('city', mapping.cityId);
-  } else {
-    // Fallback to destination name search
-    params.set('textToSearch', cityName);
-  }
   
   // Add dates
   if (checkIn && checkOut) {
@@ -358,7 +351,7 @@ export function getAgodaUrl(
   params.set('rooms', (options?.rooms || 1).toString());
   params.set('adults', (options?.adults || 2).toString());
   
-  // Star rating filter — use Agoda's 'star' parameter
+  // Star rating filter
   if (options?.stars && options.stars >= 2 && options.stars <= 5) {
     params.set('star', options.stars.toString());
   }
@@ -368,7 +361,14 @@ export function getAgodaUrl(
     params.set('sort', 'priceLowToHigh');
   }
   
-  return `${baseUrl}?${params.toString()}`;
+  // Priority 1: Use Agoda city page URL (most reliable)
+  if (mapping?.agodaSlug) {
+    return `https://www.agoda.com/city/${mapping.agodaSlug}.html?${params.toString()}`;
+  }
+  
+  // Priority 2: Use textToSearch with city name (works for all cities)
+  params.set('textToSearch', mapping?.nameEn || cityName);
+  return `https://www.agoda.com/search?${params.toString()}`;
 }
 
 // Open Agoda URL — simple window.open, no hacks

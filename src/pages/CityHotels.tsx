@@ -523,7 +523,7 @@ const CityHotels = () => {
               ].map((category) => (
                 <button 
                   key={category.id}
-                  onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { priceSort: category.priceSort, adults: guests.adults, rooms: guests.rooms })}
+                  onClick={() => openAgodaUrl(citySlug, searchCity, checkIn, checkOut, { stars: category.stars, priceSort: category.priceSort, adults: guests.adults, rooms: guests.rooms })}
                   className="group text-left"
                 >
                   <Card className="overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02]">
