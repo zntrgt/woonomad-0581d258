@@ -76,6 +76,7 @@ const routeConfig = {
   blog: { tr: '/blog', en: '/blog', de: '/blog', fr: '/blog', es: '/blog', ar: '/blog' },
   blogPost: { tr: '/blog/:slug', en: '/blog/:slug', de: '/blog/:slug', fr: '/blog/:slug', es: '/blog/:slug', ar: '/blog/:slug' },
   blogAdmin: { tr: '/admin/blog', en: '/admin/blog', de: '/admin/blog', fr: '/admin/blog', es: '/admin/blog', ar: '/admin/blog' },
+  blogImport: { tr: '/admin/blog/import', en: '/admin/blog/import', de: '/admin/blog/import', fr: '/admin/blog/import', es: '/admin/blog/import', ar: '/admin/blog/import' },
   // Auth
   auth: { tr: '/auth', en: '/auth', de: '/auth', fr: '/auth', es: '/auth', ar: '/auth' },
   account: { tr: '/hesabim', en: '/account', de: '/konto', fr: '/compte', es: '/cuenta', ar: '/account' },
@@ -124,6 +125,7 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       <Route path={`${prefix}${routeConfig.blog[lang]}`} element={<Blog />} />
       <Route path={`${prefix}${routeConfig.blogPost[lang]}`} element={<BlogPost />} />
       <Route path={`${prefix}${routeConfig.blogAdmin[lang]}`} element={<ProtectedRoute requireAdmin><BlogAdmin /></ProtectedRoute>} />
+<Route path={`${prefix}${routeConfig.blogImport[lang]}`} element={<ProtectedRoute requireAdmin><BlogImport /></ProtectedRoute>} />
       {/* Auth */}
       <Route path={`${prefix}${routeConfig.auth[lang]}`} element={<Auth />} />
       <Route path={`${prefix}${routeConfig.account[lang]}`} element={<Account />} />
