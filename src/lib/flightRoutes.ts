@@ -489,9 +489,77 @@ export function generateFlightRoutes(): FlightRoute[] {
   return routes;
 }
 
-// Get route by slug
+// EN→TR city name slug aliases for international URL support
+// When someone visits /en/flight/istanbul-barcelona, we map "barcelona" → "barselona"
+const CITY_SLUG_ALIASES: Record<string, string> = {
+  'barcelona': 'barselona',
+  'london': 'londra',
+  'vienna': 'viyana',
+  'munich': 'munih',
+  'prague': 'prag',
+  'budapest': 'budapeste',
+  'athens': 'atina',
+  'lisbon': 'lizbon',
+  'copenhagen': 'kopenhag',
+  'sarajevo': 'saraybosna',
+  'brussels': 'bruksel',
+  'geneva': 'cenevre',
+  'warsaw': 'varsova',
+  'bucharest': 'bukres',
+  'sofia': 'sofya',
+  'seoul': 'seul',
+  'jakarta': 'cakarta',
+  'beirut': 'beyrut',
+  'muscat': 'maskat',
+  'tirana': 'tiran',
+  'pristina': 'pristine',
+  'skopje': 'uskup',
+  'zurich': 'zurih',
+  'belgrade': 'belgrad',
+  'cologne': 'koln',
+  'nuremberg': 'nurnberg',
+  'rome': 'roma',
+  // Common alternative spellings
+  'new-york': 'new-york',
+  'rio-de-janeiro': 'rio-de-janeiro',
+  'hong-kong': 'hong-kong',
+  'kuala-lumpur': 'kuala-lumpur',
+};
+
+// Convert an EN slug to TR slug
+function normalizeSlugToTr(slug: string): string {
+  // Split slug into origin-destination parts
+  // Find the split point by trying all possible city names
+  const allRoutes = generateFlightRoutes();
+  
+  // Direct match first
+  const direct = allRoutes.find(r => r.slug === slug);
+  if (direct) return slug;
+  
+  // Try replacing EN city names with TR equivalents
+  let normalized = slug;
+  for (const [en, tr] of Object.entries(CITY_SLUG_ALIASES)) {
+    // Replace as whole word segments (between hyphens or at start/end)
+    normalized = normalized.replace(new RegExp(`(^|-)${en}(-|$)`, 'g'), `$1${tr}$2`);
+  }
+  
+  return normalized;
+}
+
+// Get route by slug (supports both TR and EN slugs)
 export function getRouteBySlug(slug: string): FlightRoute | undefined {
-  return generateFlightRoutes().find(r => r.slug === slug);
+  const routes = generateFlightRoutes();
+  // Direct match
+  const direct = routes.find(r => r.slug === slug);
+  if (direct) return direct;
+  
+  // Try EN→TR alias mapping
+  const trSlug = normalizeSlugToTr(slug);
+  if (trSlug !== slug) {
+    return routes.find(r => r.slug === trSlug);
+  }
+  
+  return undefined;
 }
 
 // Get all route slugs

@@ -1,3 +1,18 @@
+/**
+ * blog.ts — SEED / FALLBACK blog data
+ * 
+ * PRIMARY SOURCE: Supabase `blog_posts` table
+ * This file serves as:
+ *   1. Seed data for initial content
+ *   2. Fallback when Supabase is unreachable
+ * 
+ * Priority order (in BlogPost.tsx and Blog.tsx):
+ *   Supabase post > static post (same slug = Supabase wins)
+ * 
+ * TO ADD NEW POSTS: Use the admin panel (/admin/blog) or Supabase directly.
+ * DO NOT add new posts to this file — it's legacy seed data only.
+ */
+
 export interface BlogPost {
   id: string;
   slug: string;

@@ -38,6 +38,7 @@ import KVKK from "./pages/KVKK";
 import CookiePolicy from "./pages/CookiePolicy";
 import AffiliatePage from "./pages/AffiliatePage";
 import MetodolojiPage from "./pages/MetodolojiPage";
+import AboutPage from "./pages/AboutPage";
 import SoloSeyahatPage from "./pages/SoloSeyahatPage";
 import AileSeyahatiPage from "./pages/AileSeyahatiPage";
 import { CookieBanner } from "./components/CookieBanner";
@@ -94,6 +95,7 @@ const routeConfig = {
   // Additional Legal
   affiliate: { tr: '/affiliate-aciklama', en: '/affiliate-disclosure', de: '/affiliate-offenlegung', fr: '/divulgation-affiliation', es: '/divulgacion-afiliacion', ar: '/affiliate-disclosure' },
   metodoloji: { tr: '/metodoloji', en: '/methodology', de: '/methodik', fr: '/methodologie', es: '/metodologia', ar: '/methodology' },
+  about: { tr: '/hakkimizda', en: '/about', de: '/ueber-uns', fr: '/a-propos', es: '/sobre-nosotros', ar: '/about' },
 };
 
 // Generate routes for a specific language
@@ -143,6 +145,7 @@ function generateLangRoutes(lang: 'tr' | 'en' | 'de' | 'fr' | 'es' | 'ar', prefi
       {/* Additional Legal */}
       <Route path={`${prefix}${routeConfig.affiliate[lang]}`} element={<AffiliatePage />} />
       <Route path={`${prefix}${routeConfig.metodoloji[lang]}`} element={<MetodolojiPage />} />
+      <Route path={`${prefix}${routeConfig.about[lang]}`} element={<AboutPage />} />
     </>
   );
 }

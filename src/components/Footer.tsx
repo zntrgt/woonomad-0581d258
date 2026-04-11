@@ -82,6 +82,7 @@ export function Footer() {
               <li><Link to={getRoute('cookies')} className="text-sand-400 hover:text-white transition-colors">{t('footer.cookies')}</Link></li>
               <li><Link to={getRoute('affiliate')} className="text-sand-400 hover:text-white transition-colors">Affiliate Açıklama</Link></li>
               <li><Link to={getRoute('metodoloji')} className="text-sand-400 hover:text-white transition-colors">Metodoloji</Link></li>
+              <li><Link to={getRoute('about')} className="text-sand-400 hover:text-white transition-colors">Hakkımızda</Link></li>
             </ul>
           </div>
         </div>
