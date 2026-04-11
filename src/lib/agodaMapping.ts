@@ -361,14 +361,14 @@ export function getAgodaUrl(
     params.set('sort', 'priceLowToHigh');
   }
   
-  // Priority 1: Use Agoda city page URL (most reliable)
-  if (mapping?.agodaSlug) {
-    return `https://www.agoda.com/city/${mapping.agodaSlug}.html?${params.toString()}`;
+// Filtered search (stars, price sort) → use search URL with textToSearch
+  // Unfiltered → use city page URL for better landing experience
+if (mapping?.agodaSlug) {
+    return `https://www.agoda.com/city/${mapping.agodaSlug}.html?cid=${AGODA_CID}`;
   }
   
-  // Priority 2: Use textToSearch with city name (works for all cities)
-  params.set('textToSearch', mapping?.nameEn || cityName);
-  return `https://www.agoda.com/search?${params.toString()}`;
+  const slug = (mapping?.nameEn || cityName).toLowerCase().replace(/\s+/g, '-');
+  return `https://www.agoda.com/city/${slug}.html?cid=${AGODA_CID}`;
 }
 
 // Open Agoda URL — simple window.open, no hacks

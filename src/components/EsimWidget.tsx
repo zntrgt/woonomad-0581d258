@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Smartphone, ExternalLink, Signal, Globe } from 'lucide-react';
+import { Smartphone, ExternalLink, Signal, Globe, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,47 +12,54 @@ interface EsimWidgetProps {
   className?: string;
 }
 
-// Travelpayouts Airalo Affiliate ID
-const AIRALO_AFFILIATE_ID = "referral_woonomad";
+// ─── Affiliate Configuration ───────────────────────────────────
+// IMPORTANT: Replace with your actual Impact tracking links
+const AIRALO_BASE_URL = "https://www.airalo.com";
+const AIRALO_AFFILIATE_PARAM = "ref=woonomad"; // TODO: Replace with Impact tracking parameter
 
-// Country code to Airalo destination mapping
-const countryMappings: Record<string, string> = {
-  'TR': 'turkey',
-  'DE': 'germany',
-  'FR': 'france',
-  'ES': 'spain',
-  'IT': 'italy',
-  'GB': 'united-kingdom',
-  'NL': 'netherlands',
-  'GR': 'greece',
-  'PT': 'portugal',
-  'AE': 'united-arab-emirates',
-  'JP': 'japan',
-  'TH': 'thailand',
-  'SG': 'singapore',
-  'ID': 'indonesia',
-  'US': 'united-states',
-  'GE': 'georgia',
-  'MK': 'north-macedonia',
-  'AT': 'austria',
-  'CH': 'switzerland',
-  'BE': 'belgium',
-  'CZ': 'czech-republic',
-  'PL': 'poland',
-  'HU': 'hungary',
-  'HR': 'croatia',
-  'RO': 'romania',
-  'BG': 'bulgaria',
+// Country code → Airalo destination + network info
+const countryMappings: Record<string, { slug: string; network: string; speed: string }> = {
+  'TR': { slug: 'turkey', network: 'Turkcell', speed: '4G/5G' },
+  'DE': { slug: 'germany', network: 'T-Mobile', speed: '5G' },
+  'FR': { slug: 'france', network: 'Orange', speed: '4G/5G' },
+  'ES': { slug: 'spain', network: 'Movistar', speed: '4G/5G' },
+  'IT': { slug: 'italy', network: 'TIM', speed: '4G' },
+  'GB': { slug: 'united-kingdom', network: 'EE', speed: '5G' },
+  'NL': { slug: 'netherlands', network: 'KPN', speed: '4G/5G' },
+  'GR': { slug: 'greece', network: 'Cosmote', speed: '4G' },
+  'PT': { slug: 'portugal', network: 'MEO', speed: '4G/5G' },
+  'AE': { slug: 'united-arab-emirates', network: 'du', speed: '5G' },
+  'JP': { slug: 'japan', network: 'SoftBank', speed: '5G' },
+  'TH': { slug: 'thailand', network: 'AIS', speed: '4G/5G' },
+  'SG': { slug: 'singapore', network: 'Singtel', speed: '5G' },
+  'ID': { slug: 'indonesia', network: 'Telkomsel', speed: '4G' },
+  'US': { slug: 'united-states', network: 'T-Mobile', speed: '5G' },
+  'GE': { slug: 'georgia', network: 'Magti', speed: '4G' },
+  'MK': { slug: 'north-macedonia', network: 'A1', speed: '4G' },
+  'AT': { slug: 'austria', network: 'A1', speed: '5G' },
+  'CH': { slug: 'switzerland', network: 'Swisscom', speed: '5G' },
+  'BE': { slug: 'belgium', network: 'Proximus', speed: '4G/5G' },
+  'CZ': { slug: 'czech-republic', network: 'T-Mobile', speed: '4G' },
+  'PL': { slug: 'poland', network: 'Plus', speed: '4G/5G' },
+  'HU': { slug: 'hungary', network: 'Telekom', speed: '4G' },
+  'HR': { slug: 'croatia', network: 'A1', speed: '4G' },
+  'RO': { slug: 'romania', network: 'Vodafone', speed: '4G' },
+  'BG': { slug: 'bulgaria', network: 'A1', speed: '4G' },
+};
+
+const getCountryInfo = (countryCode: string) => {
+  return countryMappings[countryCode] || { slug: 'global', network: 'Yerel operatör', speed: '4G' };
 };
 
 const getAiraloUrl = (countryCode: string) => {
-  const destination = countryMappings[countryCode] || 'global';
-  return `https://www.airalo.com/${destination}-esim?${AIRALO_AFFILIATE_ID}`;
+  const info = getCountryInfo(countryCode);
+  return `${AIRALO_BASE_URL}/${info.slug}-esim?${AIRALO_AFFILIATE_PARAM}`;
 };
 
 export function EsimWidget({ countryCode, countryName, cityName, className }: EsimWidgetProps) {
   const { t } = useTranslation();
   const airaloUrl = getAiraloUrl(countryCode);
+  const countryInfo = getCountryInfo(countryCode);
 
   return (
     <Card className={className}>
@@ -60,23 +67,29 @@ export function EsimWidget({ countryCode, countryName, cityName, className }: Es
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Smartphone className="h-4 w-4 text-primary" />
-            {t('esim.title', 'eSIM Paketleri')}
+            eSIM
           </CardTitle>
           <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
             <Link to="/esim">
-              {t('common.seeAll', 'Tümü')} →
+              Rehber →
             </Link>
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-4 text-center">
-          <Smartphone className="h-8 w-8 mx-auto text-primary mb-2" />
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-4">
           <h4 className="font-medium text-sm mb-1">
-            {countryName} {t('esim.esimPackages', 'eSIM')}
+            {countryName} eSIM
           </h4>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+            <Signal className="h-3 w-3" />
+            <span>{countryInfo.network} · {countryInfo.speed}</span>
+          </div>
           <p className="text-xs text-muted-foreground mb-3">
-            {t('esim.stayConnected', 'SIM kart aramadan bağlı kal')}
+            {cityName 
+              ? `${cityName}'de SIM kart aramadan internete bağlan.` 
+              : 'SIM kart aramadan, anında internete bağlan.'
+            }
           </p>
           
           <a 
@@ -86,29 +99,21 @@ export function EsimWidget({ countryCode, countryName, cityName, className }: Es
             className="block"
           >
             <Button className="w-full gap-2" size="sm">
-              <Signal className="h-4 w-4" />
-              {t('esim.viewPackages', 'Paketleri Gör')}
+              Paketleri Gör
               <ExternalLink className="h-3 w-3" />
             </Button>
           </a>
+
+          <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
+            Airalo · Affiliate bağlantı
+          </p>
         </div>
 
-        {/* Quick info */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-muted/50 rounded p-2 text-center">
-            <Badge variant="outline" className="text-2xs mb-1">{t('esim.instant', 'Anında')}</Badge>
-            <p className="text-muted-foreground">{t('esim.instantActivation', 'Aktivasyon')}</p>
-          </div>
-          <div className="bg-muted/50 rounded p-2 text-center">
-            <Badge variant="outline" className="text-2xs mb-1">4G/5G</Badge>
-            <p className="text-muted-foreground">{t('esim.highSpeed', 'Yüksek Hız')}</p>
-          </div>
-        </div>
-
-        <Button asChild variant="secondary" size="sm" className="w-full mt-2">
-          <Link to="/esim">
-            <Globe className="h-4 w-4 mr-2" />
-            {t('esim.allCountries', 'Tüm Ülkeler')}
+        <Button asChild variant="outline" size="sm" className="w-full">
+          <Link to="/esim" className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            eSIM Rehberi ve Karşılaştırma
+            <ArrowRight className="h-3 w-3" />
           </Link>
         </Button>
       </CardContent>
