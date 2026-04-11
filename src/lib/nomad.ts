@@ -161,14 +161,14 @@ export const nomadMetrics: Record<string, NomadMetrics> = {
     weatherScore: 6,
     communityScore: 8,
   },
-  'budapes': {
+  'budapeste': {
     internetSpeed: '55 Mbps',
     costOfLiving: '€1000/ay',
     coworkingCount: 50,
     nomadScore: 8,
     cafesWithWifi: 180,
     timezone: 'UTC+1',
-    visaInfo: 'White Card programı',
+    visaInfo: 'White Card programı (değerlendirme altında)',
     safetyScore: 8,
     weatherScore: 7,
     communityScore: 8,
@@ -511,7 +511,7 @@ export const coworkingSpaces: CoworkingSpace[] = [
   {
     slug: 'kaptar-budapest',
     name: 'Kaptár',
-    citySlug: 'budapes',
+    citySlug: 'budapeste',
     summary: 'Budapeşte\'nin ilk ve en büyük coworking alanı. Sıcak topluluk atmosferi ve merkezi konum.',
     amenities: ['WiFi', 'Toplantı Odaları', 'Mutfak', 'Etkinlik Alanı', 'Teras'],
     pricing: { daily: 12, monthly: 120, currency: 'EUR' },

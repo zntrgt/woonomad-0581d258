@@ -21,6 +21,12 @@ export interface CityFAQ {
   answer: string;
 }
 
+export interface CityAttraction {
+  name: string;
+  desc: string;
+  category: string;
+}
+
 export interface CityGeoData {
   tldr: string;
   quickAnswer: string;
@@ -30,6 +36,12 @@ export interface CityGeoData {
   seasons: SeasonRow[];
   costs: CostRow[];
   faqs: CityFAQ[];
+  idealFor?: string[];
+  suggestedDays?: string;
+  transport?: string;
+  food?: string;
+  topAttractions?: CityAttraction[];
+  neighborhoods?: { name: string; description: string; bestFor?: string; priceLevel?: string }[];
 }
 
 export const cityGeoData: Record<string, CityGeoData> = {
@@ -62,7 +74,7 @@ export const cityGeoData: Record<string, CityGeoData> = {
     ],
   },
 
-  barselona: {
+  barcelona: {
     tldr: "Barselona, Akdeniz sahili ve Gaudí mimarisiyle öne çıkan İspanya'nın en turistik şehri. Günlük bütçe €50–75. En iyi zaman Nisan–Haziran ve Eylül–Ekim. Avrupa'nın en güçlü dijital göçebe sahnelerinden biri. Sagrada Familia, Park Güell ve La Rambla başlıca noktalar.",
     quickAnswer: "Barselona'da 3–5 gün kalın, günlük €50–75 bütçe ayırın, Mayıs ve Eylül en ideal aylar.",
     lastUpdated: "Nisan 2026",
@@ -493,27 +505,49 @@ export const cityGeoData: Record<string, CityGeoData> = {
   },
 
   budapeste: {
-    tldr: "Budapeşte, Avrupa'nın en uygun fiyatlı ve göz alıcı başkentlerinden biri. Günlük bütçe €35–60. Tuna nehri, termal hamamlar ve ruin bar kültürü. Dijital göçebeler için hızla popülerleşen bir merkez. Schengen vizesi gerekli.",
-    quickAnswer: "Budapeşte'de 3–4 gün kalın, günlük €35–60 bütçe ayırın, Nisan–Ekim en ideal dönem.",
+    tldr: "Budapeşte, Tuna Nehri'nin ikiye böldüğü Macaristan'ın başkenti — Avrupa'nın en uygun fiyatlı ve görsel açıdan en etkileyici başkentlerinden biri. Günlük bütçe €35–60 (orta segment €85–150). 118 doğal sıcak su kaynağıyla 'Kaplıcalar Şehri' ünvanını taşıyor. Ruin bar kültürü, UNESCO listesindeki Tuna kıyıları ve Buda Kalesi, Osmanlı mirası hamamlar ve Sziget Festivali ile her türden gezgine hitap ediyor. Dijital göçebeler için hızla popülerleşen bir merkez. Türk vatandaşları için Schengen vizesi gerekli.",
+    quickAnswer: "Budapeşte'de 3–5 gün kalın, günlük €35–60 bütçe ayırın, Nisan–Haziran ve Eylül–Ekim en ideal dönem. Havalimanından merkeze 100E otobüsüyle 30 dk.",
     lastUpdated: "Nisan 2026",
-    visa: "Schengen vizesi gerekli. Macaristan beyaz göçebe vizesi programı değerlendirme altında.",
-    safety: "Güvenli bir şehir. Gece Buda tarafı sakin, Pest tarafı canlı. 4-6 numaralı tramvayda yankesiciye dikkat.",
+    idealFor: ["Çiftler", "Solo Gezginler", "Dijital Göçebeler", "Bütçe Gezginleri", "Kültür Meraklıları"],
+    suggestedDays: "3–5 gün",
+    visa: "Türk vatandaşları için Schengen vizesi gerekli. Macaristan büyükelçiliği veya VFS Global üzerinden başvuru. Beyaz kart (White Card) dijital göçebe programı değerlendirme aşamasında — henüz aktif değil.",
+    safety: "Genel olarak güvenli bir şehir. Buda tarafı gece çok sakin, Pest tarafı canlı ve kalabalık. 4-6 numaralı tramvay hattı ile metro istasyonlarında ve turistik alanlarda (Váci utca, Büyük Pazar) yankesicilere dikkat. Acil durumlar: 112 (genel), 107 (polis). Türkiye'den 2 saat geri (yaz saati uygulamasında 1 saat).",
+    transport: "Ferenc Liszt Havalimanı'ndan (BUD) merkeze 100E ekspres otobüsü ile 30 dk, bilet ~2.200 HUF (~€5.50). Taksi sabit fiyat ~€25. Şehir içinde metro (4 hat), tramvay ve otobüs ağı çok iyi. 24 saatlik ulaşım kartı ~2.500 HUF, 72 saatlik ~5.500 HUF. Lime e-scooter ve MOL Bubi bisiklet paylaşımı yaygın.",
+    food: "Gulyás (gulaş çorbası), lángos (kızarmış hamur + ekşi krema + peynir), kürtőskalács (baca pasta), paprikás csirke (paprikalı tavuk), töltött káposzta (lahana sarması). Merkez Hali'nde (Nagy Vásárcsarnok) yerel lezzetleri uygun fiyata deneyebilirsiniz. Restoranda ana yemek: bütçe €5–8, orta €12–20.",
+    topAttractions: [
+      { name: "Parlamento Binası", desc: "Neo-Gotik başyapıt, Tuna kıyısında. İç tur mutlaka yapılmalı. Gece aydınlatması muhteşem.", category: "Tarih" },
+      { name: "Buda Kalesi (Budavári Palota)", desc: "UNESCO listesinde. Ulusal Galeri ve Tarih Müzesi burada. Tepeden Pest manzarası.", category: "Tarih" },
+      { name: "Balıkçı Tabyası", desc: "Neo-Roman kuleleri ve panoramik Tuna manzarası. Gün batımında gidin.", category: "Manzara" },
+      { name: "Széchenyi Termal Hamamı", desc: "Avrupa'nın en büyük açık hava termal kompleksi. Sarı Neo-Barok bina, 18 havuz.", category: "Deneyim" },
+      { name: "Gellért Hamamı ve Tepesi", desc: "Art Nouveau iç tasarımlı hamam. Tepeden 360° şehir manzarası.", category: "Deneyim" },
+      { name: "Szimpla Kert", desc: "Dünyanın en ünlü ruin bar'ı. Pazar günü farmer's market. Gece canlı müzik.", category: "Gece Hayatı" },
+      { name: "Aziz Stefan Bazilikası", desc: "Şehrin en büyük kilisesi. Kubbesine çıkın — 360° manzara.", category: "Tarih" },
+      { name: "Büyük Pazar Hali", desc: "1897'den beri açık. Alt kat taze ürünler, üst kat hediyelik ve lángos.", category: "Yerel" },
+    ],
     seasons: [
-      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Orta", note: "Bahar, Tuna kenarında yürüyüş" },
-      { period: "Haz–Ağu", temp: "18–30°C", crowd: "Yüksek", price: "Orta", note: "Sziget festivali Ağustos" },
-      { period: "Eyl–Kas", temp: "8–20°C", crowd: "Orta", price: "Düşük", note: "Sonbahar, şarap sezonu" },
-      { period: "Ara–Şub", temp: "-1–5°C", crowd: "Düşük", price: "Düşük", note: "Termal hamam sezonu, Noel pazarları" },
+      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Orta", note: "Bahar festivali, Tuna kenarı yürüyüşleri, parklar çiçek açıyor" },
+      { period: "Haz–Ağu", temp: "18–33°C", crowd: "Yüksek", price: "Yüksek", note: "Sziget Festivali (Ağustos), açık hava etkinlikleri" },
+      { period: "Eyl–Kas", temp: "8–20°C", crowd: "Orta", price: "Düşük", note: "Şarap festivali (Eylül), en iyi fiyat-deneyim dengesi" },
+      { period: "Ara–Şub", temp: "-2–5°C", crowd: "Düşük", price: "Düşük", note: "Noel pazarları, termal hamam sezonu, buz pateni" },
     ],
     costs: [
-      { item: "Konaklama", budget: "€15–30", mid: "€50–90", comfort: "€140+" },
-      { item: "Yemek", budget: "€8–14", mid: "€18–30", comfort: "€50+" },
-      { item: "Ulaşım", budget: "€3–5", mid: "€6–10", comfort: "€18+" },
-      { item: "Aktivite", budget: "€0–8", mid: "€12–22", comfort: "€35+" },
+      { item: "Konaklama (gece)", budget: "€15–30", mid: "€50–90", comfort: "€140+" },
+      { item: "Yemek (gün)", budget: "€8–14", mid: "€18–30", comfort: "€50+" },
+      { item: "Ulaşım (gün)", budget: "€3–5", mid: "€6–10", comfort: "€18+" },
+      { item: "Aktivite (gün)", budget: "€0–8", mid: "€12–22", comfort: "€35+" },
       { item: "TOPLAM/gün", budget: "€26–57", mid: "€86–152", comfort: "€243+" },
     ],
     faqs: [
-      { question: "Budapeşte'de hangi hamama gidilmeli?", answer: "Széchenyi (açık hava, büyük), Gellért (Art Nouveau mimari), Rudas (Osmanlı dönemi). Hafta içi daha sakin." },
-      { question: "Ruin bar nedir?", answer: "Terk edilmiş binalarda açılan barlar. Szimpla Kert en ünlüsü — pazar günü farmer's market var." },
+      { question: "Budapeşte'de kaç gün kalınmalı?", answer: "Şehrin ana noktalarını görmek için 3 gün yeterli. Termal hamamlara zaman ayırmak ve günübirlik geziler (Szentendre, Esztergom) eklemek isterseniz 5 gün ideal." },
+      { question: "Budapeşte'de hangi hamama gidilmeli?", answer: "Széchenyi: açık hava, büyük, fotoğrafik. Gellért: Art Nouveau iç tasarım, daha sakin. Rudas: Osmanlı dönemi kubbeli hamam, gece seansları var. Hafta içi gidin — kalabalık çok daha az." },
+      { question: "Ruin bar nedir?", answer: "Terk edilmiş binalarda açılan, eklektik dekorasyonlu barlar. 7. Bölge'de (Erzsébetváros) yoğunlaşmış. Szimpla Kert en ünlüsü — pazar günleri farmer's market oluyor. Instant-Fogas ve Anker't de popüler." },
+      { question: "Budapeşte pahalı mı?", answer: "Avrupa standartlarında ucuz. Günlük bütçe €35–60 ile rahat gezilir. Bir bira €1.50–3, restoranda ana yemek €5–12, metro bileti ~€1.20. Prag ve Viyana'dan belirgin şekilde ucuz." },
+      { question: "Havalimanından merkeze nasıl gidilir?", answer: "100E ekspres otobüsü ile Deák Ferenc Meydanı'na 30 dk, bilet ~2.200 HUF (~€5.50). Taksi sabit fiyat ~€25. miniBUD shuttle da seçenek. 200E + metro M3 daha ucuz ama daha uzun." },
+      { question: "Budapeşte güvenli mi?", answer: "Evet, genel olarak güvenli. Gece bile çoğu bölgede rahat yürünür. Yankesicilere turistik alanlarda (Váci utca, tramvay 4-6, Büyük Pazar) dikkat edin. Acil durum: 112." },
+      { question: "Budapeşte'de para birimi nedir?", answer: "Macar Forinti (HUF). 1 EUR ≈ 400 HUF (Nisan 2026). Euro bazı turistik yerlerde kabul edilir ama kur çok kötü — mutlaka Forint kullanın. ATM yaygın, kartla ödeme çoğu yerde mümkün." },
+      { question: "Viyana'dan Budapeşte'ye nasıl gidilir?", answer: "Tren (ÖBB/MÁV) ile 2,5 saat, bilet €15–30. Flixbus ile 2,5–3 saat, €10–20. RegioJet daha konforlu ve uygun fiyatlı. Günübirlik gezi için uygun mesafe." },
+      { question: "Budapeşte'de en iyi mevsim hangisi?", answer: "Nisan–Haziran (bahar, ılık, az kalabalık) ve Eylül–Ekim (sonbahar, şarap festivali, uygun fiyat). Yaz sıcak ve kalabalık ama Sziget Festivali Ağustos'ta. Kış soğuk ama Noel pazarları ve termal hamamlar için ideal." },
+      { question: "Budapeşte'de toplu taşıma nasıl?", answer: "Metro (4 hat), tramvay, otobüs ve troleybus ağı çok iyi. 24 saatlik kart ~2.500 HUF (~€6.25), 72 saatlik ~5.500 HUF (~€13.75). Budapest Card ile ulaşım + müze girişleri dahil." },
     ],
   },
 
@@ -639,6 +673,591 @@ export const cityGeoData: Record<string, CityGeoData> = {
     faqs: [
       { question: "Hawker center nedir?", answer: "Açık hava yemek merkezleri — Michelin yıldızlı sokak yemeği $3–5. Maxwell Food Centre ve Lau Pa Sat en ünlüleri." },
       { question: "Singapur'da neye dikkat etmeli?", answer: "Sakız ithalatı ve satışı yasak. Toplu taşımada yiyip içmek yasak. Sigara çok sınırlı alanlarda." },
+    ],
+  },
+
+  // ═══════ EKSİK ŞEHİRLER — YENİ GEO VERİLERİ ═══════
+
+  antalya: {
+    tldr: "Antalya, Türkiye'nin güney sahilinde Akdeniz'in incisi. Yılın 300+ günü güneşli. Antik Perge, Aspendos ve Side kalıntıları; Düden ve Manavgat şelaleleri; Kaleiçi'nin tarihi dokusu ve turkuaz sahilleri. Günlük bütçe ₺1.000–2.000 (~€30–55). Türk Rivierası'nın kalbi.",
+    quickAnswer: "Antalya'da 3–5 gün kalın, Nisan–Haziran ve Eylül–Kasım en ideal dönem. Sahil, antik kentler ve doğa bir arada.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Aileler", "Çiftler", "Plaj Tatilcileri", "Tarih Meraklıları"],
+    suggestedDays: "3–5 gün",
+    visa: "Birçok ülke vatandaşı e-Vize ile giriş yapabilir. AB vatandaşları 90 gün vizesiz.",
+    safety: "Güvenli bir tatil bölgesi. Turistik alanlarda standart önlemler yeterli. Acil durum: 112.",
+    transport: "Antalya Havalimanı (AYT) şehir merkezine 13 km. Havaş shuttle, tramvay (Antray) ve otobüs (Antalyakart) mevcut. Kemer, Side, Alanya gibi tatil bölgelerine düzenli servisler var.",
+    food: "Piyaz (Antalya usulü fasulye salatası), tandır kebabı, şiş köfte, tahinli piyaz, turunç reçeli. Kaleiçi'nde atmosferik restoranlar, Lara'da plaj barları. Ana yemek: bütçe ₺150–250, orta ₺300–500.",
+    seasons: [
+      { period: "Mar–May", temp: "15–25°C", crowd: "Orta", price: "Orta", note: "Bahar, antik kent gezileri için ideal" },
+      { period: "Haz–Ağu", temp: "25–35°C", crowd: "Çok Yüksek", price: "Yüksek", note: "Plaj sezonu, sıcak" },
+      { period: "Eyl–Kas", temp: "18–30°C", crowd: "Orta", price: "Orta", note: "Deniz hâlâ sıcak, kalabalık azalmış" },
+      { period: "Ara–Şub", temp: "8–15°C", crowd: "Düşük", price: "Düşük", note: "Kış güneşi, Saklikent kayak" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "₺800–1.500", mid: "₺2.000–4.000", comfort: "₺6.000+" },
+      { item: "Yemek (gün)", budget: "₺300–600", mid: "₺700–1.200", comfort: "₺2.000+" },
+      { item: "Ulaşım (gün)", budget: "₺50–150", mid: "₺200–400", comfort: "₺600+" },
+      { item: "Aktivite (gün)", budget: "₺0–300", mid: "₺400–800", comfort: "₺1.500+" },
+      { item: "TOPLAM/gün", budget: "₺1.150–2.550", mid: "₺3.300–6.400", comfort: "₺10.100+" },
+    ],
+    faqs: [
+      { question: "Antalya'da en iyi plajlar hangileri?", answer: "Konyaaltı (şehir merkezi), Lara (uzun kumsal), Kaputaş (koyda turkuaz), Olympos (tarihi), Phaselis (antik kent yanı). Kleopatra Plajı Alanya'da." },
+      { question: "Antalya'dan günübirlik nereler gezilir?", answer: "Perge ve Aspendos antik kentleri (30–45 dk), Düden Şelalesi (15 dk), Manavgat (75 dk), Pamukkale (3 saat), Saklıkent Kanyonu (2 saat)." },
+      { question: "Antalya pahalı mı?", answer: "Türkiye ortalamasında. All-inclusive oteller rekabetçi fiyatlı. Kaleiçi'nde butik oteller €40–80/gece. Sokak yemeği ₺100–200." },
+    ],
+  },
+
+  izmir: {
+    tldr: "İzmir, Ege kıyısında Türkiye'nin üçüncü büyük şehri. Kordon boyu yürüyüşü, Kemeraltı Çarşısı, antik Efes harabeleri ve Çeşme-Alaçatı plajları. Ege mutfağının başkenti — zeytinyağlılar, otlar ve deniz ürünleri. Günlük bütçe ₺800–1.800. Dijital göçebeler için yükselen bir merkez.",
+    quickAnswer: "İzmir'de 3–4 gün kalın (Efes ve Çeşme dahil), Mayıs–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Dijital Göçebeler", "Gurme Gezginler", "Çiftler", "Kültür Meraklıları"],
+    suggestedDays: "3–4 gün",
+    visa: "Birçok ülke vatandaşı e-Vize ile giriş yapabilir.",
+    safety: "Güvenli ve yaşanabilir bir şehir. Gece bile rahat. Kordon ve Alsancak bölgeleri canlı.",
+    transport: "Adnan Menderes Havalimanı (ADB) merkeze İZBAN treni ile 25 dk. Şehir içi metro, İZBAN, otobüs ve vapur (Karşıyaka-Konak). İzmirkart zorunlu.",
+    food: "Boyoz (İzmir'e özel hamur işi), kumru (Çeşme sandviçi), lokma, İzmir köfte, zeytinyağlılar, enginar. Kemeraltı'nda sokak lezzetleri, Kordon'da balık restoranları.",
+    seasons: [
+      { period: "Mar–May", temp: "12–25°C", crowd: "Orta", price: "Orta", note: "Alaçatı Ot Festivali, Efes gezisi için ideal" },
+      { period: "Haz–Ağu", temp: "25–35°C", crowd: "Yüksek", price: "Yüksek", note: "Çeşme-Alaçatı sezonu, rüzgar sörfü" },
+      { period: "Eyl–Kas", temp: "18–28°C", crowd: "Orta", price: "Orta", note: "İzmir Fuarı Eylül, deniz hâlâ sıcak" },
+      { period: "Ara–Şub", temp: "6–14°C", crowd: "Düşük", price: "Düşük", note: "Kış, yerel yaşam deneyimi" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "₺600–1.200", mid: "₺1.500–3.000", comfort: "₺5.000+" },
+      { item: "Yemek (gün)", budget: "₺250–500", mid: "₺600–1.000", comfort: "₺1.500+" },
+      { item: "Ulaşım (gün)", budget: "₺30–100", mid: "₺150–300", comfort: "₺500+" },
+      { item: "Aktivite (gün)", budget: "₺0–200", mid: "₺300–600", comfort: "₺1.000+" },
+      { item: "TOPLAM/gün", budget: "₺880–2.000", mid: "₺2.550–4.900", comfort: "₺8.000+" },
+    ],
+    faqs: [
+      { question: "İzmir'den Efes'e nasıl gidilir?", answer: "Selçuk'a İZBAN + minibüs ile ~1,5 saat. Organize turlar da mevcut. Efes, Türkiye'nin en iyi korunmuş antik kenti." },
+      { question: "Çeşme-Alaçatı ne zaman gidilir?", answer: "Haziran–Eylül plaj ve rüzgar sörfü sezonu. Nisan'da Ot Festivali. Kış aylarında sakin ama termal oteller açık." },
+      { question: "İzmir'de nomad olarak yaşamak nasıl?", answer: "Alsancak ve Bornova'da kafeler bol. Coworking alanları artıyor. Aylık yaşam maliyeti İstanbul'dan %30 düşük. İnternet hızı iyi." },
+    ],
+  },
+
+  bodrum: {
+    tldr: "Bodrum, Ege'nin en glamuröz tatil beldesi. Beyaz badanalı evleri, marina kültürü, antik Mausoleum ve dünyaca ünlü gece hayatı. Günlük bütçe ₺1.200–3.000. Yaz aylarında jet-set destinasyonu, kışın sakin sahil kasabası.",
+    quickAnswer: "Bodrum'da 3–5 gün kalın, Haziran–Eylül plaj sezonu, Nisan–Mayıs sakin ve uygun fiyatlı.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Çiftler", "Gece Hayatı", "Yelken", "Lüks Tatil"],
+    suggestedDays: "3–5 gün",
+    visa: "Birçok ülke vatandaşı e-Vize ile giriş yapabilir.",
+    safety: "Çok güvenli tatil beldesi. Gece hayatında standart önlemler yeterli.",
+    transport: "Milas-Bodrum Havalimanı (BJV) merkeze 35 km, shuttle ve dolmuş mevcut. Şehir içi dolmuşlar yaygın. Tekne turları ile koylar arası ulaşım.",
+    food: "Ege otları, çökertme kebabı, ahtapot ızgara, enginar, kabak çiçeği dolması. Gümüşlük'te balıkçı restoranları, Bodrum Marina'da üst segment mekanlar.",
+    seasons: [
+      { period: "Mar–May", temp: "15–25°C", crowd: "Düşük", price: "Düşük", note: "Sakin, fiyatlar uygun, doğa yeşil" },
+      { period: "Haz–Ağu", temp: "25–35°C", crowd: "Çok Yüksek", price: "Çok Yüksek", note: "Yaz sezonu, beach clublar, gece hayatı" },
+      { period: "Eyl–Kas", temp: "18–28°C", crowd: "Orta", price: "Orta", note: "Deniz hâlâ sıcak, kalabalık azalmış" },
+      { period: "Ara–Şub", temp: "8–15°C", crowd: "Çok Düşük", price: "Düşük", note: "Sakin, mandalina sezonu" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "₺1.000–2.500", mid: "₺3.000–6.000", comfort: "₺10.000+" },
+      { item: "Yemek (gün)", budget: "₺400–700", mid: "₺800–1.500", comfort: "₺3.000+" },
+      { item: "Ulaşım (gün)", budget: "₺50–150", mid: "₺200–500", comfort: "₺800+" },
+      { item: "Aktivite (gün)", budget: "₺0–300", mid: "₺500–1.000", comfort: "₺2.000+" },
+      { item: "TOPLAM/gün", budget: "₺1.450–3.650", mid: "₺4.500–9.000", comfort: "₺15.800+" },
+    ],
+    faqs: [
+      { question: "Bodrum'da en iyi plajlar hangileri?", answer: "Bitez (sakin, rüzgar sörfü), Gümbet (gece hayatına yakın), Camel Beach (doğal), Akyarlar (kumsal), Gümüşlük (gün batımı)." },
+      { question: "Bodrum pahalı mı?", answer: "Yaz aylarında Türkiye'nin en pahalı bölgelerinden biri. Nisan–Mayıs ve Ekim'de fiyatlar %50 düşer. Beach club girişleri ₺500–2.000." },
+    ],
+  },
+
+  kapadokya: {
+    tldr: "Kapadokya, peri bacaları, yeraltı şehirleri ve sıcak hava balonlarıyla dünyanın en sürreal destinasyonu. Göreme Açık Hava Müzesi (UNESCO), kaya oteller ve vadiler. Günlük bütçe ₺1.000–2.500. 3 gün yeterli ama 5 gün ideal.",
+    quickAnswer: "Kapadokya'da 3–5 gün kalın, Nisan–Haziran ve Eylül–Kasım en ideal dönem. Balon turu mutlaka.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Çiftler", "Fotoğrafçılar", "Macera Gezginleri", "Kültür Meraklıları"],
+    suggestedDays: "3–5 gün",
+    visa: "Birçok ülke vatandaşı e-Vize ile giriş yapabilir.",
+    safety: "Çok güvenli. Kırsal alan, suç oranı düşük. Vadilerde yürüyüşte harita/GPS kullanın.",
+    transport: "Nevşehir (NAV) ve Kayseri (ASR) havalimanlarından shuttle servisler (~1 saat). Bölge içi araç kiralama veya tur önerilir. Göreme merkezde yürüyerek ulaşım mümkün.",
+    food: "Testi kebabı (Kapadokya'ya özel), mantı, gözleme, çömlek kebabı, pekmez ve pastırma. Şarapçılık gelişiyor — yerel Emir ve Kalecik Karası üzümlerinden.",
+    seasons: [
+      { period: "Mar–May", temp: "5–20°C", crowd: "Orta", price: "Orta", note: "Bahar, yeşil vadiler, balon uçuşları stabil" },
+      { period: "Haz–Ağu", temp: "18–32°C", crowd: "Yüksek", price: "Yüksek", note: "Sıcak günler, serin geceler" },
+      { period: "Eyl–Kas", temp: "8–22°C", crowd: "Orta", price: "Orta", note: "Bağ bozumu, sonbahar renkleri" },
+      { period: "Ara–Şub", temp: "-5–5°C", crowd: "Düşük", price: "Düşük", note: "Kar altında peri bacaları, kaya otel keyfi" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "₺800–1.500", mid: "₺2.500–5.000", comfort: "₺8.000+" },
+      { item: "Yemek (gün)", budget: "₺300–500", mid: "₺600–1.000", comfort: "₺1.500+" },
+      { item: "Ulaşım (gün)", budget: "₺100–200", mid: "₺300–600", comfort: "₺1.000+" },
+      { item: "Aktivite (gün)", budget: "₺200–500", mid: "₺1.500–3.000", comfort: "₺5.000+" },
+      { item: "TOPLAM/gün", budget: "₺1.400–2.700", mid: "₺4.900–9.600", comfort: "₺15.500+" },
+    ],
+    faqs: [
+      { question: "Balon turu ne kadar?", answer: "Standart tur €150–250/kişi (60 dk), deluxe turlar €300+. Sabah şafakta kalkılır. Hava durumuna bağlı — iptal olabilir. En az 2 sabah ayırın." },
+      { question: "Kapadokya'da kaç gün yeterli?", answer: "Ana noktalar için 2–3 gün. Vadilerde yürüyüş, yeraltı şehirleri ve Ihlara Vadisi dahil 4–5 gün ideal." },
+      { question: "Kaya otelde kalmak nasıl?", answer: "Benzersiz bir deneyim. Göreme ve Uçhisar'da seçenekler bol. Bütçe kaya hosteller ₺500/gece'den, lüks suit'ler ₺5.000+/gece'den başlıyor." },
+    ],
+  },
+
+  amman: {
+    tldr: "Amman, Ürdün'ün başkenti ve Ortadoğu'nun en kozmopolit şehirlerinden biri. Roma kalıntıları, renkli sokak sanatı ve Arap mutfağının en iyileri. Petra ve Ölü Deniz'e kapı. Günlük bütçe $40–80. Türk vatandaşları vizesiz.",
+    quickAnswer: "Amman'da 2–3 gün kalın (Petra ve Ölü Deniz dahil 5–7 gün), Mart–Mayıs ve Eylül–Kasım en ideal.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Tarih Meraklıları", "Macera Gezginleri", "Gurme Gezginler"],
+    suggestedDays: "2–3 gün (sadece şehir), 5–7 gün (ülke turu)",
+    visa: "Türk vatandaşları vizesiz (90 gün). Jordan Pass ($70–80) ile vize + Petra girişi dahil.",
+    safety: "Bölgenin en güvenli ülkelerinden. Gece bile rahat. İnsanlar çok misafirperver.",
+    transport: "Queen Alia Havalimanı (AMM) merkeze 35 km, Airport Express ~5 JOD. Şehir içi taksi ve Uber/Careem yaygın. Petra'ya JETT otobüsü 4 saat.",
+    food: "Mansaf (ulusal yemek, kuzu + yoğurt), falafel, hummus, kunafa (kadayıf tatlısı), şawarma. Hashem Restaurant efsanevi (1950'den beri). Rainbow Street'te kafeler.",
+    seasons: [
+      { period: "Mar–May", temp: "12–25°C", crowd: "Orta", price: "Orta", note: "En iyi dönem, çiçeklenme" },
+      { period: "Haz–Ağu", temp: "22–35°C", crowd: "Düşük", price: "Düşük", note: "Sıcak ama kuru, Ölü Deniz ideal" },
+      { period: "Eyl–Kas", temp: "15–28°C", crowd: "Orta", price: "Orta", note: "Sonbahar, Petra için ideal" },
+      { period: "Ara–Şub", temp: "4–12°C", crowd: "Düşük", price: "Düşük", note: "Soğuk, ara sıra yağmur" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "$15–30", mid: "$50–100", comfort: "$150+" },
+      { item: "Yemek (gün)", budget: "$8–15", mid: "$20–35", comfort: "$50+" },
+      { item: "Ulaşım (gün)", budget: "$3–8", mid: "$10–20", comfort: "$40+" },
+      { item: "Aktivite (gün)", budget: "$0–10", mid: "$20–50", comfort: "$80+" },
+      { item: "TOPLAM/gün", budget: "$26–63", mid: "$100–205", comfort: "$320+" },
+    ],
+    faqs: [
+      { question: "Jordan Pass nedir?", answer: "Vize ücreti + Petra girişi + 40'tan fazla yer dahil. $70 (1 gün Petra) veya $75 (2 gün) veya $80 (3 gün). Havalimanından önce online alın." },
+      { question: "Amman'dan Petra'ya nasıl gidilir?", answer: "JETT otobüsü ~4 saat, 11 JOD. Araç kiralama da yaygın. Organize turlar 1 veya 2 günlük." },
+    ],
+  },
+
+  baku: {
+    tldr: "Bakü, Azerbaycan'ın başkenti ve Hazar Denizi kıyısında modern ile tarihin buluştuğu şehir. Alevler Kulesi, UNESCO listesindeki İçerişehir, Haydar Aliyev Merkezi. Günlük bütçe $25–50. Türk vatandaşları e-Vize veya ASAN vize ile girebilir.",
+    quickAnswer: "Bakü'de 3–4 gün kalın, Nisan–Haziran ve Eylül–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Fotoğrafçılar", "Kültür Meraklıları", "Bütçe Gezginleri"],
+    suggestedDays: "3–4 gün",
+    visa: "Türk vatandaşları ASAN vize ($20) veya e-Vize ile girebilir. Havalimanında da alınabilir.",
+    safety: "Güvenli bir başkent. Gece bile rahat yürünebilir. Yardımsever insanlar.",
+    transport: "Heydar Aliyev Havalimanı (GYD) merkeze 25 km, Airport Express otobüsü ~30 dk. Metro, otobüs ve BakuCard ile ulaşım.",
+    food: "Plov (pirinç pilavı), dolma, piti (et çorbası), gutab (ince börek), şah plov, baklava. Bulvar'da balık restoranları, İçerişehir'de geleneksel mekanlar.",
+    seasons: [
+      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Orta", note: "Bahar, Novruz Bayramı" },
+      { period: "Haz–Ağu", temp: "22–35°C", crowd: "Yüksek", price: "Yüksek", note: "F1 Grand Prix Haziran" },
+      { period: "Eyl–Kas", temp: "12–25°C", crowd: "Orta", price: "Orta", note: "Sonbahar, ılık" },
+      { period: "Ara–Şub", temp: "2–8°C", crowd: "Düşük", price: "Düşük", note: "Rüzgarlı, soğuk" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "$12–25", mid: "$40–80", comfort: "$120+" },
+      { item: "Yemek (gün)", budget: "$8–15", mid: "$18–30", comfort: "$45+" },
+      { item: "Ulaşım (gün)", budget: "$2–5", mid: "$5–12", comfort: "$20+" },
+      { item: "Aktivite (gün)", budget: "$0–5", mid: "$10–20", comfort: "$30+" },
+      { item: "TOPLAM/gün", budget: "$22–50", mid: "$73–142", comfort: "$215+" },
+    ],
+    faqs: [
+      { question: "Bakü pahalı mı?", answer: "Avrupa'ya göre çok uygun. Günlük $25–50 ile rahat gezilir. Taksi çok ucuz (~$2–5 şehir içi)." },
+      { question: "Bakü'de kaç gün yeterli?", answer: "Şehir için 2–3 gün yeterli. Gobustan kaya resimleri ve çamur volkanları için +1 gün ekleyin." },
+    ],
+  },
+
+  belgrad: {
+    tldr: "Belgrad, Sırbistan'ın başkenti ve Avrupa'nın en dinamik gece hayatına sahip şehri. Tuna ve Sava nehirlerinin birleştiği noktada, Kalemegdan Kalesi ile taçlanan tarihi merkez. Günlük bütçe €25–50. Schengen vizesi gerekli değil — vizesiz giriş.",
+    quickAnswer: "Belgrad'da 2–4 gün kalın, Mayıs–Ekim en ideal dönem. Gece hayatı Avrupa'nın en iyilerinden.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Gece Hayatı", "Bütçe Gezginleri", "Solo Gezginler", "Dijital Göçebeler"],
+    suggestedDays: "2–4 gün",
+    visa: "Türk vatandaşları 90 gün vizesiz. AB vatandaşları da vizesiz.",
+    safety: "Genel olarak güvenli. Gece hayatı bölgelerinde standart dikkat yeterli.",
+    transport: "Nikola Tesla Havalimanı (BEG) merkeze 18 km, otobüs veya taksi ~30 dk. Şehir içi otobüs ve tramvay. Taksi uygun fiyatlı.",
+    food: "Ćevapi (köfte), pljeskavica (dev hamburger), burek, sarma, kaymak. Skadarlija sokağında (Belgrad'ın Montmartre'ı) canlı müzik eşliğinde yemek.",
+    seasons: [
+      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Düşük", note: "Bahar, parklar yeşeriyor" },
+      { period: "Haz–Ağu", temp: "18–32°C", crowd: "Yüksek", price: "Orta", note: "EXIT Festival Temmuz, nehir barları" },
+      { period: "Eyl–Kas", temp: "8–22°C", crowd: "Orta", price: "Düşük", note: "Sonbahar, şarap sezonu" },
+      { period: "Ara–Şub", temp: "-2–5°C", crowd: "Düşük", price: "Düşük", note: "Soğuk, ama kapalı mekanlar canlı" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€10–20", mid: "€35–70", comfort: "€100+" },
+      { item: "Yemek (gün)", budget: "€5–12", mid: "€15–25", comfort: "€40+" },
+      { item: "Ulaşım (gün)", budget: "€2–4", mid: "€5–10", comfort: "€15+" },
+      { item: "Aktivite (gün)", budget: "€0–5", mid: "€8–15", comfort: "€25+" },
+      { item: "TOPLAM/gün", budget: "€17–41", mid: "€63–120", comfort: "€180+" },
+    ],
+    faqs: [
+      { question: "Belgrad gece hayatı nasıl?", answer: "Avrupa'nın en iyi gece hayatlarından biri. Savamala bölgesi ve nehir üstü splavovi (yüzen barlar) efsanevi. Gece 02:00'de başlar, sabaha kadar sürer." },
+      { question: "Belgrad ucuz mu?", answer: "Avrupa'nın en ucuz başkentlerinden. Bira €1.50, yemek €5–8, hostel €10/gece." },
+    ],
+  },
+
+  floransa: {
+    tldr: "Floransa, Rönesans'ın doğduğu şehir ve İtalya'nın sanat başkenti. Uffizi Galerisi, Duomo, Ponte Vecchio ve Michelangelo'nun Davut heykeli. Toskana mutfağının merkezi. Günlük bütçe €60–100. Schengen vizesi gerekli.",
+    quickAnswer: "Floransa'da 2–4 gün kalın, Nisan–Haziran ve Eylül–Ekim en ideal. Müze biletlerini önceden alın.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Sanat Meraklıları", "Çiftler", "Gurme Gezginler", "Kültür Meraklıları"],
+    suggestedDays: "2–4 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Güvenli bir şehir. Turistik alanlarda yankesicilere dikkat.",
+    transport: "Amerigo Vespucci Havalimanı (FLR) merkeze 5 km, tramvay ile 20 dk. Pisa Havalimanı da seçenek (1 saat). Tarihi merkez yürüyerek gezilir.",
+    food: "Bistecca alla fiorentina (T-bone steak), ribollita (ekmek çorbası), pappa al pomodoro, lampredotto (İşkembe sandviç — sokak yemeği), gelato. Mercato Centrale'de yerel lezzetler.",
+    seasons: [
+      { period: "Mar–May", temp: "10–23°C", crowd: "Yüksek", price: "Yüksek", note: "Bahar, çiçeklenme, Paskalya" },
+      { period: "Haz–Ağu", temp: "20–35°C", crowd: "Çok Yüksek", price: "Çok Yüksek", note: "Sıcak, çok kalabalık" },
+      { period: "Eyl–Kas", temp: "12–25°C", crowd: "Yüksek", price: "Yüksek", note: "Sonbahar, Toskana üzüm hasadı" },
+      { period: "Ara–Şub", temp: "2–10°C", crowd: "Düşük", price: "Orta", note: "Sakin, müzelerde kuyruk yok" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€30–60", mid: "€80–150", comfort: "€250+" },
+      { item: "Yemek (gün)", budget: "€15–25", mid: "€30–50", comfort: "€80+" },
+      { item: "Ulaşım (gün)", budget: "€0–5", mid: "€5–10", comfort: "€20+" },
+      { item: "Aktivite (gün)", budget: "€10–20", mid: "€25–50", comfort: "€80+" },
+      { item: "TOPLAM/gün", budget: "€55–110", mid: "€140–260", comfort: "€430+" },
+    ],
+    faqs: [
+      { question: "Uffizi bileti önceden alınmalı mı?", answer: "Kesinlikle evet. Özellikle ilkbahar ve yaz aylarında kuyruklar saatlerce. Online bilet €20–25. Combo bilet ile Palazzo Pitti dahil." },
+      { question: "Floransa'dan Toskana günübirlik gezi?", answer: "Siena (1,5 saat), San Gimignano (1 saat), Chianti bölgesi (şarap turları), Pisa (1 saat), Lucca (1,5 saat)." },
+    ],
+  },
+
+  kopenhag: {
+    tldr: "Kopenhag, Danimarka'nın başkenti ve 'hygge' kavramının doğum yeri. Nyhavn'ın renkli evleri, Tivoli Bahçeleri, bisiklet kültürü ve Yeni İskandinav mutfağı. Dünyanın en yaşanabilir şehirlerinden biri. Günlük bütçe €70–120. Schengen vizesi gerekli.",
+    quickAnswer: "Kopenhag'da 2–4 gün kalın, Mayıs–Eylül en ideal dönem. Bisiklet kiralayın.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Tasarım Meraklıları", "Çiftler", "Bisiklet Severler", "Gurme Gezginler"],
+    suggestedDays: "2–4 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Dünyanın en güvenli başkentlerinden biri.",
+    transport: "Kastrup Havalimanı (CPH) merkeze metro ile 15 dk. Şehir bisikletle gezilir — Donkey Republic veya Bycyklen. Metro, S-tog ve otobüs yaygın. Copenhagen Card ile ulaşım + müzeler dahil.",
+    food: "Smørrebrød (açık yüzlü sandviç), frikadeller (köfte), kanelsnegle (tarçınlı çörek), hot dog (pølsevogn). Torvehallerne'de gurme market. Noma ve Geranium dünyanın en iyi restoranları arasında.",
+    seasons: [
+      { period: "Mar–May", temp: "3–16°C", crowd: "Orta", price: "Orta", note: "Bahar, Tivoli açılışı Nisan" },
+      { period: "Haz–Ağu", temp: "14–23°C", crowd: "Yüksek", price: "Yüksek", note: "Uzun günler, açık hava etkinlikleri" },
+      { period: "Eyl–Kas", temp: "5–15°C", crowd: "Orta", price: "Orta", note: "Sonbahar, Tivoli Cadılar Bayramı" },
+      { period: "Ara–Şub", temp: "-1–4°C", crowd: "Düşük", price: "Orta", note: "Tivoli Noel, hygge sezonu" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€30–60", mid: "€100–180", comfort: "€250+" },
+      { item: "Yemek (gün)", budget: "€20–35", mid: "€40–60", comfort: "€100+" },
+      { item: "Ulaşım (gün)", budget: "€5–10", mid: "€12–18", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€5–15", mid: "€20–40", comfort: "€60+" },
+      { item: "TOPLAM/gün", budget: "€60–120", mid: "€172–298", comfort: "€435+" },
+    ],
+    faqs: [
+      { question: "Kopenhag pahalı mı?", answer: "Evet, Avrupa'nın en pahalı şehirlerinden. Ama Copenhagen Card (€60–100) ile ulaşım ve müzeler dahil. Sokak yemeği ve market alışverişi ile bütçe düşer." },
+      { question: "Christiania nedir?", answer: "1971'den beri var olan özerk topluluk / 'serbest şehir'. Renkli duvar resimleri, alternatif yaşam. Fotoğraf çekmek hassas konu — önceden sorun." },
+    ],
+  },
+
+  madrid: {
+    tldr: "Madrid, İspanya'nın başkenti ve kültür merkezi. Prado Müzesi, Kraliyet Sarayı, Retiro Parkı ve dünyanın en geç yenen akşam yemekleri. Tapas kültürü, flamenko ve futbol tutkusu. Günlük bütçe €50–90. Schengen vizesi gerekli.",
+    quickAnswer: "Madrid'de 3–4 gün kalın, Nisan–Haziran ve Eylül–Kasım en ideal. Tapas turuna çıkın.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Kültür Meraklıları", "Gurme Gezginler", "Gece Hayatı", "Sanat Meraklıları"],
+    suggestedDays: "3–4 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Güvenli bir başkent. Metro ve turistik alanlarda yankesicilere dikkat.",
+    transport: "Barajas Havalimanı (MAD) merkeze metro ile 30 dk (~€5). Metro çok kapsamlı (13 hat). 10'lu bilet €12.20. Cercanías banliyö trenleri. Toledo ve Segovia günübirlik tren ile.",
+    food: "Tapas (patatas bravas, jamón, croquetas), bocadillo de calamares (kalamar sandviçi), cocido madrileño (nohut güveci), churros con chocolate. Mercado de San Miguel'de gurme tapas.",
+    seasons: [
+      { period: "Mar–May", temp: "10–22°C", crowd: "Orta", price: "Orta", note: "Bahar, San Isidro festivali Mayıs" },
+      { period: "Haz–Ağu", temp: "20–36°C", crowd: "Yüksek", price: "Yüksek", note: "Çok sıcak, plaj yok ama havuzlar açık" },
+      { period: "Eyl–Kas", temp: "10–25°C", crowd: "Orta", price: "Orta", note: "Sonbahar, kültürel sezon başlangıcı" },
+      { period: "Ara–Şub", temp: "2–10°C", crowd: "Düşük", price: "Düşük", note: "Soğuk ama güneşli, Noel pazarları" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€25–50", mid: "€70–130", comfort: "€200+" },
+      { item: "Yemek (gün)", budget: "€12–20", mid: "€25–45", comfort: "€70+" },
+      { item: "Ulaşım (gün)", budget: "€3–6", mid: "€8–15", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€0–10", mid: "€15–30", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€40–86", mid: "€118–220", comfort: "€345+" },
+    ],
+    faqs: [
+      { question: "Madrid'de ne zaman yemek yenir?", answer: "Öğle yemeği 14:00–16:00, akşam yemeği 21:00–23:00. Restoranlar bu saatlere göre açılır. Menú del día (günün menüsü) öğle yemeğinde €12–18 ile 3 çeşit." },
+      { question: "Madrid'den günübirlik nereler gezilir?", answer: "Toledo (30 dk tren, UNESCO), Segovia (30 dk hızlı tren, su kemeri), El Escorial (1 saat), Ávila (1,5 saat)." },
+    ],
+  },
+
+  marakes: {
+    tldr: "Marakeş, Fas'ın kızıl şehri ve duyuları uyandıran bir destinasyon. Jemaa el-Fna meydanının kaotik enerjisi, medina sokaklarının labirenti, Majorelle Bahçesi ve hammam kültürü. Günlük bütçe €25–60. Vizesiz giriş (Türk vatandaşları 90 gün).",
+    quickAnswer: "Marakeş'te 3–4 gün kalın, Mart–Mayıs ve Eylül–Kasım en ideal dönem. Medina'da bir riad'da kalın.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Macera Gezginleri", "Fotoğrafçılar", "Çiftler", "Bütçe Gezginleri"],
+    suggestedDays: "3–4 gün",
+    visa: "Türk vatandaşları 90 gün vizesiz.",
+    safety: "Genel olarak güvenli. Medina'da ısrarcı satıcılara ve sahte rehberlere dikkat. Gece medina sokaklarında dikkatli olun.",
+    transport: "Menara Havalimanı (RAK) merkeze 6 km, taksi ~70 MAD. Medina içi yürüyerek. Calèche (at arabası) ve taksi şehir içi. Atlas Dağları ve Sahara turları organize.",
+    food: "Tagine (güveç), couscous, pastilla (yufkalı pasta), harira (çorba), msemen (yağlı gözleme), nane çayı. Jemaa el-Fna meydanında sokak yemeği (akşam stantları). Riad'larda Fas mutfağı deneyimi.",
+    seasons: [
+      { period: "Mar–May", temp: "15–28°C", crowd: "Orta", price: "Orta", note: "Bahar, en iyi dönem, bahçeler çiçekte" },
+      { period: "Haz–Ağu", temp: "25–40°C", crowd: "Düşük", price: "Düşük", note: "Çok sıcak, havuzlu riad şart" },
+      { period: "Eyl–Kas", temp: "18–30°C", crowd: "Orta", price: "Orta", note: "Sonbahar, ılık" },
+      { period: "Ara–Şub", temp: "8–18°C", crowd: "Düşük", price: "Düşük", note: "Serin, gece soğuk" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€10–25", mid: "€40–80", comfort: "€150+" },
+      { item: "Yemek (gün)", budget: "€5–12", mid: "€15–30", comfort: "€50+" },
+      { item: "Ulaşım (gün)", budget: "€2–5", mid: "€5–12", comfort: "€20+" },
+      { item: "Aktivite (gün)", budget: "€0–8", mid: "€15–30", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€17–50", mid: "€75–152", comfort: "€270+" },
+    ],
+    faqs: [
+      { question: "Medina'da kaybolur muyum?", answer: "Büyük ihtimalle evet — ve bu deneyimin parçası. Google Maps çoğu sokakta çalışır. Büyük camilere ve minarelere yönelin. Riad'ınızın adresini yazılı taşıyın." },
+      { question: "Pazarlık nasıl yapılır?", answer: "Souk'larda pazarlık zorunlu. İlk fiyatın %40–60'ını teklif edin. Gülümseyerek, sakin pazarlık edin. Yürüyüp gitmek en iyi taktik." },
+    ],
+  },
+
+  milano: {
+    tldr: "Milano, İtalya'nın moda ve iş başkenti. Duomo katedrali, La Scala Operası, Son Akşam Yemeği freskosu ve Quadrilatero della Moda alışveriş bölgesi. Günlük bütçe €55–100. İtalya'nın en kozmopolit şehri.",
+    quickAnswer: "Milano'da 2–3 gün kalın, Nisan–Haziran ve Eylül–Kasım en ideal. Design Week Nisan'da.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Alışveriş Tutkunları", "Tasarım Meraklıları", "Sanat Meraklıları"],
+    suggestedDays: "2–3 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Güvenli. Merkez istasyonu ve metro'da yankesicilere dikkat.",
+    transport: "Malpensa Havalimanı (MXP) merkeze Malpensa Express ile 50 dk (€13). Linate (LIN) daha yakın. Metro 5 hat, tramvay yaygın.",
+    food: "Risotto alla milanese (safranli pirinç), cotoletta (şnitzel), panettone (Noel keki), ossobuco, aperitivo kültürü (içkiyle büfe yemek, 18:00–21:00). Navigli bölgesinde aperitivo barları.",
+    seasons: [
+      { period: "Mar–May", temp: "10–22°C", crowd: "Yüksek", price: "Yüksek", note: "Design Week Nisan, moda haftası" },
+      { period: "Haz–Ağu", temp: "20–32°C", crowd: "Orta", price: "Orta", note: "Sıcak, yerel halk sahile gider" },
+      { period: "Eyl–Kas", temp: "10–22°C", crowd: "Yüksek", price: "Yüksek", note: "Moda haftası Eylül, kültürel sezon" },
+      { period: "Ara–Şub", temp: "0–8°C", crowd: "Orta", price: "Orta", note: "Sisli, ama La Scala sezonu zirve" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€30–55", mid: "€80–150", comfort: "€250+" },
+      { item: "Yemek (gün)", budget: "€15–25", mid: "€30–50", comfort: "€80+" },
+      { item: "Ulaşım (gün)", budget: "€5–8", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€5–15", mid: "€20–40", comfort: "€60+" },
+      { item: "TOPLAM/gün", budget: "€55–103", mid: "€140–255", comfort: "€415+" },
+    ],
+    faqs: [
+      { question: "Son Akşam Yemeği nasıl görülür?", answer: "Santa Maria delle Grazie kilisesinde. Bilet MUTLAKA önceden alın (aylar öncesinden doluyor). 15 dakikalık turlar, max 25 kişi. €15 + rezervasyon ücreti." },
+      { question: "Aperitivo kültürü nedir?", answer: "18:00–21:00 arası bir içecek alınca büfe yemek dahil. Navigli ve Brera bölgesinde en iyi mekanlar. İçecek €8–12 ile akşam yemeği yerine geçer." },
+    ],
+  },
+
+  munih: {
+    tldr: "Münih, Bavyera'nın başkenti ve Alman kültürünün kalbi. Oktoberfest'in doğum yeri, bira bahçeleri, BMW, Alp Dağları'na kapı. Marienplatz, Nymphenburg Sarayı ve İngiliz Bahçesi. Günlük bütçe €55–95. Schengen vizesi gerekli.",
+    quickAnswer: "Münih'te 2–4 gün kalın, Haziran–Ekim en ideal (Oktoberfest Eylül sonu). Bira bahçelerini kaçırmayın.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Bira Tutkunları", "Aileler", "Kültür Meraklıları", "Kış Sporları"],
+    suggestedDays: "2–4 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Almanya'nın en güvenli büyük şehirlerinden biri.",
+    transport: "Franz Josef Strauss Havalimanı (MUC) merkeze S-Bahn ile 40 dk (€13). Şehir içi U-Bahn, S-Bahn, tramvay ve otobüs. Bayern Ticket ile bölgesel geziler.",
+    food: "Weißwurst (beyaz sosis, sabah 12:00'den önce yenir), Schweinshaxe (domuz incik), Brezel, Obatzda (peynir ezmesi), Kaiserschmarrn (tatlı). Hofbräuhaus efsanevi bira salonu.",
+    seasons: [
+      { period: "Mar–May", temp: "3–18°C", crowd: "Orta", price: "Orta", note: "Bahar, bira bahçeleri açılıyor" },
+      { period: "Haz–Ağu", temp: "14–25°C", crowd: "Yüksek", price: "Yüksek", note: "Yaz, İngiliz Bahçesi'nde bira" },
+      { period: "Eyl–Kas", temp: "5–18°C", crowd: "Çok Yüksek", price: "Çok Yüksek", note: "Oktoberfest! Otel 6 ay öncesinden dolur" },
+      { period: "Ara–Şub", temp: "-3–4°C", crowd: "Orta", price: "Orta", note: "Noel pazarları, kayak sezonu" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€25–50", mid: "€80–150", comfort: "€220+" },
+      { item: "Yemek (gün)", budget: "€12–22", mid: "€25–45", comfort: "€70+" },
+      { item: "Ulaşım (gün)", budget: "€5–8", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€0–10", mid: "€15–30", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€42–90", mid: "€130–240", comfort: "€365+" },
+    ],
+    faqs: [
+      { question: "Oktoberfest ne zaman?", answer: "Eylül ortası – Ekim ilk haftası (16 gün). Giriş ücretsiz ama masa bulmak zor. Sabah erken gidin veya hafta içi deneyin. Bir maß (1L) bira €14–16." },
+      { question: "Münih'ten Alpler'e gidilebilir mi?", answer: "Evet, Bayern Ticket (€27) ile Garmisch-Partenkirchen (1,5 saat), Neuschwanstein Şatosu (2 saat), Salzburg (1,5 saat) günübirlik." },
+    ],
+  },
+
+  frankfurt: {
+    tldr: "Frankfurt, Avrupa'nın finans merkezi ve Almanya'nın ulaşım hub'ı. Modern gökdelenler ('Mainhattan'), tarihi Römer Meydanı ve Müze Kıyısı (Museumsufer). Avrupa Merkez Bankası ve elma şarabı kültürü. Günlük bütçe €50–90.",
+    quickAnswer: "Frankfurt'ta 1–2 gün yeterli, transit hub olarak ideal. Römer, müzeler ve Sachsenhausen.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["İş Seyahati", "Transit Gezginler", "Kültür Meraklıları"],
+    suggestedDays: "1–2 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Güvenli. Hauptbahnhof çevresi gece biraz hassas.",
+    transport: "Frankfurt Havalimanı (FRA) Avrupa'nın en büyük hub'larından. S-Bahn ile merkeze 15 dk. Şehir içi U-Bahn, S-Bahn ve tramvay.",
+    food: "Grüne Soße (yeşil sos, yumurta ile), Handkäs mit Musik (el peyniri), Rippchen (kaburga), Apfelwein (elma şarabı). Sachsenhausen'de geleneksel elma şarabı lokantaları.",
+    seasons: [
+      { period: "Mar–May", temp: "5–20°C", crowd: "Orta", price: "Orta", note: "Bahar, Main nehri kenarında yürüyüş" },
+      { period: "Haz–Ağu", temp: "15–28°C", crowd: "Yüksek", price: "Yüksek", note: "Museumsuferfest Ağustos" },
+      { period: "Eyl–Kas", temp: "6–18°C", crowd: "Yüksek", price: "Yüksek", note: "Kitap fuarı Ekim" },
+      { period: "Ara–Şub", temp: "-1–5°C", crowd: "Orta", price: "Orta", note: "Noel pazarı Römerberg'de" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€25–50", mid: "€70–140", comfort: "€200+" },
+      { item: "Yemek (gün)", budget: "€12–20", mid: "€25–45", comfort: "€70+" },
+      { item: "Ulaşım (gün)", budget: "€5–8", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€0–10", mid: "€15–30", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€42–88", mid: "€120–230", comfort: "€345+" },
+    ],
+    faqs: [
+      { question: "Frankfurt transit için kaç saat yeterli?", answer: "Havalimanından merkeze 15 dk. 4–6 saat ile Römer Meydanı, Alte Oper ve Sachsenhausen'de elma şarabı mümkün." },
+    ],
+  },
+
+  newyork: {
+    tldr: "New York, 'asla uyumayan şehir' ve dünyanın kültür başkenti. Times Square, Central Park, Özgürlük Anıtı, Broadway ve 800+ dil konuşulan kozmopolit yapı. Günlük bütçe $80–150. ESTA veya B1/B2 vize gerekli.",
+    quickAnswer: "New York'ta 4–7 gün kalın, Nisan–Haziran ve Eylül–Kasım en ideal. CityPASS ile tasarruf edin.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Kültür Meraklıları", "Alışveriş Tutkunları", "Solo Gezginler", "Sanat Meraklıları"],
+    suggestedDays: "4–7 gün",
+    visa: "Türk vatandaşları B1/B2 turist vizesi başvurusu yapmalı. ABD vizesi süreci uzun.",
+    safety: "Büyük şehir tedbirleri gerekli. Manhattan genelde güvenli. Metro gece biraz hassas. Times Square ve turistik alanlar kalabalık.",
+    transport: "JFK, LaGuardia ve Newark havalimanları. JFK'dan AirTrain + metro ile Manhattan'a ~1 saat ($10.75). Metro 24 saat çalışır. MetroCard veya OMNY kontaksız ödeme. Uber/Lyft yaygın.",
+    food: "Pizza (Joe's Pizza, Di Fara), bagel (Russ & Daughters), pastrami sandviç (Katz's Deli), cheesecake, hot dog. Chinatown, Little Italy, Koreatown'da etnik mutfaklar. Halal Guys sokak yemeği.",
+    seasons: [
+      { period: "Mar–May", temp: "5–22°C", crowd: "Yüksek", price: "Yüksek", note: "Bahar, Central Park çiçeklenme" },
+      { period: "Haz–Ağu", temp: "22–33°C", crowd: "Çok Yüksek", price: "Çok Yüksek", note: "Sıcak ve nemli, açık hava etkinlikleri" },
+      { period: "Eyl–Kas", temp: "8–22°C", crowd: "Yüksek", price: "Yüksek", note: "Sonbahar, Central Park'ta yaprak renkleri" },
+      { period: "Ara–Şub", temp: "-3–5°C", crowd: "Orta", price: "Orta", note: "Kış, Noel vitrini, buz pateni" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "$40–80", mid: "$150–300", comfort: "$400+" },
+      { item: "Yemek (gün)", budget: "$20–35", mid: "$40–70", comfort: "$120+" },
+      { item: "Ulaşım (gün)", budget: "$5–10", mid: "$15–30", comfort: "$50+" },
+      { item: "Aktivite (gün)", budget: "$0–20", mid: "$30–60", comfort: "$100+" },
+      { item: "TOPLAM/gün", budget: "$65–145", mid: "$235–460", comfort: "$670+" },
+    ],
+    faqs: [
+      { question: "New York pahalı mı?", answer: "Evet, dünyanın en pahalı şehirlerinden. Ama $1 pizza dilimi, ücretsiz park ve müzeler (bazı günler) ile bütçe yönetilebilir. Konaklama en büyük kalem." },
+      { question: "Broadway bileti nasıl alınır?", answer: "TKTS kabininden (Times Square) aynı gün %20–50 indirimli. Lottery ve rush ticket'lar $30–40. Hamilton, Wicked, Lion King en popüler." },
+      { question: "Manhattan'da hangi bölgede kalınır?", answer: "Midtown (merkezi, turistik), Lower East Side (trendy, daha uygun), Brooklyn Williamsburg (hipster, Manhattan'a metro ile 10 dk), Upper West Side (sakin, Central Park yanı)." },
+    ],
+  },
+
+  sarajevo: {
+    tldr: "Saraybosna, Bosna Hersek'in başkenti ve Doğu ile Batı'nın buluştuğu benzersiz şehir. Osmanlı Baščaršija çarşısı, Avusturya-Macaristan mimarisi ve savaş tarihinin izleri bir arada. Günlük bütçe €20–40. Türk vatandaşları vizesiz.",
+    quickAnswer: "Saraybosna'da 2–3 gün kalın, Mayıs–Ekim en ideal. Osmanlı mirası ve savaş tarihi bir arada.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Tarih Meraklıları", "Bütçe Gezginleri", "Solo Gezginler"],
+    suggestedDays: "2–3 gün",
+    visa: "Türk vatandaşları 90 gün vizesiz.",
+    safety: "Güvenli. Savaştan kalan mayın riski sadece kırsal alanlarda — işaretli yollardan çıkmayın.",
+    transport: "Saraybosna Havalimanı (SJJ) merkeze 12 km, taksi ~15 BAM. Tramvay şehir merkezinde. Mostar'a tren veya otobüs 2–3 saat.",
+    food: "Ćevapi (Baščaršija'da mutlaka deneyin), burek, begova čorba, bosanski lonac, tufahije (elma tatlısı), Bosna kahvesi. Zeljo's en ünlü ćevapi restoranı.",
+    seasons: [
+      { period: "Mar–May", temp: "5–20°C", crowd: "Düşük", price: "Düşük", note: "Bahar, şehir yeşeriyor" },
+      { period: "Haz–Ağu", temp: "15–30°C", crowd: "Orta", price: "Orta", note: "Yaz festivali, Sarajevo Film Festivali" },
+      { period: "Eyl–Kas", temp: "6–20°C", crowd: "Düşük", price: "Düşük", note: "Sonbahar, sakin" },
+      { period: "Ara–Şub", temp: "-4–3°C", crowd: "Düşük", price: "Düşük", note: "Kar, kayak (Jahorina, Bjelašnica)" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€8–18", mid: "€30–60", comfort: "€90+" },
+      { item: "Yemek (gün)", budget: "€5–10", mid: "€12–22", comfort: "€35+" },
+      { item: "Ulaşım (gün)", budget: "€1–3", mid: "€3–8", comfort: "€15+" },
+      { item: "Aktivite (gün)", budget: "€0–5", mid: "€8–15", comfort: "€25+" },
+      { item: "TOPLAM/gün", budget: "€14–36", mid: "€53–105", comfort: "€165+" },
+    ],
+    faqs: [
+      { question: "Saraybosna güvenli mi?", answer: "Evet, şehir çok güvenli. Savaş izleri görünür ama insanlar sıcak ve yardımsever. Kırsal alanlarda mayınlı bölgelere dikkat (işaretli)." },
+      { question: "Mostar günübirlik gezi yapılabilir mi?", answer: "Evet, otobüs veya araçla 2–2,5 saat. Stari Most köprüsü, Osmanlı çarşısı. Blagaj Tekkesi de yakın. Tam gün ayırın." },
+    ],
+  },
+
+  seul: {
+    tldr: "Seul, Güney Kore'nin başkenti ve K-pop, K-drama kültürünün merkezi. Antik saraylar ile geleceğin mimarisinin yan yana durduğu mega metropol. Sokak yemeği cenneti. Günlük bütçe $40–80. e-Vize veya K-ETA gerekli.",
+    quickAnswer: "Seul'de 4–5 gün kalın, Nisan (kiraz çiçeği) ve Eylül–Kasım en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["K-pop Hayranları", "Gurme Gezginler", "Alışveriş Tutkunları", "Kültür Meraklıları"],
+    suggestedDays: "4–5 gün",
+    visa: "Türk vatandaşları K-ETA ile 90 gün vizesiz (ön başvuru gerekli). Bazı dönemlerde K-ETA muafiyeti uygulanıyor.",
+    safety: "Dünyanın en güvenli büyük şehirlerinden biri. Gece bile her yerde rahat.",
+    transport: "Incheon Havalimanı (ICN) merkeze AREX ekspres ile 45 dk (₩9.500). Metro 23 hat ile devasa. T-Money kart zorunlu. KTX hızlı tren Busan'a 2,5 saat.",
+    food: "Korean BBQ (samgyeopsal, galbi), bibimbap, tteokbokki (acılı pirinç keki), kimchi jjigae, chimaek (tavuk + bira). Gwangjang Market'te sokak yemeği. Michelin yıldızlı restoranlar da uygun fiyatlı.",
+    seasons: [
+      { period: "Mar–May", temp: "5–22°C", crowd: "Yüksek", price: "Yüksek", note: "Kiraz çiçeği Nisan, en güzel dönem" },
+      { period: "Haz–Ağu", temp: "22–32°C", crowd: "Orta", price: "Orta", note: "Muson yağmurları Temmuz, nemli" },
+      { period: "Eyl–Kas", temp: "8–25°C", crowd: "Yüksek", price: "Yüksek", note: "Sonbahar renkleri, Chuseok festivali" },
+      { period: "Ara–Şub", temp: "-8–3°C", crowd: "Düşük", price: "Düşük", note: "Çok soğuk, kayak, kış festivalleri" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "$15–30", mid: "$50–100", comfort: "$180+" },
+      { item: "Yemek (gün)", budget: "$10–18", mid: "$25–40", comfort: "$60+" },
+      { item: "Ulaşım (gün)", budget: "$3–6", mid: "$8–15", comfort: "$25+" },
+      { item: "Aktivite (gün)", budget: "$0–10", mid: "$15–30", comfort: "$50+" },
+      { item: "TOPLAM/gün", budget: "$28–64", mid: "$98–185", comfort: "$315+" },
+    ],
+    faqs: [
+      { question: "Seul'de hangi bölgede kalınır?", answer: "Myeongdong (alışveriş, turistik), Hongdae (genç, gece hayatı, K-pop), Itaewon (uluslararası, barlar), Gangnam (lüks, K-pop merkezleri), Insadong (geleneksel, sanat)." },
+      { question: "K-pop deneyimi nasıl yaşanır?", answer: "HYBE Insight (BTS), SM Town (COEX Mall), K-pop road (Gangnam). Inkigayo ve Music Bank canlı yayın kayıtları ücretsiz ama bilet zor bulunur." },
+    ],
+  },
+
+  stockholm: {
+    tldr: "Stockholm, İsveç'in başkenti ve 14 adanın üzerinde kurulu 'Kuzey'in Venedik'i'. Nobel Müzesi, ABBA Müzesi, Gamla Stan ve İskandinav tasarım mirası. Günlük bütçe €70–120. Schengen vizesi gerekli.",
+    quickAnswer: "Stockholm'de 3–4 gün kalın, Mayıs–Eylül en ideal (uzun günler, +18 saat güneş).",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Tasarım Meraklıları", "Doğa Severler", "Kültür Meraklıları"],
+    suggestedDays: "3–4 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Dünyanın en güvenli başkentlerinden biri.",
+    transport: "Arlanda Havalimanı (ARN) merkeze Arlanda Express ile 20 dk (~SEK 299). Metro, otobüs ve vapur. SL Access kart zorunlu. Adalar arası vapur keyifli.",
+    food: "Köttbullar (İsveç köftesi), smörgåsbord (büfe), kanelbullar (tarçınlı çörek), gravlax (somon), fika kültürü (kahve + pasta). Östermalms Saluhall'da gurme market.",
+    seasons: [
+      { period: "Mar–May", temp: "0–15°C", crowd: "Orta", price: "Orta", note: "Bahar, günler uzuyor" },
+      { period: "Haz–Ağu", temp: "15–25°C", crowd: "Yüksek", price: "Yüksek", note: "Beyaz geceler, Midsommar" },
+      { period: "Eyl–Kas", temp: "3–12°C", crowd: "Orta", price: "Orta", note: "Sonbahar renkleri, Nobel sezonu" },
+      { period: "Ara–Şub", temp: "-5–2°C", crowd: "Düşük", price: "Orta", note: "Karanlık ama Noel pazarları" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€30–60", mid: "€100–180", comfort: "€280+" },
+      { item: "Yemek (gün)", budget: "€18–30", mid: "€35–55", comfort: "€90+" },
+      { item: "Ulaşım (gün)", budget: "€5–10", mid: "€12–18", comfort: "€25+" },
+      { item: "Aktivite (gün)", budget: "€5–15", mid: "€20–40", comfort: "€60+" },
+      { item: "TOPLAM/gün", budget: "€58–115", mid: "€167–293", comfort: "€455+" },
+    ],
+    faqs: [
+      { question: "Stockholm pahalı mı?", answer: "Evet, İskandinav standartlarında orta. Stockholm Pass (€70–100) ile müzeler ve toplu taşıma dahil. Fika (kahve+pasta) en ucuz keyif ~SEK 50–80." },
+      { question: "Gamla Stan'da ne yapılır?", answer: "Ortaçağ sokakları, Kraliyet Sarayı, Nobel Müzesi, Stortorget meydanı. 2–3 saatte yürüyerek gezilir. Kalabalık ama kaçırılmamalı." },
+    ],
+  },
+
+  venedik: {
+    tldr: "Venedik, su üzerine kurulu eşsiz şehir ve İtalya'nın en romantik destinasyonu. 118 ada, 400+ köprü, San Marco Meydanı, gondol turları ve Murano cam sanatı. Günlük bütçe €65–120. Giriş ücreti uygulanıyor (2024'ten beri bazı günler €5).",
+    quickAnswer: "Venedik'te 2–3 gün kalın, Nisan–Haziran ve Eylül–Ekim en ideal. Karnaval Şubat'ta.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Çiftler", "Sanat Meraklıları", "Fotoğrafçılar"],
+    suggestedDays: "2–3 gün",
+    visa: "Schengen vizesi gerekli.",
+    safety: "Çok güvenli. Su baskını (acqua alta) riski sonbahar/kış — bot getirin.",
+    transport: "Marco Polo Havalimanı (VCE) merkeze vaporetto veya Alilaguna su otobüsü ile 1 saat (€15). Şehir içi vaporetto (su otobüsü). ACTV 24/48/72 saatlik kart (€25/35/45). Araba yok.",
+    food: "Cicchetti (Venedik tapası), risotto al nero di seppia (mürekkep balıklı risotto), sarde in saor (sardalya), fegato alla veneziana (ciğer), spritz (aperitif). Rialto Köprüsü yanında Cantina Do Spade.",
+    seasons: [
+      { period: "Mar–May", temp: "8–22°C", crowd: "Yüksek", price: "Yüksek", note: "Karnaval Şubat sonu, Bienal tek yıllar" },
+      { period: "Haz–Ağu", temp: "20–30°C", crowd: "Çok Yüksek", price: "Çok Yüksek", note: "Film festivali Eylül" },
+      { period: "Eyl–Kas", temp: "10–22°C", crowd: "Yüksek", price: "Yüksek", note: "Acqua alta riski Kasım" },
+      { period: "Ara–Şub", temp: "0–8°C", crowd: "Orta", price: "Orta", note: "Karnaval, sisli romantik atmosfer" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "€30–70", mid: "€100–200", comfort: "€350+" },
+      { item: "Yemek (gün)", budget: "€15–25", mid: "€35–60", comfort: "€100+" },
+      { item: "Ulaşım (gün)", budget: "€10–15", mid: "€18–25", comfort: "€40+" },
+      { item: "Aktivite (gün)", budget: "€5–15", mid: "€25–50", comfort: "€80+" },
+      { item: "TOPLAM/gün", budget: "€60–125", mid: "€178–335", comfort: "€570+" },
+    ],
+    faqs: [
+      { question: "Gondol turu ne kadar?", answer: "Resmi fiyat €80/30 dk (gündüz), €100 (gece). Max 6 kişi. Pazarlık yapılmıyor — fiyat belediye tarafından belirleniyor. Traghetto (gondol ferry) ise sadece €2." },
+      { question: "Venedik giriş ücreti var mı?", answer: "2024'ten beri belirli yoğun günlerde (özellikle hafta sonları ve tatiller) €5 günlük giriş ücreti uygulanıyor. QR kod ile online ödeme. Konaklayanlar muaf." },
+    ],
+  },
+
+  zanzibar: {
+    tldr: "Zanzibar, Tanzanya'ya bağlı Hint Okyanusu'ndaki egzotik takımada. Beyaz kumlu plajlar, turkuaz deniz, baharat turları ve UNESCO listesindeki Stone Town. Günlük bütçe $30–70. Havalimanında vize alınabilir ($50).",
+    quickAnswer: "Zanzibar'da 4–7 gün kalın, Haziran–Ekim kuru sezon en ideal. Stone Town + plaj kombinasyonu.",
+    lastUpdated: "Nisan 2026",
+    idealFor: ["Çiftler", "Plaj Tatilcileri", "Macera Gezginleri", "Balayı"],
+    suggestedDays: "4–7 gün",
+    visa: "Havalimanında vize $50. Bazı ülkelere e-Vize. Sarıhumma aşısı bazı durumlarda gerekli.",
+    safety: "Genel olarak güvenli. Stone Town'da gece dikkatli olun. Plaj bölgeleri çok güvenli.",
+    transport: "Abeid Amani Karume Havalimanı (ZNZ). Stone Town'a taksi ~$10. Ada içi dala dala (minibüs), taksi veya scooter kiralama. Plajlara transfer organize.",
+    food: "Zanzibar pizza (gözleme tarzı), biryani, pilau, ugali, taze deniz ürünleri, baharat çayları. Forodhani Gardens gece pazarı efsanevi — taze ızgara deniz ürünleri $3–8.",
+    seasons: [
+      { period: "Mar–May", temp: "25–32°C", crowd: "Düşük", price: "Düşük", note: "Büyük yağmur sezonu" },
+      { period: "Haz–Ekim", temp: "24–30°C", crowd: "Yüksek", price: "Yüksek", note: "Kuru sezon, en ideal dönem" },
+      { period: "Kas–Ara", temp: "26–33°C", crowd: "Orta", price: "Orta", note: "Kısa yağmur sezonu" },
+      { period: "Oca–Şub", temp: "26–34°C", crowd: "Orta", price: "Orta", note: "Sıcak, deniz sakin" },
+    ],
+    costs: [
+      { item: "Konaklama (gece)", budget: "$15–35", mid: "$60–120", comfort: "$200+" },
+      { item: "Yemek (gün)", budget: "$5–12", mid: "$15–30", comfort: "$50+" },
+      { item: "Ulaşım (gün)", budget: "$2–5", mid: "$8–15", comfort: "$30+" },
+      { item: "Aktivite (gün)", budget: "$0–10", mid: "$20–40", comfort: "$70+" },
+      { item: "TOPLAM/gün", budget: "$22–62", mid: "$103–205", comfort: "$350+" },
+    ],
+    faqs: [
+      { question: "Zanzibar'da en iyi plaj hangisi?", answer: "Nungwi (gün batımı, canlı), Kendwa (gelgit az etkiler), Paje (kite surf), Matemwe (sakin, mercan resifi). Doğu sahili gelgitten etkilenir — önceden araştırın." },
+      { question: "Baharat turu yapılmalı mı?", answer: "Kesinlikle — Zanzibar 'Baharat Adası' olarak bilinir. Yarım günlük tur $20–30. Karanfil, tarçın, vanilya, zencefil, kakao plantasyonları." },
     ],
   },
 };

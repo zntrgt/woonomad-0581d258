@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
-import { Star, ChevronRight, AlertTriangle, Building2, Coffee, Globe, Users, Sun, Calendar, DollarSign, HelpCircle, Info, ShieldCheck } from 'lucide-react';
+import { Star, ChevronRight, AlertTriangle, Building2, Coffee, Globe, Users, Sun, Calendar, DollarSign, HelpCircle, Info, ShieldCheck, MapPin, Bus, UtensilsCrossed } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
@@ -94,12 +94,129 @@ const getNeighborhoods = (citySlug: string): { name: string; description: string
       { name: 'Barceloneta', description: 'Plaj yaşamı, deniz ürünleri ve yaz enerjisi' },
       { name: 'Raval', description: 'Çok kültürlü, sanat merkezleri ve alternatif mekanlar' },
     ],
+    'budapeste': [
+      { name: 'Belváros (5. Bölge)', description: 'Şehrin kalbi. Parlamento, Bazilika, Váci utca. Her yere yürüme mesafesinde.' },
+      { name: 'Erzsébetváros (7. Bölge)', description: 'Ruin bar bölgesi. Szimpla Kert, gece hayatı, sokak sanatı ve trendy kafeler.' },
+      { name: 'Terézváros (6. Bölge)', description: 'Andrássy Bulvarı, Opera Binası, Terör Evi. Sofistike ve merkezi.' },
+      { name: 'Buda – Kale Bölgesi (1. Bölge)', description: 'Tarihi kale, Balıkçı Tabyası, Matthias Kilisesi. Sakin ve romantik.' },
+      { name: 'Újlipótváros (13. Bölge)', description: 'Yerel atmosfer, Tuna kenarı, uygun fiyat. Nomadlar ve uzun konaklama için ideal.' },
+    ],
     'tiflis': [
       { name: 'Old Tbilisi', description: 'Tarihi merkez, dar sokaklar ve geleneksel mimari' },
       { name: 'Vake', description: 'Lüks mahalle, parklar ve modern kafeler' },
       { name: 'Saburtalo', description: 'Yerel yaşam, uygun fiyatlar ve metro erişimi' },
       { name: 'Marjanishvili', description: 'Sanat galerileri, restoranlar ve gece hayatı' },
       { name: 'Vera', description: 'Bohem atmosfer, vintage dükkanlar ve kültürel mekanlar' },
+    ],
+    'istanbul': [
+      { name: 'Sultanahmet', description: 'Ayasofya, Topkapı Sarayı, Sultanahmet Camii. Tarihin kalbi.' },
+      { name: 'Beyoğlu / İstiklal', description: 'İstiklal Caddesi, Galata Kulesi, gece hayatı ve kafeler.' },
+      { name: 'Kadıköy', description: 'Asya yakasında yerel lezzetler, çarşı, canlı sokak kültürü.' },
+      { name: 'Karaköy', description: 'Trendy kafeler, galeriler, Boğaz manzarası. Hipster bölgesi.' },
+      { name: 'Beşiktaş', description: 'Yerel hayat, sahil, Ortaköy Camii ve Boğaz kenarı.' },
+    ],
+    'roma': [
+      { name: 'Centro Storico', description: 'Pantheon, Piazza Navona, Trevi Çeşmesi. Yürüyerek her yere.' },
+      { name: 'Trastevere', description: 'Bohem atmosfer, arnavut kaldırımı, en iyi restoranlar.' },
+      { name: 'Monti', description: 'Trendy butikler, vintage dükkanlar, kafeler. Colosseum yakını.' },
+      { name: 'Testaccio', description: 'Yerel mutfak merkezi, gece hayatı, turistik olmayan.' },
+      { name: 'Vatikan Çevresi (Prati)', description: 'Vatikan Müzeleri yakını, sakin, iyi restoranlar.' },
+    ],
+    'amsterdam': [
+      { name: 'Centrum', description: 'Dam Meydanı, Red Light District, kanallar. Her şeye yakın.' },
+      { name: 'Jordaan', description: 'Pitoresk kanallar, butik dükkanlar, kafeler. En güzel mahalle.' },
+      { name: 'De Pijp', description: 'Albert Cuyp Pazarı, çok kültürlü, canlı. Heineken deneyimi.' },
+      { name: 'Oud-West / Vondelpark', description: 'Vondelpark yanı, sakin, yerel hayat, müzelere yakın.' },
+      { name: 'Noord', description: 'NDSM Wharf, yaratıcı endüstri, ücretsiz feribot ile merkeze.' },
+    ],
+    'tokyo': [
+      { name: 'Shinjuku', description: 'Gökdelenler, gece hayatı, Golden Gai barları, büyük istasyon.' },
+      { name: 'Shibuya', description: 'Ünlü kavşak, alışveriş, genç kültür, Meiji Tapınağı yakın.' },
+      { name: 'Asakusa', description: 'Senso-ji tapınağı, geleneksel atmosfer, Sumida nehri.' },
+      { name: 'Akihabara', description: 'Anime, manga, elektronik. Otaku kültürünün merkezi.' },
+      { name: 'Roppongi', description: 'Gece hayatı, sanat müzeleri, uluslararası atmosfer.' },
+    ],
+    'dubai': [
+      { name: 'Downtown / Burj Khalifa', description: 'Dubai Mall, çeşme show, lüks. Şehrin merkezi.' },
+      { name: 'Dubai Marina', description: 'Gökdelen silueti, sahil yürüyüşü, restoranlar.' },
+      { name: 'Deira / Old Dubai', description: 'Gold Souk, Spice Souk, geleneksel abra tekneleri.' },
+      { name: 'JBR (Jumeirah Beach)', description: 'Plaj, açık hava mekanları, aile dostu.' },
+      { name: 'Business Bay', description: 'Modern, Downtown yakını, daha uygun fiyatlı oteller.' },
+    ],
+    'lizbon': [
+      { name: 'Alfama', description: 'En eski mahalle, fado müziği, dar sokaklar, manzara.' },
+      { name: 'Baixa / Chiado', description: 'Şehir merkezi, alışveriş, kafeler, tram 28.' },
+      { name: 'Bairro Alto', description: 'Gece hayatı merkezi, barlar, restoranlar.' },
+      { name: 'Belém', description: 'Pastéis de Belém, kule, keşif anıtı. Biraz dışarıda.' },
+      { name: 'LX Factory / Alcântara', description: 'Yaratıcı merkez, restoranlar, pazar.' },
+    ],
+    'prag': [
+      { name: 'Staré Město (Eski Şehir)', description: 'Astronomik saat, Karlova Köprüsü yanı, turistik merkez.' },
+      { name: 'Malá Strana', description: 'Kale altı, barok mimari, sakin kafeler.' },
+      { name: 'Vinohrady', description: 'Yerel atmosfer, şık restoranlar, parklar. Nomad favori.' },
+      { name: 'Žižkov', description: 'Bütçe dostu, barlar, TV kulesi, alternatif.' },
+      { name: 'Holešovice', description: 'Yükselen bölge, çağdaş sanat, DOX merkezi.' },
+    ],
+    'viyana': [
+      { name: 'Innere Stadt (1. Bölge)', description: 'Stephansdom, opera, Graben. Tarihi merkez, pahalı.' },
+      { name: 'Leopoldstadt (2. Bölge)', description: 'Prater, çok kültürlü, Tuna kanalı barları.' },
+      { name: 'Neubau (7. Bölge)', description: 'Hipster mahalle, butikler, kafeler, MuseumsQuartier.' },
+      { name: 'Mariahilf (6. Bölge)', description: 'Naschmarkt pazarı, alışveriş, canlı.' },
+      { name: 'Wieden (4. Bölge)', description: 'Sakin, Belvedere yakını, yerel kafeler.' },
+    ],
+    'porto': [
+      { name: 'Ribeira', description: 'UNESCO bölgesi, Douro kıyısı, renkli evler.' },
+      { name: 'Baixa', description: 'Şehir merkezi, Clerigos Kulesi, Livraria Lello.' },
+      { name: 'Cedofeita / Bonfim', description: 'Yerel hayat, street art, uygun fiyatlı.' },
+      { name: 'Vila Nova de Gaia', description: 'Karşı kıyı, port şarabı mahzenleri, nehir manzarası.' },
+    ],
+    'bangkok': [
+      { name: 'Sukhumvit', description: 'Expat merkezi, BTS hattı, gece hayatı, alışveriş.' },
+      { name: 'Old Town (Rattanakosin)', description: 'Grand Palace, Wat Pho, Khao San Road.' },
+      { name: 'Silom / Sathorn', description: 'İş merkezi, gece pazarları, sky barlar.' },
+      { name: 'Chinatown (Yaowarat)', description: 'Sokak yemeği cenneti, altın dükkanları, Wat Traimit.' },
+      { name: 'Ari / Chatuchak', description: 'Yerel atmosfer, hafta sonu pazarı, kafeler.' },
+    ],
+    'bali': [
+      { name: 'Ubud', description: 'Pirinç terasları, yoga, sanat galerileri, maymun ormanı.' },
+      { name: 'Seminyak', description: 'Beach clublar, lüks, restoranlar, alışveriş.' },
+      { name: 'Canggu', description: 'Sörf, dijital göçebe merkezi, kafeler, rice paddies.' },
+      { name: 'Uluwatu', description: 'Uçurum tapınağı, sörf, lüks villalar, gün batımı.' },
+      { name: 'Sanur', description: 'Sakin sahil, aile dostu, geleneksel, dalış.' },
+    ],
+    'singapur': [
+      { name: 'Marina Bay', description: 'Marina Bay Sands, Gardens by the Bay, sky bar.' },
+      { name: 'Chinatown', description: 'Sokak yemeği, tapınaklar, gece pazarı.' },
+      { name: 'Little India', description: 'Renkli, aromatik, Mustafa Centre 24 saat açık.' },
+      { name: 'Kampong Glam', description: 'Malay mirası, street art, Haji Lane butikleri.' },
+      { name: 'Orchard Road', description: 'Alışveriş cenneti, ünlü marka mağazaları.' },
+    ],
+    'seul': [
+      { name: 'Myeongdong', description: 'Alışveriş, K-beauty, sokak yemeği, turistik merkez.' },
+      { name: 'Hongdae', description: 'Genç kültür, K-pop, gece hayatı, street art.' },
+      { name: 'Gangnam', description: 'Lüks alışveriş, K-pop merkezleri, COEX Mall.' },
+      { name: 'Insadong', description: 'Geleneksel sanat, çay evleri, hediyelik eşya.' },
+      { name: 'Itaewon', description: 'Uluslararası, barlar, çok kültürlü restoranlar.' },
+    ],
+    'madrid': [
+      { name: 'Sol / Centro', description: 'Puerta del Sol, Gran Vía, tapas barları, merkez.' },
+      { name: 'La Latina', description: 'Pazar günü El Rastro, tapas, canlı meydanlar.' },
+      { name: 'Malasaña', description: 'Hipster, vintage, barlar, Plaza del Dos de Mayo.' },
+      { name: 'Salamanca', description: 'Lüks alışveriş, Michelin restoranlar, şık.' },
+      { name: 'Lavapiés', description: 'Çok kültürlü, sanat galerileri, uygun fiyatlı.' },
+    ],
+    'newyork': [
+      { name: 'Midtown Manhattan', description: 'Times Square, Empire State, Broadway. Turistik merkez.' },
+      { name: 'Lower Manhattan', description: 'Wall Street, One WTC, Özgürlük Anıtı feribotu.' },
+      { name: 'Williamsburg (Brooklyn)', description: 'Hipster, vintage, müzik mekanları, nehir manzarası.' },
+      { name: 'Upper West Side', description: 'Central Park yanı, sakin, müzeler, aile dostu.' },
+      { name: 'East Village / LES', description: 'Barlar, restoranlar, sanat, genç enerji.' },
+    ],
+    'marakes': [
+      { name: 'Medina', description: 'UNESCO mirası, souklar, riad'lar, Jemaa el-Fna.' },
+      { name: 'Gueliz (Ville Nouvelle)', description: 'Modern şehir, Fransız etkisi, kafeler, galeriler.' },
+      { name: 'Kasbah', description: 'Saadien Mezarları, el-Badi Sarayı yanı, sakin.' },
+      { name: 'Hivernage', description: 'Lüks oteller, barlar, gece hayatı.' },
     ],
   };
   
@@ -147,13 +264,15 @@ const City = () => {
     { label: displayName }
   ];
 
-  const seoTitle = `${displayName} Seyahat Rehberi ${currentYear} | Uçuş, Otel, Nomad`;
+  const seoTitle = `${displayName} Gezi Rehberi ${currentYear} — Ne Zaman Gidilir, Nerede Kalınır | WooNomad`;
   
-  const metaDescParts = [`${displayName} seyahat rehberi.`];
-  if (cityNomadData) {
+  const metaDescParts = [`${displayName} gezi rehberi ${currentYear}.`];
+  if (geo?.quickAnswer) {
+    metaDescParts.push(geo.quickAnswer);
+  } else if (cityNomadData) {
     metaDescParts.push(`İnternet: ${cityNomadData.internetSpeed}, Aylık maliyet: ${cityNomadData.costOfLiving}.`);
   }
-  metaDescParts.push(`${displayCountry}'da gezilecek yerler, otel ve uçuş fırsatları.`);
+  metaDescParts.push(`Mahalleler, gezilecek yerler, maliyet tablosu ve nomad bilgileri.`);
   const metaDescription = metaDescParts.join(' ').slice(0, 160);
 
   const canonicalUrl = `https://woonomad.co/sehir/${city.slug}`;
@@ -173,14 +292,26 @@ const City = () => {
       "alternateName": city.nameEn,
       "description": city.description,
       "image": city.image,
+      "containedInPlace": { "@type": "Country", "name": city.country },
     },
     {
       "@context": "https://schema.org",
-      "@type": "TravelGuide",
-      "name": `${displayName} Seyahat Rehberi ${currentYear}`,
+      "@type": "Article",
+      "headline": `${displayName} Gezi Rehberi ${currentYear}`,
       "about": { "@type": "City", "name": city.name },
       "author": { "@type": "Organization", "name": "WooNomad", "url": "https://woonomad.co" },
-      "dateModified": geo?.lastUpdated ? `2026-04-09` : undefined,
+      "publisher": { "@type": "Organization", "name": "WooNomad", "url": "https://woonomad.co" },
+      "dateModified": new Date().toISOString().split('T')[0],
+      "datePublished": "2024-01-01",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://woonomad.co/" },
+        { "@type": "ListItem", "position": 2, "name": "Şehirler", "item": "https://woonomad.co/sehirler" },
+        { "@type": "ListItem", "position": 3, "name": displayName, "item": canonicalUrl },
+      ],
     },
   ];
 
@@ -192,6 +323,22 @@ const City = () => {
         "@type": "Question",
         "name": f.question,
         "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+      })),
+    });
+  }
+
+  if (geo?.topAttractions && geo.topAttractions.length > 0) {
+    combinedSchema.push({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": `${displayName} Gezilecek Yerler`,
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "numberOfItems": geo.topAttractions.length,
+      "itemListElement": geo.topAttractions.map((a, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "name": a.name,
+        "description": a.desc,
       })),
     });
   }
@@ -255,6 +402,21 @@ const City = () => {
                     <span className="font-semibold text-sm">Kısa Özet</span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">{geo.tldr}</p>
+                  
+                  {/* Ideal For tags + Suggested Days */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {geo.suggestedDays && (
+                      <Badge variant="outline" className="text-xs">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        {geo.suggestedDays}
+                      </Badge>
+                    )}
+                    {geo.idealFor?.map((tag: string, i: number) => (
+                      <Badge key={i} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -284,7 +446,7 @@ const City = () => {
                   
                   {/* Highlights */}
                   <div className="flex flex-wrap gap-2">
-                    {city.highlights.slice(0, 5).map((highlight, index) => (
+                    {city.highlights.map((highlight, index) => (
                       <Badge key={index} variant="secondary" className="text-xs py-1">
                         <Star className="w-3 h-3 mr-1 text-warning" />
                         {highlight}
@@ -400,6 +562,60 @@ const City = () => {
                         <p className="text-sm text-muted-foreground leading-relaxed">{geo.visa}</p>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GEO: Top Attractions */}
+              {geo?.topAttractions && geo.topAttractions.length > 0 && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">{city.name} Gezilecek Yerler</h2>
+                    </div>
+                    <div className="space-y-3">
+                      {geo.topAttractions.map((attraction: { name: string; desc: string; category: string }, i: number) => (
+                        <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
+                          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-primary">{i + 1}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <p className="font-medium text-sm">{attraction.name}</p>
+                              <Badge variant="outline" className="text-[10px] py-0 px-1.5">{attraction.category}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">{attraction.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GEO: Transport */}
+              {geo?.transport && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bus className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">Ulaşım</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{geo.transport}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GEO: Food */}
+              {geo?.food && (
+                <Card variant="elevated">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <UtensilsCrossed className="h-5 w-5 text-primary" />
+                      <h2 className="text-xl font-display font-bold">Yeme İçme</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{geo.food}</p>
                   </CardContent>
                 </Card>
               )}

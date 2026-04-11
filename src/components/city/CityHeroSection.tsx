@@ -26,7 +26,7 @@ export const CityHeroSection = ({
       <section className="relative h-[30vh] min-h-[220px] overflow-hidden">
         <img 
           src={city.image} 
-          alt={`${city.name}, ${city.country} şehir manzarası`}
+          alt={`${city.name} ${city.highlights?.[0] || city.country} manzarası — ${city.country} gezi rehberi`}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
