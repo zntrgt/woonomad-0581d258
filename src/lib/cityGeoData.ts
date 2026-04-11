@@ -202,6 +202,70 @@ export const cityGeoData: Record<string, CityGeoData> = {
     ],
   },
 
+{
+  "monako": {
+    "tldr": "Monaco, 2 km²'lik yüzölçümüyle dünyanın en küçük ikinci ülkesi ve en pahalı destinasyonlarından biri. Günlük bütçe €110–500. Monte Carlo Casino, F1 Grand Prix pisti ve liman manzarası ana çekicilikleri. Nice'ten trenle 30 dakika — günübirlik gezi için ideal. Schengen vizesi gerekli.",
+    "quickAnswer": "Monaco'da 1 gün yeterli, günlük €110–250 bütçe ayırın. Nice'te kalıp günübirlik gidin, Nisan–Ekim en iyi dönem.",
+    "lastUpdated": "Nisan 2026",
+    "visa": "Türk vatandaşları için Schengen vizesi gerekli. Monaco Schengen bölgesinin parçası; Fransa üzerinden giriş yapılıyor. 90 gün/180 gün kuralı geçerli. Dijital göçebe vizesi yok — Monaco'da uzun süreli kalış son derece pahalı ve özel izin gerektiriyor.",
+    "safety": "Monaco dünyanın en güvenli destinasyonlarından biri. Her köşede güvenlik kamerası ve polis varlığı var. Gece yürümek dahil ciddi bir risk yok. Tek dikkat edilmesi gereken husus Casino bölgesinde aşırı harcama cazibesi. Acil durum: 112 (Avrupa genel) veya 17 (polis).",
+    "seasons": [
+      { "period": "Mar–May", "temp": "13–19°C", "crowd": "Orta", "price": "Yüksek", "note": "F1 Grand Prix Mayıs sonu, fiyatlar zirve" },
+      { "period": "Haz–Ağu", "temp": "21–28°C", "crowd": "Yüksek", "price": "Yüksek", "note": "Plaj sezonu, yat şovları, en kalabalık dönem" },
+      { "period": "Eyl–Kas", "temp": "15–24°C", "crowd": "Orta", "price": "Yüksek", "note": "Yat Şovu Eylül, hava hâlâ güzel" },
+      { "period": "Ara–Şub", "temp": "8–13°C", "crowd": "Düşük", "price": "Orta", "note": "En uygun dönem ama birçok yer kapalı" }
+    ],
+    "costs": [
+      { "item": "Konaklama", "budget": "€80–130", "mid": "€200–350", "comfort": "€600+" },
+      { "item": "Yemek", "budget": "€20–35", "mid": "€50–80", "comfort": "€120+" },
+      { "item": "Ulaşım", "budget": "€5–10", "mid": "€15–25", "comfort": "€50+" },
+      { "item": "Aktivite", "budget": "€5–15", "mid": "€25–50", "comfort": "€100+" },
+      { "item": "TOPLAM/gün", "budget": "€110–190", "mid": "€290–505", "comfort": "€870+" }
+    ],
+    "faqs": [
+      { "question": "Monaco'da kaç gün kalmalı?", "answer": "Çoğu gezgin için 1 gün yeterli. Monaco 2 km²'lik bir alan — Prens Sarayı, Casino, Oşinografi Müzesi ve limanı tek günde rahatça gezebilirsiniz. Nice'ten trenle 30 dakika." },
+      { "question": "Monaco'ya ne zaman gidilir?", "answer": "Nisan–Ekim arası hava güzel. F1 Grand Prix (Mayıs sonu) döneminde fiyatlar 3–5 kat artıyor. En uygun dönem Mart–Nisan veya Ekim." },
+      { "question": "Monaco pahalı mı?", "answer": "Evet, dünyanın en pahalı destinasyonlarından biri. Bir restoranda akşam yemeği kişi başı €70'ten başlıyor. Ama Nice'te kalıp günübirlik giderseniz maliyeti ciddi şekilde düşürürsünüz — tren bileti yaklaşık €5." },
+      { "question": "Monaco güvenli mi?", "answer": "Dünyanın en güvenli yerlerinden biri. Yoğun kamera ve polis ağı var. Gece dahil ciddi bir güvenlik sorunu yok." },
+      { "question": "Monaco'ya nasıl gidilir?", "answer": "En yakın havalimanı Nice (NCE), 30 km mesafede. Nice'ten Monaco'ya tren 25–30 dakika, bilet yaklaşık €4–5. Şehir içi yürünerek 30–45 dakikada baştan sona gezilebilir. Ücretsiz asansörler ve yürüyen merdivenler dik yamaçlarda ulaşımı kolaylaştırıyor." },
+      { "question": "Monaco'da Casino'ya girmek ücretsiz mi?", "answer": "Monte Carlo Casino'nun lobisine giriş ücretsiz. Oyun salonlarına giriş €17'den başlıyor. 18 yaş altı giremez. Pasaport veya kimlik zorunlu." },
+      { "question": "Monaco'da ücretsiz ne yapılır?", "answer": "Prens Sarayı nöbet değişimi (11:55, ücretsiz), liman yürüyüşü, Japon Bahçesi, Place d'Armes pazarı ve sahil boyunca yürüyüş ücretsiz. Oşinografi Müzesi girişi yetişkin €20." }
+    ]
+  },
+  "marsilya": {
+    "tldr": "Marsilya, Fransa'nın en eski ve ikinci büyük şehri; Akdeniz limanı, Calanques kayalıkları ve çok kültürlü sokak yaşamıyla tanınıyor. Günlük bütçe €60–120. Paris'e TGV ile 3 saat 15 dakika, Nice'e 2,5 saat. Cannes ve Riviera rotalarıyla kolayca birleştirilebilir. Schengen vizesi gerekli.",
+    "quickAnswer": "Marsilya'da 2–3 gün kalın, günlük €60–120 bütçe ayırın. Nisan–Haziran veya Eylül–Ekim en ideal dönem.",
+    "lastUpdated": "Nisan 2026",
+    "visa": "Türk vatandaşları için Schengen vizesi gerekli. 90 gün/180 gün kuralı geçerli. ETIAS sistemi 2026 sonunda devreye girebilir ama henüz zorunlu değil — seyahat öncesi resmi AB kaynaklarından kontrol edin.",
+    "safety": "Vieux-Port ve merkezi turistik bölgeler gündüz genel olarak güvenli. Le Panier ve Noailles'de yankesiciye dikkat edin, özellikle kalabalık saatlerde. Kuzey banliyöleri (Quartiers Nord) turistik değil ve gece kaçınılmalı. Genel güvenlik büyük Avrupa şehirleriyle benzer düzeyde. Acil durum: 112 veya 17 (polis).",
+    "seasons": [
+      { "period": "Mar–May", "temp": "12–22°C", "crowd": "Orta", "price": "Orta", "note": "Calanques yürüyüşü için ideal, omuz sezon" },
+      { "period": "Haz–Ağu", "temp": "22–32°C", "crowd": "Yüksek", "price": "Yüksek", "note": "Plaj sezonu, Calanques yangın riski ile kapalı olabilir" },
+      { "period": "Eyl–Kas", "temp": "14–25°C", "crowd": "Orta", "price": "Orta", "note": "En iyi dönemlerden biri, Mistral rüzgarına dikkat" },
+      { "period": "Ara–Şub", "temp": "5–12°C", "crowd": "Düşük", "price": "Düşük", "note": "Rüzgârlı ve serin, fiyatlar %25–35 düşük" }
+    ],
+    "costs": [
+      { "item": "Konaklama", "budget": "€25–45", "mid": "€80–140", "comfort": "€200+" },
+      { "item": "Yemek", "budget": "€15–25", "mid": "€30–50", "comfort": "€70+" },
+      { "item": "Ulaşım", "budget": "€5–8", "mid": "€10–20", "comfort": "€30+" },
+      { "item": "Aktivite", "budget": "€0–10", "mid": "€15–30", "comfort": "€50+" },
+      { "item": "TOPLAM/gün", "budget": "€45–88", "mid": "€135–240", "comfort": "€350+" }
+    ],
+    "faqs": [
+      { "question": "Marsilya'da kaç gün kalmalı?", "answer": "2–3 gün ideal. Vieux-Port, Notre-Dame de la Garde, Le Panier ve MuCEM'i 2 günde gezebilirsiniz. Calanques yürüyüşü için +1 gün ekleyin." },
+      { "question": "Marsilya'ya ne zaman gidilir?", "answer": "Nisan–Haziran ve Eylül–Ekim en iyi dönem; 18–28°C, daha az kalabalık. Temmuz–Ağustos 32°C'ye çıkıyor ve Calanques yangın riski nedeniyle kapanabiliyor." },
+      { "question": "Marsilya pahalı mı?", "answer": "Paris'e göre belirgin şekilde ucuz. Yerel bir restoranda öğle yemeği €12–18, hostel geceliği €25–35. Noailles pazarı ve Capucins pazarı uygun fiyatlı taze ürünler için iyi adresler." },
+      { "question": "Marsilya güvenli mi?", "answer": "Merkez ve turistik bölgeler gündüz güvenli. Metroda ve kalabalık pazarlarda yankesiciye dikkat edin. Kuzey banliyölerden uzak durun. Genel olarak büyük Avrupa şehirleriyle benzer risk seviyesi." },
+      { "question": "Marsilya'ya nasıl gidilir?", "answer": "Marsilya Provence Havalimanı (MRS) şehre 27 km. Shuttle ile Gare Saint-Charles'a 25 dakikada ulaşılıyor, bilet yaklaşık €11. Paris'ten TGV 3 saat 15 dakika (€32–108), Nice'ten tren 2,5 saat, Cannes'tan yaklaşık 2 saat." },
+      { "question": "Marsilya'da toplu taşıma nasıl?", "answer": "2 metro hattı, tramvay ve otobüs ağı var. Tek bilet €2, günlük pas €6. RTM uygulamasından mobil bilet alınabiliyor. Merkez yürünebilir ama tepeli — rahat ayakkabı şart." },
+      { "question": "Marsilya'da ücretsiz ne yapılır?", "answer": "Notre-Dame de la Garde Bazilikası (giriş ücretsiz, panoramik manzara), Fort Saint-Jean bahçeleri ve köprüleri (MuCEM yanı), Cathédrale de la Major, Prado plajları ve Parc Borély hepsi ücretsiz." }
+    ]
+  }
+}
+
+
+
+  
   dusseldorf: {
     tldr: "Düsseldorf, Almanya'nın moda ve iş başkenti. Günlük bütçe €50–80. Altstadt (Eski Şehir) 'dünyanın en uzun barı' olarak anılır. Japonya dışındaki en büyük Japon topluluğuna ev sahipliği yapar. En iyi zaman Mayıs–Eylül.",
     quickAnswer: "Düsseldorf'ta 2–3 gün kalın, günlük €50–80 bütçe ayırın, Mayıs–Eylül en ideal dönem.",
