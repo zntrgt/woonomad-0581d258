@@ -1,31 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/sehir/:slug/ucak-bileti",
-      "destination": "/sehir/:slug/ucuslar",
-      "permanent": true
-    },
-    {
-      "source": "/ucak-bileti/:slug",
-      "destination": "/sehir/:slug",
-      "permanent": true
-    },
-    {
-      "source": "/ucus/i-stanbul-:dest",
-      "destination": "/ucus/istanbul-:dest",
-      "permanent": true
-    },
-    {
-      "source": "/ucus/i-zmir-:dest",
-      "destination": "/ucus/izmir-:dest",
-      "permanent": true
-    },
-    {
-      "source": "/destinasyonlar",
-      "destination": "/sehirler",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

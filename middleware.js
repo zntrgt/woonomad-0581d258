@@ -72,21 +72,6 @@ export default async function middleware(request) {
     return next();
   }
 
-  // ─── SERVER-SIDE 301 REDIRECTS ───
-  // Fix malformed i-stanbul / i-zmir slugs (Turkish İ encoding issue)
-  if (url.pathname.includes("/i-stanbul-") || url.pathname.includes("/i-zmir-")) {
-    const fixedPath = url.pathname
-      .replace(/\/i-stanbul-/g, "/istanbul-")
-      .replace(/\/i-zmir-/g, "/izmir-");
-    return Response.redirect(new URL(fixedPath, request.url), 301);
-  }
-
-  // Redirect /sehir/:slug/ucak-bileti → /sehir/:slug/ucuslar
-  const ucakBiletiMatch = url.pathname.match(/^\/sehir\/([^/]+)\/ucak-bileti$/);
-  if (ucakBiletiMatch) {
-    return Response.redirect(new URL(`/sehir/${ucakBiletiMatch[1]}/ucuslar`, request.url), 301);
-  }
-
   // Sadece GET + HTML isteklerini yakala
   const isHtml = (request.headers.get("accept") || "").includes("text/html");
   if (request.method !== "GET" || !isHtml) {

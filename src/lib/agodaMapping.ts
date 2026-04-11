@@ -319,9 +319,6 @@ export const cityAgodaMapping: Record<string, AgodaCityInfo> = {
 };
 
 // Generate Agoda affiliate URL with proper destination targeting
-// Uses checkIn + checkOut pair (most stable) instead of checkIn + los
-// NOTE: GTM may have Travelpayouts LinkSwitcher active which can intercept these links.
-// To prevent this, use openAgodaUrl() function or add data-tp-ignore attribute to links.
 export function getAgodaUrl(
   citySlug: string, 
   cityName: string, 
@@ -349,24 +346,24 @@ export function getAgodaUrl(
     params.set('textToSearch', cityName);
   }
   
-  // Add dates - use checkIn + checkOut pair (more reliable than checkIn + los)
+  // Add dates
   if (checkIn && checkOut) {
     params.set('checkIn', checkIn);
     params.set('checkOut', checkOut);
   } else if (checkIn) {
-    // Fallback: only checkIn provided, let Agoda handle default checkout
     params.set('checkIn', checkIn);
   }
-  // If no dates, let Agoda show default search (most stable)
   
   // Add rooms and guests
   params.set('rooms', (options?.rooms || 1).toString());
   params.set('adults', (options?.adults || 2).toString());
   
-  // Skip star rating filter - it causes "Aramanızı tamamlarken" errors
-  // Users can filter by stars on Agoda directly
+  // Star rating filter — use Agoda's 'star' parameter
+  if (options?.stars && options.stars >= 2 && options.stars <= 5) {
+    params.set('star', options.stars.toString());
+  }
   
-  // For budget hotels, sort by price ascending (this parameter is stable)
+  // Price sort
   if (options?.priceSort === 'asc') {
     params.set('sort', 'priceLowToHigh');
   }
@@ -374,9 +371,7 @@ export function getAgodaUrl(
   return `${baseUrl}?${params.toString()}`;
 }
 
-// Open Agoda URL bypassing Travelpayouts LinkSwitcher interception
-// This function directly assigns the URL to avoid pop-up blockers
-// and uses a small delay to prevent script interception
+// Open Agoda URL — simple window.open, no hacks
 export function openAgodaUrl(
   citySlug: string, 
   cityName: string, 
@@ -390,21 +385,7 @@ export function openAgodaUrl(
   }
 ): void {
   const url = getAgodaUrl(citySlug, cityName, checkIn, checkOut, options);
-  
-  // Create a temporary anchor element and trigger click
-  // This avoids tp-em interception since the element is not in DOM when script runs
-  const tempAnchor = document.createElement('a');
-  tempAnchor.href = url;
-  tempAnchor.target = '_blank';
-  tempAnchor.rel = 'noopener noreferrer sponsored';
-  tempAnchor.style.display = 'none';
-  document.body.appendChild(tempAnchor);
-  
-  // Small timeout to avoid synchronous script interception
-  setTimeout(() => {
-    tempAnchor.click();
-    document.body.removeChild(tempAnchor);
-  }, 10);
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 // Get English name for a city
