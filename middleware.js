@@ -124,39 +124,6 @@ export default async function middleware(request) {
     console.error("[prerender.io] Error:", e.message);
   }
 
-  // Öncelik 2: LovableHTML (fallback)
-  try {
-    const lovableKey = process.env.LOVABLEHTML_API_KEY;
-    if (lovableKey) {
-      const r = await fetch(
-        "https://lovablehtml.com/api/prerender/render?url=" +
-          encodeURIComponent(request.url),
-        {
-          signal: AbortSignal.timeout(4000),
-          headers: {
-            "x-lovablehtml-api-key": lovableKey,
-            accept: "text/html",
-            "user-agent": userAgent,
-          },
-        }
-      );
-
-      if (
-        r.status === 200 &&
-        (r.headers.get("content-type") || "").includes("text/html")
-      ) {
-        return new Response(r.body, {
-          headers: {
-            "content-type": "text/html; charset=utf-8",
-            "x-prerendered": "lovablehtml",
-          },
-        });
-      }
-    }
-  } catch (e) {
-    console.error("[lovablehtml] Error:", e.message);
-  }
-
   // Her iki servis de başarısız → SPA fallback
   return rewrite(new URL("/index.html", request.url));
 }

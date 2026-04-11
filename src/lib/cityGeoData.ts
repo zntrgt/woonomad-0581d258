@@ -288,4 +288,357 @@ export const cityGeoData: Record<string, CityGeoData> = {
       { question: "Düsseldorf'tan Köln'e nasıl gidilir?", answer: "RE tren ile 30 dk, yaklaşık €12. S-Bahn ile 45 dk. Günübirlik gezi için ideal mesafe." },
     ],
   },
+
+  paris: {
+    tldr: "Paris, yılda 30+ milyon turist ağırlayan dünyanın en çok ziyaret edilen şehri. Günlük bütçe €70–130. Eyfel Kulesi, Louvre ve Montmartre başlıca noktalar. Metro ağı mükemmel — şehrin her yerine 30 dk'da ulaşılır. Schengen vizesi gerekli.",
+    quickAnswer: "Paris'te 4–5 gün kalın, günlük €70–130 bütçe ayırın, Nisan–Haziran ve Eylül–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. 90 gün/180 gün kuralı geçerli. Fransa konsolosluğundan başvuru.",
+    safety: "Genel olarak güvenli. Metro ve turistik alanlarda yankesicilere dikkat. Gece bazı banliyölerden uzak durun. Acil: 112.",
+    seasons: [
+      { period: "Mar–May", temp: "8–19°C", crowd: "Orta", price: "Orta", note: "Bahar çiçekleri, en güzel dönem" },
+      { period: "Haz–Ağu", temp: "16–26°C", crowd: "Yüksek", price: "Yüksek", note: "Yaz, uzun günler, kalabalık" },
+      { period: "Eyl–Kas", temp: "8–20°C", crowd: "Orta", price: "Orta", note: "Sonbahar, müze sezonu, uygun fiyat" },
+      { period: "Ara–Şub", temp: "2–8°C", crowd: "Düşük", price: "Düşük", note: "Noel pazarları, kısa günler" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€35–60", mid: "€100–180", comfort: "€250+" },
+      { item: "Yemek", budget: "€15–25", mid: "€35–60", comfort: "€80+" },
+      { item: "Ulaşım", budget: "€5–8", mid: "€10–15", comfort: "€30+" },
+      { item: "Aktivite", budget: "€0–15", mid: "€20–40", comfort: "€60+" },
+      { item: "TOPLAM/gün", budget: "€55–108", mid: "€165–295", comfort: "€420+" },
+    ],
+    faqs: [
+      { question: "Paris'te kaç gün yeterli?", answer: "4–5 gün temel noktalar için yeterli. Versailles ve Disneyland dahil 7 gün ideal." },
+      { question: "Paris'te en ucuz ulaşım nedir?", answer: "Navigo haftalık kartı €30'a tüm metro, RER ve otobüslerde sınırsız geçiş sağlıyor." },
+      { question: "Eyfel Kulesi'ne bilet nasıl alınır?", answer: "Online ön rezervasyon şart — yerinde kuyruk 2+ saat. Tepeye asansör €26.80, merdiven €11.30." },
+      { question: "Paris dijital göçebeler için uygun mu?", answer: "Evet ama pahalı. WeWork ve Morning coworking alanları var. Kafe kültürü güçlü ama Wi-Fi hızları değişken." },
+    ],
+  },
+
+  roma: {
+    tldr: "Roma, 2.800 yıllık tarihi ve açık hava müzesi atmosferiyle İtalya'nın başkenti. Günlük bütçe €50–90. Kolezyum, Vatikan ve Trevi Çeşmesi birkaç km mesafede. Pizza ve pasta €5–8 arası. Schengen vizesi gerekli.",
+    quickAnswer: "Roma'da 3–5 gün kalın, günlük €50–90 bütçe ayırın, Nisan–Haziran en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. İtalya konsolosluğundan başvuru.",
+    safety: "Genel olarak güvenli. Termini çevresi ve metro hattında yankesicilere dikkat. Gece Trastevere güvenli ve canlı.",
+    seasons: [
+      { period: "Mar–May", temp: "10–23°C", crowd: "Orta-Yüksek", price: "Orta", note: "En güzel dönem, Paskalya kalabalık" },
+      { period: "Haz–Ağu", temp: "20–33°C", crowd: "Çok Yüksek", price: "Yüksek", note: "Çok sıcak, Ağustos'ta yerel tatil" },
+      { period: "Eyl–Kas", temp: "12–26°C", crowd: "Orta", price: "Orta", note: "Eylül ideal, Kasım yağmurlu" },
+      { period: "Ara–Şub", temp: "3–12°C", crowd: "Düşük", price: "Düşük", note: "Kısa kuyruklar, soğuk ama güneşli günler" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€25–45", mid: "€80–140", comfort: "€200+" },
+      { item: "Yemek", budget: "€12–20", mid: "€30–50", comfort: "€70+" },
+      { item: "Ulaşım", budget: "€5–7", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite", budget: "€0–16", mid: "€20–40", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€42–88", mid: "€140–245", comfort: "€345+" },
+    ],
+    faqs: [
+      { question: "Roma'da kaç gün yeterli?", answer: "3 gün minimum (Kolezyum, Vatikan, merkez). 5 gün ile Trastevere, Appian Way ve günübirlik geziler dahil." },
+      { question: "Vatikan'a bilet nasıl alınır?", answer: "Online ön rezervasyon kesinlikle önerilir — yerinde 3+ saat kuyruk. Müze + Sistine Şapeli €17." },
+      { question: "Roma'da su içilebilir mi?", answer: "Evet! Nasoni adlı 2.500+ ücretsiz çeşmeden içilebilir su akıyor. Şişe taşıyıp doldurun." },
+    ],
+  },
+
+  londra: {
+    tldr: "Londra, dünyanın en kozmopolit şehirlerinden biri. Günlük bütçe £60–120. British Museum, Tower Bridge ve West End müzikalleri başlıca çekicilikler. Çoğu müze ücretsiz. Schengen dışı — ayrı UK vizesi gerekli.",
+    quickAnswer: "Londra'da 4–5 gün kalın, günlük £60–120 bütçe ayırın, Mayıs–Eylül en iyi dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "UK Standard Visitor vizesi gerekli (Türk vatandaşları). Schengen vizesi geçersiz.",
+    safety: "Genel olarak güvenli. Metroda ve Oxford Street'te yankesiciye dikkat. Gece güvenli ama bazı doğu bölgelerinde dikkatli olun.",
+    seasons: [
+      { period: "Mar–May", temp: "7–17°C", crowd: "Orta", price: "Orta", note: "Bahar parkları muhteşem" },
+      { period: "Haz–Ağu", temp: "14–24°C", crowd: "Yüksek", price: "Yüksek", note: "Yaz festivalleri, uzun günler" },
+      { period: "Eyl–Kas", temp: "8–18°C", crowd: "Orta", price: "Orta", note: "Sonbahar, tiyatro sezonu" },
+      { period: "Ara–Şub", temp: "3–8°C", crowd: "Düşük", price: "Düşük", note: "Noel ışıkları, kısa günler" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "£30–55", mid: "£100–180", comfort: "£250+" },
+      { item: "Yemek", budget: "£12–22", mid: "£30–55", comfort: "£70+" },
+      { item: "Ulaşım", budget: "£8–12", mid: "£15–20", comfort: "£30+" },
+      { item: "Aktivite", budget: "£0–10", mid: "£20–40", comfort: "£60+" },
+      { item: "TOPLAM/gün", budget: "£50–99", mid: "£165–295", comfort: "£410+" },
+    ],
+    faqs: [
+      { question: "Londra'da en ucuz ulaşım nedir?", answer: "Oyster Card veya kontaktöre ödeme (tap-in/tap-out). Günlük cap £8.10 ile sınırsız metro/otobüs." },
+      { question: "Ücretsiz müzeler hangileri?", answer: "British Museum, National Gallery, Tate Modern, Natural History Museum, V&A — hepsi ücretsiz." },
+    ],
+  },
+
+  tokyo: {
+    tldr: "Tokyo, geleneksel tapınaklar ile fütüristik teknolojiyi bir arada sunan dünyanın en büyük metropolü. Günlük bütçe ¥8.000–15.000 ($55–100). Shibuya, Akihabara, Senso-ji ve Tsukiji pazarı başlıca noktalar. Metro sistemi mükemmel ama karmaşık.",
+    quickAnswer: "Tokyo'da 5–7 gün kalın, günlük $55–100 bütçe ayırın, kiraz çiçeği sezonu (Mart sonu–Nisan) veya sonbahar (Ekim–Kasım) en ideal.",
+    lastUpdated: "Nisan 2026",
+    visa: "Türk vatandaşları 90 gün vizesiz giriş yapabilir. e-Vize sistemi mevcut.",
+    safety: "Dünyanın en güvenli büyük şehri. Gece bile her yerde rahatça yürünebilir. Kayıp eşya bulma oranı çok yüksek.",
+    seasons: [
+      { period: "Mar–May", temp: "10–22°C", crowd: "Yüksek", price: "Yüksek", note: "Kiraz çiçeği sezonu, en popüler dönem" },
+      { period: "Haz–Ağu", temp: "22–33°C", crowd: "Orta", price: "Orta", note: "Yağmur mevsimi (Haziran), nemli yaz" },
+      { period: "Eyl–Kas", temp: "15–27°C", crowd: "Orta", price: "Orta", note: "Sonbahar yaprakları, ideal hava" },
+      { period: "Ara–Şub", temp: "2–12°C", crowd: "Düşük", price: "Düşük", note: "Soğuk ama güneşli, kış illuminasyonları" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "$25–40", mid: "$80–150", comfort: "$200+" },
+      { item: "Yemek", budget: "$10–18", mid: "$25–45", comfort: "$70+" },
+      { item: "Ulaşım", budget: "$8–12", mid: "$15–20", comfort: "$30+" },
+      { item: "Aktivite", budget: "$0–10", mid: "$15–30", comfort: "$50+" },
+      { item: "TOPLAM/gün", budget: "$43–80", mid: "$135–245", comfort: "$350+" },
+    ],
+    faqs: [
+      { question: "Tokyo'da kaç gün yeterli?", answer: "5 gün minimum. Kyoto günübirlik dahil 7–10 gün ideal. Shinkansen ile Kyoto 2 saat 15 dk." },
+      { question: "Japan Rail Pass gerekli mi?", answer: "Sadece Tokyo kalacaksanız hayır. Kyoto/Osaka da gezecekseniz 7 günlük JR Pass (~$200) tasarruf sağlar." },
+      { question: "Tokyo'da İngilizce yeterli mi?", answer: "Turistik alanlarda evet. Google Translate kamera çevirisi menüler için çok işe yarıyor." },
+    ],
+  },
+
+  dubai: {
+    tldr: "Dubai, çöl ile modern lüksün buluştuğu küresel hub. Günlük bütçe $60–150. Burj Khalifa, Dubai Mall, Desert Safari ve Palm Jumeirah başlıca çekicilikler. Yıl boyu güneşli ama yaz aylarında 45°C+ sıcaklık. Türk vatandaşları vizesiz giriş yapabilir.",
+    quickAnswer: "Dubai'de 3–5 gün kalın, günlük $60–150 bütçe ayırın, Kasım–Mart en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Türk vatandaşları 90 gün vizesiz giriş yapabilir. Dijital göçebe vizesi (1 yıl) aylık $5.000+ gelir şartıyla mevcut.",
+    safety: "Dünyanın en güvenli şehirlerinden biri. Suç oranı çok düşük. Gece bile her yerde güvenle dolaşılabilir.",
+    seasons: [
+      { period: "Mar–May", temp: "24–38°C", crowd: "Orta", price: "Orta", note: "Geçiş dönemi, plaj sezonu başlangıcı" },
+      { period: "Haz–Ağu", temp: "34–45°C", crowd: "Düşük", price: "Düşük", note: "Aşırı sıcak, iç mekan aktiviteleri" },
+      { period: "Eyl–Kas", temp: "28–38°C", crowd: "Orta", price: "Orta", note: "Yaz sonu, fiyatlar düşmeye başlıyor" },
+      { period: "Ara–Şub", temp: "16–26°C", crowd: "Yüksek", price: "Yüksek", note: "En iyi dönem, alışveriş festivali" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "$25–45", mid: "$80–150", comfort: "$250+" },
+      { item: "Yemek", budget: "$10–18", mid: "$30–50", comfort: "$80+" },
+      { item: "Ulaşım", budget: "$5–10", mid: "$15–25", comfort: "$40+" },
+      { item: "Aktivite", budget: "$0–15", mid: "$30–60", comfort: "$100+" },
+      { item: "TOPLAM/gün", budget: "$40–88", mid: "$155–285", comfort: "$470+" },
+    ],
+    faqs: [
+      { question: "Dubai pahalı mı?", answer: "Lüks imajına rağmen bütçe dostu seçenekler var. Deira ve Bur Dubai'de uygun oteller, yerel restoranlarda yemek $5–8." },
+      { question: "Dubai'de alkol içilebilir mi?", answer: "Lisanslı oteller, barlar ve restoranlarda evet. Kamusal alanda alkol yasak. Turist lisansı artık gerekmiyor." },
+    ],
+  },
+
+  bangkok: {
+    tldr: "Bangkok, Güneydoğu Asya'nın en canlı başkenti. Günlük bütçe $25–50. Tapınaklar, gece pazarları ve street food cenneti. Khao San Road backpacker merkezi, Sukhumvit modern şehir hayatı. Türk vatandaşları 30 gün vizesiz.",
+    quickAnswer: "Bangkok'ta 3–5 gün kalın, günlük $25–50 bütçe ayırın, Kasım–Şubat en ideal (kuru sezon).",
+    lastUpdated: "Nisan 2026",
+    visa: "Türk vatandaşları 30 gün vizesiz giriş yapabilir. 60 güne uzatma mümkün.",
+    safety: "Genel olarak güvenli. Tuk-tuk dolandırıcılığına ve sahte tur acentelerine dikkat. Taksi taksimetresi açtırın.",
+    seasons: [
+      { period: "Mar–May", temp: "28–36°C", crowd: "Düşük", price: "Düşük", note: "En sıcak dönem, Songkran festivali Nisan" },
+      { period: "Haz–Eki", temp: "26–33°C", crowd: "Düşük", price: "Düşük", note: "Yağmur mevsimi, kısa ama yoğun yağışlar" },
+      { period: "Kas–Şub", temp: "22–32°C", crowd: "Yüksek", price: "Orta", note: "Kuru sezon, en iyi dönem" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "$8–15", mid: "$30–60", comfort: "$100+" },
+      { item: "Yemek", budget: "$3–8", mid: "$10–20", comfort: "$40+" },
+      { item: "Ulaşım", budget: "$2–5", mid: "$5–12", comfort: "$20+" },
+      { item: "Aktivite", budget: "$0–5", mid: "$10–20", comfort: "$40+" },
+      { item: "TOPLAM/gün", budget: "$13–33", mid: "$55–112", comfort: "$200+" },
+    ],
+    faqs: [
+      { question: "Bangkok'ta kaç gün yeterli?", answer: "3 gün şehir için yeterli. Ayutthaya günübirlik gezi dahil 4–5 gün ideal." },
+      { question: "Bangkok'ta su içilebilir mi?", answer: "Şebeke suyu içilmez. Her yerde ucuz şişe su ($0.20) mevcut." },
+    ],
+  },
+
+  amsterdam: {
+    tldr: "Amsterdam, kanallar, bisiklet kültürü ve müzeleriyle Hollanda'nın başkenti. Günlük bütçe €60–100. Van Gogh Müzesi, Anne Frank Evi ve Rijksmuseum başlıca noktalar. Bisiklet kiralayarak şehri keşfetmek en iyi yol. Schengen vizesi gerekli.",
+    quickAnswer: "Amsterdam'da 2–4 gün kalın, günlük €60–100 bütçe ayırın, Nisan–Ekim en ideal.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. 90/180 gün kuralı.",
+    safety: "Güvenli ama bisiklet yollarında yürümeyin — ciddi kaza riski. Turistik alanlarda yankesiciye dikkat.",
+    seasons: [
+      { period: "Mar–May", temp: "6–17°C", crowd: "Yüksek", price: "Yüksek", note: "Lale sezonu Nisan, Keukenhof açık" },
+      { period: "Haz–Ağu", temp: "14–23°C", crowd: "Çok Yüksek", price: "Yüksek", note: "Festival sezonu, uzun günler" },
+      { period: "Eyl–Kas", temp: "8–17°C", crowd: "Orta", price: "Orta", note: "Sonbahar, müze sezonu" },
+      { period: "Ara–Şub", temp: "1–6°C", crowd: "Düşük", price: "Düşük", note: "Soğuk ama atmosferik, ışık festivali" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€30–55", mid: "€100–170", comfort: "€220+" },
+      { item: "Yemek", budget: "€12–22", mid: "€30–50", comfort: "€70+" },
+      { item: "Ulaşım", budget: "€5–10", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite", budget: "€0–15", mid: "€20–35", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€47–102", mid: "€160–270", comfort: "€365+" },
+    ],
+    faqs: [
+      { question: "Amsterdam'da bisiklet kiralamak güvenli mi?", answer: "Evet ama trafik kurallarını bilin. Swapfiets veya MacBike'tan günlük €10–15. Tramvay raylarında dikkatli olun." },
+      { question: "Amsterdam Card almalı mıyım?", answer: "3+ müze gezecekseniz I amsterdam City Card (€65/gün) tasarruf sağlar. Toplu taşıma dahil." },
+    ],
+  },
+
+  atina: {
+    tldr: "Atina, Batı medeniyetinin beşiği ve Akdeniz mutfağının kalbi. Günlük bütçe €40–70. Akropolis, Plaka mahallesi ve Monastiraki pazarı başlıca noktalar. Adalar için feribot hub'ı. Schengen vizesi gerekli.",
+    quickAnswer: "Atina'da 2–3 gün kalın, günlük €40–70 bütçe ayırın, Nisan–Haziran ve Eylül–Ekim en ideal.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. Yunanistan dijital göçebe vizesi mevcut — aylık €3.500+ gelir şartıyla 1 yıl.",
+    safety: "Genel olarak güvenli. Omonia meydanı çevresinde gece dikkatli olun. Plaka ve Monastiraki güvenli.",
+    seasons: [
+      { period: "Mar–May", temp: "12–25°C", crowd: "Orta", price: "Orta", note: "Paskalya özel, ideal hava" },
+      { period: "Haz–Ağu", temp: "25–35°C", crowd: "Yüksek", price: "Yüksek", note: "Çok sıcak, ada sezonu" },
+      { period: "Eyl–Kas", temp: "15–28°C", crowd: "Orta", price: "Orta", note: "En iyi dönem, deniz hâlâ sıcak" },
+      { period: "Ara–Şub", temp: "7–14°C", crowd: "Düşük", price: "Düşük", note: "Yağışlı ama turistsiz" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€20–35", mid: "€60–110", comfort: "€160+" },
+      { item: "Yemek", budget: "€8–15", mid: "€20–35", comfort: "€50+" },
+      { item: "Ulaşım", budget: "€3–6", mid: "€8–12", comfort: "€20+" },
+      { item: "Aktivite", budget: "€0–10", mid: "€15–25", comfort: "€40+" },
+      { item: "TOPLAM/gün", budget: "€31–66", mid: "€103–182", comfort: "€270+" },
+    ],
+    faqs: [
+      { question: "Atina'dan adalara nasıl gidilir?", answer: "Pire limanından feribot. Santorini'ye 5–8 saat (€35–65), Mykonos'a 3–5 saat. Hızlı feribot 2 kat pahalı." },
+      { question: "Akropolis'e ne zaman gidilir?", answer: "Sabah açılışta (8:00) veya kış aylarında. Yaz öğlen 40°C+ — sabah gidin. Bilet €20, online alın." },
+    ],
+  },
+
+  budapeste: {
+    tldr: "Budapeşte, Avrupa'nın en uygun fiyatlı ve göz alıcı başkentlerinden biri. Günlük bütçe €35–60. Tuna nehri, termal hamamlar ve ruin bar kültürü. Dijital göçebeler için hızla popülerleşen bir merkez. Schengen vizesi gerekli.",
+    quickAnswer: "Budapeşte'de 3–4 gün kalın, günlük €35–60 bütçe ayırın, Nisan–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. Macaristan beyaz göçebe vizesi programı değerlendirme altında.",
+    safety: "Güvenli bir şehir. Gece Buda tarafı sakin, Pest tarafı canlı. 4-6 numaralı tramvayda yankesiciye dikkat.",
+    seasons: [
+      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Orta", note: "Bahar, Tuna kenarında yürüyüş" },
+      { period: "Haz–Ağu", temp: "18–30°C", crowd: "Yüksek", price: "Orta", note: "Sziget festivali Ağustos" },
+      { period: "Eyl–Kas", temp: "8–20°C", crowd: "Orta", price: "Düşük", note: "Sonbahar, şarap sezonu" },
+      { period: "Ara–Şub", temp: "-1–5°C", crowd: "Düşük", price: "Düşük", note: "Termal hamam sezonu, Noel pazarları" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€15–30", mid: "€50–90", comfort: "€140+" },
+      { item: "Yemek", budget: "€8–14", mid: "€18–30", comfort: "€50+" },
+      { item: "Ulaşım", budget: "€3–5", mid: "€6–10", comfort: "€18+" },
+      { item: "Aktivite", budget: "€0–8", mid: "€12–22", comfort: "€35+" },
+      { item: "TOPLAM/gün", budget: "€26–57", mid: "€86–152", comfort: "€243+" },
+    ],
+    faqs: [
+      { question: "Budapeşte'de hangi hamama gidilmeli?", answer: "Széchenyi (açık hava, büyük), Gellért (Art Nouveau mimari), Rudas (Osmanlı dönemi). Hafta içi daha sakin." },
+      { question: "Ruin bar nedir?", answer: "Terk edilmiş binalarda açılan barlar. Szimpla Kert en ünlüsü — pazar günü farmer's market var." },
+    ],
+  },
+
+  prag: {
+    tldr: "Prag, Avrupa'nın en iyi korunmuş ortaçağ şehir merkezine sahip başkent. Günlük bütçe €40–70. Karlova Köprüsü, eski şehir meydanı ve astronomik saat başlıca noktalar. Bira kültürü güçlü — yarım litre bira €1.50. Schengen vizesi gerekli.",
+    quickAnswer: "Prag'da 2–3 gün kalın, günlük €40–70 bütçe ayırın, Nisan–Haziran en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. Çek Cumhuriyeti zivexpress ile dijital göçebe geçici izni alınabiliyor.",
+    safety: "Güvenli bir şehir. Turistik alanlarda (Karlova Köprüsü, Eski Şehir Meydanı) yankesiciye dikkat.",
+    seasons: [
+      { period: "Mar–May", temp: "5–19°C", crowd: "Orta", price: "Orta", note: "Bahar, Paskalya pazarları" },
+      { period: "Haz–Ağu", temp: "15–26°C", crowd: "Yüksek", price: "Yüksek", note: "Yaz, müzik festivalleri" },
+      { period: "Eyl–Kas", temp: "6–18°C", crowd: "Orta", price: "Orta", note: "Sonbahar, bira festivali Eylül" },
+      { period: "Ara–Şub", temp: "-2–4°C", crowd: "Orta", price: "Orta", note: "Noel pazarları çok popüler" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€15–30", mid: "€50–100", comfort: "€160+" },
+      { item: "Yemek", budget: "€8–14", mid: "€18–30", comfort: "€50+" },
+      { item: "Ulaşım", budget: "€3–5", mid: "€5–10", comfort: "€15+" },
+      { item: "Aktivite", budget: "€0–8", mid: "€12–25", comfort: "€40+" },
+      { item: "TOPLAM/gün", budget: "€26–57", mid: "€85–165", comfort: "€265+" },
+    ],
+    faqs: [
+      { question: "Prag'da kaç gün yeterli?", answer: "2–3 gün şehir için yeterli. Kutná Hora veya Český Krumlov günübirlik gezi dahil 4 gün ideal." },
+      { question: "Prag'da para birimi nedir?", answer: "Çek Korunası (CZK). Euro kabul eden yerler var ama kur çok kötü — Korun kullanın." },
+    ],
+  },
+
+  tiflis: {
+    tldr: "Tiflis, dijital göçebelerin Avrupa'nın keşfedilmemiş cevheri dediği Gürcistan'ın başkenti. Günlük bütçe $20–40. Eski şehir, kükürt hamamları ve dünyaca ünlü Gürcü mutfağı. 1 yıl vizesiz kalış hakkı. İnanılmaz uygun fiyatlı.",
+    quickAnswer: "Tiflis'te 3–5 gün kalın, günlük $20–40 bütçe ayırın, Mayıs–Haziran ve Eylül–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Türk vatandaşları 1 yıl vizesiz kalabilir. Dijital göçebeler için en kolay ülkelerden biri.",
+    safety: "Çok güvenli. Gece bile rahatça yürünebilir. İnsanlar çok misafirperver. Araç trafiğine dikkat.",
+    seasons: [
+      { period: "Mar–May", temp: "8–22°C", crowd: "Orta", price: "Düşük", note: "Bahar, çiçeklenme dönemi" },
+      { period: "Haz–Ağu", temp: "22–35°C", crowd: "Yüksek", price: "Orta", note: "Sıcak yaz, dağ kaçamakları ideal" },
+      { period: "Eyl–Kas", temp: "10–25°C", crowd: "Orta", price: "Düşük", note: "Üzüm hasadı, şarap sezonu" },
+      { period: "Ara–Şub", temp: "-1–7°C", crowd: "Düşük", price: "Düşük", note: "Soğuk, kayak sezonu Gudauri'de" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "$8–15", mid: "$25–50", comfort: "$80+" },
+      { item: "Yemek", budget: "$5–10", mid: "$12–20", comfort: "$35+" },
+      { item: "Ulaşım", budget: "$1–3", mid: "$3–8", comfort: "$15+" },
+      { item: "Aktivite", budget: "$0–5", mid: "$8–15", comfort: "$25+" },
+      { item: "TOPLAM/gün", budget: "$14–33", mid: "$48–93", comfort: "$155+" },
+    ],
+    faqs: [
+      { question: "Tiflis neden dijital göçebeler arasında popüler?", answer: "1 yıl vizesiz kalış, $20–30/gün yaşam maliyeti, hızlı internet, sıcak topluluk ve Georgian küzinesi." },
+      { question: "Gürcü yemekleri neler denenmeli?", answer: "Khachapuri (peynirli ekmek), khinkali (mantı), churchkhela (cevizli sucuk), pkhali ve lobio mutlaka deneyin." },
+    ],
+  },
+
+  viyana: {
+    tldr: "Viyana, dünyanın en yaşanabilir şehirlerinden biri. Günlük bütçe €55–90. İmparatorluk sarayları, opera, kahve kültürü ve Naschmarkt. Müzik tarihinin başkenti — Mozart, Beethoven, Strauss. Schengen vizesi gerekli.",
+    quickAnswer: "Viyana'da 2–4 gün kalın, günlük €55–90 bütçe ayırın, Nisan–Haziran ve Eylül–Ekim en ideal.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. Avusturya kırmızı-beyaz-kırmızı kartı uzun süreli dijital çalışma izni sağlıyor.",
+    safety: "Dünyanın en güvenli başkentlerinden biri. Gece dahil her yerde rahat. Toplu taşıma mükemmel ve güvenli.",
+    seasons: [
+      { period: "Mar–May", temp: "6–20°C", crowd: "Orta", price: "Orta", note: "Bahar, park bahçeleri açılıyor" },
+      { period: "Haz–Ağu", temp: "17–28°C", crowd: "Yüksek", price: "Yüksek", note: "Yaz, açık hava konserleri" },
+      { period: "Eyl–Kas", temp: "7–19°C", crowd: "Orta", price: "Orta", note: "Balo sezonu başlangıcı" },
+      { period: "Ara–Şub", temp: "-1–4°C", crowd: "Orta", price: "Orta", note: "Noel pazarları, opera sezonu zirve" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€25–45", mid: "€80–140", comfort: "€200+" },
+      { item: "Yemek", budget: "€10–18", mid: "€25–40", comfort: "€60+" },
+      { item: "Ulaşım", budget: "€5–8", mid: "€10–15", comfort: "€25+" },
+      { item: "Aktivite", budget: "€0–12", mid: "€18–30", comfort: "€50+" },
+      { item: "TOPLAM/gün", budget: "€40–83", mid: "€133–225", comfort: "€335+" },
+    ],
+    faqs: [
+      { question: "Viyana'da Kahve kültürü nasıl?", answer: "UNESCO somut olmayan kültürel mirası. Café Central, Demel ve Sacher deneyin. Melange (Viyana cappuccino) klasik." },
+      { question: "Viyana'dan Budapeşte'ye nasıl gidilir?", answer: "Tren ile 2,5 saat, bilet €15–30. Günübirlik gezi için uygun." },
+    ],
+  },
+
+  porto: {
+    tldr: "Porto, Portekiz'in kuzey başkenti ve port şarabının ana yurdu. Günlük bütçe €35–60. Ribeira (UNESCO), Livraria Lello ve Vila Nova de Gaia şarap mahzenleri başlıca çekicilikler. Lizbon'dan trenle 2,5 saat.",
+    quickAnswer: "Porto'da 2–3 gün kalın, günlük €35–60 bütçe ayırın, Mayıs–Ekim en ideal dönem.",
+    lastUpdated: "Nisan 2026",
+    visa: "Schengen vizesi gerekli. Portekiz D7 dijital göçebe vizesi Porto'da da geçerli.",
+    safety: "Çok güvenli. Gece bile rahat yürünebilir. Turistik alanlarda küçük hırsızlığa dikkat.",
+    seasons: [
+      { period: "Mar–May", temp: "11–19°C", crowd: "Orta", price: "Orta", note: "Bahar, yağmur azalıyor" },
+      { period: "Haz–Ağu", temp: "17–27°C", crowd: "Yüksek", price: "Yüksek", note: "São João festivali Haziran" },
+      { period: "Eyl–Kas", temp: "12–23°C", crowd: "Orta", price: "Orta", note: "Üzüm hasadı, şarap turu zamanı" },
+      { period: "Ara–Şub", temp: "6–14°C", crowd: "Düşük", price: "Düşük", note: "Yağışlı ama otantik" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "€18–35", mid: "€55–100", comfort: "€150+" },
+      { item: "Yemek", budget: "€8–14", mid: "€18–30", comfort: "€45+" },
+      { item: "Ulaşım", budget: "€3–5", mid: "€5–10", comfort: "€18+" },
+      { item: "Aktivite", budget: "€0–8", mid: "€12–22", comfort: "€35+" },
+      { item: "TOPLAM/gün", budget: "€29–62", mid: "€90–162", comfort: "€248+" },
+    ],
+    faqs: [
+      { question: "Porto'da şarap tadımı nasıl yapılır?", answer: "Vila Nova de Gaia'da 30+ şarap mahzeninde tasting var. Taylor's, Sandeman ve Graham's en popüler. Tasting €15–25." },
+      { question: "Francesinha nedir?", answer: "Porto'nun ikonik sandviçi — et, sosis, peynir ve bira sosu ile. Café Santiago ve Lado B en iyileri." },
+    ],
+  },
+
+  singapur: {
+    tldr: "Singapur, Asya'nın en modern ve düzenli şehir devleti. Günlük bütçe $50–100. Marina Bay, Gardens by the Bay ve hawker center street food başlıca deneyimler. Dünyanın en temiz ve güvenli şehirlerinden biri. Türk vatandaşları 90 gün vizesiz.",
+    quickAnswer: "Singapur'da 2–4 gün kalın, günlük $50–100 bütçe ayırın, yıl boyu tropikal iklim.",
+    lastUpdated: "Nisan 2026",
+    visa: "Türk vatandaşları 90 gün vizesiz giriş yapabilir.",
+    safety: "Dünyanın en güvenli şehirlerinden biri. Suç oranı son derece düşük. Sakız çiğnemek ve yere tükürmek yasak — para cezası var.",
+    seasons: [
+      { period: "Mar–May", temp: "25–33°C", crowd: "Orta", price: "Orta", note: "Nispeten kuru dönem" },
+      { period: "Haz–Ağu", temp: "25–32°C", crowd: "Yüksek", price: "Yüksek", note: "Great Singapore Sale" },
+      { period: "Eyl–Kas", temp: "24–32°C", crowd: "Orta", price: "Orta", note: "Haze sezonu (Ekim), F1 Eylül" },
+      { period: "Ara–Şub", temp: "23–31°C", crowd: "Yüksek", price: "Yüksek", note: "En yağışlı dönem, Çin Yeni Yılı" },
+    ],
+    costs: [
+      { item: "Konaklama", budget: "$25–45", mid: "$80–150", comfort: "$250+" },
+      { item: "Yemek", budget: "$5–12", mid: "$20–35", comfort: "$60+" },
+      { item: "Ulaşım", budget: "$5–8", mid: "$10–15", comfort: "$25+" },
+      { item: "Aktivite", budget: "$0–10", mid: "$20–40", comfort: "$60+" },
+      { item: "TOPLAM/gün", budget: "$35–75", mid: "$130–240", comfort: "$395+" },
+    ],
+    faqs: [
+      { question: "Hawker center nedir?", answer: "Açık hava yemek merkezleri — Michelin yıldızlı sokak yemeği $3–5. Maxwell Food Centre ve Lau Pa Sat en ünlüleri." },
+      { question: "Singapur'da neye dikkat etmeli?", answer: "Sakız ithalatı ve satışı yasak. Toplu taşımada yiyip içmek yasak. Sigara çok sınırlı alanlarda." },
+    ],
+  },
 };
