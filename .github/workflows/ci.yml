@@ -31,7 +31,11 @@ jobs:
 
       # ── Type Check ────────────────────────────────────────────────────────────
       - name: TypeScript type check
+        id: typecheck
         run: npx tsc --noEmit -p tsconfig.app.json
+
+      - name: Consent bootstrap tests
+        run: node --test tests/consent-bootstrap.test.mjs
 
       # ── Lint ─────────────────────────────────────────────────────────────────
       - name: ESLint
@@ -39,6 +43,7 @@ jobs:
 
       # ── Build ─────────────────────────────────────────────────────────────────
       - name: Vite build
+        if: ${{ !cancelled() && steps.typecheck.conclusion == 'success' }}
         run: npm run build
         env:
           # CI build uses placeholder values — real secrets live in deployment env

@@ -1,3 +1,5 @@
+import { useConsent } from '@/lib/consent';
+import { AffiliateConsentNotice } from '@/components/AffiliateConsentNotice';
 import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -75,7 +77,7 @@ interface TravelpayoutsToursWidgetProps {
   className?: string;
 }
 
-export function TravelpayoutsToursWidget({
+function TravelpayoutsToursWidgetContent({
   citySlug,
   cityNameEn,
   currency = 'TRY',
@@ -178,4 +180,10 @@ export function TravelpayoutsToursWidget({
       </CardContent>
     </Card>
   );
+}
+
+export function TravelpayoutsToursWidget(props: TravelpayoutsToursWidgetProps) {
+  const consent = useConsent();
+  if (!consent.affiliate) return <AffiliateConsentNotice />;
+  return <TravelpayoutsToursWidgetContent {...props} />;
 }

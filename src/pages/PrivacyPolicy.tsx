@@ -32,7 +32,7 @@ const PrivacyPolicy = () => {
         <Card variant="elevated">
           <CardContent className="p-6 md:p-8 prose prose-lg max-w-none">
             <p className="text-muted-foreground">
-              Son güncelleme: {currentYear}
+              Son güncelleme: 25 Kasım 2026
             </p>
 
             <h2>1. Giriş</h2>
@@ -61,8 +61,7 @@ const PrivacyPolicy = () => {
 
             <h2>4. Üçüncü Taraf Hizmetleri</h2>
             <p>
-              Web sitemizde Google Analytics, Google Tag Manager ve reklam hizmetleri kullanıyoruz. 
-              Bu hizmetler kendi gizlilik politikalarına tabidir.
+              Google Analytics ve Google Tag Manager analitik iznine bağlıdır. Travelpayouts gibi gömülü iş ortağı araçları için ayrı bir tercih alınır. Doğrudan dış bağlantılar üzerinden başka bir siteye geçtiğinizde o sitenin gizlilik koşulları uygulanır. Doğrudan AdSense yüklemesi bu sürümde devre dışıdır. İsteğe bağlı tercihlerinizi Çerez Politikası sayfasından değiştirebilirsiniz.
             </p>
 
             <h2>5. Veri Güvenliği</h2>
