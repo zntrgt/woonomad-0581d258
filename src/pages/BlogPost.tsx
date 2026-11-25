@@ -439,8 +439,8 @@ export default function BlogPost() {
         if (contentLower.includes(city.name.toLowerCase())) score += 10;
         if (contentLower.includes(city.slug.toLowerCase())) score += 5;
 
-        // Blog category match bonus (e.g. "dijital-gocebe" category + nomad-friendly city)
-        if (post.category === 'dijital-gocebe' && ['bali', 'lizbon', 'tiflis', 'berlin', 'budapeste', 'bangkok'].includes(city.slug)) {
+        // Blog category match bonus (e.g. "nomad" category + nomad-friendly city)
+        if (post.category === 'nomad' && ['bali', 'lizbon', 'tiflis', 'berlin', 'budapeste', 'bangkok'].includes(city.slug)) {
           score += 8;
         }
 

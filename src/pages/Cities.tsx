@@ -265,9 +265,9 @@ const Cities = () => {
                           <span className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" /> {city.bestTimeToVisit.split(',')[0]}
                           </span>
-                          {nomad?.wifiSpeed && (
+                          {nomad?.internetSpeed && (
                             <span className="flex items-center gap-1">
-                              <Wifi className="h-3 w-3" /> {nomad.wifiSpeed} Mbps
+                              <Wifi className="h-3 w-3" /> {nomad.internetSpeed}
                             </span>
                           )}
                         </div>
