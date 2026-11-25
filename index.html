@@ -12,114 +12,248 @@
     <meta name="ezoic-site-verification" content="lt4Edk7ONHK4R8drDPexd4ZLj6h2O1" />
     <meta name="yandex-verification" content="5d62625a9a6e7104" />
     
-    <!-- Basic Consent Mode v2: local preference before any Google tag. -->
+    <!-- Default denied + WooNomad gate; InMobi supplies consent updates. -->
     <script id="woonomad-consent-bootstrap">
-      (function () {
-        'use strict';
-        var KEY = 'woonomad-cookie-consent-v2';
-        var MAX_AGE = 180 * 24 * 60 * 60 * 1000;
-        var EVENT = 'woonomad:consent-change';
-        var denied = { decided: false, analytics: false, affiliate: false };
-        var state = denied;
-        var loaded = false;
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
-      
-        function googleConsent(analytics) {
-          return {
-            analytics_storage: analytics ? 'granted' : 'denied',
-            ad_storage: 'denied',
-            ad_user_data: 'denied',
-            ad_personalization: 'denied',
-            functionality_storage: 'denied',
-            personalization_storage: 'denied',
-            security_storage: 'granted'
-          };
-        }
-      
-        // No Google tag or third-party request before the applicable opt-in.
-        window.gtag('consent', 'default', googleConsent(false));
-        window['ga-disable-G-WWPLMMXE76'] = true;
-      
-        function read() {
-          try {
-            var value = JSON.parse(window.localStorage.getItem(KEY) || 'null');
-            if (value && typeof value.analytics === 'boolean' &&
-                typeof value.affiliate === 'boolean' &&
-                typeof value.savedAt === 'number' && value.savedAt <= Date.now() &&
-                Date.now() - value.savedAt < MAX_AGE) {
-              return { decided: true, analytics: value.analytics, affiliate: value.affiliate };
-            }
-          } catch (_) { /* Storage unavailable: fail closed. */ }
-          return denied;
-        }
-      
-        function loadGTM() {
-          if (loaded) return;
-          loaded = true;
-          window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
-          var script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-5GDVGHFN';
-          document.head.appendChild(script);
-        }
-      
-        function clearAnalyticsCookies() {
-          var host = window.location.hostname;
-          var domains = ['', host];
-          if (host === 'woonomad.co' || host.endsWith('.woonomad.co')) domains.push('woonomad.co');
-          try {
-            document.cookie.split(';').forEach(function (item) {
-              var name = item.split('=')[0].trim();
-              if (!/^(_ga(?:_|$)|_gid$|_gat(?:_|$)|_gac_)/.test(name)) return;
-              domains.forEach(function (domain) {
-                document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '');
-              });
-            });
-          } catch (_) { /* Browser may block cookie access. */ }
-        }
-      
-        function apply(next) {
-          var revoked = (state.analytics && !next.analytics) ||
-                        (state.affiliate && !next.affiliate);
-          state = next;
-          window['ga-disable-G-WWPLMMXE76'] = !state.analytics;
-          window.gtag('consent', 'update', googleConsent(state.analytics));
-          if (!state.analytics) clearAnalyticsCookies();
-          // A loaded third-party script cannot reliably be unloaded. Reload on revocation.
-          if (revoked) {
-            window.location.reload();
-            return;
-          }
-          if (state.analytics) loadGTM();
-          window.dispatchEvent(new Event(EVENT));
-        }
-      
-        window.woonomadConsent = {
-          get: function () { return state; },
-          save: function (analytics, affiliate) {
-            var next = { decided: true, analytics: analytics === true, affiliate: affiliate === true };
-            try {
-              window.localStorage.setItem(KEY, JSON.stringify({
-                analytics: next.analytics, affiliate: next.affiliate, savedAt: Date.now()
-              }));
-            } catch (_) { /* Current document only; no persistent consent. */ }
-            apply(next);
-          }
-        };
-      
-        var stored = read();
-        if (stored.decided) apply(stored);
-        else clearAnalyticsCookies();
-      
-        window.addEventListener('storage', function (event) {
-          if (event.key !== KEY && event.key !== null) return;
-          var next = read();
-          if (next.decided !== state.decided || next.analytics !== state.analytics ||
-              next.affiliate !== state.affiliate) apply(next);
+(function () {
+  'use strict';
+  var EVENT = 'woonomad:consent-change';
+  var state = { decided: false, analytics: false, affiliate: false };
+  var loaded = false;
+  var reloadTimer;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  // Fail closed before the asynchronous CMP starts. InMobi owns all consent updates.
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied', ad_storage: 'denied',
+    ad_user_data: 'denied', ad_personalization: 'denied'
+  });
+  window['ga-disable-G-WWPLMMXE76'] = true;
+
+  function emit() { window.dispatchEvent(new Event(EVENT)); }
+  function clearAnalyticsCookies() {
+    var host = window.location.hostname;
+    var domains = ['', host];
+    if (host === 'woonomad.co' || host.endsWith('.woonomad.co')) domains.push('woonomad.co');
+    try {
+      document.cookie.split(';').forEach(function (item) {
+        var name = item.split('=')[0].trim();
+        if (!/^(_ga(?:_|$)|_gid$|_gat(?:_|$)|_gac_)/.test(name)) return;
+        domains.forEach(function (domain) {
+          document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '');
         });
-      })();
+      });
+    } catch (_) { /* Browser may block cookie access. */ }
+  }
+  function loadGTM() {
+    if (loaded || !state.analytics) return;
+    loaded = true;
+    window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-5GDVGHFN';
+    document.head.appendChild(script);
+  }
+  function scheduleReload() {
+    if (reloadTimer) window.clearTimeout(reloadTimer);
+    // Let the CMP finish saving its consent record before reloading.
+    reloadTimer = window.setTimeout(function () { window.location.reload(); }, 750);
+  }
+  function applyGoogleUpdate(command) {
+    if (!command || command[0] !== 'consent' || command[1] !== 'update' ||
+        !command[2] || !['granted', 'denied'].includes(command[2].analytics_storage)) return;
+    var granted = command[2].analytics_storage === 'granted';
+    var revoked = state.analytics && !granted;
+    state = { decided: true, analytics: granted, affiliate: state.affiliate };
+    window['ga-disable-G-WWPLMMXE76'] = !granted;
+    if (!granted) clearAnalyticsCookies();
+    if (revoked) scheduleReload();
+    emit();
+  }
+  // Observe documented InMobi gtag consent updates; do not synthesize grants.
+  // Preserve dataLayer arguments and return values, and load GTM only after queuing the update.
+  var layer = window.dataLayer;
+  var previousPush = layer.push;
+  layer.push = function () {
+    for (var i = 0; i < arguments.length; i++) applyGoogleUpdate(arguments[i]);
+    var result = previousPush.apply(this, arguments);
+    if (state.analytics) loadGTM();
+    return result;
+  };
+  // Separate, explicit opt-in for embedded partner tools. Essentials has no custom-vendor consent API.
+  // In-memory only; no migration of old banner choices. SPA navigation preserves this document's choice.
+  window.woonomadConsent = {
+    get: function () { return state; },
+    setAffiliate: function (allowed) {
+      var next = allowed === true;
+      var revoked = state.affiliate && !next;
+      state = { decided: state.decided, analytics: state.analytics, affiliate: next };
+      emit();
+      if (revoked) scheduleReload();
+    }
+  };
+})();
     </script>
+    <!-- InMobi Choice Consent Manager Tag v3.0 (TCF 2.3), supplied property tag; formatting normalized. -->
+    <script type="text/javascript" async>
+(function() {
+  var host = window.location.hostname;
+  var element = document.createElement('script');
+  var firstScript = document.getElementsByTagName('script')[0];
+  var url = 'https://cmp.inmobi.com'.concat('/choice/', 'B9t5q1Hffjt6F', '/', host, '/choice.js?tag_version=V3');
+  var uspTries = 0;
+  var uspTriesLimit = 3;
+  element.async = true;
+  element.type = 'text/javascript';
+  element.src = url;
+  firstScript.parentNode.insertBefore(element, firstScript);
+
+  function makeStub() {
+    var TCF_LOCATOR_NAME = '__tcfapiLocator';
+    var queue = [];
+    var win = window;
+    var cmpFrame;
+    function addFrame() {
+      var doc = win.document;
+      var otherCMP = !!(win.frames[TCF_LOCATOR_NAME]);
+      if (!otherCMP) {
+        if (doc.body) {
+          var iframe = doc.createElement('iframe');
+          iframe.style.cssText = 'display:none';
+          iframe.name = TCF_LOCATOR_NAME;
+          doc.body.appendChild(iframe);
+        } else { setTimeout(addFrame, 5); }
+      }
+      return !otherCMP;
+    }
+    function tcfAPIHandler() {
+      var gdprApplies;
+      var args = arguments;
+      if (!args.length) { return queue; }
+      else if (args[0] === 'setGdprApplies') {
+        if (args.length > 3 && args[2] === 2 && typeof args[3] === 'boolean') {
+          gdprApplies = args[3];
+          if (typeof args[2] === 'function') { args[2]('set', true); }
+        }
+      } else if (args[0] === 'ping') {
+        var retr = { gdprApplies: gdprApplies, cmpLoaded: false, cmpStatus: 'stub' };
+        if (typeof args[2] === 'function') { args[2](retr); }
+      } else {
+        if (args[0] === 'init' && typeof args[3] === 'object') {
+          args[3] = Object.assign(args[3], { tag_version: 'V3' });
+        }
+        queue.push(args);
+      }
+    }
+    function postMessageEventHandler(event) {
+      var msgIsString = typeof event.data === 'string';
+      var json = {};
+      try { json = msgIsString ? JSON.parse(event.data) : event.data; } catch (ignore) {}
+      var payload = json && json.__tcfapiCall;
+      if (payload) {
+        window.__tcfapi(payload.command, payload.version, function(retValue, success) {
+          var returnMsg = { __tcfapiReturn: { returnValue: retValue, success: success, callId: payload.callId } };
+          if (msgIsString) { returnMsg = JSON.stringify(returnMsg); }
+          if (event && event.source && event.source.postMessage) { event.source.postMessage(returnMsg, '*'); }
+        }, payload.parameter);
+      }
+    }
+    while (win) {
+      try { if (win.frames[TCF_LOCATOR_NAME]) { cmpFrame = win; break; } } catch (ignore) {}
+      if (win === window.top) { break; }
+      win = win.parent;
+    }
+    if (!cmpFrame) {
+      addFrame();
+      win.__tcfapi = tcfAPIHandler;
+      win.addEventListener('message', postMessageEventHandler, false);
+    }
+  }
+  makeStub();
+
+  function makeGppStub() {
+    const CMP_ID = 10;
+    const SUPPORTED_APIS = ['2:tcfeuv2','6:uspv1','7:usnatv1','8:usca','9:usvav1','10:uscov1','11:usutv1','12:usctv1'];
+    window.__gpp_addFrame = function(n) {
+      if (!window.frames[n]) {
+        if (document.body) {
+          var i = document.createElement('iframe');
+          i.style.cssText = 'display:none';
+          i.name = n;
+          document.body.appendChild(i);
+        } else { window.setTimeout(window.__gpp_addFrame, 10, n); }
+      }
+    };
+    function pingData() {
+      return { gppVersion:'1.1', cmpStatus:'stub', cmpDisplayStatus:'hidden',
+        signalStatus:'not ready', supportedAPIs:SUPPORTED_APIS, cmpId:CMP_ID,
+        sectionList:[], applicableSections:[-1], gppString:'', parsedSections:{} };
+    }
+    window.__gpp_stub = function() {
+      var b = arguments;
+      __gpp.queue = __gpp.queue || [];
+      __gpp.events = __gpp.events || [];
+      if (!b.length || (b.length == 1 && b[0] == 'queue')) { return __gpp.queue; }
+      if (b.length == 1 && b[0] == 'events') { return __gpp.events; }
+      var cmd = b[0];
+      var clb = b.length > 1 ? b[1] : null;
+      var par = b.length > 2 ? b[2] : null;
+      if (cmd === 'ping') { clb(pingData(), true); }
+      else if (cmd === 'addEventListener') {
+        if (!('lastId' in __gpp)) { __gpp.lastId = 0; }
+        __gpp.lastId++;
+        var lnr = __gpp.lastId;
+        __gpp.events.push({ id:lnr, callback:clb, parameter:par });
+        clb({ eventName:'listenerRegistered', listenerId:lnr, data:true, pingData:pingData() }, true);
+      } else if (cmd === 'removeEventListener') {
+        var success = false;
+        for (var i = 0; i < __gpp.events.length; i++) {
+          if (__gpp.events[i].id == par) { __gpp.events.splice(i, 1); success = true; break; }
+        }
+        clb({ eventName:'listenerRemoved', listenerId:par, data:success, pingData:pingData() }, true);
+      } else if (cmd === 'hasSection') { clb(false, true); }
+      else if (cmd === 'getSection' || cmd === 'getField') { clb(null, true); }
+      else { __gpp.queue.push([].slice.apply(b)); }
+    };
+    window.__gpp_msghandler = function(event) {
+      var msgIsString = typeof event.data === 'string';
+      try { var json = msgIsString ? JSON.parse(event.data) : event.data; } catch (e) { var json = null; }
+      if (typeof json === 'object' && json !== null && '__gppCall' in json) {
+        var i = json.__gppCall;
+        window.__gpp(i.command, function(retValue, success) {
+          var returnMsg = { __gppReturn: { returnValue:retValue, success:success, callId:i.callId } };
+          event.source.postMessage(msgIsString ? JSON.stringify(returnMsg) : returnMsg, '*');
+        }, 'parameter' in i ? i.parameter : null, 'version' in i ? i.version : '1.1');
+      }
+    };
+    if (!('__gpp' in window) || typeof window.__gpp !== 'function') {
+      window.__gpp = window.__gpp_stub;
+      window.addEventListener('message', window.__gpp_msghandler, false);
+      window.__gpp_addFrame('__gppLocator');
+    }
+  }
+  makeGppStub();
+
+  var uspStubFunction = function() {
+    var arg = arguments;
+    if (typeof window.__uspapi !== uspStubFunction) {
+      setTimeout(function() {
+        if (typeof window.__uspapi !== 'undefined') { window.__uspapi.apply(window.__uspapi, arg); }
+      }, 500);
+    }
+  };
+  var checkIfUspIsReady = function() {
+    uspTries++;
+    if (window.__uspapi === uspStubFunction && uspTries < uspTriesLimit) {
+      console.warn('USP is not accessible');
+    } else { clearInterval(uspInterval); }
+  };
+  if (typeof window.__uspapi === 'undefined') {
+    window.__uspapi = uspStubFunction;
+    var uspInterval = setInterval(checkIfUspIsReady, 6000);
+  }
+})();
+    </script>
+    <!-- End InMobi Choice Consent Manager Tag v3.0 -->
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#8B5CF6" />

@@ -2,101 +2,75 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
-
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const source = html.match(/<script id="woonomad-consent-bootstrap">([\s\S]*?)<\/script>/)[1];
-const KEY = 'woonomad-cookie-consent-v2';
 
-function boot(initial = {}, storageFails = false) {
-  const storage = new Map(Object.entries(initial));
-  const scripts = [], cookies = [], listeners = {};
+function boot() {
+  const scripts = [], cookies = [], timers = [];
   let reloads = 0;
   const window = {
     location: { hostname: 'www.woonomad.co', reload() { reloads++; } },
-    localStorage: {
-      getItem(k) { if (storageFails) throw Error('blocked'); return storage.get(k) ?? null; },
-      setItem(k, v) { if (storageFails) throw Error('blocked'); storage.set(k, v); }
-    },
     dispatchEvent() {},
-    addEventListener(type, handler) { listeners[type] = handler; },
+    setTimeout(cb) { timers.push(cb); return timers.length; },
+    clearTimeout() {}
   };
   const document = {
-    get cookie() { return '_ga=abc; _ga_TEST=xyz; required=keep'; },
+    get cookie() { return '_ga=abc; required=keep'; },
     set cookie(v) { cookies.push(v); },
     createElement() { return {}; },
     head: { appendChild(s) { scripts.push(s.src); } }
   };
   runInNewContext(source, { window, document, Event: class {} });
-  const commands = () => window.dataLayer.filter(x => x[0] === 'consent').map(x => [x[1], x[2]]);
-  return { window, scripts, cookies, storage, commands, listeners, reloads: () => reloads };
+  const update = v => window.gtag('consent','update',{analytics_storage:v});
+  return { window, scripts, cookies, timers, update, reloads:()=>reloads };
 }
-
-test('fresh and reject: no GTM, all optional consent denied', () => {
-  const b = boot({ 'woonomad-cookie-consent': 'accepted' });
-  assert.equal(b.scripts.length, 0);
-  assert.equal(b.commands()[0][0], 'default');
-  assert.equal(b.commands()[0][1].analytics_storage, 'denied');
-  b.window.woonomadConsent.save(false, false);
-  assert.equal(b.scripts.length, 0);
-  assert.equal(b.commands().at(-1)[1].ad_user_data, 'denied');
-  assert.equal(b.window.woonomadConsent.get().decided, true);
-  assert.ok(b.cookies.some(x => x.startsWith('_ga=')));
-  assert.ok(!b.cookies.some(x => x.startsWith('required=')));
+test('default denied, CMP not ready: no Google tag', () => {
+  const b=boot();
+  assert.equal(b.scripts.length,0);
+  assert.equal(b.window.dataLayer[0][2].analytics_storage,'denied');
+  assert.equal(b.window.dataLayer[0][2].ad_user_data,'denied');
+  assert.equal(b.window['ga-disable-G-WWPLMMXE76'],true);
 });
-
-test('analytics opt-in: update precedes one GTM load, ads remain denied', () => {
-  const b = boot();
-  b.window.woonomadConsent.save(true, false);
-  b.window.woonomadConsent.save(true, false);
-  assert.equal(b.scripts.length, 1);
-  assert.match(b.scripts[0], /GTM-5GDVGHFN/);
-  const layer = b.window.dataLayer;
-  const firstUpdate = layer.findIndex(x => x[0] === 'consent' && x[1] === 'update');
-  assert.ok(firstUpdate < layer.findIndex(x => x.event === 'gtm.js'));
-  assert.equal(b.commands().at(-1)[1].analytics_storage, 'granted');
-  assert.equal(b.commands().at(-1)[1].ad_personalization, 'denied');
-  assert.equal(b.window['ga-disable-G-WWPLMMXE76'], false);
+test('CMP explicit deny does not load GTM; accessible GA cookies cleared', () => {
+  const b=boot(); b.update('denied');
+  assert.equal(b.scripts.length,0);
+  assert.ok(b.cookies.some(x=>x.startsWith('_ga=')));
+  assert.ok(!b.cookies.some(x=>x.startsWith('required=')));
 });
-
-test('affiliate-only does not start Google tags', () => {
-  const b = boot();
-  b.window.woonomadConsent.save(false, true);
-  assert.equal(b.window.woonomadConsent.get().affiliate, true);
-  assert.equal(b.scripts.length, 0);
+test('explicit analytics grant loads GTM once after the update', () => {
+  const b=boot(); b.update('granted'); b.update('granted');
+  assert.equal(b.scripts.length,1);
+  assert.match(b.scripts[0],/GTM-5GDVGHFN/);
+  const layer=b.window.dataLayer;
+  assert.equal(layer[1][1],'update');
+  assert.equal(layer[2].event,'gtm.js');
+  assert.equal(b.window['ga-disable-G-WWPLMMXE76'],false);
 });
-
-test('stored choice restored; expired choice denied', () => {
-  const record = savedAt => JSON.stringify({ analytics: true, affiliate: false, savedAt });
-  assert.equal(boot({ [KEY]: record(Date.now()) }).scripts.length, 1);
-  assert.equal(boot({ [KEY]: record(Date.now() - 181*86400000) }).scripts.length, 0);
+test('ad-only and malformed updates cannot grant analytics', () => {
+  const b=boot(); b.window.gtag('consent','update',{ad_storage:'granted'});
+  b.update('true'); b.window.gtag('consent','default',{analytics_storage:'granted'});
+  assert.equal(b.scripts.length,0);
 });
-
-test('revocation disables GA and reloads; saved refusal survives reload', () => {
-  const b = boot();
-  b.window.woonomadConsent.save(true, true);
-  b.window.woonomadConsent.save(false, true);
-  assert.equal(b.reloads(), 1);
-  assert.equal(b.window['ga-disable-G-WWPLMMXE76'], true);
-  assert.equal(b.commands().at(-1)[1].analytics_storage, 'denied');
-  assert.equal(boot(Object.fromEntries(b.storage)).scripts.length, 0);
+test('revocation disables GA and schedules reload', () => {
+  const b=boot(); b.update('granted'); b.update('denied');
+  assert.equal(b.window['ga-disable-G-WWPLMMXE76'],true);
+  assert.equal(b.timers.length,1);
+  b.timers[0](); assert.equal(b.reloads(),1);
 });
-
-test('cross-tab withdrawal reloads and disables GA', () => {
-  const b = boot();
-  b.window.woonomadConsent.save(true, true);
-  b.storage.set(KEY, JSON.stringify({ analytics: false, affiliate: false, savedAt: Date.now() }));
-  b.listeners.storage({ key: KEY });
-  assert.equal(b.reloads(), 1);
-  assert.equal(b.window['ga-disable-G-WWPLMMXE76'], true);
+test('affiliate grant independent of Google, reset on new document', () => {
+  const b=boot(); b.window.woonomadConsent.setAffiliate(true);
+  assert.equal(b.window.woonomadConsent.get().affiliate,true);
+  assert.equal(b.scripts.length,0);
+  assert.equal(boot().window.woonomadConsent.get().affiliate,false);
+  b.window.woonomadConsent.setAffiliate(false);
+  assert.equal(b.timers.length,1);
 });
-
-test('blocked storage fails closed on new document', () => {
-  const b = boot({}, true);
-  assert.equal(b.scripts.length, 0);
-  assert.equal(b.window.woonomadConsent.get().decided, false);
-});
-
-test('no unconditional Adsense or GTM noscript iframe in source', () => {
-  assert.doesNotMatch(html, /<script[^>]+src="https:\/\/pagead2\.googlesyndication\.com/);
-  assert.doesNotMatch(html, /<iframe[^>]+googletagmanager\.com\/ns\.html/);
+test('CMP tag order and no unconditional AdSense or GTM iframe', () => {
+  assert.ok(html.indexOf('id="woonomad-consent-bootstrap"')<html.indexOf('https://cmp.inmobi.com'));
+  assert.match(html,/B9t5q1Hffjt6F/);
+  assert.match(html,/__tcfapiLocator/);
+  assert.match(html,/__gppLocator/);
+  assert.match(html,/__uspapi/);
+  assert.doesNotMatch(html,/<script[^>]+src="https:\/\/pagead2\.googlesyndication\.com/);
+  assert.doesNotMatch(html,/<iframe[^>]+googletagmanager\.com\/ns\.html/);
 });

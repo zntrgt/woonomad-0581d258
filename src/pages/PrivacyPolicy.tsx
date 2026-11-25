@@ -61,7 +61,7 @@ const PrivacyPolicy = () => {
 
             <h2>4. Üçüncü Taraf Hizmetleri</h2>
             <p>
-              Google Analytics ve Google Tag Manager analitik iznine bağlıdır. Travelpayouts gibi gömülü iş ortağı araçları için ayrı bir tercih alınır. Doğrudan dış bağlantılar üzerinden başka bir siteye geçtiğinizde o sitenin gizlilik koşulları uygulanır. Doğrudan AdSense yüklemesi bu sürümde devre dışıdır. İsteğe bağlı tercihlerinizi Çerez Politikası sayfasından değiştirebilirsiniz.
+              Google Analytics ve Google Tag Manager InMobi Choice üzerinden verilen analitik iznine bağlıdır. InMobi Choice izinlerinizi yönetmek için kullanılır. Travelpayouts gibi gömülü iş ortağı araçları için ayrı bir tercih alınır. Doğrudan dış bağlantılar üzerinden başka bir siteye geçtiğinizde o sitenin gizlilik koşulları uygulanır. Doğrudan AdSense yüklemesi bu sürümde devre dışıdır. İsteğe bağlı tercihlerinizi Çerez Politikası sayfasından değiştirebilirsiniz.
             </p>
 
             <h2>5. Veri Güvenliği</h2>
