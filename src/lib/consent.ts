@@ -1,19 +1,21 @@
 import { useSyncExternalStore } from 'react';
 
 type ConsentState = { decided: boolean; analytics: boolean; affiliate: boolean };
+type TcfPing = { cmpLoaded?: boolean; gdprApplies?: boolean; cmpStatus?: string };
 
 declare global {
   interface Window {
     woonomadConsent?: {
       get: () => ConsentState;
-      save: (analytics: boolean, affiliate: boolean) => void;
+      setAffiliate: (allowed: boolean) => void;
     };
+    __tcfapi?: (command: string, version: number, callback: (data: TcfPing, success?: boolean) => void) => void;
+    __uspapi?: (command: string, version?: number, callback?: () => void) => void;
   }
 }
 
 const fallback: ConsentState = { decided: false, analytics: false, affiliate: false };
 const changeEvent = 'woonomad:consent-change';
-export const openPreferencesEvent = 'woonomad:open-cookie-preferences';
 
 function snapshot(): ConsentState {
   return typeof window === 'undefined' ? fallback : window.woonomadConsent?.get() ?? fallback;
@@ -25,11 +27,16 @@ function subscribe(listener: () => void) {
 export function useConsent() {
   return useSyncExternalStore(subscribe, snapshot, () => fallback);
 }
-export function openCookiePreferences() {
-  window.dispatchEvent(new Event(openPreferencesEvent));
+export function setAffiliateConsent(allowed: boolean) {
+  window.woonomadConsent?.setAffiliate(allowed);
 }
-export function saveConsent(analytics: boolean, affiliate: boolean): boolean {
-  if (!window.woonomadConsent) return false;
-  window.woonomadConsent.save(analytics, affiliate);
-  return true;
+export function openCookiePreferences() {
+  if (typeof window.__tcfapi !== 'function') return;
+  window.__tcfapi('ping', 2, data => {
+    if (data?.gdprApplies === false && typeof window.__uspapi === 'function') {
+      window.__uspapi('displayUspUi', 1, () => {});
+    } else {
+      window.__tcfapi?.('displayConsentUi', 2, () => {});
+    }
+  });
 }
