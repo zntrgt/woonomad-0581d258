@@ -12,12 +12,114 @@
     <meta name="ezoic-site-verification" content="lt4Edk7ONHK4R8drDPexd4ZLj6h2O1" />
     <meta name="yandex-verification" content="5d62625a9a6e7104" />
     
-    <!-- GTM handles GA4 — no separate gtag needed -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5GDVGHFN');</script>
+    <!-- Basic Consent Mode v2: local preference before any Google tag. -->
+    <script id="woonomad-consent-bootstrap">
+      (function () {
+        'use strict';
+        var KEY = 'woonomad-cookie-consent-v2';
+        var MAX_AGE = 180 * 24 * 60 * 60 * 1000;
+        var EVENT = 'woonomad:consent-change';
+        var denied = { decided: false, analytics: false, affiliate: false };
+        var state = denied;
+        var loaded = false;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+      
+        function googleConsent(analytics) {
+          return {
+            analytics_storage: analytics ? 'granted' : 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'denied',
+            personalization_storage: 'denied',
+            security_storage: 'granted'
+          };
+        }
+      
+        // No Google tag or third-party request before the applicable opt-in.
+        window.gtag('consent', 'default', googleConsent(false));
+        window['ga-disable-G-WWPLMMXE76'] = true;
+      
+        function read() {
+          try {
+            var value = JSON.parse(window.localStorage.getItem(KEY) || 'null');
+            if (value && typeof value.analytics === 'boolean' &&
+                typeof value.affiliate === 'boolean' &&
+                typeof value.savedAt === 'number' && value.savedAt <= Date.now() &&
+                Date.now() - value.savedAt < MAX_AGE) {
+              return { decided: true, analytics: value.analytics, affiliate: value.affiliate };
+            }
+          } catch (_) { /* Storage unavailable: fail closed. */ }
+          return denied;
+        }
+      
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-5GDVGHFN';
+          document.head.appendChild(script);
+        }
+      
+        function clearAnalyticsCookies() {
+          var host = window.location.hostname;
+          var domains = ['', host];
+          if (host === 'woonomad.co' || host.endsWith('.woonomad.co')) domains.push('woonomad.co');
+          try {
+            document.cookie.split(';').forEach(function (item) {
+              var name = item.split('=')[0].trim();
+              if (!/^(_ga(?:_|$)|_gid$|_gat(?:_|$)|_gac_)/.test(name)) return;
+              domains.forEach(function (domain) {
+                document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '');
+              });
+            });
+          } catch (_) { /* Browser may block cookie access. */ }
+        }
+      
+        function apply(next) {
+          var revoked = (state.analytics && !next.analytics) ||
+                        (state.affiliate && !next.affiliate);
+          state = next;
+          window['ga-disable-G-WWPLMMXE76'] = !state.analytics;
+          window.gtag('consent', 'update', googleConsent(state.analytics));
+          if (!state.analytics) clearAnalyticsCookies();
+          // A loaded third-party script cannot reliably be unloaded. Reload on revocation.
+          if (revoked) {
+            window.location.reload();
+            return;
+          }
+          if (state.analytics) loadGTM();
+          window.dispatchEvent(new Event(EVENT));
+        }
+      
+        window.woonomadConsent = {
+          get: function () { return state; },
+          save: function (analytics, affiliate) {
+            var next = { decided: true, analytics: analytics === true, affiliate: affiliate === true };
+            try {
+              window.localStorage.setItem(KEY, JSON.stringify({
+                analytics: next.analytics, affiliate: next.affiliate, savedAt: Date.now()
+              }));
+            } catch (_) { /* Current document only; no persistent consent. */ }
+            apply(next);
+          }
+        };
+      
+        var stored = read();
+        if (stored.decided) apply(stored);
+        else clearAnalyticsCookies();
+      
+        window.addEventListener('storage', function (event) {
+          if (event.key !== KEY && event.key !== null) return;
+          var next = read();
+          if (next.decided !== state.decided || next.analytics !== state.analytics ||
+              next.affiliate !== state.affiliate) apply(next);
+        });
+      })();
+    </script>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#8B5CF6" />
@@ -50,8 +152,7 @@
     <meta name="twitter:description" content="Şehir rehberleri, uçak bileti, otel, eSIM karşılaştırma. Solo, aile ve nomad gezginler için." />
     <meta name="twitter:image" content="https://woonomad.co/og-image.png" />
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8614552230353945" crossorigin="anonymous"></script>
+    <!-- AdSense intentionally suspended pending a Google-certified CMP / TCF integration. -->
     
     <!-- Travelpayouts LinkSwitcher — DEVRE DIŞI
          Sebep: Agoda city page URL'lerini search?city=ID formatına çeviriyor,
@@ -71,10 +172,7 @@
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5GDVGHFN"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <!-- No GTM noscript iframe: consent cannot be collected without JavaScript. -->
     <div id="root"></div>
     <noscript>
       <div style="max-width:800px;margin:40px auto;padding:20px;font-family:sans-serif">

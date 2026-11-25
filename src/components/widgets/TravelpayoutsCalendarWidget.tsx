@@ -1,3 +1,5 @@
+import { useConsent } from '@/lib/consent';
+import { AffiliateConsentNotice } from '@/components/AffiliateConsentNotice';
 import { useEffect, useRef, useState, useId } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { WidgetContainer, WidgetFallback } from './WidgetContainer';
@@ -32,7 +34,7 @@ const currencyMap: Record<string, string> = {
   AED: 'aed',
 };
 
-export function TravelpayoutsCalendarWidget({
+function TravelpayoutsCalendarWidgetContent({
   origin,
   destination,
   subId = 'calendar',
@@ -119,4 +121,10 @@ export function TravelpayoutsCalendarWidget({
       )}
     </WidgetContainer>
   );
+}
+
+export function TravelpayoutsCalendarWidget(props: TravelpayoutsCalendarWidgetProps) {
+  const consent = useConsent();
+  if (!consent.affiliate) return <AffiliateConsentNotice />;
+  return <TravelpayoutsCalendarWidgetContent {...props} />;
 }

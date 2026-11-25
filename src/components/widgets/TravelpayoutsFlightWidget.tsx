@@ -1,3 +1,5 @@
+import { useConsent } from '@/lib/consent';
+import { AffiliateConsentNotice } from '@/components/AffiliateConsentNotice';
 import { useEffect, useRef } from 'react';
 
 interface TravelpayoutsFlightWidgetProps {
@@ -7,7 +9,7 @@ interface TravelpayoutsFlightWidgetProps {
   className?: string;
 }
 
-export function TravelpayoutsFlightWidget({
+function TravelpayoutsFlightWidgetContent({
   className,
 }: TravelpayoutsFlightWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,4 +41,10 @@ export function TravelpayoutsFlightWidget({
       className={`w-full min-h-[200px] ${className || ''}`}
     />
   );
+}
+
+export function TravelpayoutsFlightWidget(props: TravelpayoutsFlightWidgetProps) {
+  const consent = useConsent();
+  if (!consent.affiliate) return <AffiliateConsentNotice />;
+  return <TravelpayoutsFlightWidgetContent {...props} />;
 }

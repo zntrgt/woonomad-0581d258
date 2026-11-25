@@ -1,3 +1,5 @@
+import { useConsent } from '@/lib/consent';
+import { AffiliateConsentNotice } from '@/components/AffiliateConsentNotice';
 import { useRef, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -15,7 +17,7 @@ interface TravelpayoutsEmbedProps {
   className?: string;
 }
 
-export function TravelpayoutsEmbed({
+function TravelpayoutsEmbedContent({
   src,
   height = 450,
   title = 'Travelpayouts Widget',
@@ -47,4 +49,10 @@ export function TravelpayoutsEmbed({
       />
     </div>
   );
+}
+
+export function TravelpayoutsEmbed(props: TravelpayoutsEmbedProps) {
+  const consent = useConsent();
+  if (!consent.affiliate) return <AffiliateConsentNotice />;
+  return <TravelpayoutsEmbedContent {...props} />;
 }

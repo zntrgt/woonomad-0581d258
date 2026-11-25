@@ -3,6 +3,7 @@ import { Header } from '@/components/Header';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
+import { openCookiePreferences } from '@/lib/consent';
 
 const CookiePolicy = () => {
   const currentYear = new Date().getFullYear();
@@ -32,7 +33,7 @@ const CookiePolicy = () => {
         <Card variant="elevated">
           <CardContent className="p-6 md:p-8 prose prose-lg max-w-none">
             <p className="text-muted-foreground">
-              Son güncelleme: {currentYear}
+              Son güncelleme: 25 Kasım 2026
             </p>
 
             <h2>Çerez Nedir?</h2>
@@ -41,43 +42,21 @@ const CookiePolicy = () => {
               Çerezler, web sitesinin tercihlerinizi hatırlamasına ve size daha iyi bir deneyim sunmasına yardımcı olur.
             </p>
 
-            <h2>Kullandığımız Çerez Türleri</h2>
-            
-            <h3>1. Zorunlu Çerezler</h3>
-            <p>
-              Web sitesinin çalışması için gerekli olan çerezlerdir. Bu çerezler olmadan bazı özellikler kullanılamaz.
-            </p>
-
-            <h3>2. Performans Çerezleri</h3>
-            <p>
-              Web sitesinin nasıl kullanıldığını anlamamıza yardımcı olan anonim veriler toplar. 
-              Bu veriler, siteyi geliştirmek için kullanılır.
-            </p>
-
-            <h3>3. İşlevsellik Çerezleri</h3>
-            <p>
-              Tercihlerinizi hatırlamamıza yardımcı olur (örneğin, dil tercihi, tema seçimi).
-            </p>
-
-            <h3>4. Hedefleme/Reklam Çerezleri</h3>
-            <p>
-              İlgi alanlarınıza uygun reklamlar göstermek için kullanılır. Bu çerezler üçüncü taraflar tarafından yerleştirilebilir.
-            </p>
-
-            <h2>Üçüncü Taraf Çerezleri</h2>
-            <p>Web sitemizde aşağıdaki üçüncü taraf hizmetlerinin çerezleri bulunabilir:</p>
+            <h2>Depolama ve izin kategorileri</h2>
             <ul>
-              <li><strong>Google Analytics:</strong> Web sitesi trafiğini analiz etmek için</li>
-              <li><strong>Google Tag Manager:</strong> Pazarlama etiketlerini yönetmek için</li>
-              <li><strong>Google AdSense:</strong> Reklam gösterimi için</li>
+              <li><strong>Zorunlu tercihler:</strong> Çerez seçiminiz tarayıcının yerel depolamasında (woonomad-cookie-consent-v2) saklanır. Seçim 180 gün sonra sonraki ziyarette yeniden istenir. Site işlevleri ayrıca gerekli oturum ve tercih verilerini kullanabilir.</li>
+              <li><strong>Analitik (isteğe bağlı):</strong> Google Tag Manager ve Google Analytics, yalnızca analitik izniyle yüklenir. GA4 ziyaret, gezinme ve affiliate tıklamalarını ölçebilir; Google'ın analitik çerezleri (_ga ve _ga_*) kullanılabilir.</li>
+              <li><strong>İş ortağı araçları (isteğe bağlı):</strong> Travelpayouts ve ilgili üçüncü taraf gömülü seyahat araçları ayrı izinle yüklenebilir. Sağlayıcılar kendi depolama ve izleme teknolojilerini kullanabilir. Doğrudan dış bağlantılar çalışır; tıkladığınızda hedef sitenin kendi koşulları uygulanır.</li>
+              <li><strong>Reklam:</strong> Bu sürümde doğrudan AdSense yüklemesi devre dışıdır; reklam depolama, reklam kullanıcı verisi ve kişiselleştirme izinleri kapalıdır.</li>
             </ul>
-
             <h2>Çerezleri Yönetme</h2>
-            <p>
-              Çerezleri tarayıcı ayarlarınızdan yönetebilirsiniz. Çerezleri reddederseniz, 
-              web sitesinin bazı özellikleri düzgün çalışmayabilir.
-            </p>
-
+            <p>İsteğe bağlı izinler varsayılan olarak kapalıdır. Kabul etmek zorunlu değildir. Çerez tercihlerinizi aşağıdaki düğmeden veya sayfadaki çerez tercihleri kontrolünden değiştirebilirsiniz. İzni geri aldığınızda site yeniden yüklenerek ilgili araçların sonraki yüklenmesi engellenir. Üçüncü taraf sitelerin çerezlerini tarayıcı ayarlarınızdan yönetebilirsiniz.</p>
+            <button type="button" className="underline text-primary" onClick={openCookiePreferences}>Çerez tercihlerini değiştir</button>
+            <h3>Sağlayıcıların açıklamaları</h3>
+            <ul>
+              <li><a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener noreferrer">Google çerez açıklaması ve saklama bilgileri</a></li>
+              <li><a href="https://www.travelpayouts.com/privacy" target="_blank" rel="noopener noreferrer">Travelpayouts gizlilik açıklaması</a></li>
+            </ul>
             <h3>Tarayıcılarda Çerez Ayarları:</h3>
             <ul>
               <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Google Chrome</a></li>
